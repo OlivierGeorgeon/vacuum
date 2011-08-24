@@ -7,11 +7,19 @@ import java.util.ArrayList;
 import java.awt.Color;
 import javax.swing.JPanel;
 
-public class Environnement extends JPanel {
+public class Environnement extends JPanel implements MouseListener{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	public Model m_model;
 	public int m_h=1;
 	public int m_w=1;
+	public int m_clicked=0;
+	public int m_clickX;
+	public int m_clickY;
 	
 	public int e_x;
 	public int e_y;
@@ -33,7 +41,7 @@ public class Environnement extends JPanel {
 		m_model=model;
 		m_h=m_model.getHeight();
 		m_w=m_model.getWidth();
-
+		addMouseListener(this);
 	}
 	
 	
@@ -122,6 +130,89 @@ public class Environnement extends JPanel {
 		g.setColor(Color.red);
 		g.drawOval((int)(e_x-0.4*c_w),(int)(e_y-0.4*c_h),(int)(0.8*c_w),(int)(0.8*c_h));
 		
+		Graphics2D g2d = (Graphics2D)g;
+		
+		// draw informations
+		drawInformation(g2d);
+		
+	}
+
+
+	public void mouseClicked(MouseEvent e){
+
+		int h=this.getHeight();
+		int w=this.getWidth();
+
+		m_clickX= (e.getX() / (int)( (float)w/(float)m_w ));
+		m_clickY= (e.getY() / (int)( (float)h/(float)m_h ));
+		
+		if (e.getButton() == MouseEvent.BUTTON1)
+			if (e.isShiftDown()) m_clicked = 4;
+			else m_clicked = 1;
+		if (e.getButton() == MouseEvent.BUTTON3)
+		{
+			if (e.isShiftDown()) m_clicked = 3;
+			else m_clicked = 2;
+		}
+	}
+	
+	public int getClicked()
+	{
+		int c = m_clicked;
+		m_clicked = 0;
+		return c;
+	}
+
+
+	@Override
+	public void mouseEntered(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void mouseExited(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void mousePressed(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void mouseReleased(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	/**
+	 * Draw the information square.
+	 */
+	private void drawInformation(Graphics2D g2d){
+		
+		int h=this.getHeight();
+		int w=this.getWidth();
+		
+		int c_w=w/m_w;
+		int c_h=h/m_h;
+		
+		String counter = m_model.getCounter() + ""; 
+		
+		Font font = new Font("Dialog", Font.BOLD, 10);
+		g2d.setFont(font);
+		
+		FontMetrics fm = getFontMetrics(font);
+
+		int width = fm.stringWidth(counter);
+		
+		g2d.setColor(new Color(200, 255, 200));		
+		g2d.drawString(counter, m_w*c_w - c_w/10 - width, c_h/2+5);	
 	}
 	
 }

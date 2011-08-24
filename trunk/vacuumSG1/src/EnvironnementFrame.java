@@ -1,5 +1,7 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -22,12 +24,19 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import ernest.Ernest;
+
 
 
 
 public class EnvironnementFrame extends JFrame implements Observer, ActionListener, KeyListener{
 	
-	private Environnement m_env;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public Environnement m_env;
 	
 	/////////////////////////////////////////////////
 	private final JMenu m_file 		= new JMenu("File");
@@ -83,7 +92,7 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
     	this.setLocationRelativeTo(null);               
     	this.setVisible(true);
     
-    	Environnement m_env = new Environnement(m);
+    	m_env = new Environnement(m);
     	
     	configureMenu(m);
     	
@@ -98,6 +107,32 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
 		m_rerun.addActionListener(this);
 		m_reset.addActionListener(this);
     	
+
+
+		JPanel pageStart = new JPanel();
+		pageStart.setPreferredSize(new Dimension(600, 5));
+		pageStart.setBackground(new Color(Ernest.COLOR_WALL.getRGB()));
+		
+		JPanel lineStart = new JPanel();
+		lineStart.setPreferredSize(new Dimension(5, 400));
+		lineStart.setBackground(new Color(Ernest.COLOR_WALL.getRGB()));
+
+		getContentPane().setLayout(new BorderLayout());
+		
+		JPanel buttonPanel = new JPanel();
+
+		buttonPanel.addKeyListener(this);
+		
+		
+		buttonPanel.add(m_rerun);
+		buttonPanel.add(m_reset);
+		buttonPanel.add(m_run);
+		buttonPanel.add(m_stop);
+		JPanel statusPanel = new JPanel(new BorderLayout());
+		statusPanel.add(m_statusBar, BorderLayout.CENTER);
+		statusPanel.add(buttonPanel, BorderLayout.EAST);
+		statusPanel.setBorder(BorderFactory.createRaisedBevelBorder());
+		getContentPane().add(statusPanel, BorderLayout.SOUTH);
     }
     
 	/**
@@ -227,7 +262,7 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
 
 	public void actionPerformed(ActionEvent e)
 	{
-		m_env.m_model.setEventThread(Thread.currentThread());
+		//m_env.m_model.setEventThread(Thread.currentThread());
 
 		// Run the agent ******
 		
@@ -415,6 +450,8 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
 	    else if (e.getSource() == m_openJessAgent || 
 				 e.getSource() == m_openSoarAgent)
 		{
+	    	
+	    	System.out.println("test1");
 			int type = Model.SOARFILE; 
 	    	
 			// Sets the log file if any Olivier
@@ -544,10 +581,47 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
 	}
 
 
-	@Override
-	public void update(Observable arg0, Object arg1) {
-		// TODO Auto-generated method stub
-		
+	public void update(Observable o, Object arg)
+	{
+		if (m_env.m_model.isAgentStopped())
+		{
+			if (m_env.m_model.getScore() != 0)
+				m_env.m_model.setLastFinalScore(m_env.m_model.getScore());
+ 
+			m_file.setEnabled(true);
+			m_options.setEnabled(true);
+			m_help.setEnabled(true);
+
+			if ((m_env.m_model.getAgentFile() != null)
+				    || (m_env.m_model.getInHumanView() == true)) 
+			{
+
+				if (m_env.m_model.boardTempExists()) {
+					m_rerun.setEnabled(true);
+				}
+				m_env.m_model.setRunHuman(false);
+				m_run.setEnabled(true);
+				m_reset.setEnabled(true);
+				m_stop.setEnabled(false);
+				setTitle("Ernest" + " - " + m_env.m_model.getAgentShortFile());
+			}
+		}
+		else
+		{
+			m_file.setEnabled(false);
+			m_options.setEnabled(false);
+			m_help.setEnabled(false);
+			m_run.setEnabled(false);
+			m_reset.setEnabled(false);
+			m_rerun.setEnabled(false);
+
+			m_stop.setEnabled(true);
+			m_stop.setSelected(true);
+
+		}
+		getContentPane().validate();
+		repaint();
+		m_env.repaint();
 	}
 
 }

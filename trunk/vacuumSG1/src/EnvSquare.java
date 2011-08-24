@@ -20,7 +20,7 @@ import javax.swing.*;
  * @author mcohen
  * @author ogeorgeon
  */
-public class EnvSquare extends JPanel implements MouseListener
+public class EnvSquare extends JPanel
 {
 	public static final long serialVersionUID = 1;
 	
@@ -41,7 +41,6 @@ public class EnvSquare extends JPanel implements MouseListener
 		m_x = x;
 		m_y = y;
 		m_model = model;
-		addMouseListener(this);
 	}
 
 	/**
@@ -116,8 +115,8 @@ public class EnvSquare extends JPanel implements MouseListener
 
 		// The information square
 		//if (m_model.isInformation(m_x, m_y))
-		if (m_model.getWall(m_x, m_y) == Model.WALL_INFORMATION )
-			drawInformation(g2d);
+		//if (m_model.getWall(m_x, m_y) == Model.WALL_INFORMATION )
+			//drawInformation(g2d);
 		
 		// The dream square
 		if (m_model.getWall(m_x, m_y) == Model.WALL_INFORMATION2 )
@@ -152,51 +151,6 @@ public class EnvSquare extends JPanel implements MouseListener
 		g2d.drawString(counter, 30 - width, 10);	
 	}
 
-	/**
-	 * Handle click event
-	 */
-	public void mouseClicked(MouseEvent e) 
-	{
-		if (e.getButton() == e.BUTTON1)
-			if (e.isShiftDown()) m_clicked = 4;
-			else m_clicked = 1;
-		if (e.getButton() == e.BUTTON3)
-		{
-			if (e.isShiftDown()) m_clicked = 3;
-			else m_clicked = 2;
-		}
-	}
 
-	/**
-	 * Return the click information and reset it.
-	 * @return 1 if the left button was clicked, 2 if the right button was clicked, 3 if right button + shift.
-	 *  4 if left button + shift;
-	 */
-	public int getClicked()
-	{
-		int c = m_clicked;
-		m_clicked = 0;
-		return c;
-	}
-
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
 }
 		
