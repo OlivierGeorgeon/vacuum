@@ -655,57 +655,59 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		{
 			for (int x = 0; x < m_model.getWidth(); x++)
 			{
-
-				// Handle the mouse events.
-				
-				int c = m_grid[y][x].getClicked();
-				if (c == 1)
-				{
-					if (m_model.isWall(x,y))
-					{
-						m_model.setWall(x, y, Model.EMPTY);
-						m_model.traceUserEvent("remove_wall", x, y);
-					}
-					else
-					{
-						m_model.setWall(x, y, Model.WALL);
-						m_model.traceUserEvent("add_wall", x, y);
-					}
-				}
-				if (c == 2)
-				{
-					if (m_model.isDirty(x,y))
-					{
-						m_model.setDirty(x, y, Model.EMPTY);
-						m_model.traceUserEvent("remove_water", x, y);
-					}
-					else
-					{
-						m_model.setDirty(x, y, Model.DIRTY);
-						m_model.traceUserEvent("add_water", x, y);
-					}
-				}
-				if (c == 3)
-				{
-					if (m_model.isDirty(x,y))
-					{
-						m_model.setDirty(x, y, Model.EMPTY);
-						m_model.traceUserEvent("remove_food", x, y);
-					}
-					else
-					{
-						m_model.setDirty(x, y, Model.FOOD);
-						m_model.traceUserEvent("add_food", x, y);
-					}
-				}
-				if (c == 4)
-					m_model.toggleNight();
 				
 				// Update the square visualization.
 				
 				m_grid[y][x].udateBackground();
 			}
 		}
+		
+		// handle mouse events from continuous environment
+		int c= m_env.m_env.getClicked();
+		if (c == 1)
+		{
+			if (m_model.isWall(m_env.m_env.m_clickX,m_env.m_env.m_clickY))
+			{
+				m_model.setWall(m_env.m_env.m_clickX, m_env.m_env.m_clickY, Model.EMPTY);
+				m_model.traceUserEvent("remove_wall", m_env.m_env.m_clickX, m_env.m_env.m_clickY);
+			}
+			else
+			{
+				m_model.setWall(m_env.m_env.m_clickX, m_env.m_env.m_clickY, Model.WALL);
+				m_model.traceUserEvent("add_wall", m_env.m_env.m_clickX, m_env.m_env.m_clickY);
+			}
+		}
+		if (c == 2)
+		{
+			if (m_model.isDirty(m_env.m_env.m_clickX,m_env.m_env.m_clickY))
+			{
+				m_model.setDirty(m_env.m_env.m_clickX, m_env.m_env.m_clickY, Model.EMPTY);
+				m_model.traceUserEvent("remove_water", m_env.m_env.m_clickX, m_env.m_env.m_clickY);
+			}
+			else
+			{
+				m_model.setDirty(m_env.m_env.m_clickX, m_env.m_env.m_clickY, Model.DIRTY);
+				m_model.traceUserEvent("add_water", m_env.m_env.m_clickX, m_env.m_env.m_clickY);
+			}
+		}
+		if (c == 3)
+		{
+			if (m_model.isDirty(m_env.m_env.m_clickX,m_env.m_env.m_clickY))
+			{
+				m_model.setDirty(m_env.m_env.m_clickX, m_env.m_env.m_clickY, Model.EMPTY);
+				m_model.traceUserEvent("remove_food", m_env.m_env.m_clickX, m_env.m_env.m_clickY);
+			}
+			else
+			{
+				m_model.setDirty(m_env.m_env.m_clickX, m_env.m_env.m_clickY, Model.FOOD);
+				m_model.traceUserEvent("add_food", m_env.m_env.m_clickX, m_env.m_env.m_clickY);
+			}
+		}
+		if (c == 4)
+			m_model.toggleNight();
+		
+		m_env.m_env.repaint();
+		
 	}
 
 	/**
