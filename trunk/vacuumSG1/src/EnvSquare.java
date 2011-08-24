@@ -117,14 +117,10 @@ public class EnvSquare extends JPanel
 		//if (m_model.isInformation(m_x, m_y))
 		//if (m_model.getWall(m_x, m_y) == Model.WALL_INFORMATION )
 			//drawInformation(g2d);
-		
-		// The dream square
-		if (m_model.getWall(m_x, m_y) == Model.WALL_INFORMATION2 )
-			m_model.paintDream(g2d);
-		
+
 		// The agent
 		if (m_model.isAgent(m_x, m_y))
-			m_model.paintAgent(g2d);
+			m_model.paintAgent(g2d,0,0,1,1);
 		
 		// The square outline
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_OFF);

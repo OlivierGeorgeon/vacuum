@@ -74,6 +74,8 @@ public class Ernest100Model extends ErnestModel
 		
 		m_actionList=new ArrayList<Action>();
 		
+		m_map=new InternalMap();
+		
 		if (!load(m_actionList)){
 			m_actionList.clear();
 			m_actionList.add(new Action("forward",10,120,150));
@@ -87,7 +89,6 @@ public class Ernest100Model extends ErnestModel
 			m_actionList.get(2).addObject();
 		}
 		m_int=new InternalStatesFrame(m_actionList);
-		m_map=new InternalMap();
 		
 		eye=new EyeView(m_map);
 		
@@ -1285,12 +1286,15 @@ public class Ernest100Model extends ErnestModel
 	 * Paint Ernest as a shark.
 	 * @param g The graphic object for painting.
 	 */
-	public void paintAgent(Graphics2D g2d)
+	public void paintAgent(Graphics2D g2d,int x,int y,double sx,double sy)
 	{
+		
 		// The orientation
 
 		AffineTransform orientation = new AffineTransform();
+		orientation.translate(x,y);
 		orientation.rotate(m_orientationAngle);
+		orientation.scale(sx,sy);
 		g2d.transform(orientation);
 		//AffineTransform bodyReference = g2d.getTransform();
 
@@ -1403,9 +1407,17 @@ public class Ernest100Model extends ErnestModel
 	 * Paint Ernest's obervation.
 	 * @param g The graphic object for painting.
 	 */
-	public void paintDream(Graphics2D g2d)
+	public void paintDream(Graphics2D g2d,int x,int y,double sx,double sy)
 	{
 
+		AffineTransform scale       = new AffineTransform();
+		AffineTransform translation = new AffineTransform();
+		scale.scale(sx,sy);
+		translation.translate(x,y);
+
+		g2d.transform(translation);
+		g2d.transform(scale);
+		
 		Color eyeColor = UNANIMATED_COLOR;
 		Color kinematicColor = Color.WHITE;
 		float direction = 5.5f;
@@ -1488,6 +1500,7 @@ public class Ernest100Model extends ErnestModel
 		//g2d.setColor(eyeColor);
 		//g2d.fill(new Rectangle2D.Double( 25,  -35, 16, 16));
 
+		
 	}
 
 	private Area sharkmask()
@@ -1522,7 +1535,7 @@ public class Ernest100Model extends ErnestModel
 		shark.add(new Area(leftPectoralFin));shark.add(new Area(leftPelvicFin));
 		shark.add(new Area(rightPectoralFin));shark.add(new Area(rightPelvicFin));
 		
-		Area sharkMask = new Area(new Rectangle2D.Double(-80, -80, 160, 160));
+		Area sharkMask = new Area(new Rectangle2D.Double(-50, -50, 100, 100));
 		sharkMask.subtract(shark);
 
 		return sharkMask;
@@ -1567,6 +1580,25 @@ public class Ernest100Model extends ErnestModel
 					}
 				}
 			}
+			
+			// object list
+			for (int i=0;i<m_map.objList.size();i++){
+				file.println("object "+m_map.objList.get(i).getRed()  +" "+
+						               m_map.objList.get(i).getGreen()+" "+
+						               m_map.objList.get(i).getBlue() +" "+ m_map.valuesList.get(i));
+			}
+
+			
+			// primitive Schemas
+			int nb=m_ernest.get(0).getEpisodicMemory().m_schemas.size();
+			for (int i=0;i<nb;i++){
+				if (m_ernest.get(0).getEpisodicMemory().m_schemas.get(i).isPrimitive()){
+					file.println("schema "+1+" "+m_ernest.get(0).getEpisodicMemory().m_schemas.get(i).getId()+" "+
+											     m_ernest.get(0).getEpisodicMemory().m_schemas.get(i).getLabel()+" "+
+											     m_ernest.get(0).getEpisodicMemory().m_schemas.get(i).getWeight());
+				}
+			}
+			
 			
 			file.close();
 			
@@ -1655,7 +1687,33 @@ public class Ernest100Model extends ErnestModel
 			    			else succes=false;
 			    		}
 			    		
-			    		// matrix value
+			    		
+			    		// case object
+			    		else if (elements[0].equals("object")){
+			    			if (elements.length == 5){
+			    				m_map.addObj(new Color(Integer.parseInt(elements[1]) ,
+			    						               Integer.parseInt(elements[2]) ,
+			    						               Integer.parseInt(elements[3])),
+			    						     Float.parseFloat(elements[4]) );
+			    				/*System.out.println( Integer.parseInt(elements[1]) +" "+
+			    									Integer.parseInt(elements[2]) +" "+
+			    									Integer.parseInt(elements[2]) +" "+
+			    									Float.parseFloat(elements[4]) );*/
+			    			}
+			    		}
+			    		
+			    		
+			    		// schemas
+			    		else if (elements[0].equals("schema")){
+			    			// case simple schema
+			    			/*if (elements.length > 2 && elements[1].equals("1") && elements.length==5){
+			    				m_ernest.get(0).getEpisodicMemory().m_schemas.add( new Schema( Integer.parseInt(elements[2]),
+			    						                                                       elements[3],
+			    						                                                       Integer.parseInt(elements[4])) );
+			    			}*/
+			    		}
+			    		
+			    		// matrix value (no label)
 			    		else{
 			    			if (indexLine<actList.get(nbAct-1).width){
 			    			int min=Math.min(h, elements.length);

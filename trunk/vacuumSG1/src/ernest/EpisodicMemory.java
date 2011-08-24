@@ -23,7 +23,7 @@ public class EpisodicMemory
 	private ITracer m_tracer;
 	
 	/** A list of all the schemas ever created ... */
-	private List<ISchema> m_schemas = new ArrayList<ISchema>(1000);
+	public List<ISchema> m_schemas = new ArrayList<ISchema>(1000);
 
 	/** A list of all the acts ever created. */
 	public List<IAct> m_acts = new ArrayList<IAct>(2000);

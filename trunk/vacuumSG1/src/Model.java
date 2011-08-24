@@ -1047,7 +1047,7 @@ public class Model extends Observable
 	 * Paint the agent as an icon.
 	 * @param g The graphic object for painting.
 	 */
-	public void paintAgent(Graphics2D g)
+	public void paintAgent(Graphics2D g,int x,int y,double sx,double sy)
 	{
 		Image img = m_icon_up.getImage();
 		if (m_orientation == ORIENTATION_RIGHT)
@@ -1080,7 +1080,7 @@ public class Model extends Observable
 		m_night = !m_night;
 	}
 
-	public void paintDream(Graphics2D g)
+	public void paintDream(Graphics2D g,int x,int y,double sx,double sy)
 	{
 		
 	}
