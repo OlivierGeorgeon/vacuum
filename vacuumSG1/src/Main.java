@@ -167,7 +167,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		getContentPane().setLayout(new BorderLayout());
 		//getContentPane().add(pageStart, BorderLayout.PAGE_START);
 		//getContentPane().add(lineStart, BorderLayout.LINE_START);
-		getContentPane().add(new Environnement(m_model),BorderLayout.NORTH );
+		//getContentPane().add(new Environnement(m_model),BorderLayout.NORTH );
 		getContentPane().add(m_board, BorderLayout.CENTER);
 		
 		

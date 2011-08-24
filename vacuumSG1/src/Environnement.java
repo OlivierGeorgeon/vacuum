@@ -87,6 +87,10 @@ public class Environnement extends JPanel implements MouseListener{
 		g.setColor(Color.white);
 		g.fillRect(0, 0, w, h);
 		
+		// draw agent
+		m_model.paintAgent((Graphics2D)g.create(),(int) (m_model.m_x*c_w+(c_w/2)),(int) (m_model.m_y*c_h+(c_h/2)),(double)c_w/100,(double)c_h/100);
+		
+		
 		for (int i=0;i<m_w;i++){
 			for (int j=0;j<m_h;j++){
 				
@@ -124,16 +128,21 @@ public class Environnement extends JPanel implements MouseListener{
 		}
 		
 		// draw Ernest
-		g.setColor(Color.black);
-		g.fillPolygon(transform_x(ernest_x,ernest_y,(float) m_model.m_orientationAngle,c_w/2,e_x) , 
-			          transform_y(ernest_x,ernest_y,(float) m_model.m_orientationAngle,c_h/2,e_y) , 3);
-		g.setColor(Color.red);
-		g.drawOval((int)(e_x-0.4*c_w),(int)(e_y-0.4*c_h),(int)(0.8*c_w),(int)(0.8*c_h));
-		
-		Graphics2D g2d = (Graphics2D)g;
+		//g.setColor(Color.black);
+		//g.fillPolygon(transform_x(ernest_x,ernest_y,(float) m_model.m_orientationAngle,c_w/2,e_x) , 
+		//	          transform_y(ernest_x,ernest_y,(float) m_model.m_orientationAngle,c_h/2,e_y) , 3);
+		//g.setColor(Color.red);
+		//g.drawOval((int)(e_x-0.4*c_w),(int)(e_y-0.4*c_h),(int)(0.8*c_w),(int)(0.8*c_h));
 		
 		// draw informations
-		drawInformation(g2d);
+		drawInformation((Graphics2D)g.create());
+		
+		// draw dream square
+		m_model.paintDream((Graphics2D)g.create(),c_w*(m_w-2)-c_w/2,c_h/2, (double)c_w/100, (double)c_h/100);
+		g.setColor(Color.black);
+		g.drawRect(c_w*(m_w-3), 0, c_w, c_h);
+
+		
 		
 	}
 

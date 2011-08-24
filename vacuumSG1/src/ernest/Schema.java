@@ -42,6 +42,14 @@ public class Schema implements ISchema
         m_weight = Ernest.INFINITE; // needs to be greater than the regularity threshold to support enaction of higher level schemas
 	}
 
+	public Schema(int id, String label,int weight)
+	{
+		m_id = id;
+		m_label = label;
+		m_isPrimitive = true;
+        m_weight = weight;
+	}
+	
 	/**
 	 * Constructor for a composite schema.
 	 * Create a new composite schema with a context act and an intention act. 
