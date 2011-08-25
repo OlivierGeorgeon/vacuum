@@ -5,21 +5,25 @@ import java.util.ArrayList;
 public class InternalMap {
 
 	public float[] map;
-	public ArrayList<Color> objList;
-	public ArrayList<Float> valuesList;
+	//public ArrayList<Color> objList;
+	//public ArrayList<Float> valuesList;
+	public ObjectMemory objMemory;
+	
 	public int imax;
 	public float max;
 	
-	public InternalMap(){
+	public InternalMap(ObjectMemory m){
 		map = new float[180];
 		for (int i=0;i<180;i++){
 			map[i]=0;
 		}
-		objList=new ArrayList<Color>();
-		valuesList=new ArrayList<Float>();
+		//objList=new ArrayList<Color>();
+		//valuesList=new ArrayList<Float>();
+		objMemory=m;
 		imax=90;
 	}
 	
+	/*
 	public int addObj(Color c,float v){
 		int index=objList.indexOf(c);
 		if (index==-1){
@@ -30,7 +34,7 @@ public class InternalMap {
 			valuesList.set(index, (v+valuesList.get(index)*5)/6 );
 		}
 		return (objList.size());
-	}
+	}*/
 	
 	public int compute(double[] d,Color[] c){
 		float[] tempMap=new float[180];
@@ -39,10 +43,11 @@ public class InternalMap {
 		int index=-1;
 		
 		for (int i=0;i<180;i++){
-			index=objList.indexOf(c[i]);
+			//index=objList.indexOf(c[i]);
+			index=objMemory.objectList.indexOf(c[i]);
 			
-			if (index==-1) tempMap[i]=0;
-			else           tempMap[i]=(float) (valuesList.get(index)/ Math.max(1,d[i]));
+			if (index==-1 || objMemory.value.get(index)==null) tempMap[i]=0;
+			else                                               tempMap[i]=(float) (objMemory.value.get(index)/ Math.max(1,d[i]));
 		}
 		
 		attract1[0]  =tempMap[0];

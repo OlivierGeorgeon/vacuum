@@ -49,11 +49,11 @@ public class Ernest100Model extends ErnestModel
 	public EnvironnementFrame m_env;
 	public InternalStatesFrame m_int;
 	public InternalMap m_map;
-	public ObjectMemory m_objList;
+	public ObjectMemory m_objMemory;
 	
 	public ArrayList<Action> m_actionList;
 	public float distance=0;
-	public int objectType=0;
+	//public int objectType=0;
 	
 	private EyeView eye;
 	
@@ -74,19 +74,19 @@ public class Ernest100Model extends ErnestModel
 		notifyObservers2();
 		
 		m_actionList=new ArrayList<Action>();
-		
-		m_map=new InternalMap();
-		m_objList=new ObjectMemory();
+
+		m_objMemory=new ObjectMemory();
+		m_map=new InternalMap(m_objMemory);
 		
 		if (!load(m_actionList)){
 			m_actionList.clear();
-			m_actionList.add(new Action("forward",10,120,150));
+			m_actionList.add(new Action("forward",10,120,150,m_objMemory));
 			m_actionList.get(0).addObject();
 			m_actionList.get(0).addObject();
-			m_actionList.add(new Action("turnLeft",1 ,180,180));
+			m_actionList.add(new Action("turnLeft",1 ,180,180,m_objMemory));
 			m_actionList.get(1).addObject();
 			m_actionList.get(1).addObject();
-			m_actionList.add(new Action("turnRight",1 ,180,180));
+			m_actionList.add(new Action("turnRight",1 ,180,180,m_objMemory));
 			m_actionList.get(2).addObject();
 			m_actionList.get(2).addObject();
 		}
@@ -281,7 +281,7 @@ public class Ernest100Model extends ErnestModel
 		float maxPoint=m_map.max;
 		
 		boolean status =  true  ;
-		float orientation=(m_actionList.get(1)).selectOutput(angle,0)+1;
+		float orientation=(m_actionList.get(1)).selectOutput(angle,frontColor)+1;
 		m_orientation-= orientation;
 		//m_orientation-=45;
 		
@@ -389,7 +389,7 @@ public class Ernest100Model extends ErnestModel
 		
 		boolean status =  true  ;
 		m_orientationAngle = m_orientation * Math.PI/2 / ORIENTATION_RIGHT;
-		float orientation=(m_actionList.get(2)).selectOutput(angle,0)+1;
+		float orientation=(m_actionList.get(2)).selectOutput(angle,frontColor)+1;
 		m_orientation+= orientation;
 		double nextOrientationAngle = m_orientation * Math.PI/2 / ORIENTATION_RIGHT;
 		if (m_orientation > ORIENTATION_UP_LEFT)
@@ -510,7 +510,7 @@ public class Ernest100Model extends ErnestModel
 		boolean status5=true;         // touch a corner
 		int i=0;
 		
-		step=(m_actionList.get(0)).selectOutput(distance,objectType);
+		step=(m_actionList.get(0)).selectOutput(distance,frontColor);
 		float step2=(float)1.0/nbstep;
 		
 		status3=isDirty(cell_x,cell_y);
@@ -629,7 +629,9 @@ public class Ernest100Model extends ErnestModel
 		
 		int reward=0;
 		
-		if (objectType==0){
+		if (frontColor.equals(new Color(0,128,  0)) ||
+			frontColor.equals(new Color(0,230, 92)) ||
+			frontColor.equals(new Color(0,230,161)) ){
 			if (!status1 || !status2 || !status5) reward=-100;
 			else if (!status5)        reward=  50;
 			else                      reward= 100;
@@ -646,10 +648,10 @@ public class Ernest100Model extends ErnestModel
 		m_int.saveImage();
 		
 		if (!status4){
-			if (frontColor.equals(new Color(150, 128, 255))) m_map.addObj(frontColor, 100);
-			else                               m_map.addObj(frontColor,  20);
+			if (frontColor.equals(new Color(150, 128, 255))) m_objMemory.setValue(frontColor, 100);
+			else                                             m_objMemory.setValue(frontColor,  20);
 		}
-		else if (!status1 || !status2) m_map.addObj(frontColor,-100);
+		else if (!status1 || !status2) m_objMemory.setValue(frontColor,-100);
 		
 		rendu(true);
 		
@@ -999,10 +1001,14 @@ public class Ernest100Model extends ErnestModel
 		
 		if (setdistance){ 
 			distance=(float) r2[90];
-			if (colorMap2[90] == WALL_COLOR) objectType=0;
-			else                             objectType=1;
+			//if (colorMap2[90] == WALL_COLOR) objectType=0;
+			//else                             objectType=1;
 			frontColor=colorMap2[90];
+			
+			m_objMemory.addObject(frontColor);
 		}
+		
+		
 		
 		m_int.repaint();
 		eye.repaint();
@@ -1584,10 +1590,11 @@ public class Ernest100Model extends ErnestModel
 			}
 			
 			// object list
-			for (int i=0;i<m_map.objList.size();i++){
-				file.println("object "+m_map.objList.get(i).getRed()  +" "+
-						               m_map.objList.get(i).getGreen()+" "+
-						               m_map.objList.get(i).getBlue() +" "+ m_map.valuesList.get(i));
+			for (int i=0;i<m_objMemory.objectList.size();i++){
+				file.println("object "+m_objMemory.objectList.get(i).getRed()  +" "+
+									   m_objMemory.objectList.get(i).getGreen()+" "+
+									   m_objMemory.objectList.get(i).getBlue() +" "+
+									   m_objMemory.value.get(i));
 			}
 
 			
@@ -1646,7 +1653,7 @@ public class Ernest100Model extends ErnestModel
 			    		// case new Action
 			    		if (elements[0].equals("Action")){
 			    			if (elements.length == 4){
-			    				actList.add(new Action(elements[1],10,Integer.parseInt(elements[2]),Integer.parseInt(elements[3])));
+			    				actList.add(new Action(elements[1],10,Integer.parseInt(elements[2]),Integer.parseInt(elements[3]),m_objMemory));
 			    				nbAct++;
 			    				nbObj=0;
 			    				indexObj=0;
@@ -1693,14 +1700,20 @@ public class Ernest100Model extends ErnestModel
 			    		// case object
 			    		else if (elements[0].equals("object")){
 			    			if (elements.length == 5){
-			    				m_map.addObj(new Color(Integer.parseInt(elements[1]) ,
+			    				
+			    				if (!elements[4].equals("null")) m_objMemory.loadObject(new Color(Integer.parseInt(elements[1]) ,
+			    												    							 Integer.parseInt(elements[2]) ,
+			    												    							 Integer.parseInt(elements[3]) ),
+			    												    							 Float.parseFloat(elements[4]));
+			    				else 	m_objMemory.addObject(new Color(Integer.parseInt(elements[1]) ,
+		    							 								Integer.parseInt(elements[2]) ,
+		    							 								Integer.parseInt(elements[3]) ));
+
+			    				
+			    				/*m_map.addObj(new Color(Integer.parseInt(elements[1]) ,
 			    						               Integer.parseInt(elements[2]) ,
 			    						               Integer.parseInt(elements[3])),
-			    						     Float.parseFloat(elements[4]) );
-			    				/*System.out.println( Integer.parseInt(elements[1]) +" "+
-			    									Integer.parseInt(elements[2]) +" "+
-			    									Integer.parseInt(elements[2]) +" "+
-			    									Float.parseFloat(elements[4]) );*/
+			    						     Float.parseFloat(elements[4]) );*/
 			    			}
 			    		}
 			    		
