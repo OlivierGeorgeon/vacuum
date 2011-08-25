@@ -135,10 +135,10 @@ public class InternalStatesPanel extends JPanel{
 	////////////////////////////////////
 	public void paintComponent(Graphics g){
 		
-		int act1=1;
+		int act1=0;
 		int obj1=0;
-		int act2=2;
-		int obj2=0;
+		int act2=0;
+		int obj2=1;
 		
 		boolean view3D=false;
 		
