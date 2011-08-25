@@ -49,6 +49,7 @@ public class Ernest100Model extends ErnestModel
 	public EnvironnementFrame m_env;
 	public InternalStatesFrame m_int;
 	public InternalMap m_map;
+	public ObjectMemory m_objList;
 	
 	public ArrayList<Action> m_actionList;
 	public float distance=0;
@@ -75,6 +76,7 @@ public class Ernest100Model extends ErnestModel
 		m_actionList=new ArrayList<Action>();
 		
 		m_map=new InternalMap();
+		m_objList=new ObjectMemory();
 		
 		if (!load(m_actionList)){
 			m_actionList.clear();
