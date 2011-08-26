@@ -17,6 +17,7 @@ public class Action {
 	public int previousInput=0;
 	public int previousChoice=0;
 	public int previousObj=0;
+	public Color previousObjColor;
 	private int[] candidates;
 	
 	public float Icoef=(float) 0.5;  // initial coefficients of links
@@ -54,7 +55,7 @@ public class Action {
 		for (int i=0;i<width;i++){
 			for (int j=0;j<height;j++){
 				(selectMap.get(index))[i][j]=10;
-				(confidenceMap.get(index))[i][j]=0;
+				(confidenceMap.get(index))[i][j]=(float) 0.01;
 			}
 		}
 		
@@ -69,9 +70,28 @@ public class Action {
 	
 	// change the link between an object ant a matrix
 	public void setLink(int indexObj,int indexMat,float val){
+		// add new links if a new object was created
+		while (links.size() < objMemory.objectList.size()){
+			links.add(new ArrayList<Float>() );
+			int nb=selectMap.size();
+			for (int i=0;i<nb;i++){
+				links.get(links.size()-1).add(Icoef);
+			}
+		}
 		links.get(indexObj).set(indexMat, val);
 	}
 	
+	public void setLink(Color rgb,int indexMat,float val){
+		// add new links if a new object was created
+		while (links.size() < objMemory.objectList.size()){
+			links.add(new ArrayList<Float>() );
+			int nb=selectMap.size();
+			for (int i=0;i<nb;i++){
+				links.get(links.size()-1).add(Icoef);
+			}
+		}
+		links.get(objMemory.objectList.indexOf(rgb)).set(indexMat, val);
+	}
 	
 	// select a distance step value from the most probable ones
 	public float selectOutput(float input,Color rgb){
@@ -85,11 +105,11 @@ public class Action {
 			}
 		}
 		
-		
 		int obj=objMemory.indexOfColor(rgb);
 		
 		//////////////////////////
-		if (rgb.equals(new Color(0,128,  0)) ||
+		if (!this.name.equals("forward") ||
+			rgb.equals(new Color(0,128,  0)) ||
 			rgb.equals(new Color(0,230, 92)) ||
 			rgb.equals(new Color(0,230,161)) ){
 			 obj=0;
@@ -99,17 +119,30 @@ public class Action {
 		
 		int indexObj=obj;
 		int d=(int) Math.min(input, height-1);
-		// save the actual input and object number
+		
+		// save the actual input and object color
 		previousInput=d;
 		previousObj=obj;
+		previousObjColor=rgb;
 		
-		// set weights
+		
+		// set weights on the selection vector
 		int count=0;
 		for (int i=0;i<width;i++){
-			candidates[i]=(int) selectMap.get(indexObj)[i][d]+100;
-			count+=selectMap.get(indexObj)[i][d]+100;
+			float weight=0;
+			candidates[i]=0;
+			for (int j=0;j<selectMap.size();j++){
+				candidates[i]+= (int)( (selectMap.get(j)[i][d]+100)*links.get(indexObj).get(j) );
+				weight+=links.get(indexObj).get(j);
+			}
+			candidates[i]=(int) ((float)candidates[i]/weight);
+			count+=candidates[i];
+			
+			//candidates[i]=(int) selectMap.get(indexObj)[i][d]+100;
+			//count+=selectMap.get(indexObj)[i][d]+100;
 		}
 		int rand=(int) (Math.random()*count);
+		
 		
 		// select a value
 		int i=0;
@@ -128,36 +161,43 @@ public class Action {
 	// apply results (success or fail) to the previous decision
 	public void setResults(float reward){
 		
+		int indexObj=objMemory.indexOfColor(previousObjColor);
+		
 		float r=minmax(reward);
-		//if (previousObj==1) System.out.println( "<<<<<<<<<<<<<<<<<<<<<< "+ previousChoice + " , " +previousInput+ " , "+ (100- ( (previousChoice-previousInput)*(previousChoice-previousInput) ) ) + " , "+reward+" >>>>>>>>>>>>>>>>>>>>>>>>>>");
-		for (int i=-30;i<30;i++){
-			for (int j=-30;j<30;j++){
-				
-				double d=Math.sqrt(i*i+j*j)/2;
-				boolean out=false;
-				
-				float newConfidence;
-				
-				int i2=previousChoice+i;
-				if (i2>=width || i2< 0) out=true;
-				int j2=previousInput+j;
-				if (j2>=height || j2< 0) out=true;
-				
-				// set new probability an confidence values
-				if (!out && d<=15){
-					if (d<=1){
-						newConfidence=(float) (confidenceMap.get(previousObj)[i2][j2]+ (float)1);
-						selectMap.get(previousObj)[i2][j2]=( selectMap.get(previousObj)[i2][j2]*confidenceMap.get(previousObj)[i2][j2]
-						                                    + r ) / newConfidence;
-					}
-					else{
-						newConfidence=(float) (confidenceMap.get(previousObj)[i2][j2]+(1.0/d));
-						selectMap.get(previousObj)[i2][j2]=( selectMap.get(previousObj)[i2][j2]*confidenceMap.get(previousObj)[i2][j2]
-						                                    +(r/(float)d) ) / newConfidence;
-					}
-					confidenceMap.get(previousObj)[i2][j2]=newConfidence;
+
+		int nbMatrix=selectMap.size();
+		for (int k=0;k<nbMatrix;k++){
+			
+			float weight=links.get(indexObj).get(k);
+		
+			for (int i=-30;i<30;i++){
+				for (int j=-30;j<30;j++){
 					
-					selectMap.get(previousObj)[i2][j2]=minmax(selectMap.get(previousObj)[i2][j2]);
+					double d=Math.sqrt(i*i+j*j)/2;
+					boolean out=false;
+					
+					float newConfidence;
+				
+					int i2=previousChoice+i;
+					if (i2>=width || i2< 0) out=true;
+					int j2=previousInput+j;
+					if (j2>=height || j2< 0) out=true;
+				
+					// set new probability an confidence values
+					if (!out && d<=15){
+						if (d<=1){
+							newConfidence=(float) (confidenceMap.get(k)[i2][j2]+ weight);
+							selectMap.get(k)[i2][j2]=( selectMap.get(k)[i2][j2]*confidenceMap.get(k)[i2][j2]
+							                         + r*weight ) / newConfidence;
+						}
+						else{
+							newConfidence=(float) (confidenceMap.get(k)[i2][j2]+ weight/(float)d);
+							selectMap.get(k)[i2][j2]=( selectMap.get(k)[i2][j2]*confidenceMap.get(k)[i2][j2]
+							                         + r*weight/(float)d ) / newConfidence;
+						}
+						confidenceMap.get(k)[i2][j2]=newConfidence;			
+						selectMap.get(k)[i2][j2]=minmax(selectMap.get(k)[i2][j2]);
+					}
 				}
 			}
 		}

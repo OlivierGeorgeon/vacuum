@@ -85,11 +85,25 @@ public class Ernest100Model extends ErnestModel
 			m_actionList.get(0).addObject();
 			m_actionList.add(new Action("turnLeft",1 ,180,180,m_objMemory));
 			m_actionList.get(1).addObject();
-			m_actionList.get(1).addObject();
 			m_actionList.add(new Action("turnRight",1 ,180,180,m_objMemory));
 			m_actionList.get(2).addObject();
-			m_actionList.get(2).addObject();
 		}
+		else{
+			for (int i=0;i<m_actionList.size();i++){
+				for (int j=0;j<m_actionList.get(i).objMemory.objectList.size();j++){
+					System.out.print("link "+m_actionList.get(i).name
+							    +" "+m_actionList.get(i).objMemory.objectList.get(j).getRed()
+								+" "+m_actionList.get(i).objMemory.objectList.get(j).getGreen()
+								+" "+m_actionList.get(i).objMemory.objectList.get(j).getBlue());
+					m_actionList.get(i).links.get(j);
+					for (int k=0;k<m_actionList.get(i).links.get(j).size();k++){
+						System.out.print(" "+m_actionList.get(i).links.get(j).get(k) );
+					}
+					System.out.println();
+				}
+			}
+		}
+		
 		m_int=new InternalStatesFrame(m_actionList);
 		
 		eye=new EyeView(m_map);
@@ -1006,6 +1020,23 @@ public class Ernest100Model extends ErnestModel
 			frontColor=colorMap2[90];
 			
 			m_objMemory.addObject(frontColor);
+			
+			/////////////////////////////////////////////
+			if (frontColor.equals(new Color(0,128,  0)) ||
+				frontColor.equals(new Color(0,230, 92)) ||
+				frontColor.equals(new Color(0,230,161)) ){
+				
+					m_actionList.get(0).setLink(frontColor, 0, 1);
+					m_actionList.get(0).setLink(frontColor, 1, 0);
+			}
+			else{
+				m_actionList.get(0).setLink(frontColor, 0, 0);
+				m_actionList.get(0).setLink(frontColor, 1, 1);
+			}
+			m_actionList.get(1).setLink(frontColor, 0, 1);
+			m_actionList.get(2).setLink(frontColor, 0, 1);
+			/////////////////////////////////////////////
+			
 		}
 		
 		
@@ -1598,6 +1629,21 @@ public class Ernest100Model extends ErnestModel
 			}
 
 			
+			// object-matrix links
+			for (int i=0;i<m_actionList.size();i++){
+				for (int j=0;j<m_actionList.get(i).objMemory.objectList.size();j++){
+					file.print("link "+m_actionList.get(i).name
+							    +" "+m_actionList.get(i).objMemory.objectList.get(j).getRed()
+								+" "+m_actionList.get(i).objMemory.objectList.get(j).getGreen()
+								+" "+m_actionList.get(i).objMemory.objectList.get(j).getBlue());
+					for (int k=0;k<m_actionList.get(i).links.get(j).size();k++){
+						file.print(" "+m_actionList.get(i).links.get(j).get(k) );
+					}
+					file.println();
+				}
+			}
+			
+			
 			// primitive Schemas
 			int nb=m_ernest.get(0).getEpisodicMemory().m_schemas.size();
 			for (int i=0;i<nb;i++){
@@ -1717,6 +1763,27 @@ public class Ernest100Model extends ErnestModel
 			    			}
 			    		}
 			    		
+			    		// case link
+			    		else if (elements[0].equals("link")){
+			    			if (elements.length >= 5){
+			    				int index=-1;
+			    				for (int i=0;i<m_actionList.size();i++){
+			    					if (elements[1].equals(m_actionList.get(i).name)) index=i;
+			    				}
+			    				
+			    				if (index!=-1){
+			    					int nb=elements.length - 5;
+			    					for (int j=0;j<nb;j++){
+			    						if ( nb <= m_actionList.get(index).selectMap.size()){
+			    							m_actionList.get(index).setLink(new Color(Integer.parseInt(elements[2]) ,
+					 																  Integer.parseInt(elements[3]) ,
+					 																  Integer.parseInt(elements[4]) ),
+					 														j,Float.parseFloat(elements[j+5]));
+			    						}
+			    					}
+			    				}
+			    			}
+			    		}
 			    		
 			    		// schemas
 			    		else if (elements[0].equals("schema")){
