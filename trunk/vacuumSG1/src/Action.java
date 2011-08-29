@@ -16,11 +16,10 @@ public class Action {
 	
 	public int previousInput=0;
 	public int previousChoice=0;
-	public int previousObj=0;
 	public Color previousObjColor;
 	private int[] candidates;
 	
-	public float Icoef=(float) 0.5;  // initial coefficients of links
+	public float Icoef=(float) 0.2;  // initial coefficients of links
 	
 	public Action(String n,float s,int w,int h, ObjectMemory m){
 		
@@ -59,6 +58,7 @@ public class Action {
 			}
 		}
 		
+		// connect every object to the new matrix
 		int nb=links.size();
 		for (int i=0;i<nb;i++){
 			links.get(i).add(Icoef);
@@ -81,6 +81,7 @@ public class Action {
 		links.get(indexObj).set(indexMat, val);
 	}
 	
+	
 	public void setLink(Color rgb,int indexMat,float val){
 		// add new links if a new object was created
 		while (links.size() < objMemory.objectList.size()){
@@ -92,6 +93,7 @@ public class Action {
 		}
 		links.get(objMemory.objectList.indexOf(rgb)).set(indexMat, val);
 	}
+	
 	
 	// select a distance step value from the most probable ones
 	public float selectOutput(float input,Color rgb){
@@ -105,26 +107,24 @@ public class Action {
 			}
 		}
 		
-		int obj=objMemory.indexOfColor(rgb);
-		
-		//////////////////////////
-		if (!this.name.equals("forward") ||
-			rgb.equals(new Color(0,128,  0)) ||
-			rgb.equals(new Color(0,230, 92)) ||
-			rgb.equals(new Color(0,230,161)) ){
-			 obj=0;
+		int obj=objMemory.indexOfColor(rgb);		
+
+		// create new matrix if there is the object is not connected
+		// and connect this object with a weight of 1
+		if (!isConnected(rgb)){
+			this.addObject();
+			setLink(rgb,selectMap.size()-1,1);
 		}
-		else obj=1;
-		/////////////////////////
+		
+		
+
 		
 		int indexObj=obj;
 		int d=(int) Math.min(input, height-1);
 		
 		// save the actual input and object color
 		previousInput=d;
-		previousObj=obj;
 		previousObjColor=rgb;
-		
 		
 		// set weights on the selection vector
 		int count=0;
@@ -132,17 +132,16 @@ public class Action {
 			float weight=0;
 			candidates[i]=0;
 			for (int j=0;j<selectMap.size();j++){
-				candidates[i]+= (int)( (selectMap.get(j)[i][d]+100)*links.get(indexObj).get(j) );
-				weight+=links.get(indexObj).get(j);
+				candidates[i]+= (int)( (selectMap.get(j)[i][d]+100)*links.get(indexObj).get(j)*10 );
+				weight+=links.get(indexObj).get(j)*10;
 			}
 			candidates[i]=(int) ((float)candidates[i]/weight);
-			count+=candidates[i];
+			count+=((float)candidates[i]);
 			
 			//candidates[i]=(int) selectMap.get(indexObj)[i][d]+100;
 			//count+=selectMap.get(indexObj)[i][d]+100;
 		}
-		int rand=(int) (Math.random()*count);
-		
+		int rand=(int) (Math.random()*(count));
 		
 		// select a value
 		int i=0;
@@ -150,10 +149,9 @@ public class Action {
 			count-=candidates[i];
 			i++;
 		}
-		previousChoice= i;
-
+		previousChoice= i-1;
+		if (i<0) i=0;
 		return (float)i/scale;
-		
 	}
 	
 	
@@ -162,11 +160,18 @@ public class Action {
 	public void setResults(float reward){
 		
 		int indexObj=objMemory.indexOfColor(previousObjColor);
-		
 		float r=minmax(reward);
-
 		int nbMatrix=selectMap.size();
+		float error=0;					// error between given and real value
+		float oldConfidence=0;
+		
+		if (this.name.equals("forward"))
+		
 		for (int k=0;k<nbMatrix;k++){
+			
+			//System.out.println("test "+previousChoice+" "+previousInput);
+			error=Math.abs(selectMap.get(k)[previousChoice][previousInput]-r);
+			oldConfidence=confidenceMap.get(k)[previousChoice][previousInput];
 			
 			float weight=links.get(indexObj).get(k);
 		
@@ -184,24 +189,58 @@ public class Action {
 					if (j2>=height || j2< 0) out=true;
 				
 					// set new probability an confidence values
-					if (!out && d<=15){
+					if (!out && d<=15 && weight>0.5){
+						
 						if (d<=1){
-							newConfidence=(float) (confidenceMap.get(k)[i2][j2]+ weight);
+							
+							newConfidence=(float) (confidenceMap.get(k)[i2][j2]+ weight*weight);
 							selectMap.get(k)[i2][j2]=( selectMap.get(k)[i2][j2]*confidenceMap.get(k)[i2][j2]
-							                         + r*weight ) / newConfidence;
+							                         + r*weight*weight ) / newConfidence;
 						}
 						else{
-							newConfidence=(float) (confidenceMap.get(k)[i2][j2]+ weight/(float)d);
+							newConfidence=(float) (confidenceMap.get(k)[i2][j2]+ weight*weight/(float)d);
 							selectMap.get(k)[i2][j2]=( selectMap.get(k)[i2][j2]*confidenceMap.get(k)[i2][j2]
-							                         + r*weight/(float)d ) / newConfidence;
+							                         + r*weight*weight/(float)d ) / newConfidence;
 						}
 						confidenceMap.get(k)[i2][j2]=newConfidence;			
 						selectMap.get(k)[i2][j2]=minmax(selectMap.get(k)[i2][j2]);
 					}
 				}
 			}
+			
+			// correction of the weight of links
+			
+			// a is the "limit of acceptable error"
+			float a= 200/(oldConfidence+1);
+			
+			// b is the maximum modification
+			float b= (1-weight)*(oldConfidence*oldConfidence+1)/200;
+			
+			float modif = (error-a)*(-oldConfidence-1)/2;
+			modif= Math.min( b , Math.max(-b , modif));
+			
+			links.get(indexObj).set(k, Math.min(1, Math.max(0, links.get(indexObj).get(k)+modif) ) );
+			
+			if (this.name.equals("forward"))
+			System.out.print(" , "+links.get(indexObj).get(k));
+			
 		}
+		System.out.println();
 	}
+	
+	
+	
+	public boolean isConnected(Color rgb){
+		int index=objMemory.indexOfColor(rgb);
+		boolean connected=false;
+		if (index!=-1){
+			for (int i=0;i<selectMap.size();i++){
+				if (links.get(index).get(i) >0.1) connected=true;
+			}
+		}
+		return connected;
+	}
+	
 	
 	private float minmax(float a){
 		if      (a<-100) return -100;

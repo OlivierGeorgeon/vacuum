@@ -81,12 +81,12 @@ public class Ernest100Model extends ErnestModel
 		if (!load(m_actionList)){
 			m_actionList.clear();
 			m_actionList.add(new Action("forward",10,120,150,m_objMemory));
-			m_actionList.get(0).addObject();
-			m_actionList.get(0).addObject();
+			//m_actionList.get(0).addObject();
+			//m_actionList.get(0).addObject();
 			m_actionList.add(new Action("turnLeft",1 ,180,180,m_objMemory));
-			m_actionList.get(1).addObject();
+			//m_actionList.get(1).addObject();
 			m_actionList.add(new Action("turnRight",1 ,180,180,m_objMemory));
-			m_actionList.get(2).addObject();
+			//m_actionList.get(2).addObject();
 		}
 		else{
 			for (int i=0;i<m_actionList.size();i++){
@@ -529,7 +529,7 @@ public class Ernest100Model extends ErnestModel
 		
 		status3=isDirty(cell_x,cell_y);
 		
-		while (i<nbstep*step && (status1 || status2) && status4){
+		while (i<nbstep*step && (status1 && status2) && status4){
 			
 			cell_x=cell(m_x);
 			cell_y=cell(m_y);
@@ -1021,6 +1021,7 @@ public class Ernest100Model extends ErnestModel
 			
 			m_objMemory.addObject(frontColor);
 			
+			/*
 			/////////////////////////////////////////////
 			if (frontColor.equals(new Color(0,128,  0)) ||
 				frontColor.equals(new Color(0,230, 92)) ||
@@ -1036,7 +1037,7 @@ public class Ernest100Model extends ErnestModel
 			m_actionList.get(1).setLink(frontColor, 0, 1);
 			m_actionList.get(2).setLink(frontColor, 0, 1);
 			/////////////////////////////////////////////
-			
+			*/
 		}
 		
 		
@@ -1417,7 +1418,7 @@ public class Ernest100Model extends ErnestModel
 		
 		g2d.setStroke(new BasicStroke(2f));		
 		g2d.setColor(getBackgroundColor(cell(m_x), cell(m_y)));
-		if (isNight()) g2d.setColor(new Color(80,80,80)) ;
+		g2d.setColor(new Color(255,255,255)) ;
 		g2d.fill(sharkMask);
 
 		
