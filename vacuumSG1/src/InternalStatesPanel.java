@@ -37,13 +37,20 @@ public class InternalStatesPanel extends JPanel{
 		
 		////////////////////////////////////////////
 		// object 1
-		for (int i=0;i<w1;i++){
-			for (int j=0;j<h1;j++){
-				if (j==input1 || i==output1) g.setColor(Color.blue);
-				else           g.setColor(new Color(  (100-act1.selectMap.get(obj1)[i][j])/200 ,
-						                              (100+act1.selectMap.get(obj1)[i][j])/200 ,
-						                              (Math.min(10, act1.confidenceMap.get(obj1)[i][j]))/10));
-				g.fillRect(10+(int)(j*r1), 290-(int)(i*r1), (int)r1+1, (int)r1+1);
+		if (act1.selectMap.size()>obj1){
+			for (int i=0;i<w1;i++){
+				for (int j=0;j<h1;j++){
+					if (j==input1 || i==output1) g.setColor(Color.blue);
+					else           g.setColor(new Color(  (100-act1.selectMap.get(obj1)[i][j])/200 ,
+														  (100+act1.selectMap.get(obj1)[i][j])/200 ,
+						                                  (Math.min(10, act1.confidenceMap.get(obj1)[i][j]))/10));
+					g.fillRect(10+(int)(j*r1), 290-(int)(i*r1), (int)r1+1, (int)r1+1);
+				}
+			}
+			
+			for (int i=0;i<act1.links.size();i++){
+				g.setColor(act1.objMemory.objectList.get(i));
+				g.fillRect(370, i*20+10, (int)(act1.links.get(i).get(obj1)*200), 19);
 			}
 		}
 		
@@ -56,18 +63,24 @@ public class InternalStatesPanel extends JPanel{
 			g.drawLine(10,290-(int)(i*r1), 10+(int)(h1*r1), 290-(int)(i*r1));
 		}
 		
-		g.setColor(Color.blue);
-		if (act1.previousObj==obj1) g.drawRect(5,5,590,290);
+		//g.setColor(Color.blue);
+		//if (act1.previousObj==obj1) g.drawRect(5,5,590,290);
 		
 		///////////////////////////////////////////////
 		// object 2
-		for (int i=0;i<w2;i++){
-			for (int j=0;j<h2;j++){
-				if (j==input2 || i==output2) g.setColor(Color.blue);
-				else           g.setColor(new Color(  (100-act2.selectMap.get(obj2)[i][j])/200 ,
-						                              (100+act2.selectMap.get(obj2)[i][j])/200 ,
-						                              (Math.min(10, act1.confidenceMap.get(obj2)[i][j]))/10));
-				g.fillRect(10+(int)(j*r2), 590-(int)(i*r2), (int)r2+1, (int)r2+1);	
+		if (act2.selectMap.size()>obj2){
+			for (int i=0;i<w2;i++){
+				for (int j=0;j<h2;j++){
+					if (j==input2 || i==output2) g.setColor(Color.blue);
+					else           g.setColor(new Color(  (100-act2.selectMap.get(obj2)[i][j])/200 ,
+						                                  (100+act2.selectMap.get(obj2)[i][j])/200 ,
+						                                  (Math.min(10, act1.confidenceMap.get(obj2)[i][j]))/10));
+					g.fillRect(10+(int)(j*r2), 590-(int)(i*r2), (int)r2+1, (int)r2+1);	
+				}
+			}
+			for (int i=0;i<act1.links.size();i++){
+				g.setColor(act2.objMemory.objectList.get(i));
+				g.fillRect(370, i*20+310, (int)(act2.links.get(i).get(obj2)*200), 19);
 			}
 		}
 		g.setColor(Color.black);
@@ -78,8 +91,8 @@ public class InternalStatesPanel extends JPanel{
 			g.drawLine(10,590-(int)(i*r1), 10+(int)(h1*r1), 590-(int)(i*r1));
 		}
 		
-		g.setColor(Color.blue);
-		if (act2.previousObj==obj2) g.drawRect(5,305,590,290);
+		//g.setColor(Color.blue);
+		//if (act2.previousObj==obj2) g.drawRect(5,305,590,290);
 	}
 	
 	
@@ -110,8 +123,8 @@ public class InternalStatesPanel extends JPanel{
 				g.fillRect((int)(50+w1+(2*j*r1)-(i*r1))  ,  (int)(10+(i+50- act1.selectMap.get(obj1)[i][j]/2)*r1), (int)r1+2 , (int)((50+act1.selectMap.get(obj1)[i][j]/2)*r1)+2);
 			}
 		}
-		g.setColor(Color.blue);
-		if (act1.previousObj==obj1) g.drawRect(5,5,590,290);
+		//g.setColor(Color.blue);
+		//if (act1.previousObj==obj1) g.drawRect(5,5,590,290);
 		
 		
 		// object 2
@@ -125,8 +138,8 @@ public class InternalStatesPanel extends JPanel{
 				g.fillRect((int)(50+w2+(2*j*r2)-(i*r2))  ,  (int)(310+(i+50- act2.selectMap.get(obj2)[i][j]/2)*r2), (int)r2+2 , (int)((50+act2.selectMap.get(obj2)[i][j]/2)*r2)+2);
 			}
 		}
-		g.setColor(Color.blue);
-		if (act2.previousObj==obj2) g.drawRect(5,305,590,290);
+		//g.setColor(Color.blue);
+		//if (act2.previousObj==obj2) g.drawRect(5,305,590,290);
 	}
 	
 	

@@ -14,6 +14,7 @@ public class ObjectMemory {
 		value =new ArrayList<Float>();
 	}
 	
+	// add a new object
 	public void addObject(Color rgb){
 		int index = objectList.indexOf(rgb);
 		if (index==-1){
@@ -22,6 +23,7 @@ public class ObjectMemory {
 		}
 	}
 	
+	// add an object whose value is known
 	public void loadObject(Color rgb,float val){
 		int index = objectList.indexOf(rgb);
 		if (index==-1){
@@ -30,6 +32,8 @@ public class ObjectMemory {
 		}
 	}
 	
+	// set a value to an object.
+	// if the value was already determined, a weighted value is set
 	public void setValue(int index,float val){
 		if (value.get(index)==null) value.set(index, val);
 		else                        value.set(index,(value.get(index)+val*5)/6);
@@ -43,16 +47,10 @@ public class ObjectMemory {
 		}
 	}
 	
+	// return the index of the object of color rgb
 	public int indexOfColor(Color rgb){
 		return objectList.indexOf(rgb);
 	}
 	
-	/*
-	public void linkNewMatrix(int index){
-		for (int i=0;i<objectList.size();i++){
-			if (objectList.get(i).isConnected()) objectList.get(i).setLink(index, icoef);
-			else                                 objectList.get(i).setLink(index, 1); //object without matrix
-		}
-	}*/
 	
 }
