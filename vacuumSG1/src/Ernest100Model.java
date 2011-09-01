@@ -46,6 +46,10 @@ public class Ernest100Model extends ErnestModel
 	private long time1=System.currentTimeMillis();
 	private long time2=System.currentTimeMillis();
 	
+	public float m_v;                       // linear speed
+	public float m_theta;					// angular speed
+	public float m_If,m_Il,m_Ir;			// impulsion counters
+	
 	public EnvironnementFrame m_env;
 	public InternalStatesFrame m_int;
 	public InternalMap m_map;
@@ -81,14 +85,8 @@ public class Ernest100Model extends ErnestModel
 		if (!load(m_actionList)){
 			m_actionList.clear();
 			m_actionList.add(new Action("forward",10,120,150,m_objMemory));
-			//m_actionList.get(0).addObject();
-			//m_actionList.get(0).addObject();
 			m_actionList.add(new Action("turnLeft",1 ,180,180,m_objMemory));
-			//m_actionList.get(1).addObject();
-			//m_actionList.get(1).addObject();
 			m_actionList.add(new Action("turnRight",1 ,180,180,m_objMemory));
-			//m_actionList.get(2).addObject();
-			//m_actionList.get(2).addObject();
 		}
 		m_int=new InternalStatesFrame(m_actionList);
 		
@@ -1002,8 +1000,6 @@ public class Ernest100Model extends ErnestModel
 		
 		if (setdistance){ 
 			distance=(float) r2[90];
-			//if (colorMap2[90] == WALL_COLOR) objectType=0;
-			//else                             objectType=1;
 			frontColor=colorMap2[90];
 			
 			m_objMemory.addObject(frontColor);
