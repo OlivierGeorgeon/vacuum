@@ -18,7 +18,21 @@ public class ObjectMemory {
 		int index = objectList.indexOf(rgb);
 		if (index==-1){
 			objectList.add(rgb);
-			value.add(null);
+			//value.add(null);
+			
+			// compute value as weighted sum of color distances
+			float val=0;
+			float count=1;
+			for (int i=0;i<objectList.size()-1;i++){
+				double coef= 1 / ( Math.sqrt(  (rgb.getRed()  -objectList.get(i).getRed())  *(rgb.getRed()  -objectList.get(i).getRed())
+		                  				      +(rgb.getGreen()-objectList.get(i).getGreen())*(rgb.getGreen()-objectList.get(i).getGreen())
+		                 				      +(rgb.getBlue() -objectList.get(i).getBlue()) *(rgb.getRed()  -objectList.get(i).getBlue()) 
+		               					    )/10 +1);
+				val+= value.get(i)*coef;
+				count+=coef;
+				
+			}
+			value.add(val/count);
 		}
 	}
 	
@@ -32,14 +46,14 @@ public class ObjectMemory {
 	
 	public void setValue(int index,float val){
 		if (value.get(index)==null) value.set(index, val);
-		else                        value.set(index,(value.get(index)+val*5)/6);
+		else                        value.set(index,(value.get(index)*5+val)/6);
 	}
 	
 	public void setValue(Color rgb,float val){
 		int index=objectList.indexOf(rgb);
 		if (index!=-1){
 			if (value.get(index)==null) value.set(index, val);
-			else                        value.set(index,(value.get(index)+val*5)/6);
+			else                        value.set(index,(value.get(index)*5+val)/6);
 		}
 	}
 	
