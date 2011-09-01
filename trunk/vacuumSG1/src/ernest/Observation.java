@@ -158,7 +158,7 @@ public class Observation implements IObservation
 				if (dynamicFeature.equals("-"))
 					satisfaction = -100;
 				if (dynamicFeature.equals("+"))
-					satisfaction = 20;
+					satisfaction = 10;
 	
 				// Direction feature
 				

@@ -85,25 +85,11 @@ public class Ernest100Model extends ErnestModel
 			//m_actionList.get(0).addObject();
 			m_actionList.add(new Action("turnLeft",1 ,180,180,m_objMemory));
 			//m_actionList.get(1).addObject();
+			//m_actionList.get(1).addObject();
 			m_actionList.add(new Action("turnRight",1 ,180,180,m_objMemory));
 			//m_actionList.get(2).addObject();
+			//m_actionList.get(2).addObject();
 		}
-		else{
-			for (int i=0;i<m_actionList.size();i++){
-				for (int j=0;j<m_actionList.get(i).objMemory.objectList.size();j++){
-					System.out.print("link "+m_actionList.get(i).name
-							    +" "+m_actionList.get(i).objMemory.objectList.get(j).getRed()
-								+" "+m_actionList.get(i).objMemory.objectList.get(j).getGreen()
-								+" "+m_actionList.get(i).objMemory.objectList.get(j).getBlue());
-					m_actionList.get(i).links.get(j);
-					for (int k=0;k<m_actionList.get(i).links.get(j).size();k++){
-						System.out.print(" "+m_actionList.get(i).links.get(j).get(k) );
-					}
-					System.out.println();
-				}
-			}
-		}
-		
 		m_int=new InternalStatesFrame(m_actionList);
 		
 		eye=new EyeView(m_map);
@@ -139,14 +125,14 @@ public class Ernest100Model extends ErnestModel
 
 
 		// Ernest's inborn primitive interactions
-		m_sensorymotorSystem.addPrimitiveAct(">", true,    80); // Move
+		m_sensorymotorSystem.addPrimitiveAct(">", true,   100); // Move
 		m_sensorymotorSystem.addPrimitiveAct(">", false, -100); // Bump 
 		
-		m_sensorymotorSystem.addPrimitiveAct("^", true,   -10); // Left toward empty
-		m_sensorymotorSystem.addPrimitiveAct("^", false,  -20); // Left toward wall
+		m_sensorymotorSystem.addPrimitiveAct("^", true,   -30); // Left toward empty
+		m_sensorymotorSystem.addPrimitiveAct("^", false,  -50); // Left toward wall
 
-		m_sensorymotorSystem.addPrimitiveAct("v", true,   -10); // Right toward empty
-		m_sensorymotorSystem.addPrimitiveAct("v", false,  -20); // Right toward wall
+		m_sensorymotorSystem.addPrimitiveAct("v", true,   -30); // Right toward empty
+		m_sensorymotorSystem.addPrimitiveAct("v", false,  -50); // Right toward wall
 		
 		System.out.println("Ernest initialized") ;
 	}
@@ -354,8 +340,8 @@ public class Ernest100Model extends ErnestModel
 		{
 			setChanged();
 			notifyObservers2();	
-			rendu(false);
-			m_env.repaint();
+			//rendu(false);
+			//m_env.repaint();
 			//sleep((int)(30 * m_rotation_speed));
 		}
 		if ((adjacent_x >= 0) && (adjacent_x < m_w) && (adjacent_y >= 0) && (adjacent_y < m_h))
@@ -367,20 +353,20 @@ public class Ernest100Model extends ErnestModel
 		
 		rendu(true);
 		
-		
-		
-		
 		int reward=0;
+		
+		
+		//if (Math.abs(m_map.imax-90) > Math.abs(angle-90)) reward=-100 +Math.abs(m_map.imax-90)/2;
+		
+		//if (Math.abs(m_map.imax-90) < Math.abs(angle-90)) reward= 100- Math.abs(m_map.imax-90)*2;
+	
+		reward= 100- Math.abs(m_map.imax-90)*4;
+		
 		
 		// point lost
 		if (m_map.max+1<maxPoint) reward=-100;
 		// new point
 		if (m_map.max>maxPoint+1) reward= 100;
-		
-		
-		if (Math.abs(m_map.imax-90) > Math.abs(angle-90)) reward=-100 +Math.abs(m_map.imax-90)/2;
-		
-		if (Math.abs(m_map.imax-90) < Math.abs(angle-90)) reward= 100- Math.abs(m_map.imax-90)*2;
 		
 		m_actionList.get(1).setResults(reward);
 		
@@ -461,8 +447,8 @@ public class Ernest100Model extends ErnestModel
 		{
 			setChanged();
 			notifyObservers2();		
-			rendu(false);
-			m_env.repaint();
+			//rendu(false);
+			//m_env.repaint();
 			//sleep((int)(10 * m_rotation_speed));
 		}
 		if ((adjacent_x >= 0) && (adjacent_x < m_w) && (adjacent_y >= 0) && (adjacent_y < m_h))
@@ -476,15 +462,16 @@ public class Ernest100Model extends ErnestModel
 		
 		int reward=0;
 		
+		//if (Math.abs(m_map.imax-90) < Math.abs(angle-90)) reward=-100+Math.abs(m_map.imax-90)/2;
+		
+		//if (Math.abs(m_map.imax-90) > Math.abs(angle-90)) reward= 100- Math.abs(m_map.imax-90)*2;
+		
+		reward= 100- Math.abs(m_map.imax-90)*4;
+		
 		// point lost
 		if (m_map.max+1<maxPoint) reward=-100;
 		// new point
 		if (m_map.max>maxPoint+1) reward= 100;
-		
-		
-		if (Math.abs(m_map.imax-90) > Math.abs(angle-90)) reward=-100+Math.abs(m_map.imax-90)/2;
-		
-		if (Math.abs(m_map.imax-90) < Math.abs(angle-90)) reward= 100- Math.abs(m_map.imax-90)*2;
 		
 		m_actionList.get(2).setResults(reward);
 		
@@ -626,10 +613,10 @@ public class Ernest100Model extends ErnestModel
 			
 			i++;
 			
-			rendu(false);
-			m_env.repaint();
-			m_int.repaint();
-			sleep((int)(10));
+			//rendu(false);
+			//m_env.repaint();
+			//m_int.repaint();
+			//sleep((int)(10));
 		}
 		
 		
@@ -1020,24 +1007,6 @@ public class Ernest100Model extends ErnestModel
 			frontColor=colorMap2[90];
 			
 			m_objMemory.addObject(frontColor);
-			
-			/*
-			/////////////////////////////////////////////
-			if (frontColor.equals(new Color(0,128,  0)) ||
-				frontColor.equals(new Color(0,230, 92)) ||
-				frontColor.equals(new Color(0,230,161)) ){
-				
-					m_actionList.get(0).setLink(frontColor, 0, 1);
-					m_actionList.get(0).setLink(frontColor, 1, 0);
-			}
-			else{
-				m_actionList.get(0).setLink(frontColor, 0, 0);
-				m_actionList.get(0).setLink(frontColor, 1, 1);
-			}
-			m_actionList.get(1).setLink(frontColor, 0, 1);
-			m_actionList.get(2).setLink(frontColor, 0, 1);
-			/////////////////////////////////////////////
-			*/
 		}
 		
 		
@@ -1598,8 +1567,8 @@ public class Ernest100Model extends ErnestModel
 			// actions matrix
 			for (int act=0;act<m_actionList.size();act++){
 				// new action, set name and size
-				int o_width =m_actionList.get(act).width;
-				int o_height=m_actionList.get(act).height;
+				int o_width =m_actionList.get(act).width/5;
+				int o_height=m_actionList.get(act).height/5;
 				file.println("Action "+m_actionList.get(act).name+" "+o_width+" "+o_height);
 				
 				// for each object of the action, set number and matrix
@@ -1629,21 +1598,6 @@ public class Ernest100Model extends ErnestModel
 									   m_objMemory.value.get(i));
 			}
 
-			
-			// object-matrix links
-			for (int i=0;i<m_actionList.size();i++){
-				for (int j=0;j<m_actionList.get(i).objMemory.objectList.size();j++){
-					file.print("link "+m_actionList.get(i).name
-							    +" "+m_actionList.get(i).objMemory.objectList.get(j).getRed()
-								+" "+m_actionList.get(i).objMemory.objectList.get(j).getGreen()
-								+" "+m_actionList.get(i).objMemory.objectList.get(j).getBlue());
-					for (int k=0;k<m_actionList.get(i).links.get(j).size();k++){
-						file.print(" "+m_actionList.get(i).links.get(j).get(k) );
-					}
-					file.println();
-				}
-			}
-			
 			
 			// primitive Schemas
 			int nb=m_ernest.get(0).getEpisodicMemory().m_schemas.size();
@@ -1687,7 +1641,7 @@ public class Ernest100Model extends ErnestModel
 			
 			String[] elements;
 			
-			while (scanner.hasNextLine() && succes) {;
+			while (scanner.hasNextLine() && succes) {
 			    String line = scanner.nextLine();
 			    
 			    if (nbLine==0) System.out.println(line);
@@ -1700,7 +1654,7 @@ public class Ernest100Model extends ErnestModel
 			    		// case new Action
 			    		if (elements[0].equals("Action")){
 			    			if (elements.length == 4){
-			    				actList.add(new Action(elements[1],10,Integer.parseInt(elements[2]),Integer.parseInt(elements[3]),m_objMemory));
+			    				actList.add(new Action(elements[1],10,Integer.parseInt(elements[2])*5,Integer.parseInt(elements[3])*5,m_objMemory));
 			    				nbAct++;
 			    				nbObj=0;
 			    				indexObj=0;
@@ -1757,34 +1711,21 @@ public class Ernest100Model extends ErnestModel
 		    							 								Integer.parseInt(elements[3]) ));
 
 			    				
-			    				/*m_map.addObj(new Color(Integer.parseInt(elements[1]) ,
-			    						               Integer.parseInt(elements[2]) ,
-			    						               Integer.parseInt(elements[3])),
-			    						     Float.parseFloat(elements[4]) );*/
+			    				
+			    				for (int j=0;j<actList.size();j++){
+			    					actList.get(j).distances.add(new ArrayList<Float>());
+			    					for(int k=0;k<m_objMemory.objectList.size();k++){
+			    						actList.get(j).distances.get(actList.get(j).distances.size()-1).add((float) -1);
+			    					}
+			    					for (int k=0;k<m_objMemory.objectList.size()-1;k++){
+			    						actList.get(j).distances.get(k).add((float) -1);
+			    					}
+					    			
+			    				}
 			    			}
+			    			
 			    		}
 			    		
-			    		// case link
-			    		else if (elements[0].equals("link")){
-			    			if (elements.length >= 5){
-			    				int index=-1;
-			    				for (int i=0;i<m_actionList.size();i++){
-			    					if (elements[1].equals(m_actionList.get(i).name)) index=i;
-			    				}
-			    				
-			    				if (index!=-1){
-			    					int nb=elements.length - 5;
-			    					for (int j=0;j<nb;j++){
-			    						if ( nb <= m_actionList.get(index).selectMap.size()){
-			    							m_actionList.get(index).setLink(new Color(Integer.parseInt(elements[2]) ,
-					 																  Integer.parseInt(elements[3]) ,
-					 																  Integer.parseInt(elements[4]) ),
-					 														j,Float.parseFloat(elements[j+5]));
-			    						}
-			    					}
-			    				}
-			    			}
-			    		}
 			    		
 			    		// schemas
 			    		else if (elements[0].equals("schema")){
@@ -1805,8 +1746,7 @@ public class Ernest100Model extends ErnestModel
 			    				if (matrixType==2) actList.get(nbAct-1).confidenceMap.get(indexObj)[indexLine][j]=Float.parseFloat(elements[j]);   					
 			    			}
 			   				indexLine++;
-			    			}
-
+			    			};
 			    		}
 			    		
 		
@@ -1822,6 +1762,20 @@ public class Ernest100Model extends ErnestModel
 		}
 
 		if (nbLine<3) succes=false;
+		
+		for (int k=0;k<actList.size();k++){
+			for (int i=0;i<m_objMemory.objectList.size();i++){
+				for (int j=0;j<m_objMemory.objectList.size();j++){
+					
+					if (i==j) actList.get(k).distances.get(i).set(j, (float) 0);
+					else      actList.get(k).distances.get(i).set(j, actList.get(k).distance(m_objMemory,
+																							 m_objMemory.objectList.get(i),
+																							 m_objMemory.objectList.get(j)));
+					
+				}
+			}
+		}
+		
 		
 		return succes;
 	}

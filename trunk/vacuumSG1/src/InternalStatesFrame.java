@@ -14,7 +14,7 @@ public class InternalStatesFrame extends JFrame{
 	
 	public InternalStatesFrame(ArrayList<Action> actList){
 		this.setTitle("Internal state");
-    	this.setSize(610, 620);
+    	this.setSize(1200, 620);
     	this.setLocationRelativeTo(null);               
     	this.setVisible(true);
     	
