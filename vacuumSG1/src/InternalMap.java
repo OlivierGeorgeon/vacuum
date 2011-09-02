@@ -42,22 +42,24 @@ public class InternalMap {
 		float[] attract2=new float[180];
 		int index=-1;
 		
+		
 		for (int i=0;i<180;i++){
 			//index=objList.indexOf(c[i]);
 			index=objMemory.objectList.indexOf(c[i]);
 			
-			if (index==-1 || objMemory.value.get(index)==null) tempMap[i]=0;
-			else                                               tempMap[i]=(float) (objMemory.value.get(index)/ Math.max(1,d[i]));
+			if (index==-1 || objMemory.value.size()<=index || objMemory.value.get(index)==null) tempMap[i]=0;
+			else                                              {
+				tempMap[i]=(float) (objMemory.value.get(index)/ Math.max(1,d[i]));
+			}
 		}
-		
 		attract1[0]  =tempMap[0];
 		attract2[179]=tempMap[179];
+
 		
 		for (int i=1;i<179;i++){
 			attract1[i]= attract1[i-1] + (tempMap[i]-attract1[i-1])/10;
 			attract2[179-i]= attract2[180-i] + (tempMap[179-i]-attract2[180-i])/10;
-		}
-		
+		}	
 		
 		max=Math.min(attract1[90],attract2[90]);;
 		imax=90;
