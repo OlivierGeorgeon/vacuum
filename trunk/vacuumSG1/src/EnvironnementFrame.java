@@ -1,16 +1,19 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -37,6 +40,8 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
 	private static final long serialVersionUID = 1L;
 
 	public Environnement m_env;
+	
+	public int indexImage;
 	
 	/////////////////////////////////////////////////
 	private final JMenu m_file 		= new JMenu("File");
@@ -133,6 +138,8 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
 		statusPanel.add(buttonPanel, BorderLayout.EAST);
 		statusPanel.setBorder(BorderFactory.createRaisedBevelBorder());
 		getContentPane().add(statusPanel, BorderLayout.SOUTH);
+		
+		indexImage=0;
     }
     
 	/**
@@ -622,6 +629,27 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
 		getContentPane().validate();
 		repaint();
 		m_env.repaint();
+	}
+	
+	
+	public void saveImage(){
+		
+		String path="/home/simon/Bureau/Ernest/";
+		
+		if (indexImage<10) path+="000"+indexImage+".jpg";
+		else if (indexImage<100) path+="00"+indexImage+".jpg";
+		else                     path+="0" +indexImage+".jpg";
+		
+		 BufferedImage image = new BufferedImage(this.getWidth(),
+                this.getHeight(),
+                BufferedImage.TYPE_INT_RGB);
+		 		Graphics2D g2 = image.createGraphics();
+		 		this.paint(g2);
+		 		g2.dispose();
+		 		try {
+		 			ImageIO.write(image, "JPEG", new File(path));
+		 		} catch (Exception e) { }
+		 		indexImage++;
 	}
 
 }
