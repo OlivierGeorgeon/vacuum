@@ -57,6 +57,7 @@ public class Ernest100Model extends ErnestModel
 	
 	public ArrayList<Action> m_actionList;
 	public float distance=0;
+	public float angle=0;
 	//public int objectType=0;
 	
 	private EyeView eye;
@@ -65,6 +66,7 @@ public class Ernest100Model extends ErnestModel
 	
 	
 	public boolean tempo=true;
+	public boolean continuum=true;
 	
 	/**
 	 * Initialize the agent in the grid
@@ -123,12 +125,20 @@ public class Ernest100Model extends ErnestModel
 		m_sensorymotorSystem.addPrimitiveAct(">", true,   100); // Move
 		m_sensorymotorSystem.addPrimitiveAct(">", false, -100); // Bump 
 		
-		m_sensorymotorSystem.addPrimitiveAct("^", true,   -30); // Left toward empty
-		m_sensorymotorSystem.addPrimitiveAct("^", false,  -50); // Left toward wall
+		if (continuum){
+			m_sensorymotorSystem.addPrimitiveAct("^", true,   -30); // Left toward empty
+			m_sensorymotorSystem.addPrimitiveAct("^", false,  -50); // Left toward wall
 
-		m_sensorymotorSystem.addPrimitiveAct("v", true,   -30); // Right toward empty
-		m_sensorymotorSystem.addPrimitiveAct("v", false,  -50); // Right toward wall
-		
+			m_sensorymotorSystem.addPrimitiveAct("v", true,   -30); // Right toward empty
+			m_sensorymotorSystem.addPrimitiveAct("v", false,  -50); // Right toward wall
+		}
+		else{
+			m_sensorymotorSystem.addPrimitiveAct("^", true,   -10); // Left toward empty
+			m_sensorymotorSystem.addPrimitiveAct("^", false,  -20); // Left toward wall
+
+			m_sensorymotorSystem.addPrimitiveAct("v", true,   -10); // Right toward empty
+			m_sensorymotorSystem.addPrimitiveAct("v", false,  -20); // Right toward wall
+		}
 		System.out.println("Ernest initialized") ;
 	}
 
@@ -268,11 +278,16 @@ public class Ernest100Model extends ErnestModel
 	 */
 	protected boolean turnLeft(){
 		m_eyeOrientation = 0;
-		rendu(true);
-		int angle=m_map.imax;
-		float orientation=(m_actionList.get(1)).selectOutput(angle,frontColor)+1;
-		m_Ir=-orientation;
-		
+		if (continuum){
+			rendu(true);
+			angle=m_map.imax;
+			float orientation=(m_actionList.get(1)).selectOutput(angle,frontColor)+1;
+			m_Ir=-orientation;
+		}
+		else{
+			float rand= (float) (Math.random()*20-10);
+			m_Ir=-45+rand;
+		}
 		return impulse(1);
 	}
 	
@@ -282,11 +297,17 @@ public class Ernest100Model extends ErnestModel
 	 */
 	protected boolean turnRight(){
 		m_eyeOrientation = 0;
-		rendu(true);
-		int angle=m_map.imax;
-		float orientation=(m_actionList.get(2)).selectOutput(angle,frontColor)+1;
-		m_Ir=+orientation;
 		
+		if (continuum){
+			rendu(true);
+			angle=m_map.imax;
+			float orientation=(m_actionList.get(2)).selectOutput(angle,frontColor)+1;
+			m_Ir=+orientation;
+		}
+		else{
+			float rand= (float) (Math.random()*20-10);
+			m_Ir=45+rand;
+		}
 		return impulse(2);
 	}
 	
@@ -304,9 +325,14 @@ public class Ernest100Model extends ErnestModel
 	 */
 	protected boolean forward(){
 		
-		rendu(true);
-		m_If=(float) ((m_actionList.get(0)).selectOutput(distance,frontColor)+0.1);
-		
+		if (continuum){
+			rendu(true);
+			m_If=(float) ((m_actionList.get(0)).selectOutput(distance,frontColor)+0.1);
+		}
+		else{
+			float rand= (float) (Math.random()-0.5);
+			m_If=1+rand;
+		}
 		return impulse(0);
 	}
 
@@ -333,22 +359,38 @@ public class Ernest100Model extends ErnestModel
 		boolean status5=true;         // touch a corner
 		
 		float dist=0;
+		float a=0;
+		float previousDistance=distance;
 		
+		int i=10;
+		int j=5;
 		
-		step= m_v/100;
+		float vlmin;
+		float vrmin;
+		
+		if (continuum) {
+			vlmin=(float) 0.1;
+			vrmin=(float) 0.1;
+		}
+		else{
+			vlmin=0;
+			vrmin=0;
+		}
+		
 		
 		status3=isDirty(cell_x,cell_y);
 		
-		System.out.println(m_Ir);
-		
-		while  ( ((m_v>0.1 || m_If>0) && statusL) ||  (Math.abs(m_theta)>0.1  || m_Ir!=0) ){
+		while  ( ((m_v>vlmin || m_If>0) && statusL) ||  (Math.abs(m_theta)>vrmin  || m_Ir!=0) ){
 			
 			// set linear impulsion
 			if (m_If>0){
 				m_v=m_If;
 				m_If=0;
 			}
-			else m_v-= 0.01*m_v;
+			else 
+				if (continuum) m_v-= 0.01*m_v;
+				else if (i>0) i--;
+				     else m_v=0;
 			
 			if (m_v<=0.1) m_v=0;
 			
@@ -357,18 +399,23 @@ public class Ernest100Model extends ErnestModel
 				m_theta=m_Ir;
 				m_Ir=0;
 			}
-			else m_theta-= 0.5*m_theta;
+			else 
+				if (continuum) m_theta-= 0.1*m_theta;
+				else if (j>0) j--;
+				     else m_theta-=m_theta/10;
 			
 			if (Math.abs(m_theta)<=0.1) m_theta=0;
 			
 	// compute new position
 			
 			// for linear movements
-			double dx= step*Math.sin(m_orientationAngle);
-			double dy=-step*Math.cos(m_orientationAngle);
 			double d;
 			if (statusL){
-				step=m_v/100;
+				if (continuum) step=m_v/70;
+				else           step=m_v/10;
+				
+				double dx= step*Math.sin(m_orientationAngle);
+				double dy=-step*Math.cos(m_orientationAngle);
 				cell_x=cell(m_x);
 				cell_y=cell(m_y);
 				dist+=step;
@@ -377,7 +424,11 @@ public class Ernest100Model extends ErnestModel
 			}
 			
 			// for angular movements
-			m_orientation+=m_theta/20;
+			if (continuum){
+				m_orientation+=m_theta/10;
+				a+=m_theta/10;
+			}
+			else m_orientation+=m_theta/9;
 			if (m_orientation < 0)   m_orientation +=360;
 			if (m_orientation >=360) m_orientation -=360;
 			m_orientationAngle =  m_orientation * Math.PI/2 / ORIENTATION_RIGHT;
@@ -462,12 +513,11 @@ public class Ernest100Model extends ErnestModel
 				rendu(false);
 				m_env.repaint();
 				m_int.repaint();
-				sleep((int)(10));
+				sleep((int)(1));
 			}
 			statusL=status1 && status2 && status4;
 		}
 		
-		if (statusL) m_v=0;
 		
 	// compute state for angular movement
 		int adjacent_x = cell(m_x);
@@ -535,32 +585,44 @@ public class Ernest100Model extends ErnestModel
 			}
 			else{
 				if (!status4){
-					reward=(int) (100- Math.max(0, m_v-1)*50);
+					reward=(int) (100- (Math.max(0, m_v*m_v-0.1)*10000) );
 				}
 				else{
-					reward= (int) (100- (distance-dist*10)*(distance-dist*10))/3;
+					reward= (int) (100 - (distance*distance*20));
 				}		
 			}
-			m_actionList.get(0).setResults(reward);
+			if (continuum) m_actionList.get(0).setResults(reward);
 		}
 	// define reward for angular movement
 		else{
-			reward= 100- Math.abs(m_map.imax-90)*2;
-			//System.out.println("========================================"+m_map.imax);
+			//reward= 100- Math.abs(m_map.imax-90)*2;
+			reward=(int) (100 - Math.abs( -(angle-90) + a )*4);
 			// point lost
-			//if (m_map.max+1<maxPoint) reward=-100;
+			if (m_map.max+1<maxPoint) reward=-100;
 			// new point
-			//if (m_map.max>maxPoint+1) reward= 100;
-			if (act==1) m_actionList.get(1).setResults(reward);
-			if (act==2) m_actionList.get(2).setResults(reward);
+			if (m_map.max>maxPoint+1) reward= 100;
+			
+			if (continuum){
+				if (act==1){
+					m_actionList.get(1).setResults(reward);
+				}
+				if (act==2){
+					m_actionList.get(2).setResults(reward);
+				}
+			}
 		}
 		
 		//sleep((int)(70));
 		//m_int.saveImage();
 		
+		//sleep((int)(10));
+		//m_env.saveImage();
+		
 		if (!status4){
 			if (frontColor.equals(new Color(150, 128, 255))) m_objMemory.setValue(frontColor, 100);
 			else                                             m_objMemory.setValue(frontColor,  20);
+			
+			m_v=0;
 		}
 		else if (!status1 || !status2) m_objMemory.setValue(frontColor,-100);
 		

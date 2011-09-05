@@ -120,8 +120,8 @@ public class Action {
 				float x = x1*(1- (d-(int)(d/sampling)*sampling)/sampling) 
 						+ x2*(((int)(d/sampling+1)*sampling-d)/sampling);
 				
-				candidates[i]=(int) x;
-				count+=(int)x;
+				candidates[i]=(int) x+1;
+				count+=(int)x+1;
 				
 			}
 			
@@ -148,7 +148,7 @@ public class Action {
 		float r=minmax(reward);
 		
 		for (int k=0;k<selectMap.size();k++){
-			
+		
 			double d2;
 			if (k!=previousObj){
 				d2=distances.get(previousObj).get(k)*5;
