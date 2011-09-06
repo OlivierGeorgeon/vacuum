@@ -26,14 +26,13 @@ public class ObjectMemory {
 			for (int i=0;i<objectList.size()-1;i++){
 				double coef= 1 / ( Math.sqrt(  (rgb.getRed()  -objectList.get(i).getRed())  *(rgb.getRed()  -objectList.get(i).getRed())
 		                  				      +(rgb.getGreen()-objectList.get(i).getGreen())*(rgb.getGreen()-objectList.get(i).getGreen())
-		                 				      +(rgb.getBlue() -objectList.get(i).getBlue()) *(rgb.getRed()  -objectList.get(i).getBlue()) 
+		                 				      +(rgb.getBlue() -objectList.get(i).getBlue()) *(rgb.getBlue()  -objectList.get(i).getBlue()) 
 		               					    )/10 +1);
 				val+= value.get(i)*coef;
 				count+=coef;
-				
 			}
 			value.add(val/count);
-		}
+			}
 	}
 	
 	public void loadObject(Color rgb,float val){
@@ -55,6 +54,7 @@ public class ObjectMemory {
 			if (value.get(index)==null) value.set(index, val);
 			else                        value.set(index,(value.get(index)*5+val)/6);
 		}
+		
 	}
 	
 	public int indexOfColor(Color rgb){

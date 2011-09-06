@@ -126,11 +126,11 @@ public class Ernest100Model extends ErnestModel
 		m_sensorymotorSystem.addPrimitiveAct(">", false, -100); // Bump 
 		
 		if (continuum){
-			m_sensorymotorSystem.addPrimitiveAct("^", true,   -30); // Left toward empty
-			m_sensorymotorSystem.addPrimitiveAct("^", false,  -50); // Left toward wall
+			m_sensorymotorSystem.addPrimitiveAct("^", true,   -50); // Left toward empty
+			m_sensorymotorSystem.addPrimitiveAct("^", false,  -70); // Left toward wall
 
-			m_sensorymotorSystem.addPrimitiveAct("v", true,   -30); // Right toward empty
-			m_sensorymotorSystem.addPrimitiveAct("v", false,  -50); // Right toward wall
+			m_sensorymotorSystem.addPrimitiveAct("v", true,   -50); // Right toward empty
+			m_sensorymotorSystem.addPrimitiveAct("v", false,  -70); // Right toward wall
 		}
 		else{
 			m_sensorymotorSystem.addPrimitiveAct("^", true,   -10); // Left toward empty
@@ -361,6 +361,7 @@ public class Ernest100Model extends ErnestModel
 		float dist=0;
 		float a=0;
 		float previousDistance=distance;
+		Color previousColor=frontColor;
 		
 		int i=10;
 		int j=5;
@@ -404,14 +405,14 @@ public class Ernest100Model extends ErnestModel
 				else if (j>0) j--;
 				     else m_theta-=m_theta/10;
 			
-			if (Math.abs(m_theta)<=0.1) m_theta=0;
+			//if (Math.abs(m_theta)<=0.1) m_theta=0;
 			
 	// compute new position
 			
 			// for linear movements
 			double d;
 			if (statusL){
-				if (continuum) step=m_v/70;
+				if (continuum) step=m_v/90;
 				else           step=m_v/10;
 				
 				double dx= step*Math.sin(m_orientationAngle);
@@ -577,18 +578,18 @@ public class Ernest100Model extends ErnestModel
 		
 		if (act==0){
 		// define the "reward" for wall objects
-			if (frontColor.equals(new Color(0,128,  0)) ||
-					frontColor.equals(new Color(0,230, 92)) ||
-					frontColor.equals(new Color(0,230,161)) ){
+			if (previousColor.equals(new Color(0,128,  0)) ||
+					previousColor.equals(new Color(0,230, 92)) ||
+					previousColor.equals(new Color(0,230,161)) ){
 				if (!status1 || !status2 || !status5) reward=-100;
 				else                      reward= 100;
 			}
 			else{
 				if (!status4){
-					reward=(int) (100- (Math.max(0, m_v*m_v-0.1)*10000) );
+					reward=(int) (100- (Math.max(0, m_v*m_v-0.1)*2) );
 				}
 				else{
-					reward= (int) (100 - (distance*distance*20));
+					reward= (int) (100 - (distance*distance*2));
 				}		
 			}
 			if (continuum) m_actionList.get(0).setResults(reward);
@@ -619,12 +620,15 @@ public class Ernest100Model extends ErnestModel
 		//m_env.saveImage();
 		
 		if (!status4){
-			if (frontColor.equals(new Color(150, 128, 255))) m_objMemory.setValue(frontColor, 100);
-			else                                             m_objMemory.setValue(frontColor,  20);
+			if (previousColor.equals(new Color(150, 128, 255))) m_objMemory.setValue(previousColor, 100);
+			else                                                m_objMemory.setValue(previousColor,  20);
 			
 			m_v=0;
 		}
-		else if (!status1 || !status2) m_objMemory.setValue(frontColor,-100);
+		else if (!status1 || !status2){
+			m_objMemory.setValue(frontColor,-100);
+			m_v=0;
+		}
 		
 		rendu(true);
 		

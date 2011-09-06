@@ -47,10 +47,14 @@ public class InternalMap {
 			//index=objList.indexOf(c[i]);
 			index=objMemory.objectList.indexOf(c[i]);
 			
-			if (index==-1 || objMemory.value.size()<=index || objMemory.value.get(index)==null) tempMap[i]=0;
-			else                                              {
+			
+			if (index==-1 || objMemory.value.size()<=index || objMemory.value.get(index)==null){
+				tempMap[i]=0;
+			}
+			else{
 				tempMap[i]=(float) (objMemory.value.get(index)/ Math.max(1,d[i]));
 			}
+			
 		}
 		attract1[0]  =tempMap[0];
 		attract2[179]=tempMap[179];
