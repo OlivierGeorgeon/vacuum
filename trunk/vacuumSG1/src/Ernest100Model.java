@@ -49,11 +49,14 @@ public class Ernest100Model extends ErnestModel
 	public float m_v;                       // linear speed
 	public float m_theta;					// angular speed
 	public float m_If,m_Ir;   				// impulsion counters
+	public int lastAction;
 	
 	public EnvironnementFrame m_env;
 	public InternalStatesFrame m_int;
 	public InternalMap m_map;
 	public ObjectMemory m_objMemory;
+	//public PatternMap m_patternMap;
+	//public PatternMappingFrame m_patternFrame;
 	
 	public ArrayList<Action> m_actionList;
 	public float distance=0;
@@ -64,8 +67,10 @@ public class Ernest100Model extends ErnestModel
 	
 	public Color frontColor;
 	
+	public float[] m_tactilePressure;
+	public float[] m_tactileObject;
 	
-	public boolean tempo=true;
+	public boolean tempo=false;
 	public boolean continuum=true;
 	
 	/**
@@ -83,6 +88,9 @@ public class Ernest100Model extends ErnestModel
 		
 		m_actionList=new ArrayList<Action>();
 
+		m_tactilePressure=new float[32];
+		m_tactileObject=new float[32];
+		
 		m_objMemory=new ObjectMemory();
 		m_map=new InternalMap(m_objMemory);
 		
@@ -93,6 +101,9 @@ public class Ernest100Model extends ErnestModel
 			m_actionList.add(new Action("turnRight",1 ,180,180,m_objMemory));
 		}
 		m_int=new InternalStatesFrame(m_actionList);
+		
+		//m_patternMap=new PatternMap();
+		//m_patternFrame=new PatternMappingFrame(m_patternMap);
 		
 		eye=new EyeView(m_map);
 		
@@ -288,6 +299,8 @@ public class Ernest100Model extends ErnestModel
 			float rand= (float) (Math.random()*20-10);
 			m_Ir=-45+rand;
 		}
+		
+		lastAction=1;
 		return impulse(1);
 	}
 	
@@ -308,6 +321,8 @@ public class Ernest100Model extends ErnestModel
 			float rand= (float) (Math.random()*20-10);
 			m_Ir=45+rand;
 		}
+		
+		lastAction=2;
 		return impulse(2);
 	}
 	
@@ -333,6 +348,8 @@ public class Ernest100Model extends ErnestModel
 			float rand= (float) (Math.random()-0.5);
 			m_If=1+rand;
 		}
+		
+		lastAction=0;
 		return impulse(0);
 	}
 
@@ -637,6 +654,13 @@ public class Ernest100Model extends ErnestModel
 	}
 	
 	
+	
+	////////////////////////////////////////////
+	//
+	////////////////////////////////////////////
+	public void touchEnvironment(){
+		
+	}
 	
 	//******************************************
 	////////////////////////////////////////////
@@ -983,6 +1007,10 @@ public class Ernest100Model extends ErnestModel
 			frontColor=colorMap2[90];
 			m_objMemory.addObject(frontColor);
 		}
+		
+		//m_patternMap.addPatern(colorMap2,lastAction);
+		//m_patternFrame.update((int)(m_x*10),(int)(m_y*10),m_orientation);
+		//m_patternFrame.paint();
 		
 		m_int.repaint();
 		eye.repaint();
