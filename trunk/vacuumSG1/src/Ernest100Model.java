@@ -111,6 +111,14 @@ public class Ernest100Model extends ErnestModel
 	}
 
 	/**
+	 * @return The version of Ernest
+	 */
+	public String getVersion()
+	{
+		return "Ernest 10.3";
+	}
+	
+	/**
 	 * Initialize the Ernest agent.
 	 */
 	public void initErnest()

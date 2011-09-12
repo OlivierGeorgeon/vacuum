@@ -344,16 +344,6 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
 		{
 			System.exit(0);
 		}
-	    else if (e.getSource() == m_openHumanAgent) 
-	    {
-	    	int type = Model.HUMANLOGFILE;
-
-	    	m_env.m_model.setLogFile(logFile, type);
-	    	m_env.m_model.setLogShortFile(new File(logFile).getName());
-
-	    	m_env.m_model.setInHumanView(true);
-	    	m_env.m_model.setAgentShortFile("Human_Interface");
-		}
 	    else if (e.getSource() == m_setLogFile) 
 	    {
 	    	m_fileFilter.set(".txt", "Log File (.txt)");
@@ -411,76 +401,6 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
 	    			e1.printStackTrace();
 	    		}
 	    	}
-		}
-	    // Sets the agent's picture
-	    else if (e.getSource() == m_setPicture) 
-	    {
-			// m_fileFilter.set(".GIF", "Pictures gif");
-			m_pictureChooser.setVisible(true);
-			int returnVal = m_pictureChooser.showOpenDialog(this);
-			if(returnVal == JFileChooser.APPROVE_OPTION) 
-			{
-				try
-				{
-					File boardFile = m_pictureChooser.getSelectedFile();
-					m_env.m_model.setPictureFileName(boardFile.getAbsolutePath());
-
-				}
-				catch (Exception ex)
-				{
-				JOptionPane.showMessageDialog(this, 
-					"Invalid picture file!\n" + 
-					ex.getClass().toString() + ": " + ex.getMessage(),
-					"Error!", 
-					JOptionPane.ERROR_MESSAGE);
-				}
-			}	
-	    }
-	    else if (e.getSource() == m_openJessAgent || 
-				 e.getSource() == m_openSoarAgent)
-		{
-	    	
-	    	System.out.println("test1");
-			int type = Model.SOARFILE; 
-	    	
-			// Sets the log file if any Olivier
-			//m_env.m_model.setLogFile(logFile);
-	    	//m_env.m_model.setLogShortFile(new File(logFile).getName());
-	    	
-			if (e.getSource() == m_openJessAgent)
-			{
-				m_fileFilter.set(".JESS", "Jess Files");
-				type = Model.JESSFILE;
-			}
-			else
-				m_fileFilter.set(".SOAR", "Soar Files");
-			
-			m_chooser.setVisible(true);
-			int returnVal = m_chooser.showOpenDialog(this);
-			if(returnVal == JFileChooser.APPROVE_OPTION) 
-			{
-				try
-				{
-					String agentFile = 
-						m_chooser.getSelectedFile().getCanonicalPath();
-					agentFile = "\"" + agentFile.replace('\\', '/') + "\"";
-					m_env.m_model.setAgentFile(agentFile, type);
-					m_env.m_model.setAgentShortFile
-						(m_chooser.getSelectedFile().getName());
-					m_run.setEnabled(true);
-				}
-				catch (IOException fe)
-				{
-					System.out.println(fe);
-				}
-			}			
-		}
-		// Ernest agent
-	    else if (e.getSource() == m_openErnestAgent)
-		{
-			m_env.m_model.setAgentFile("", Model.ERNEST);
-			m_env.m_model.setAgentShortFile("Ernest");
-			m_run.setEnabled(true);
 		}
 		// Load Board
 		else if (e.getSource() == m_loadBoard)
@@ -581,19 +501,14 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
 			m_options.setEnabled(true);
 			m_help.setEnabled(true);
 
-			if ((m_env.m_model.getAgentFile() != null)
-				    || (m_env.m_model.getInHumanView() == true)) 
-			{
-
-				if (m_env.m_model.boardTempExists()) {
-					m_rerun.setEnabled(true);
-				}
-				m_env.m_model.setRunHuman(false);
-				m_run.setEnabled(true);
-				m_reset.setEnabled(true);
-				m_stop.setEnabled(false);
-				setTitle("Ernest" + " - " + m_env.m_model.getAgentShortFile());
+			if (m_env.m_model.boardTempExists()) {
+				m_rerun.setEnabled(true);
 			}
+			m_env.m_model.setRunHuman(false);
+			m_run.setEnabled(true);
+			m_reset.setEnabled(true);
+			m_stop.setEnabled(false);
+			setTitle("Ernest" + " - " + m_env.m_model.getVersion());
 		}
 		else
 		{
