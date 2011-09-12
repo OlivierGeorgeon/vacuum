@@ -74,6 +74,10 @@ public class Environnement extends JPanel implements MouseListener{
 	
 	public void paintComponent(Graphics g){
 
+		Graphics2D g2d = (Graphics2D)g;
+
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+
 		int h=this.getHeight();
 		int w=this.getWidth();
 		
@@ -84,8 +88,8 @@ public class Environnement extends JPanel implements MouseListener{
 		e_y=(int) (m_model.m_y*c_h+c_h/2);
 		
 		
-		g.setColor(Color.white);
-		g.fillRect(0, 0, w, h);
+		g2d.setColor(Color.white);
+		g2d.fillRect(0, 0, w, h);
 		
 		// draw agent
 		m_model.paintAgent((Graphics2D)g.create(),(int) (m_model.m_x*c_w+(c_w/2)),(int) (m_model.m_y*c_h+(c_h/2)),(double)c_w/100,(double)c_h/100);
@@ -96,31 +100,33 @@ public class Environnement extends JPanel implements MouseListener{
 				
 				// walls
 				if (m_model.isWall(i,j)){
-					g.setColor(m_model.getBackgroundColor(i, j) );
-					g.fillRect(i*c_w, j*c_h, c_w+1, c_h+1);
-					g.setColor(Color.black);
-					g.drawRect(i*c_w, j*c_h, c_w+1, c_h+1);
+					g2d.setColor(m_model.getBackgroundColor(i, j) );
+					g2d.fillRect(i*c_w, j*c_h, c_w+1, c_h+1);
+					//g2d.setColor(Color.black);
+					//g.drawRect(i*c_w, j*c_h, c_w+1, c_h+1);
 				}
 				
 				// fish
 				if (m_model.getDirty(i, j)== m_model.DIRTY ){
-					g.setColor(m_model.getBackgroundColor(i, j) );
-					g.fillPolygon(transform_x(fish_x,fish_y,0,c_w/2,i*c_w+c_w/2) , 
+					g2d.setColor(m_model.getBackgroundColor(i, j) );
+					g2d.fillPolygon(transform_x(fish_x,fish_y,0,c_w/2,i*c_w+c_w/2) , 
 						          transform_y(fish_x,fish_y,0,c_h/2,j*c_h+c_h/2) , 18);
-					g.setColor(Color.white);
-					g.fillOval((int)(i*(w/m_w)+(w/m_w)*0.7), (int)(j*c_h+c_h*0.35), (int)(c_w*0.1), (int)(c_h*0.1));
+					g2d.setColor(Color.white);
+					g2d.fillOval((int)(i*(w/m_w)+(w/m_w)*0.7), (int)(j*c_h+c_h*0.35), (int)(c_w*0.1), (int)(c_h*0.1));
 				}
 				
 				// leaf
-				if (m_model.getDirty(i, j) > m_model.DIRTY ){
-					g.setColor(m_model.getBackgroundColor(i, j) );
-					g.fillPolygon(transform_x(leaf_x,leaf_y,0,c_w/2,i*c_w+c_w/2) , 
+				if (m_model.getDirty(i, j) > m_model.DIRTY )
+				{
+					g2d.setColor(m_model.getBackgroundColor(i, j) );
+
+					g2d.fillPolygon(transform_x(leaf_x,leaf_y,0,c_w/2,i*c_w+c_w/2) , 
 							      transform_y(leaf_x,leaf_y,0,c_h/2,j*c_h+c_h/2) , 4);
-					g.fillPolygon(transform_x(leaf_x,leaf_y,(float) (Math.PI/2  ),c_w/2,i*c_w+c_w/2) , 
+					g2d.fillPolygon(transform_x(leaf_x,leaf_y,(float) (Math.PI/2  ),c_w/2,i*c_w+c_w/2) , 
 						          transform_y(leaf_x,leaf_y,(float) (Math.PI/2  ),c_h/2,j*c_h+c_h/2) , 4);
-					g.fillPolygon(transform_x(leaf_x,leaf_y,(float) (Math.PI    ),c_w/2,i*c_w+c_w/2) , 
+					g2d.fillPolygon(transform_x(leaf_x,leaf_y,(float) (Math.PI    ),c_w/2,i*c_w+c_w/2) , 
 					              transform_y(leaf_x,leaf_y,(float) (Math.PI    ),c_h/2,j*c_h+c_h/2) , 4);
-					g.fillPolygon(transform_x(leaf_x,leaf_y,(float) (-Math.PI/2),c_w/2,i*c_w+c_w/2) , 
+					g2d.fillPolygon(transform_x(leaf_x,leaf_y,(float) (-Math.PI/2),c_w/2,i*c_w+c_w/2) , 
 					              transform_y(leaf_x,leaf_y,(float) (-Math.PI/2),c_h/2,j*c_h+c_h/2) , 4);
 				}
 				
@@ -139,10 +145,8 @@ public class Environnement extends JPanel implements MouseListener{
 		
 		// draw dream square
 		m_model.paintDream((Graphics2D)g.create(),c_w*(m_w-2)-c_w/2,c_h/2, (double)c_w/100, (double)c_h/100);
-		g.setColor(Color.black);
-		g.drawRect(c_w*(m_w-3), 0, c_w, c_h);
-
-		
+		//g2d.setColor(Color.black);
+		//g.drawRect(c_w*(m_w-3), 0, c_w, c_h);
 		
 	}
 

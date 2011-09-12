@@ -93,15 +93,16 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
     public EnvironnementFrame(Model m){
 	
     	this.setTitle("Ernest");
-    	this.setSize(600, 600);
+    	this.setSize(670, 610);
     	this.setLocationRelativeTo(null);               
     	this.setVisible(true);
     
     	m_env = new Environnement(m);
+
     	
     	configureMenu(m);
     	
-    	this.setContentPane(m_env);
+    	//this.setContentPane(m_env);
     
     	m_stop.setEnabled(false);
 		m_run.setEnabled(false);
@@ -114,15 +115,18 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
     	
 
 
-		JPanel pageStart = new JPanel();
-		pageStart.setPreferredSize(new Dimension(600, 5));
-		pageStart.setBackground(new Color(Ernest.COLOR_WALL.getRGB()));
+		//JPanel pageStart = new JPanel();
+		//pageStart.setPreferredSize(new Dimension(600, 5));
+		//pageStart.setBackground(new Color(Ernest.COLOR_WALL.getRGB()));
 		
-		JPanel lineStart = new JPanel();
-		lineStart.setPreferredSize(new Dimension(5, 400));
-		lineStart.setBackground(new Color(Ernest.COLOR_WALL.getRGB()));
+		//JPanel lineStart = new JPanel();
+		//lineStart.setPreferredSize(new Dimension(5, 400));
+		//lineStart.setBackground(new Color(Ernest.COLOR_WALL.getRGB()));
 
 		getContentPane().setLayout(new BorderLayout());
+		
+		getContentPane().add(m_env);
+		//getContentPane().setSize(new Dimension(600,400));
 		
 		JPanel buttonPanel = new JPanel();
 
@@ -140,6 +144,8 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
 		getContentPane().add(statusPanel, BorderLayout.SOUTH);
 		
 		indexImage=0;
+		
+		this.repaint();
     }
     
 	/**
@@ -493,7 +499,7 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
 			m_run.setEnabled(true);
 			m_reset.setEnabled(true);
 			m_stop.setEnabled(false);
-			setTitle("Ernest" + " - " + m_env.m_model.getVersion());
+			setTitle("Ernest " + " - " + m_env.m_model.getVersion());
 		}
 		else
 		{

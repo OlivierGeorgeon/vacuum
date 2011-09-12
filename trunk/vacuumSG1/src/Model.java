@@ -135,6 +135,8 @@ public class Model extends Observable
 
 	private boolean m_night = false;
 
+	protected EnvironnementFrame m_env;
+
 	
 	public Model()
 	{
@@ -142,6 +144,14 @@ public class Model extends Observable
 		
 
 	}
+	public void setEnvironnement(EnvironnementFrame env){
+		m_env=env;
+	}
+	
+	// save the actual ernest
+	public void save(){
+	}
+
 	/**
 	 * Initialize the grid randomly
 	 * @author mcohen
@@ -378,12 +388,12 @@ public class Model extends Observable
 
 	public boolean isDirty()
 	{ 
-		return m_dirty[cell(m_x)][cell(m_y)] > EMPTY;
+		return m_dirty[Math.round(m_x)][Math.round(m_y)] > EMPTY;
 	}
 
 	public boolean isDirty(float x, float y)
 	{ 
-		return m_dirty[(int)x][(int)y] > EMPTY; 
+		return m_dirty[Math.round(x)][Math.round(y)] > EMPTY; 
 	}
 
 	public void setDirty(int x, int y, int dirty)
@@ -393,12 +403,17 @@ public class Model extends Observable
 
 	public int getDirty(float x, float y)
 	{ 
-		return m_dirty[(int)x][(int)y]; 
+		return m_dirty[Math.round(x)][Math.round(y)]; 
 	}
 
 	public boolean isWall(float x, float y)
 	{ 
-		return 	(m_wall[(int)x][(int)y] != EMPTY); 
+		return 	(m_wall[Math.round(x)][Math.round(y)] != EMPTY); 
+	}
+	
+	public boolean affordSee(float x, float y)
+	{
+		return 	(m_wall[Math.round(x)][Math.round(y)] != EMPTY); 		
 	}
 
 	public void setWall(int x, int y, int wall)
@@ -408,12 +423,12 @@ public class Model extends Observable
 
 	public int getWall(float x, float y)
 	{ 
-		return 	m_wall[(int)x][(int)y]; 
+		return 	m_wall[Math.round(x)][Math.round(y)]; 
 	}
 
 	public boolean isAgent(int x, int y)
 	{
-		return (x == cell(m_x)) && (y == cell(m_y));
+		return (x == Math.round(m_x)) && (y == Math.round(m_y));
 	}
 	
 	public boolean isInformation(int x, int y)
@@ -438,7 +453,7 @@ public class Model extends Observable
 	 */
 	public int getAnim(float x, float y)
 	{ 
-		return m_anim[(int)x][(int)y];
+		return m_anim[Math.round(x)][Math.round(y)];
 	}
 
 	public void setAnim(float x, float y, int anim)
@@ -446,7 +461,7 @@ public class Model extends Observable
 		if (anim == ANIM_BUMP)
 			speak("Ouch", false , false);
 
-		m_anim[(int)x][(int)y] = anim;
+		m_anim[Math.round(x)][Math.round(y)] = anim;
 	}
 
 	/**

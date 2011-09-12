@@ -23,7 +23,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 	
 	public static JFrame MAIN_WIN;
 
-	private static final String TITLE = "Vacuum (v 3.1)";
+	private static final String TITLE = "Vacuum-SG";
 
 	private final JMenu m_file 		= new JMenu("File");
 	private final JMenu m_options 	= new JMenu("Options");
@@ -33,6 +33,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 	private final JMenuItem m_aboutVacuum 		= new JMenuItem("About Vacuumcleaner");
 	
 	private final JMenuItem m_exit 						= new JMenuItem("Exit");
+
 	private final JMenuItem m_configureBoard 			= new JMenuItem("Configure Random Board...");
 	private final JMenuItem m_configureRun        		= new JMenuItem("Configure Run...");
 	private final JCheckBoxMenuItem m_randomBoard 		= new JCheckBoxMenuItem("Random Board");
@@ -45,7 +46,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 	
 	private final MyFileFilter m_fileFilter 		= new MyFileFilter();
 
-    private final Ernest100Model m_model 			    = new Ernest100Model();
+    private static ErnestModel m_model 			    = new Ernest100Model();
  	private final StatusModel m_statusModel         = new StatusModel();
 	
 	private HelpFrames m_Helpframe;
@@ -76,21 +77,30 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 
 	private String boardTempFile = "board.tmp";
 
+	/**
+	 * Main
+	 * Can specify a model version
+	 * @author ogeorgeon 
+	 * @param strModel
+	 */
 	public static void main(String[] args)
 	{
-		// Takes no command line argument, instead all is saved in preferences
+		if (args.length == 1)
+		{
+			if (args[0].equals("Ernest104"))
+				m_model = new Ernest104Model();
+		}
+		else
+			m_model = new Ernest100Model();
 		
-		//if (args.length == 1)
-		//	new Main(args[0]);
-		//else
 		new Main();
 	}
+	
 	/**
 	 * Main
 	 * @author mcohen
 	 * @author ogeorgeon (Retrieve saved user preferences)
-	 * @author mfriedrich (human command and log file)
-	 * @param strBoardFile
+	 * @param strModel
 	 */
 	public Main()
 	{
@@ -141,22 +151,17 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 
 		m_board = new JPanel(new GridLayout(m_model.getHeight(), m_model.getWidth()));
 
-		JPanel pageStart = new JPanel();
-		pageStart.setPreferredSize(new Dimension(600, 5));
-		pageStart.setBackground(new Color(Ernest.COLOR_WALL.getRGB()));
+		//JPanel pageStart = new JPanel();
+		//pageStart.setPreferredSize(new Dimension(600, 5));
+		//pageStart.setBackground(new Color(Ernest.COLOR_WALL.getRGB()));
 		
-		JPanel lineStart = new JPanel();
-		lineStart.setPreferredSize(new Dimension(5, 400));
-		lineStart.setBackground(new Color(Ernest.COLOR_WALL.getRGB()));
+		//JPanel lineStart = new JPanel();
+		//lineStart.setPreferredSize(new Dimension(5, 400));
+		//lineStart.setBackground(new Color(Ernest.COLOR_WALL.getRGB()));
 
 		getContentPane().setLayout(new BorderLayout());
-		//getContentPane().add(pageStart, BorderLayout.PAGE_START);
-		//getContentPane().add(lineStart, BorderLayout.LINE_START);
-		//getContentPane().add(new Environnement(m_model),BorderLayout.NORTH );
+
 		getContentPane().add(m_board, BorderLayout.CENTER);
-		
-		
-		
 		
 		
 		
@@ -528,7 +533,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		// mnemonics...
 		m_file.setMnemonic(KeyEvent.VK_F);
 		m_exit.setMnemonic(KeyEvent.VK_X);
-
+		
 		m_options.setMnemonic(KeyEvent.VK_O);
 		m_randomBoard.setMnemonic(KeyEvent.VK_A);
 		m_configureBoard.setMnemonic(KeyEvent.VK_B);

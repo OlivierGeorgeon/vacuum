@@ -115,8 +115,8 @@ public class EnvSquare extends JPanel
 
 		// The information square
 		//if (m_model.isInformation(m_x, m_y))
-		//if (m_model.getWall(m_x, m_y) == Model.WALL_INFORMATION )
-			//drawInformation(g2d);
+		if (m_model.getWall(m_x, m_y) == Model.WALL_INFORMATION )
+			drawInformation(g2d);
 
 		// The agent
 		if (m_model.isAgent(m_x, m_y))
