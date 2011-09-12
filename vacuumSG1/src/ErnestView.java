@@ -6,7 +6,7 @@ import ernest.*;
  * The main class that instantiates an Ernest agent and runs it in the environment
  * @author ogeorgeon
  */
-public class ErnestView implements IView 
+public class ErnestView implements Runnable//implements IView 
 {
 	private final ErnestModel m_model;
 
@@ -53,11 +53,4 @@ public class ErnestView implements IView
 		return  m_model.enactSchema(schema);
 	}
 	
-	public void setAllowState(boolean allow) 
-	{
-	}
-
-	public void setRadarSensor(boolean enable) 
-	{
-	}
 }

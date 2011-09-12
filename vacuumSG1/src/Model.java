@@ -109,17 +109,10 @@ public class Model extends Observable
 	private int[][] m_wall;
 	private int[][] m_anim;
 
-	//private String m_file;
-	//private String m_shortFile;
-	
 	// Maik Friedrich
-	//private String m_logfile;
-	//private String m_logshortFile;
 	private String m_boardFileName = "";
-	//private String m_pictureFileName = "";
+
 	private String BoardTempFile;
-	private boolean inHumanView = false;
-	private boolean runHuman = false;
 	private int lastFinalScore;
 
 	private boolean m_halt = true;
@@ -134,10 +127,6 @@ public class Model extends Observable
 	private Runnable m_mainThread;
 	private Runnable m_eventThread;
 	
-	//private int m_fileType = JESSFILE;
-	
-	private boolean m_bAllowState     = true;
-	private boolean m_bRadarSensor    = true;
 	private boolean m_bRandomBoard    = true;
 	private boolean m_bSpeakAloud     = true;
 	private boolean m_bInternalState  = false;
@@ -514,16 +503,6 @@ public class Model extends Observable
 		return count;
 	}
 
-	public boolean getAllowState()
-	{
-		return m_bAllowState;
-	}
-	
-	public boolean getRadarSensor()
-	{
-		return m_bRadarSensor;
-	}
-	
 	public boolean getRandomBoard()
 	{
 		return m_bRandomBoard;
@@ -537,18 +516,7 @@ public class Model extends Observable
 	{
 		return m_bInternalState;
 	}
-// mutables 
 
-	public void setAllowState(boolean b)
-	{
-		m_bAllowState = b;
-	}
-
-	public void setRadarSensor(boolean b)
-	{
-		m_bRadarSensor = b;
-	}
-	
 	public void setRandomBoard(boolean b)
 	{
 		m_bRandomBoard = b;
@@ -811,22 +779,6 @@ public class Model extends Observable
 
 	public void setBoardFileName(String file) {
 		m_boardFileName = file;
-	}
-
-	public boolean getInHumanView() {
-		return inHumanView;
-	}
-
-	public void setInHumanView(boolean inHumanView) {
-		this.inHumanView = inHumanView;
-	}
-
-	public boolean getRunHuman() {
-		return runHuman;
-	}
-
-	public void setRunHuman(boolean runHuman) {
-		this.runHuman = runHuman;
 	}
 
 	public int getLastFinalScore() {
