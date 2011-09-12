@@ -49,7 +49,6 @@ public class Ernest100Model extends ErnestModel
 	public float m_If,m_Ir;   				// impulsion counters
 	public int lastAction;
 	
-	public EnvironnementFrame m_env;
 	public InternalStatesFrame m_int;
 	public InternalMap m_map;
 	public ObjectMemory m_objMemory;
@@ -110,7 +109,7 @@ public class Ernest100Model extends ErnestModel
 	}
 
 	/**
-	 * @return The version of Ernest
+	 * @return The version of the Ernest model
 	 */
 	public String getVersion()
 	{
@@ -122,9 +121,7 @@ public class Ernest100Model extends ErnestModel
 	 */
 	public void initErnest()
 	{
-		m_ernest.add(new Ernest());
-		
-		System.out.println(m_ernest.size());
+		m_ernest = new Ernest();
 		
 		m_sensorymotorSystem = new Visual100SensorymotorSystem();
 		m_tracer = new XMLTracer("trace.xml");
@@ -133,9 +130,9 @@ public class Ernest100Model extends ErnestModel
 		
 		// Initialize the Ernest === 
 		
-		m_ernest.get(0).setParameters(5, 1, 4);
-		m_ernest.get(0).setTracer(m_tracer);
-		m_ernest.get(0).setSensorymotorSystem(m_sensorymotorSystem);
+		m_ernest.setParameters(5, 1, 4);
+		m_ernest.setTracer(m_tracer);
+		m_ernest.setSensorymotorSystem(m_sensorymotorSystem);
 		
 
 
@@ -193,9 +190,9 @@ public class Ernest100Model extends ErnestModel
 			matrix[i][3] = eyeFixation[i].getColor().getBlue();
 			// The second row is the place where Ernest is standing
 			matrix[i][4] = 0;
-			matrix[i][5] = getBackgroundColor(cell(m_x),cell(m_y)).getRed();
-			matrix[i][6] = getBackgroundColor(cell(m_x),cell(m_y)).getGreen();
-			matrix[i][7] = getBackgroundColor(cell(m_x),cell(m_y)).getBlue();
+			matrix[i][5] = getBackgroundColor(Math.round(m_x),Math.round(m_y)).getRed();
+			matrix[i][6] = getBackgroundColor(Math.round(m_x),Math.round(m_y)).getGreen();
+			matrix[i][7] = getBackgroundColor(Math.round(m_x),Math.round(m_y)).getBlue();
 		}
 		
 		// Taste 
@@ -222,7 +219,7 @@ public class Ernest100Model extends ErnestModel
 		
 		matrix[2][8] = (isNight() ? 1 : 0);		
 
-		String intention = m_ernest.get(0).step(matrix);
+		String intention = m_ernest.step(matrix);
 		return intention;
 	}
 	
@@ -280,7 +277,7 @@ public class Ernest100Model extends ErnestModel
 	private int taste()
 	{
 		// Taste before sucking
-		int taste = getDirty(cell(m_x),cell(m_y)); 
+		int taste = getDirty(Math.round(m_x),Math.round(m_y)); 
 
 		// Sucking water or food if any
 		// TODO: only suck water when thirsty and food when hungry.
@@ -334,14 +331,6 @@ public class Ernest100Model extends ErnestModel
 	}
 	
 	/**
-	 * return the nearest integer of a float
-	 */
-	private int cell(float a){
-		if (a-(int)a <=0.5) return (int)a;
-		else                return (int)a+1;
-	}
-	
-	/**
 	 * Move forward.
 	 * @return true if adjacent wall, false if adjacent empty. 
 	 */
@@ -373,8 +362,8 @@ public class Ernest100Model extends ErnestModel
 		 
 		float maxPoint=m_map.max;
 		
-		int cell_x=cell(m_x);
-		int cell_y=cell(m_y);
+		int cell_x=Math.round(m_x);
+		int cell_y=Math.round(m_y);
 		
 		boolean status1=true;         // vertical motion
 		boolean status2=true;         // horizontal motion
@@ -441,8 +430,8 @@ public class Ernest100Model extends ErnestModel
 				
 				double dx= step*Math.sin(m_orientationAngle);
 				double dy=-step*Math.cos(m_orientationAngle);
-				cell_x=cell(m_x);
-				cell_y=cell(m_y);
+				cell_x=Math.round(m_x);
+				cell_y=Math.round(m_y);
 				dist+=step;
 				m_x+=dx;
 				m_y+=dy;
@@ -548,33 +537,33 @@ public class Ernest100Model extends ErnestModel
 		
 		
 	// compute state for angular movement
-		int adjacent_x = cell(m_x);
-		int adjacent_y = cell(m_y);
+		int adjacent_x = Math.round(m_x);
+		int adjacent_y = Math.round(m_y);
 		
 		// Adjacent square
 		if (m_orientation < ORIENTATION_UP_RIGHT && m_orientation >=ORIENTATION_UP_LEFT)
-			adjacent_y = cell(m_y) - 1;
+			adjacent_y = Math.round(m_y) - 1;
 		if (m_orientation >=ORIENTATION_UP && m_orientation<ORIENTATION_RIGHT){
-			adjacent_x = cell(m_x) + 1;
-			adjacent_y = cell(m_y) - 1;
+			adjacent_x = Math.round(m_x) + 1;
+			adjacent_y = Math.round(m_y) - 1;
 		}
 		if (m_orientation >= ORIENTATION_UP_RIGHT && m_orientation <ORIENTATION_DOWN_RIGHT)
-			adjacent_x = cell(m_x) + 1;
+			adjacent_x = Math.round(m_x) + 1;
 		if (m_orientation >= ORIENTATION_RIGHT && m_orientation <ORIENTATION_DOWN){
-			adjacent_x = cell(m_x) + 1;
-			adjacent_y = cell(m_y) + 1;
+			adjacent_x = Math.round(m_x) + 1;
+			adjacent_y = Math.round(m_y) + 1;
 		}
 		if (m_orientation >= ORIENTATION_DOWN_RIGHT && m_orientation <ORIENTATION_DOWN_LEFT)
-			adjacent_y = cell(m_y) + 1;
+			adjacent_y = Math.round(m_y) + 1;
 		if (m_orientation >= ORIENTATION_DOWN && m_orientation <ORIENTATION_LEFT){
-			adjacent_x = cell(m_x) - 1;
-			adjacent_y = cell(m_y) + 1;
+			adjacent_x = Math.round(m_x) - 1;
+			adjacent_y = Math.round(m_y) + 1;
 		}
 		if (m_orientation >= ORIENTATION_DOWN_LEFT && m_orientation <ORIENTATION_UP_LEFT)
-			adjacent_x = cell(m_x) - 1;
+			adjacent_x = Math.round(m_x) - 1;
 		if (m_orientation >= ORIENTATION_LEFT && m_orientation <ORIENTATION_UP){
-			adjacent_x = cell(m_x) - 1;
-			adjacent_y = cell(m_y) - 1;
+			adjacent_x = Math.round(m_x) - 1;
+			adjacent_y = Math.round(m_y) - 1;
 		}
 		
 		if ((adjacent_x >= 0) && (adjacent_x < m_w) && (adjacent_y >= 0) && (adjacent_y < m_h)){
@@ -686,8 +675,8 @@ public class Ernest100Model extends ErnestModel
 		double imin,iplus,jmin,jplus;
 		double imin2,jmin2;
 		
-		int Im_x=cell(m_x);
-		int Im_y=cell(m_y);
+		int Im_x=Math.round(m_x);
+		int Im_y=Math.round(m_y);
 		
 		for (int i=0;i<360;i++){
 			zMap[i]=1000;
@@ -1074,10 +1063,10 @@ public class Ernest100Model extends ErnestModel
 		// scan the first row
 		for (double angle = t ;  angle <= t + a + .001; angle += step)
 		{
-			int x0 =  cell(m_x) + (int) ( 20 * Math.cos(angle) + .5); // round to the closest integer 
-			int y0 =  cell(m_y) - (int) ( 20 * Math.sin(angle) + .5); // Y axis is downwards
+			int x0 =  Math.round(m_x) + (int) ( 20 * Math.cos(angle) + .5); // round to the closest integer 
+			int y0 =  Math.round(m_y) - (int) ( 20 * Math.sin(angle) + .5); // Y axis is downwards
 			
-			eyeFixation = rayTrace(cell(m_x), cell(m_y) , x0, y0);
+			eyeFixation = rayTrace(Math.round(m_x), Math.round(m_y) , x0, y0);
 			
 			// We stop when we find a singularity.
 			if ( eyeFixation.getColor() != WALL_COLOR)
@@ -1103,8 +1092,8 @@ public class Ernest100Model extends ErnestModel
 		eyeFixation.setDistance2(Ernest.INFINITE);
 	    int dx = (int) Math.abs(x1 - x0);
 	    int dy = (int) Math.abs(y1 - y0);
-	    int x = cell(x0);
-	    int y = cell(y0);
+	    int x = Math.round(x0);
+	    int y = Math.round(y0);
 	    int n = 1 + dx + dy;
 	    int x_inc = (x1 > x0) ? 1 : -1;
 	    int y_inc = (y1 > y0) ? 1 : -1;
@@ -1286,14 +1275,14 @@ public class Ernest100Model extends ErnestModel
 		int soma = 0;
 		if (m_x < 0 || m_y < 0 || m_x >= m_w || m_y >= m_h)
 			return Ernest.STIMULATION_TOUCH_WALL.getValue();
-		if (isDirty(cell(m_x),cell(m_y)))
+		if (isDirty(Math.round(m_x),Math.round(m_y)))
 		{
-			if (getDirty(cell(m_x),cell(m_y)) == DIRTY)
+			if (getDirty(Math.round(m_x),Math.round(m_y)) == DIRTY)
 				soma = Ernest.STIMULATION_TOUCH_FISH.getValue();
 			else
 				soma = Ernest.STIMULATION_TOUCH_SOFT.getValue();
 		}
-		if (isWall(cell(m_x),cell(m_y))) soma = Ernest.STIMULATION_TOUCH_WALL.getValue();
+		if (isWall(Math.round(m_x),Math.round(m_y))) soma = Ernest.STIMULATION_TOUCH_WALL.getValue();
 		return soma;
 	}
 	
@@ -1392,7 +1381,7 @@ public class Ernest100Model extends ErnestModel
 		// Draw the body
 		
 		g2d.setStroke(new BasicStroke(2f));		
-		g2d.setColor(getBackgroundColor(cell(m_x), cell(m_y)));
+		g2d.setColor(getBackgroundColor(Math.round(m_x), Math.round(m_y)));
 		g2d.setColor(new Color(255,255,255)) ;
 		g2d.fill(sharkMask);
 
@@ -1447,24 +1436,24 @@ public class Ernest100Model extends ErnestModel
 		
 		// Animate Ernest when he is alive
 
-		if (m_ernest.size()!=0 && m_ernest.get(0) != null && m_ernest.get(0).getObservation() != null)
+		if (m_ernest != null && m_ernest.getObservation() != null)
 		{
 			// Eye
-			if (m_ernest.get(0).getObservation().getSalience() != null)
+			if (m_ernest.getObservation().getSalience() != null)
 			{
-				span = m_ernest.get(0).getObservation().getSalience().getSpan();
-				direction = m_ernest.get(0).getObservation().getSalience().getDirection() / 10f - span / 2f + .5f;
-				eyeColor = new Color(m_ernest.get(0).getObservation().getSalience().getColor().getRGB());
+				span = m_ernest.getObservation().getSalience().getSpan();
+				direction = m_ernest.getObservation().getSalience().getDirection() / 10f - span / 2f + .5f;
+				eyeColor = new Color(m_ernest.getObservation().getSalience().getColor().getRGB());
 			}
 						
 			// Somatomap color
 			for (int i = 0; i < 3; i++)
 				for (int j = 0; j < 3; j++)
-					somatoMapColor[i][j] = new Color(m_ernest.get(0).getObservation().getColor(i, j).getRGB());
+					somatoMapColor[i][j] = new Color(m_ernest.getObservation().getColor(i, j).getRGB());
 			
 //			if (m_ernest.getObservation().getLabel() == null)
 //				System.out.println("Observation has no label");
-			if (Ernest.STIMULATION_KINEMATIC_BUMP.equals(m_ernest.get(0).getObservation().getKinematic()))
+			if (Ernest.STIMULATION_KINEMATIC_BUMP.equals(m_ernest.getObservation().getKinematic()))
 				kinematicColor = Color.RED;
 		}
 		
