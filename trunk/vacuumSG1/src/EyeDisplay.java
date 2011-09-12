@@ -10,7 +10,7 @@ import javax.swing.JPanel;
  
 public class EyeDisplay extends JPanel {
  
-		private static boolean view=false;
+		private static boolean view=true;
 		private static boolean attractness=true;
 	
 		double[] retine;

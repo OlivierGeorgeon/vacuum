@@ -55,8 +55,12 @@ public class Ernest100Model extends ErnestModel
 	public InternalStatesFrame m_int;
 	public InternalMap m_map;
 	public ObjectMemory m_objMemory;
+	
 	//public PatternMap m_patternMap;
 	//public PatternMappingFrame m_patternFrame;
+	
+	public TactileMap m_tactile;
+	public TactileMapFrame m_tactileFrame;
 	
 	public ArrayList<Action> m_actionList;
 	public float distance=0;
@@ -67,10 +71,7 @@ public class Ernest100Model extends ErnestModel
 	
 	public Color frontColor;
 	
-	public float[] m_tactilePressure;
-	public float[] m_tactileObject;
-	
-	public boolean tempo=false;
+	public boolean tempo=true;
 	public boolean continuum=true;
 	
 	/**
@@ -87,12 +88,12 @@ public class Ernest100Model extends ErnestModel
 		notifyObservers2();
 		
 		m_actionList=new ArrayList<Action>();
-
-		m_tactilePressure=new float[32];
-		m_tactileObject=new float[32];
 		
 		m_objMemory=new ObjectMemory();
 		m_map=new InternalMap(m_objMemory);
+		
+		m_tactile=new TactileMap(this);
+		m_tactileFrame=new TactileMapFrame(m_tactile);
 		
 		if (!load(m_actionList)){
 			m_actionList.clear();
@@ -539,8 +540,11 @@ public class Ernest100Model extends ErnestModel
 				rendu(false);
 				m_env.repaint();
 				m_int.repaint();
-				sleep((int)(1));
+				//sleep((int)(1));
 			}
+			
+			m_tactileFrame.repaint();
+			
 			statusL=status1 && status2 && status4;
 		}
 		
@@ -662,14 +666,7 @@ public class Ernest100Model extends ErnestModel
 	}
 	
 	
-	
-	////////////////////////////////////////////
-	//
-	////////////////////////////////////////////
-	public void touchEnvironment(){
-		
-	}
-	
+
 	//******************************************
 	////////////////////////////////////////////
 	//******************************************
@@ -1016,6 +1013,8 @@ public class Ernest100Model extends ErnestModel
 			m_objMemory.addObject(frontColor);
 		}
 		
+		m_tactile.touchEnvironment(r);
+		
 		//m_patternMap.addPatern(colorMap2,lastAction);
 		//m_patternFrame.update((int)(m_x*10),(int)(m_y*10),m_orientation);
 		//m_patternFrame.paint();
@@ -1024,7 +1023,7 @@ public class Ernest100Model extends ErnestModel
 		eye.repaint();
 		m_map.compute(r2, colorMap2);
 		eye.paint(r2,colorMap2,corner2);
-		//System.out.println(" distance  : "+r2[90]);
+		
 		return retina;
 	}
 	
