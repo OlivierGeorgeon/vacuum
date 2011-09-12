@@ -38,15 +38,10 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 	private final JCheckBoxMenuItem m_randomBoard 		= new JCheckBoxMenuItem("Random Board");
 	private final JMenuItem m_loadBoard           		= new JMenuItem("Choose Board...");
 	private final JMenuItem m_saveBoard               	= new JMenuItem("Save Board...");
-	private final JCheckBoxMenuItem m_simpleAgent     	= new JCheckBoxMenuItem("Simple Reflex Agent");
-	private final JCheckBoxMenuItem m_modelBasedAgent 	= new JCheckBoxMenuItem("Model Based Agent");
-	private final JCheckBoxMenuItem m_radarSensor     	= new JCheckBoxMenuItem("Enable Radar Sensor");
-	private final JCheckBoxMenuItem m_movePunish      	= new JCheckBoxMenuItem("Penalize for Movement");
 	private final JCheckBoxMenuItem m_speakAloud      	= new JCheckBoxMenuItem("Speak Aloud");
 
 	private final JFileChooser m_chooser 			= new JFileChooser();
 	private final JFileChooser m_boardChooser 		= new JFileChooser(); // Uses specific chooser so that it remembers the path
-	private final JFileChooser m_pictureChooser 	= new JFileChooser();
 	
 	private final MyFileFilter m_fileFilter 		= new MyFileFilter();
 
@@ -54,7 +49,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
  	private final StatusModel m_statusModel         = new StatusModel();
 	
 	private HelpFrames m_Helpframe;
-	private IView m_ernest;
+	private ErnestView m_ernest;
 	private EnvSquare[][] m_grid = null;
 
 	//private String logFile;
@@ -322,19 +317,6 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		{
 			m_configRunDlg.setVisible(true);
 		}
-		else if ( (e.getSource() == m_simpleAgent) || 
-  				  (e.getSource() == m_modelBasedAgent) )
-		{
-			m_model.setAllowState(m_modelBasedAgent.isSelected());
-		}
-		else if (e.getSource() == m_radarSensor)
-		{
-			m_model.setRadarSensor(m_radarSensor.isSelected());
-		}
-		else if (e.getSource() == m_movePunish)
-		{
-			m_model.setPenalizeForMovement(m_movePunish.isSelected());
-		}
 		else if (e.getSource() == m_randomBoard)
 		{
 			m_model.setRandomBoard(m_randomBoard.isSelected());
@@ -392,7 +374,6 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 			if (m_model.boardTempExists()) {
 				m_rerun.setEnabled(true);
 			}
-			m_model.setRunHuman(false);
 			m_run.setEnabled(true);
 			m_reset.setEnabled(true);
 			m_stop.setEnabled(false);
@@ -554,10 +535,6 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		m_configureRun.setMnemonic(KeyEvent.VK_R);
 		m_loadBoard.setMnemonic(KeyEvent.VK_L);
 		m_saveBoard.setMnemonic(KeyEvent.VK_V);
-		m_simpleAgent.setMnemonic(KeyEvent.VK_S);
-		m_modelBasedAgent.setMnemonic(KeyEvent.VK_M);
-		m_radarSensor.setMnemonic(KeyEvent.VK_E);
-		m_movePunish.setMnemonic(KeyEvent.VK_P);
 
 		// file menu...
 		m_file.add(m_exit);
@@ -566,34 +543,19 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 
 		// options menu...
 		m_options.add(m_configureRun);
-		m_options.add(m_radarSensor);
-		m_options.add(m_movePunish);
 		m_options.addSeparator();
 		m_options.add(m_randomBoard);
 		m_options.add(m_configureBoard);
 		m_options.add(m_loadBoard);
 		m_options.add(m_saveBoard);
 		m_options.addSeparator();
-		ButtonGroup group = new ButtonGroup();
-		m_options.add(m_simpleAgent);
-		m_options.add(m_modelBasedAgent);
-		group.add(m_simpleAgent);
-		group.add(m_modelBasedAgent);
-		m_options.addSeparator();
 		m_options.add(m_speakAloud);
 
-		m_simpleAgent.addActionListener(this);
-		m_modelBasedAgent.addActionListener(this);
-		m_modelBasedAgent.setSelected(m_model.getAllowState());
-		m_simpleAgent.setSelected(!m_model.getAllowState());
 		m_loadBoard.addActionListener(this);
 		m_saveBoard.addActionListener(this);
 		m_configureBoard.addActionListener(this);
 		m_configureRun.addActionListener(this);
 
-		m_radarSensor.setSelected(m_model.getRadarSensor());
-		m_radarSensor.addActionListener(this);
-		m_movePunish.addActionListener(this);
 		m_randomBoard.setSelected(m_model.getRandomBoard());
 		m_randomBoard.addActionListener(this);
 		m_speakAloud.setSelected(m_model.getSpeakAloud());
@@ -632,7 +594,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 	 * Loads the Ernest execution class  
 	 * @author ogeorgeon 
 	 */
-	private IView getErnestView()
+	private ErnestView getErnestView()
 	{
 		try
 		{

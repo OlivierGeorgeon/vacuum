@@ -211,14 +211,11 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
 
 		m_simpleAgent.addActionListener(this);
 		m_modelBasedAgent.addActionListener(this);
-		m_modelBasedAgent.setSelected(model.getAllowState());
-		m_simpleAgent.setSelected(!model.getAllowState());
 		m_loadBoard.addActionListener(this);
 		m_saveBoard.addActionListener(this);
 		m_configureBoard.addActionListener(this);
 		m_configureRun.addActionListener(this);
 
-		m_radarSensor.setSelected(model.getRadarSensor());
 		m_radarSensor.addActionListener(this);
 		m_movePunish.addActionListener(this);
 		m_randomBoard.setSelected(model.getRandomBoard());
@@ -436,17 +433,6 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
 			//m_configRunDlg.setVisible(true);
 
 		}
-		else if ( (e.getSource() == m_simpleAgent) || 
-  				  (e.getSource() == m_modelBasedAgent) )
-		{
-			m_env.m_model.setAllowState(m_modelBasedAgent.isSelected());
-
-		}
-		else if (e.getSource() == m_radarSensor)
-		{
-			m_env.m_model.setRadarSensor(m_radarSensor.isSelected());
-
-		}
 		else if (e.getSource() == m_movePunish)
 		{
 			m_env.m_model.setPenalizeForMovement(m_movePunish.isSelected());
@@ -504,7 +490,6 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
 			if (m_env.m_model.boardTempExists()) {
 				m_rerun.setEnabled(true);
 			}
-			m_env.m_model.setRunHuman(false);
 			m_run.setEnabled(true);
 			m_reset.setEnabled(true);
 			m_stop.setEnabled(false);

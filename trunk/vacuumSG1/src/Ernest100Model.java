@@ -29,8 +29,6 @@ import tracing.*;
 /**************************************
  * A Model for Ernest 10
  * Ernest can turn PI/4 and move in diagonal.
- * See http://e-ernest.blogspot.com/2011/02/ernestor.html
- * and http://e-ernest.blogspot.com/2011/02/ernest-84.html
  * @author ogeorgeon
  **************************************/
 public class Ernest100Model extends ErnestModel 
