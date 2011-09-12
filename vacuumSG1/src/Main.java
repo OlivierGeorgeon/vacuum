@@ -61,10 +61,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
  	private final StatusModel m_statusModel         = new StatusModel();
 	
 	private HelpFrames m_Helpframe;
-	private IView m_soar;	 
 	private IView m_ernest;
-	private JessView m_jess;
-	private HumanView m_human;
 	private EnvSquare[][] m_grid = null;
 
 	private String logFile;
@@ -229,18 +226,8 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 			m_model.saveCurrentBoard();
 			m_model.startAgent();
 			Thread agentThread = null;
-			if (m_model.getType() == Model.JESSFILE)
-				agentThread = new Thread(getJessView());
-			else if (m_model.getType() == Model.SOARFILE)
-				agentThread = new Thread(getSoarView());
-			else if (m_model.getType() == Model.ERNEST){
-				System.out.println("Run Ernest ") ;
-				agentThread = new Thread(getErnestView());
-			}
-			else if (m_model.getType() == Model.HUMANLOGFILE) {
-				agentThread = new Thread(getHumanView());
-				m_model.setRunHuman(true);
-			}
+			System.out.println("Run Ernest ") ;
+			agentThread = new Thread(getErnestView());
 			agentThread.start();
 		}
 		
@@ -253,27 +240,8 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 					m_model.init(m_model.getBoardTempFile());
 					m_model.startAgent();
 					Thread agentThread = null;
-					if (m_model.getType() == Model.JESSFILE)
-					{
-						agentThread = new Thread(getJessView());
-						getJessView().init();
-					}
-					else if (m_model.getType() == Model.SOARFILE)
-					{
-						agentThread = new Thread(getSoarView());
-						getSoarView().init();
-					}
-					else if (m_model.getType() == Model.ERNEST)
-					{
-						agentThread = new Thread(getErnestView());
-						getErnestView().init();
-					}
-					else if (m_model.getType() == Model.HUMANLOGFILE) 
-					{
-						agentThread = new Thread(getHumanView());
-						m_model.setRunHuman(true);
-						getHumanView().init(); // Olivier: does not work
-					}
+					agentThread = new Thread(getErnestView());
+					getErnestView().init();
 					agentThread.start();
 				} 
 				catch (Exception ex) 
@@ -497,41 +465,23 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		else if (e.getSource() == m_configureBoard)
 		{
 			m_configBoardDlg.setVisible(true);
-			if (m_configBoardDlg.isOk())
-			{
-				getJessView().init();
-				getSoarView().init();
-			}
 		}
 		else if (e.getSource() == m_configureRun)
 		{
 			m_configRunDlg.setVisible(true);
-			if (m_configRunDlg.isOk())
-			{
-				getJessView().init();
-				getSoarView().init();
-			}
 		}
 		else if ( (e.getSource() == m_simpleAgent) || 
   				  (e.getSource() == m_modelBasedAgent) )
 		{
 			m_model.setAllowState(m_modelBasedAgent.isSelected());
-			getJessView().init();
-			getSoarView().setAllowState(m_modelBasedAgent.isSelected());
-			getSoarView().init();
 		}
 		else if (e.getSource() == m_radarSensor)
 		{
 			m_model.setRadarSensor(m_radarSensor.isSelected());
-			getJessView().init();
-			getSoarView().setRadarSensor(m_radarSensor.isSelected());
-			getSoarView().init();
 		}
 		else if (e.getSource() == m_movePunish)
 		{
 			m_model.setPenalizeForMovement(m_movePunish.isSelected());
-			getJessView().init();
-			getSoarView().init();
 		}
 		else if (e.getSource() == m_randomBoard)
 		{
@@ -553,14 +503,10 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 					JOptionPane.ERROR_MESSAGE);
 				}
 			}
-			getJessView().init();
-			getSoarView().init();
 		}
 		else if (e.getSource() == m_speakAloud)
 		{
 			m_model.setSpeakAloud(m_speakAloud.isSelected());
-			getJessView().init();
-			getSoarView().init();
 		}
 	    else if (e.getSource() == m_KeyboardLayout) 
 	    {
@@ -857,51 +803,6 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 	}
 	
 	/**
-	 * Loads the Jess execution class  
-	 * @author mcohen
-	 */
-	private IView getJessView()
-	{
-		try
-		{
-			if (m_jess == null)
-				m_jess = new JessView(m_model);
-		}
-		catch (NoClassDefFoundError e)
-		{
-			JOptionPane.showMessageDialog(this, 
-					"Error loading the Jess engine!\n" + 
-					"Please restart the environment with jess.jar included in the classpath.",
-					"Error!", 
-					JOptionPane.ERROR_MESSAGE);
-		}
-		return m_jess;
-	}
-	
-	/**
-	 * Loads the Soar execution class  
-	 * @author mcohen
-	 * @author ogeorgeon adapt to Soar 9 
-	 */
-	private IView getSoarView()
-	{
-		try
-		{
-			if (m_soar == null)
-				m_soar = new Soar9View(m_model);		
-		}
-		catch (NoClassDefFoundError e)
-		{
-			JOptionPane.showMessageDialog(this, 
-					"Error loading the Soar engine!\n" + 
-					"Please restart the environment with sml.jar included in the classpath.", 
-					"Error!", 
-					JOptionPane.ERROR_MESSAGE);
-		}
-		return m_soar;
-	}
-
-	/**
 	 * Loads the Ernest execution class  
 	 * @author ogeorgeon 
 	 */
@@ -923,23 +824,6 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		return m_ernest;
 	}
 
-	/**
-	 * Handle human commands  
-	 * @author mfriedrich
-	 */
-	private HumanView getHumanView() 
-	{
-		try {
-			if (m_human == null)
-				m_human = new HumanView(m_model);
-		} catch (NoClassDefFoundError e) {
-			JOptionPane.showMessageDialog(this,
-					"Error loading the Human engine!\n", "Error!",
-					JOptionPane.ERROR_MESSAGE);
-		}
-		return m_human;
-	}
-
 	public void keyTyped(KeyEvent e) {
 	}
 
@@ -949,8 +833,5 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 
 	public void keyReleased(KeyEvent e) 
 	{
-		if ((m_model.getInHumanView()) && (m_model.getRunHuman())) {
-			m_human.getQueryHuman().offer(e);
-		}
 	}
 }
