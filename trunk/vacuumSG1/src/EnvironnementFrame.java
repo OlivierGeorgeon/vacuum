@@ -279,14 +279,7 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
 			m_env.m_model.saveCurrentBoard();
 			m_env.m_model.startAgent();
 			Thread agentThread = null;
-			if (m_env.m_model.getType() == Model.ERNEST){
-				System.out.println("Run Ernest ") ;
-				//agentThread = new Thread(getErnestView());
-			}
-			else if (m_env.m_model.getType() == Model.HUMANLOGFILE) {
-				//agentThread = new Thread(getHumanView());
-				m_env.m_model.setRunHuman(true);
-			}
+			System.out.println("Run Ernest ");
 			agentThread.start();
 		}
 		
@@ -299,17 +292,6 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
 					m_env.m_model.init(m_env.m_model.getBoardTempFile());
 					m_env.m_model.startAgent();
 					Thread agentThread = null;
-					if (m_env.m_model.getType() == Model.ERNEST)
-					{
-						//agentThread = new Thread(getErnestView());
-						//getErnestView().init();
-					}
-					else if (m_env.m_model.getType() == Model.HUMANLOGFILE) 
-					{
-						//agentThread = new Thread(getHumanView());
-						m_env.m_model.setRunHuman(true);
-						//getHumanView().init(); // Olivier: does not work
-					}
 					agentThread.start();
 				} 
 				catch (Exception ex) 

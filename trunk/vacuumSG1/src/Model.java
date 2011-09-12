@@ -512,11 +512,6 @@ public class Model extends Observable
 		return count;
 	}
 
-	public int getType()
-	{
-		return m_fileType;
-	}
-
 	public boolean getAllowState()
 	{
 		return m_bAllowState;
