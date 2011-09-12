@@ -32,13 +32,6 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 	private final JMenuItem m_KeyboardLayout 	= new JMenuItem("Key Stroke Short Cuts");
 	private final JMenuItem m_aboutVacuum 		= new JMenuItem("About Vacuumcleaner");
 	
-	private final JMenuItem m_openJessAgent 			= new JMenuItem("Open Jess Agent...");
-	private final JMenuItem m_openSoarAgent 			= new JMenuItem("Open Soar Agent...");
-	private final JMenuItem m_openErnestAgent 			= new JMenuItem("Open Ernest Agent");
-	private final JMenuItem m_openHumanAgent 			= new JMenuItem("Start Human Interface");
-	private final JMenuItem m_setLogFile 				= new JMenuItem("Set the Log File");
-	private final JMenuItem m_setBenchmarkFile 			= new JMenuItem("Set the benchmark File");
-	private final JMenuItem m_setPicture 				= new JMenuItem("Set picture");
 	private final JMenuItem m_exit 						= new JMenuItem("Exit");
 	private final JMenuItem m_configureBoard 			= new JMenuItem("Configure Random Board...");
 	private final JMenuItem m_configureRun        		= new JMenuItem("Configure Run...");
@@ -64,8 +57,8 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 	private IView m_ernest;
 	private EnvSquare[][] m_grid = null;
 
-	private String logFile;
-	public  String BenchmarkFile;
+	//private String logFile;
+	//public  String BenchmarkFile;
 
 	private JPanel m_board;
 	
@@ -196,11 +189,6 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		m_boardChooser.setFileFilter(m_fileFilter);
 		//m_pictureChooser.setFileFilter(m_fileFilter);
 
-		// creating a standard Log file name (Maik)
-		logFile = new String("VC"
-				+ new SimpleDateFormat("yyyyMMMWWHHmmss").format(new Date(
-						System.currentTimeMillis())) + ".txt");
-
 		update(null, null);
 		pack();
 		setVisible(true);
@@ -302,142 +290,6 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		{
 			System.exit(0);
 		}
-	    else if (e.getSource() == m_openHumanAgent) 
-	    {
-	    	int type = Model.HUMANLOGFILE;
-
-	    	m_model.setLogFile(logFile, type);
-	    	m_model.setLogShortFile(new File(logFile).getName());
-
-	    	m_model.setInHumanView(true);
-	    	m_model.setAgentShortFile("Human_Interface");
-		}
-	    else if (e.getSource() == m_setLogFile) 
-	    {
-	    	m_fileFilter.set(".txt", "Log File (.txt)");
-
-	    	m_chooser.setVisible(true);
-
-	    	File saverFile = null;
-	    	m_chooser.setCurrentDirectory(new File(System
-				.getProperty("user.dir")));
-	    	m_chooser.setSelectedFile(new File(System.getProperty("user.dir")
-				+ "//" + logFile));
-	    	int returnVal = m_chooser.showSaveDialog(this);
-
-	    	if (returnVal == JFileChooser.APPROVE_OPTION) 
-	    	{
-	    		saverFile = m_chooser.getSelectedFile();
-	    		try {
-	    			logFile = saverFile.getCanonicalPath();
-	    			logFile = logFile.replace('\\', '/');
-	    			//if (!logFile.endsWith(".txt"))
-	    				//logFile = logFile + ".txt";
-	    			//if (logFile.endsWith(".xml"))
-	    			//{
-	    				
-	    			//}
-	    		}
-	    		catch (IOException e1) 
-	    		{
-	    			e1.printStackTrace();
-	    		}
-	    	}
-		}
-	    else if (e.getSource() == m_setBenchmarkFile) 
-	    {
-	    	m_fileFilter.set(".txt", "Benchmark File (.txt)");
-
-	    	m_chooser.setVisible(true);
-
-	    	File saverFile = null;
-	    	m_chooser.setCurrentDirectory(new File(System
-				.getProperty("user.dir")));
-	    	m_chooser.setSelectedFile(new File(System.getProperty("user.dir")
-				+ "//" + BenchmarkFile));
-	    	int returnVal = m_chooser.showSaveDialog(this);
-
-	    	if (returnVal == JFileChooser.APPROVE_OPTION) 
-	    	{
-	    		saverFile = m_chooser.getSelectedFile();
-	    		try {
-	    			BenchmarkFile = saverFile.getCanonicalPath();
-	    			BenchmarkFile = BenchmarkFile.replace('\\', '/');
-	    		}
-	    		catch (IOException e1) 
-	    		{
-	    			e1.printStackTrace();
-	    		}
-	    	}
-		}
-	    // Sets the agent's picture
-	    else if (e.getSource() == m_setPicture) 
-	    {
-			// m_fileFilter.set(".GIF", "Pictures gif");
-			m_pictureChooser.setVisible(true);
-			int returnVal = m_pictureChooser.showOpenDialog(this);
-			if(returnVal == JFileChooser.APPROVE_OPTION) 
-			{
-				try
-				{
-					File boardFile = m_pictureChooser.getSelectedFile();
-					m_model.setPictureFileName(boardFile.getAbsolutePath());
-
-				}
-				catch (Exception ex)
-				{
-				JOptionPane.showMessageDialog(this, 
-					"Invalid picture file!\n" + 
-					ex.getClass().toString() + ": " + ex.getMessage(),
-					"Error!", 
-					JOptionPane.ERROR_MESSAGE);
-				}
-			}	
-	    }
-	    else if (e.getSource() == m_openJessAgent || 
-				 e.getSource() == m_openSoarAgent)
-		{
-			int type = Model.SOARFILE; 
-	    	
-			// Sets the log file if any Olivier
-			//m_model.setLogFile(logFile);
-	    	//m_model.setLogShortFile(new File(logFile).getName());
-	    	
-			if (e.getSource() == m_openJessAgent)
-			{
-				m_fileFilter.set(".JESS", "Jess Files");
-				type = Model.JESSFILE;
-			}
-			else
-				m_fileFilter.set(".SOAR", "Soar Files");
-			
-			m_chooser.setVisible(true);
-			int returnVal = m_chooser.showOpenDialog(this);
-			if(returnVal == JFileChooser.APPROVE_OPTION) 
-			{
-				try
-				{
-					String agentFile = 
-						m_chooser.getSelectedFile().getCanonicalPath();
-					agentFile = "\"" + agentFile.replace('\\', '/') + "\"";
-					m_model.setAgentFile(agentFile, type);
-					m_model.setAgentShortFile
-						(m_chooser.getSelectedFile().getName());
-					m_run.setEnabled(true);
-				}
-				catch (IOException fe)
-				{
-					System.out.println(fe);
-				}
-			}			
-		}
-		// Ernest agent
-	    else if (e.getSource() == m_openErnestAgent)
-		{
-			m_model.setAgentFile("", Model.ERNEST);
-			m_model.setAgentShortFile("Ernest");
-			m_run.setEnabled(true);
-		}
 		// Load Board
 		else if (e.getSource() == m_loadBoard)
 		{
@@ -537,19 +389,14 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 				m_statusModel.pushPermStatus("Ready.");
 			}
 
-			if ((m_model.getAgentFile() != null)
-				    || (m_model.getInHumanView() == true)) 
-			{
-
-				if (m_model.boardTempExists()) {
-					m_rerun.setEnabled(true);
-				}
-				m_model.setRunHuman(false);
-				m_run.setEnabled(true);
-				m_reset.setEnabled(true);
-				m_stop.setEnabled(false);
-				setTitle(TITLE + " - " + m_model.getAgentShortFile());
+			if (m_model.boardTempExists()) {
+				m_rerun.setEnabled(true);
 			}
+			m_model.setRunHuman(false);
+			m_run.setEnabled(true);
+			m_reset.setEnabled(true);
+			m_stop.setEnabled(false);
+			setTitle(TITLE + " - " + m_model.getVersion());
 		}
 		else
 		{
@@ -699,10 +546,6 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 	{
 		// mnemonics...
 		m_file.setMnemonic(KeyEvent.VK_F);
-		m_openJessAgent.setMnemonic(KeyEvent.VK_J);
-		m_openSoarAgent.setMnemonic(KeyEvent.VK_A);
-		m_openErnestAgent.setMnemonic(KeyEvent.VK_E);
-		m_openHumanAgent.setMnemonic(KeyEvent.VK_H);
 		m_exit.setMnemonic(KeyEvent.VK_X);
 
 		m_options.setMnemonic(KeyEvent.VK_O);
@@ -717,25 +560,8 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		m_movePunish.setMnemonic(KeyEvent.VK_P);
 
 		// file menu...
-		m_file.add(m_openJessAgent);
-		m_file.add(m_openSoarAgent);
-		m_file.add(m_openErnestAgent);
-		m_file.add(m_openHumanAgent);
-		m_file.addSeparator();
-		m_file.add(m_setLogFile);
-		m_file.add(m_setBenchmarkFile);
-		m_file.addSeparator();
-		m_file.add(m_setPicture);
-		m_file.addSeparator();
 		m_file.add(m_exit);
 		
-		m_openJessAgent.addActionListener(this);
-		m_openSoarAgent.addActionListener(this);
-		m_openErnestAgent.addActionListener(this);
-		m_openHumanAgent.addActionListener(this);
-		m_setLogFile.addActionListener(this);
-		m_setBenchmarkFile.addActionListener(this);
-		m_setPicture.addActionListener(this);
 		m_exit.addActionListener(this);
 
 		// options menu...

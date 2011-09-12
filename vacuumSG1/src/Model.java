@@ -109,14 +109,14 @@ public class Model extends Observable
 	private int[][] m_wall;
 	private int[][] m_anim;
 
-	private String m_file;
-	private String m_shortFile;
+	//private String m_file;
+	//private String m_shortFile;
 	
 	// Maik Friedrich
-	private String m_logfile;
-	private String m_logshortFile;
+	//private String m_logfile;
+	//private String m_logshortFile;
 	private String m_boardFileName = "";
-	private String m_pictureFileName = "";
+	//private String m_pictureFileName = "";
 	private String BoardTempFile;
 	private boolean inHumanView = false;
 	private boolean runHuman = false;
@@ -134,7 +134,7 @@ public class Model extends Observable
 	private Runnable m_mainThread;
 	private Runnable m_eventThread;
 	
-	private int m_fileType = JESSFILE;
+	//private int m_fileType = JESSFILE;
 	
 	private boolean m_bAllowState     = true;
 	private boolean m_bRadarSensor    = true;
@@ -187,6 +187,14 @@ public class Model extends Observable
 		notifyObservers2();
 	}
 
+	/**
+	 * @return The version of Ernest
+	 */
+	public String getVersion()
+	{
+		return "Ernest";
+	}
+	
 	/**
 	 * Initialize the grid from a board file
 	 * @author mcohen
@@ -462,12 +470,6 @@ public class Model extends Observable
 		return m_status;
 	}
 
-	public String getAgentFile()
-	{ return m_file; }
-
-	public String getAgentShortFile()
-	{ return m_shortFile; }
-
 	public int getDirtyCount()
 	{ return m_dirtyCount; }
 
@@ -667,21 +669,6 @@ public class Model extends Observable
 		notifyObservers2();
 	}
 	
-	public void setAgentFile(String file, int type)
-	{ 
-		m_fileType = type;
-		m_file = file; 
-		setChanged();
-		notifyObservers2();
-	}
-
-	public void setAgentShortFile(String file)
-	{ 
-		m_shortFile = file; 
-		setChanged();
-		notifyObservers2();
-	}
-
 	public void setPenalizeForMovement(boolean bPenalize)
 	{
 		m_bPenalizeForMovement = bPenalize;
@@ -766,11 +753,7 @@ public class Model extends Observable
 		m_delay = prefs.getInt(PREF_DELAY,INIT_DELAY);
 		m_bRandomBoard = prefs.getBoolean(PREF_RANDOMBOARD, true);
 		m_boardFileName = prefs.get(PREF_BOARDFILE, "");
-		m_pictureFileName = prefs.get(PREF_PICTUREFILE, INIT_PICTURE);
 		m_bSpeakAloud = prefs.getBoolean(PREF_SPEAKALOUD, true);
-		m_file = prefs.get(PREF_AGENTFILE, null); 
-		m_shortFile = prefs.get(PREF_AGENTSHORTFILE,null);
-		m_fileType = prefs.getInt(PREF_AGENTTYPE,AGENTUNDEFINED);
 		
 	}
 
@@ -791,11 +774,7 @@ public class Model extends Observable
 		prefs.putInt(PREF_DELAY, m_delay);
 		prefs.putBoolean(PREF_RANDOMBOARD, m_bRandomBoard);
 		prefs.put(PREF_BOARDFILE, m_boardFileName);
-		prefs.put(PREF_PICTUREFILE, m_pictureFileName);
 		prefs.putBoolean(PREF_SPEAKALOUD, m_bSpeakAloud);
-		prefs.put(PREF_AGENTFILE, m_file);
-		prefs.put(PREF_AGENTSHORTFILE, m_shortFile);
-		prefs.putInt(PREF_AGENTTYPE, m_fileType);
 	}
 
 	protected void notifyObservers2()
@@ -830,44 +809,8 @@ public class Model extends Observable
 		}
 	}
 
-	/**************************************
-	 * Modifications of Maik Friedrich
-	 * @author mfriedrich
-	 * @author ogeorgeon
-	 **************************************/
-	public String getLogFile() {
-		return m_logfile;
-	}
-
-	public void setLogFile(String file, int type) {
-		m_fileType = type;
-		m_logfile = file;
-		setChanged();
-		notifyObservers2();
-	}
-
-	public void setLogFile(String m_logfile) {
-		this.m_logfile = m_logfile;
-	}
-
-	public String getLogShortFile() {
-		return m_logshortFile;
-	}
-
-	public void setLogShortFile(String file) {
-		m_logshortFile = file;
-	}
-
 	public void setBoardFileName(String file) {
 		m_boardFileName = file;
-	}
-
-	/**************************************
-	 * Set the agent's picture file name
-	 * @author ogeorgeon
-	 **************************************/
-	public void setPictureFileName(String file) {
-		m_pictureFileName = file;
 	}
 
 	public boolean getInHumanView() {
@@ -952,9 +895,6 @@ public class Model extends Observable
 	}
 	public String getBoardFileName() {
 		return m_boardFileName;
-	}
-	public String getPictureFileName() {
-		return m_pictureFileName;
 	}
 
 	/**************************************
