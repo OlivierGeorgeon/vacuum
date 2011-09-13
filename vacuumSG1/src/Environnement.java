@@ -35,13 +35,29 @@ public class Environnement extends JPanel implements MouseListener{
 	public float[] leaf_x={ 0, (float) 0.8 , (float) 0.7,(float) 0.2,0};
 	public float[] leaf_y={ 0, (float) 0.2 , (float) 0.7,(float) 0.8,0};
 	
-	
-	
+	private CubicCurve2D.Double petal1 = new CubicCurve2D.Double(0, 0,  0,80, 80,0,   0, 0);
+	private CubicCurve2D.Double petal2 = new CubicCurve2D.Double(0, 0, 80, 0,  0,-80, 0, 0);
+	private CubicCurve2D.Double petal3 = new CubicCurve2D.Double(0, 0,  0,-80,-80, 0, 0, 0);
+	private CubicCurve2D.Double petal4 = new CubicCurve2D.Double(0, 0, -80, 0, 0, 80, 0, 0);
+
+	private GeneralPath m_leaf = new GeneralPath();
+	private GeneralPath m_fish = new GeneralPath();
+		
 	public Environnement(Model model){
 		m_model=model;
 		m_h=m_model.getHeight();
 		m_w=m_model.getWidth();
 		addMouseListener(this);
+		
+		m_leaf.append(petal1, false);
+		m_leaf.append(petal2, false);
+		m_leaf.append(petal3, false);
+		m_leaf.append(petal4, false);
+		
+		m_fish.append(new CubicCurve2D.Double(-40, 15,  -30, 0, 40, -40,   40, 0), false);
+		m_fish.append(new CubicCurve2D.Double( 40,  0,  40, 40, -30,  0,   -40, -15), true);
+		m_fish.append(new Area(new Ellipse2D.Double( 20,  -10,  8, 8)), false);
+
 	}
 	
 	
@@ -77,6 +93,7 @@ public class Environnement extends JPanel implements MouseListener{
 		Graphics2D g2d = (Graphics2D)g;
 
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+		AffineTransform boardReference = g2d.getTransform();
 
 		int h=this.getHeight();
 		int w=this.getWidth();
@@ -108,26 +125,36 @@ public class Environnement extends JPanel implements MouseListener{
 				
 				// fish
 				if (m_model.getDirty(i, j)== m_model.DIRTY ){
+					AffineTransform centerCell = new AffineTransform();
+					centerCell.translate(i*c_w+c_w/2, j*c_h+c_h/2);
+					centerCell.scale((double) c_w / 100, (double) c_h / 100); 
+					g2d.transform(centerCell);
+
 					g2d.setColor(m_model.getBackgroundColor(i, j) );
-					g2d.fillPolygon(transform_x(fish_x,fish_y,0,c_w/2,i*c_w+c_w/2) , 
-						          transform_y(fish_x,fish_y,0,c_h/2,j*c_h+c_h/2) , 18);
-					g2d.setColor(Color.white);
-					g2d.fillOval((int)(i*(w/m_w)+(w/m_w)*0.7), (int)(j*c_h+c_h*0.35), (int)(c_w*0.1), (int)(c_h*0.1));
+					
+					g2d.fill(m_fish);
+					g2d.setTransform(boardReference);
+
+					
+//					g2d.setColor(m_model.getBackgroundColor(i, j) );
+//					g2d.fillPolygon(transform_x(fish_x,fish_y,0,c_w/2,i*c_w+c_w/2) , 
+//						          transform_y(fish_x,fish_y,0,c_h/2,j*c_h+c_h/2) , 18);
+//					g2d.setColor(Color.white);
+//					g2d.fillOval((int)(i*(w/m_w)+(w/m_w)*0.7), (int)(j*c_h+c_h*0.35), (int)(c_w*0.1), (int)(c_h*0.1));
 				}
 				
 				// leaf
 				if (m_model.getDirty(i, j) > m_model.DIRTY )
 				{
-					g2d.setColor(m_model.getBackgroundColor(i, j) );
+					AffineTransform centerCell = new AffineTransform();
+					centerCell.translate(i*c_w+c_w/2, j*c_h+c_h/2);
+					centerCell.scale((double) c_w / 100, (double) c_h / 100); 
+					g2d.transform(centerCell);
 
-					g2d.fillPolygon(transform_x(leaf_x,leaf_y,0,c_w/2,i*c_w+c_w/2) , 
-							      transform_y(leaf_x,leaf_y,0,c_h/2,j*c_h+c_h/2) , 4);
-					g2d.fillPolygon(transform_x(leaf_x,leaf_y,(float) (Math.PI/2  ),c_w/2,i*c_w+c_w/2) , 
-						          transform_y(leaf_x,leaf_y,(float) (Math.PI/2  ),c_h/2,j*c_h+c_h/2) , 4);
-					g2d.fillPolygon(transform_x(leaf_x,leaf_y,(float) (Math.PI    ),c_w/2,i*c_w+c_w/2) , 
-					              transform_y(leaf_x,leaf_y,(float) (Math.PI    ),c_h/2,j*c_h+c_h/2) , 4);
-					g2d.fillPolygon(transform_x(leaf_x,leaf_y,(float) (-Math.PI/2),c_w/2,i*c_w+c_w/2) , 
-					              transform_y(leaf_x,leaf_y,(float) (-Math.PI/2),c_h/2,j*c_h+c_h/2) , 4);
+					g2d.setColor(m_model.getBackgroundColor(i, j) );
+					
+					g2d.fill(m_leaf);
+					g2d.setTransform(boardReference);
 				}
 				
 			}
@@ -225,7 +252,7 @@ public class Environnement extends JPanel implements MouseListener{
 		int width = fm.stringWidth(counter);
 		
 		g2d.setColor(new Color(200, 255, 200));		
-		g2d.drawString(counter, m_w*c_w - c_w/10 - width, c_h/2+5);	
+		g2d.drawString(counter, m_w*c_w - c_w*1.1f - width, c_h*1.5f + 5);	
 	}
 	
 }

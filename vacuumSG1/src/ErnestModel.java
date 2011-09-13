@@ -9,18 +9,24 @@ import java.awt.geom.Arc2D;
 import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
 
+import javax.vecmath.Matrix3f;
+import javax.vecmath.Vector3f;
+
 import ernest.*;
 import utils.Pair;
 import tracing.*;
 
 /**************************************
  * A Model for Ernest 
- * (This model works with Ernest 8.2 in a grid where there is no singularties in walls)
- * (http://e-ernest.blogspot.com/2011/01/ernest-82-can-find-his-food.html)
+ * This class gathers methods that, we believe, will survive generations of Ernests.
  * @author ogeorgeon
  **************************************/
 public class ErnestModel extends Model 
 {
+	
+	public static int ACTION_FORWARD = 0;
+	public static int ACTION_LEFT = 1;
+	public static int ACTION_RIGHT = 2;
 
 	/** The angular field of each eye. */
 	private double m_eyeAngle ;
@@ -31,7 +37,26 @@ public class ErnestModel extends Model
 	protected IErnest m_ernest;
 	protected ISensorymotorSystem m_sensorymotorSystem;
 	protected ITracer m_tracer;
-	
+
+	/**
+	 * Value of the diagonal projection in 2D:
+	 * 1 for a square diagonal,
+	 * 1/sqrt(2) for a circle diagonal.
+	 */
+	public final static float INV_SQRT_2 = (float) (1/Math.sqrt(2));
+	final private float DIAG2D_PROJ = INV_SQRT_2;
+
+	//Local directions
+	final private Vector3f DIRECTION_AHEAD = new Vector3f(1, 0, 0);
+	final private Vector3f DIRECTION_BEHIND = new Vector3f(-1, 0, 0);
+	final private Vector3f DIRECTION_LEFT = new Vector3f(0, 1, 0);
+	final private Vector3f DIRECTION_RIGHT = new Vector3f(0, -1, 0);
+	final private Vector3f DIRECTION_AHEAD_LEFT = new Vector3f(DIAG2D_PROJ, DIAG2D_PROJ, 0);
+	final private Vector3f DIRECTION_AHEAD_RIGHT = new Vector3f(DIAG2D_PROJ, -DIAG2D_PROJ, 0);
+	final private Vector3f DIRECTION_BEHIND_LEFT = new Vector3f(-DIAG2D_PROJ, DIAG2D_PROJ, 0);
+	final private Vector3f DIRECTION_BEHIND_RIGHT = new Vector3f(-DIAG2D_PROJ, -DIAG2D_PROJ, 0);	
+	final private float SOMATO_RADIUS = 1;
+
 	/**
 	 * Initialize the Ernest agent.
 	 */
@@ -82,12 +107,14 @@ public class ErnestModel extends Model
 	
 	/**
 	 * Generates a retina image from Ernest's view point.
+	 * (Uses Ernest's orientationRad value, trigonometric, counterclockwise, radius).
 	 * @return The array of colors projected onto the retina.
 	 */ 
-	protected Pair<Integer, Color>[] getRetina() {
+	protected Pair<Integer, Color>[] getRetina(double orientationRad) {
 		@SuppressWarnings("unchecked")
 		Pair<Integer, Color>[] retina = new Pair[Ernest.RESOLUTION_RETINA];
-		double angle = - m_orientationAngle;
+		//double angle = - m_orientationAngle;
+		double angle = orientationRad - Math.PI/2;
 		double angleStep = Math.PI / Ernest.RESOLUTION_RETINA;
 		for (int i = 0; i < Ernest.RESOLUTION_RETINA; i++) {
 			retina[i] = scanArc((float)angle, (float)angleStep);
@@ -98,7 +125,7 @@ public class ErnestModel extends Model
 	/**
 	 * Scan an arc from Ernest's viewpoint, starting from the initial angle position and going through the angular span.
 	 * Stop scanning at the first singularity found.
-	 * @param t The initial angular position (trigonometric/counterclockwise - radians)
+	 * @param t The initial angular position (trigonometric/counterclockwise - radian)
 	 * @param a The arc's angular span (trigonometric/counterclockwise)
 	 * @param 20 The arc's diameter (the agent's visual range)
 	 * @return the color detected. 
@@ -121,7 +148,7 @@ public class ErnestModel extends Model
 	/**
 	 * Scan the squares that are on a ray from a viewpoint to a target square
 	 *  http://playtechs.blogspot.com/2007/03/raytracing-on-grid.html 
-	 * @return Distance to the dirty square if any, 1000 if no dirt. 
+	 * @return Distance to the dirty square if any, Ernest.INFINITE if no dirt. 
 	 */
 	protected Pair<Integer, Color> rayTrace(float x0, float y0, float x1, float y1) {
 		float dx = Math.abs(x1 - x0);
@@ -185,8 +212,55 @@ public class ErnestModel extends Model
 	    		--n;
 	        }
 	    }
-		
 		return Pair.create(Ernest.INFINITE, WALL_COLOR);
 	}
 
+	/**
+	 * Compute the tactile stimuli 
+	 * @return The matrix of tactile stimuli. 
+	 */
+	protected int[][] somatoMap() {
+		int[][] somatoMap = new int[3][3];
+		somatoMap[1][1] = soma(new Vector3f());
+		somatoMap[0][0] = soma(DIRECTION_AHEAD_LEFT);
+		somatoMap[1][0] = soma(DIRECTION_AHEAD);
+		somatoMap[2][0] = soma(DIRECTION_AHEAD_RIGHT);
+		somatoMap[2][1] = soma(DIRECTION_RIGHT);
+		somatoMap[2][2] = soma(DIRECTION_BEHIND_RIGHT);
+		somatoMap[1][2] = soma(DIRECTION_BEHIND);
+		somatoMap[0][2] = soma(DIRECTION_BEHIND_LEFT);
+		somatoMap[0][1] = soma(DIRECTION_LEFT);
+		return somatoMap;
+	}
+	/**
+	 * Tactile stimuli. 
+	 * @param direction The direction of the touch as referred to Ernest.
+	 * @return The tactile stimulus in x and y. 
+	 */
+	protected int soma(Vector3f direction) {
+		int soma = Ernest.STIMULATION_TOUCH_EMPTY.getValue();
+		Vector3f localPoint = new Vector3f(direction);
+		localPoint.scale(SOMATO_RADIUS);
+		Vector3f point = localToParentRef(localPoint);
+		if (affordTouchSoft(point))
+			soma = Ernest.STIMULATION_TOUCH_SOFT.getValue();
+		if (affordEat(point))
+			soma = Ernest.STIMULATION_TOUCH_FISH.getValue();
+		if (!affordWalk(point)) 
+			soma = Ernest.STIMULATION_TOUCH_WALL.getValue();
+		return soma;
+	}
+	/**
+	 * @param localVec A position relative to Ernest.
+	 * @return The absolute position relative to the board. 
+	 */
+	public Vector3f localToParentRef(Vector3f localVec) {
+		Matrix3f rot = new Matrix3f();
+		rot.rotZ((float) Math.toRadians(m_orientationRad));
+		Vector3f parentVec = new Vector3f();
+		rot.transform(localVec, parentVec);
+		parentVec.add(new Vector3f(m_x, m_y, 0));
+		return parentVec;
+	}	
+	
 }

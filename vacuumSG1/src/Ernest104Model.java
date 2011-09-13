@@ -21,10 +21,8 @@ import utils.Pair;
 
 
 /**************************************
- * A Model for Ernest 10
- * Ernest can turn PI/4 and move in diagonal.
- * See http://e-ernest.blogspot.com/2011/02/ernestor.html
- * and http://e-ernest.blogspot.com/2011/02/ernest-84.html
+ * A Model for Ernest 10.4
+ * Ernest gives impulsions for moving forward and turning
  * @author ogeorgeon
  **************************************/
 public class Ernest104Model extends ErnestModel 
@@ -45,7 +43,6 @@ public class Ernest104Model extends ErnestModel
 	public float angle=0;
 	public Color frontColor;
 	public boolean tempo=true;
-	public boolean continuum=true;
 	public ObjectMemory m_objMemory;
 	public InternalStatesFrame m_int;
 	public TactileMap m_tactile;
@@ -150,7 +147,7 @@ public class Ernest104Model extends ErnestModel
 		// See the environment
 		int [][] matrix = new int[Ernest.RESOLUTION_RETINA][8 + 1 + 3];
 		Pair<Integer, Color>[] eyeFixation = null;
-		eyeFixation = getRetina();
+		eyeFixation = getRetina(m_orientationRad);
 		
 		for (int i = 0; i < Ernest.RESOLUTION_RETINA; i++)
 		{
@@ -207,34 +204,25 @@ public class Ernest104Model extends ErnestModel
 		
 		boolean status = true;
 		
-		if (isNight())
+		if (schema.equals(""))
 		{
 			setChanged();
 			notifyObservers2();			
 			sleep(200);
+			status = true;
 		}
-		else
-		{
-			if (schema.equals(""))
-			{
-				setChanged();
-				notifyObservers2();			
-				sleep(200);
-				status = true;
-			}
-			else if (schema.equals("v"))
-				status = turnRight();
-			else if (schema.equals("^"))
-				status = turnLeft();
-			else if (schema.equals(">"))
-				status = forward();
-	
-			// Trace the environmental data
-			//Object environment = m_tracer.newEvent("environment", "position", m_counter);
-			//m_tracer.addSubelement(environment, "x", m_x + "");
-			//m_tracer.addSubelement(environment, "y", m_y + "");
-			//m_tracer.addSubelement(environment,"orientation", m_orientation + "");
-		}
+		else if (schema.equals("v"))
+			status = turnRight();
+		else if (schema.equals("^"))
+			status = turnLeft();
+		else if (schema.equals(">"))
+			status = forward();
+
+		// Trace the environmental data
+		//Object environment = m_tracer.newEvent("environment", "position", m_counter);
+		//m_tracer.addSubelement(environment, "x", m_x + "");
+		//m_tracer.addSubelement(environment, "y", m_y + "");
+		//m_tracer.addSubelement(environment,"orientation", m_orientation + "");
 		
 	    return status;
 	}
@@ -263,19 +251,14 @@ public class Ernest104Model extends ErnestModel
 	 */
 	protected boolean turnLeft(){
 		m_eyeOrientation = 0;
-		if (continuum){
-			rendu(true);
-			angle=m_map.imax;
-			float orientation=(m_actionList.get(1)).selectOutput(angle,frontColor)+1;
-			m_Ir=-orientation;
-		}
-		else{
-			float rand= (float) (Math.random()*20-10);
-			m_Ir=-45+rand;
-		}
+
+		rendu(true);
+		angle=m_map.imax;
+		float orientation=(m_actionList.get(ACTION_LEFT)).selectOutput(angle,frontColor)+1;
+		m_Ir=-orientation;
 		
-		lastAction=1;
-		return impulse(1);
+		lastAction=ACTION_LEFT;
+		return impulse(ACTION_LEFT);
 	}
 	
 	/**
@@ -285,19 +268,13 @@ public class Ernest104Model extends ErnestModel
 	protected boolean turnRight(){
 		m_eyeOrientation = 0;
 		
-		if (continuum){
-			rendu(true);
-			angle=m_map.imax;
-			float orientation=(m_actionList.get(2)).selectOutput(angle,frontColor)+1;
-			m_Ir=+orientation;
-		}
-		else{
-			float rand= (float) (Math.random()*20-10);
-			m_Ir=45+rand;
-		}
+		rendu(true);
+		angle=m_map.imax;
+		float orientation=(m_actionList.get(ACTION_RIGHT)).selectOutput(angle,frontColor)+1;
+		m_Ir=+orientation;
 		
-		lastAction=2;
-		return impulse(2);
+		lastAction=ACTION_RIGHT;
+		return impulse(ACTION_RIGHT);
 	}
 	
 	/**
@@ -306,19 +283,300 @@ public class Ernest104Model extends ErnestModel
 	 */
 	protected boolean forward(){
 		
-		if (continuum){
-			rendu(true);
-			m_If=(float) ((m_actionList.get(0)).selectOutput(distance,frontColor)+0.1);
-		}
-		else{
-			float rand= (float) (Math.random()-0.5);
-			m_If=1+rand;
-		}
+		rendu(true);
+		m_If=(float) ((m_actionList.get(ACTION_FORWARD)).selectOutput(distance,frontColor)+0.1);
 		
-		lastAction=0;
-		return impulse(0);
+		lastAction=ACTION_FORWARD;
+		return impulse(ACTION_FORWARD);
 	}
 
+	/**
+	 * Perform an action in the environment 
+	 * @param act the action to perform
+	 * @return true if bump, false if not bump. 
+	 */
+	public boolean impulse(int act){
+		
+		boolean statusL=true;
+		boolean statusR=true;
+		float step;                  // length of a step
+		float HBradius=(float) 0.4;  // radius of Ernest hitbox 
+		 
+		float maxPoint=m_map.max;
+		
+		int cell_x=Math.round(m_x);
+		int cell_y=Math.round(m_y);
+		
+		boolean status1=true;         // vertical motion
+		boolean status2=true;         // horizontal motion
+		boolean status3=true;         // begin on a dirty cell
+		boolean status4=true;         // reach a dirty cell (=false when reach dirty cell)
+		boolean status5=true;         // touch a corner
+		
+		float dist=0;
+		float a=0;
+		Color previousColor=frontColor;
+		
+		float vlmin;
+		float vrmin;
+		
+		vlmin=(float) 0.1;
+		vrmin=(float) 0.1;
+		
+		status3=isDirty(cell_x,cell_y);
+		
+		while  ( ((m_v>vlmin || m_If>0) && statusL) ||  (Math.abs(m_theta)>vrmin  || m_Ir!=0) ){
+			
+			// set linear impulsion
+			if (m_If>0){
+				m_v=m_If;
+				m_If=0;
+			}
+			else 
+				m_v-= 0.01*m_v;
+			
+			if (m_v<=0.1) m_v=0;
+			
+			// set angular impulsion
+			if (m_Ir!=0){
+				m_theta=m_Ir;
+				m_Ir=0;
+			}
+			else 
+				m_theta-= 0.1*m_theta;
+			
+			//if (Math.abs(m_theta)<=0.1) m_theta=0;
+			
+	// compute new position
+			
+			// for linear movements
+			double d;
+			if (statusL){
+				step=m_v/90;
+				
+				double dx= step*Math.sin(m_orientationAngle);
+				double dy=-step*Math.cos(m_orientationAngle);
+				cell_x=Math.round(m_x);
+				cell_y=Math.round(m_y);
+				dist+=step;
+				m_x+=dx;
+				m_y+=dy;
+			}
+			
+			// for angular movements
+			m_orientation+=m_theta/10;
+			a+=m_theta/10;
+			if (m_orientation < 0)   m_orientation +=360;
+			if (m_orientation >=360) m_orientation -=360;
+			m_orientationAngle =  m_orientation * Math.PI/2 / ORIENTATION_RIGHT;
+			
+			
+	// compute state
+		// for linear movement
+			// current cell
+			if (isDirty(cell_x,cell_y)){
+				if (status3 && !isDirty(cell_x,cell_y)) status3=false;
+				if (!status3 && isDirty(cell_x,cell_y)) status4=false;
+			}
+			// top cell
+			if ( (isWall(cell_x,cell_y-1)) && (m_y-HBradius) -((float)cell_y-1+0.5)<0 ){
+				status1=false;
+				m_y+= ((float)cell_y-1+0.5) - (m_y-HBradius);
+			}
+			// right cell
+			if ( (isWall(cell_x+1,cell_y)) && ((float)cell_x+1-0.5) -(m_x+HBradius)<0 ){
+				status2=false;
+				m_x-= (m_x+HBradius) - ((float)cell_x+1-0.5);
+			}
+			// bottom cell
+			if ( (isWall(cell_x,cell_y+1)) && ((float)cell_y+1-0.5) -(m_y+HBradius)<0 ){
+				status1=false;
+				m_y-= (m_y+HBradius) - ((float)cell_y+1-0.5);
+			}
+			// left cell
+			if ( (isWall(cell_x-1,cell_y)) && (m_x-HBradius) -((float)cell_x-1+0.5)<0 ){
+				status2=false;
+				m_x+= ((float)cell_x-1+0.5) - (m_x-HBradius);
+			}
+			// top right
+			d= (m_x-(cell_x+1-0.5))*(m_x-(cell_x+1-0.5))+(m_y-(cell_y-1+0.5))*(m_y-(cell_y-1+0.5));
+			d=Math.sqrt(d);
+			if (isWall(cell_x+1,cell_y-1) && d-0.4<0){
+				while (d-0.4<0){
+					m_x-=0.01;
+					m_y+=0.01;
+					d= (m_x-(cell_x+1-0.5))*(m_x-(cell_x+1-0.5))+(m_y-(cell_y-1+0.5))*(m_y-(cell_y-1+0.5));
+					d=Math.sqrt(d);
+				}
+				status5=false;
+			}
+			// bottom right
+			d= (m_x-(cell_x+1-0.5))*(m_x-(cell_x+1-0.5))+(m_y-(cell_y+1-0.5))*(m_y-(cell_y+1-0.5));
+			d=Math.sqrt(d);
+			if (isWall(cell_x+1,cell_y+1) && d-0.4<0){
+				while (d-0.4<0){
+					m_x-=0.01;
+					m_y-=0.01;
+					d= (m_x-(cell_x+1-0.5))*(m_x-(cell_x+1-0.5))+(m_y-(cell_y-1+0.5))*(m_y-(cell_y-1+0.5));
+					d=Math.sqrt(d);
+				}
+				status5=false;
+			}
+			// bottom left
+			d= (m_x-(cell_x-1+0.5))*(m_x-(cell_x-1+0.5))+(m_y-(cell_y+1-0.5))*(m_y-(cell_y+1-0.5));
+			d=Math.sqrt(d);
+			if (isWall(cell_x-1,cell_y+1) && d-0.4<0){
+				while (d-0.4<0){
+					m_x+=0.01;
+					m_y-=0.01;
+					d= (m_x-(cell_x+1-0.5))*(m_x-(cell_x+1-0.5))+(m_y-(cell_y-1+0.5))*(m_y-(cell_y-1+0.5));
+					d=Math.sqrt(d);
+				}
+				status5=false;
+			}
+			// top left
+			d= (m_x-(cell_x-1+0.5))*(m_x-(cell_x-1+0.5))+(m_y-(cell_y-1+0.5))*(m_y-(cell_y-1+0.5));
+			d=Math.sqrt(d);
+			if (isWall(cell_x-1,cell_y-1) && d-0.4<0){
+				while (d-0.4<0){
+					m_x+=0.01;
+					m_y+=0.01;
+					d= (m_x-(cell_x+1-0.5))*(m_x-(cell_x+1-0.5))+(m_y-(cell_y-1+0.5))*(m_y-(cell_y-1+0.5));
+					d=Math.sqrt(d);
+				}
+				status5=false;
+			}
+			if (tempo){
+				rendu(false);
+				m_env.repaint();
+				m_int.repaint();
+				//sleep((int)(1));
+			}
+			
+			m_tactileFrame.repaint();
+			
+			statusL=status1 && status2 && status4;
+		}
+		
+		
+	// compute state for angular movement
+		int adjacent_x = Math.round(m_x);
+		int adjacent_y = Math.round(m_y);
+		
+		// Adjacent square
+		if (m_orientation < ORIENTATION_UP_RIGHT && m_orientation >=ORIENTATION_UP_LEFT)
+			adjacent_y = Math.round(m_y) - 1;
+		if (m_orientation >=ORIENTATION_UP && m_orientation<ORIENTATION_RIGHT){
+			adjacent_x = Math.round(m_x) + 1;
+			adjacent_y = Math.round(m_y) - 1;
+		}
+		if (m_orientation >= ORIENTATION_UP_RIGHT && m_orientation <ORIENTATION_DOWN_RIGHT)
+			adjacent_x = Math.round(m_x) + 1;
+		if (m_orientation >= ORIENTATION_RIGHT && m_orientation <ORIENTATION_DOWN){
+			adjacent_x = Math.round(m_x) + 1;
+			adjacent_y = Math.round(m_y) + 1;
+		}
+		if (m_orientation >= ORIENTATION_DOWN_RIGHT && m_orientation <ORIENTATION_DOWN_LEFT)
+			adjacent_y = Math.round(m_y) + 1;
+		if (m_orientation >= ORIENTATION_DOWN && m_orientation <ORIENTATION_LEFT){
+			adjacent_x = Math.round(m_x) - 1;
+			adjacent_y = Math.round(m_y) + 1;
+		}
+		if (m_orientation >= ORIENTATION_DOWN_LEFT && m_orientation <ORIENTATION_UP_LEFT)
+			adjacent_x = Math.round(m_x) - 1;
+		if (m_orientation >= ORIENTATION_LEFT && m_orientation <ORIENTATION_UP){
+			adjacent_x = Math.round(m_x) - 1;
+			adjacent_y = Math.round(m_y) - 1;
+		}
+		
+		if ((adjacent_x >= 0) && (adjacent_x < m_w) && (adjacent_y >= 0) && (adjacent_y < m_h)){
+			if (isWall(adjacent_x, adjacent_y)){
+				setAnim(adjacent_x,adjacent_y, ANIM_RUB); 
+				statusR = false;
+			}
+		}
+		else
+			statusR = false;
+
+		if ((adjacent_x >= 0) && (adjacent_x < m_w) && (adjacent_y >= 0) && (adjacent_y < m_h))
+			setAnim(adjacent_x, adjacent_y, ANIM_NO);	
+		
+		setChanged();
+		notifyObservers2();			
+		
+		//if (tempo) sleep(10);
+		
+		setChanged();
+		notifyObservers2();
+		
+		
+		rendu(true);
+		
+	// define reward for linear movement
+		int reward=0;
+		
+		if (act==0){
+		// define the "reward" for wall objects
+			if (previousColor.equals(new Color(0,128,  0)) ||
+					previousColor.equals(new Color(0,230, 92)) ||
+					previousColor.equals(new Color(0,230,161)) ){
+				if (!status1 || !status2 || !status5) reward=-100;
+				else                      reward= 100;
+			}
+			else{
+				if (!status4){
+					reward=(int) (100- (Math.max(0, m_v*m_v-0.1)*2) );
+				}
+				else{
+					reward= (int) (100 - (distance*distance*2));
+				}		
+			}
+			m_actionList.get(0).setResults(reward);
+		}
+	// define reward for angular movement
+		else{
+			//reward= 100- Math.abs(m_map.imax-90)*2;
+			reward=(int) (100 - Math.abs( -(angle-90) + a )*4);
+			// point lost
+			if (m_map.max+1<maxPoint) reward=-100;
+			// new point
+			if (m_map.max>maxPoint+1) reward= 100;
+			
+			if (act==1){
+				m_actionList.get(1).setResults(reward);
+			}
+			if (act==2){
+				m_actionList.get(2).setResults(reward);
+			}
+		}
+		
+		//sleep((int)(70));
+		//m_int.saveImage();
+		
+		//sleep((int)(10));
+		//m_env.saveImage();
+		
+		if (!status4){
+			if (previousColor.equals(new Color(150, 128, 255))) m_objMemory.setValue(previousColor, 100);
+			else                                                m_objMemory.setValue(previousColor,  20);
+			
+			m_v=0;
+		}
+		else if (!status1 || !status2){
+			m_objMemory.setValue(frontColor,-100);
+			m_v=0;
+		}
+		
+		rendu(true);
+		
+		if (act==0) return status1 && status2 && status5;
+		else        return statusR;
+	}
+
+	/**
+	 * Tactile stimuli 
+	 * @return The matrix of tactile stimuli. 
+	 */
 	public int[][] somatoMap()
 	{
 		int[][] somatoMap = new int[3][3];
@@ -442,6 +700,12 @@ public class Ernest104Model extends ErnestModel
 		return somatoMap;
 	}
 	
+	/**
+	 * Tactile stimuli 
+	 * @param x X coordinate of the cell to touch
+	 * @param y Y coordinate of the cell to touch
+	 * @return The tactile stimulus in x and y. 
+	 */
 	public int soma(float x, float y)
 	{
 		int soma = 0;
@@ -1076,309 +1340,6 @@ public class Ernest104Model extends ErnestModel
 		eye.paint(r2,colorMap2,corner2);
 		
 		return retina;
-	}
-	
-	
-	////////////////////////////////////////////////////
-	//
-	////////////////////////////////////////////////////
-	public boolean impulse(int act){
-		
-		boolean statusL=true;
-		boolean statusR=true;
-		float step;                  // length of a step
-		float HBradius=(float) 0.4;  // radius of Ernest hitbox 
-		 
-		float maxPoint=m_map.max;
-		
-		int cell_x=Math.round(m_x);
-		int cell_y=Math.round(m_y);
-		
-		boolean status1=true;         // vertical motion
-		boolean status2=true;         // horizontal motion
-		boolean status3=true;         // begin on a dirty cell
-		boolean status4=true;         // reach a dirty cell (=false when reach dirty cell)
-		boolean status5=true;         // touch a corner
-		
-		float dist=0;
-		float a=0;
-		float previousDistance=distance;
-		Color previousColor=frontColor;
-		
-		int i=10;
-		int j=5;
-		
-		float vlmin;
-		float vrmin;
-		
-		if (continuum) {
-			vlmin=(float) 0.1;
-			vrmin=(float) 0.1;
-		}
-		else{
-			vlmin=0;
-			vrmin=0;
-		}
-		
-		
-		status3=isDirty(cell_x,cell_y);
-		
-		while  ( ((m_v>vlmin || m_If>0) && statusL) ||  (Math.abs(m_theta)>vrmin  || m_Ir!=0) ){
-			
-			// set linear impulsion
-			if (m_If>0){
-				m_v=m_If;
-				m_If=0;
-			}
-			else 
-				if (continuum) m_v-= 0.01*m_v;
-				else if (i>0) i--;
-				     else m_v=0;
-			
-			if (m_v<=0.1) m_v=0;
-			
-			// set angular impulsion
-			if (m_Ir!=0){
-				m_theta=m_Ir;
-				m_Ir=0;
-			}
-			else 
-				if (continuum) m_theta-= 0.1*m_theta;
-				else if (j>0) j--;
-				     else m_theta-=m_theta/10;
-			
-			//if (Math.abs(m_theta)<=0.1) m_theta=0;
-			
-	// compute new position
-			
-			// for linear movements
-			double d;
-			if (statusL){
-				if (continuum) step=m_v/90;
-				else           step=m_v/10;
-				
-				double dx= step*Math.sin(m_orientationAngle);
-				double dy=-step*Math.cos(m_orientationAngle);
-				cell_x=Math.round(m_x);
-				cell_y=Math.round(m_y);
-				dist+=step;
-				m_x+=dx;
-				m_y+=dy;
-			}
-			
-			// for angular movements
-			if (continuum){
-				m_orientation+=m_theta/10;
-				a+=m_theta/10;
-			}
-			else m_orientation+=m_theta/9;
-			if (m_orientation < 0)   m_orientation +=360;
-			if (m_orientation >=360) m_orientation -=360;
-			m_orientationAngle =  m_orientation * Math.PI/2 / ORIENTATION_RIGHT;
-			
-			
-	// compute state
-		// for linear movement
-			// current cell
-			if (isDirty(cell_x,cell_y)){
-				if (status3 && !isDirty(cell_x,cell_y)) status3=false;
-				if (!status3 && isDirty(cell_x,cell_y)) status4=false;
-			}
-			// top cell
-			if ( (isWall(cell_x,cell_y-1)) && (m_y-HBradius) -((float)cell_y-1+0.5)<0 ){
-				status1=false;
-				m_y+= ((float)cell_y-1+0.5) - (m_y-HBradius);
-			}
-			// right cell
-			if ( (isWall(cell_x+1,cell_y)) && ((float)cell_x+1-0.5) -(m_x+HBradius)<0 ){
-				status2=false;
-				m_x-= (m_x+HBradius) - ((float)cell_x+1-0.5);
-			}
-			// bottom cell
-			if ( (isWall(cell_x,cell_y+1)) && ((float)cell_y+1-0.5) -(m_y+HBradius)<0 ){
-				status1=false;
-				m_y-= (m_y+HBradius) - ((float)cell_y+1-0.5);
-			}
-			// left cell
-			if ( (isWall(cell_x-1,cell_y)) && (m_x-HBradius) -((float)cell_x-1+0.5)<0 ){
-				status2=false;
-				m_x+= ((float)cell_x-1+0.5) - (m_x-HBradius);
-			}
-			// top right
-			d= (m_x-(cell_x+1-0.5))*(m_x-(cell_x+1-0.5))+(m_y-(cell_y-1+0.5))*(m_y-(cell_y-1+0.5));
-			d=Math.sqrt(d);
-			if (isWall(cell_x+1,cell_y-1) && d-0.4<0){
-				while (d-0.4<0){
-					m_x-=0.01;
-					m_y+=0.01;
-					d= (m_x-(cell_x+1-0.5))*(m_x-(cell_x+1-0.5))+(m_y-(cell_y-1+0.5))*(m_y-(cell_y-1+0.5));
-					d=Math.sqrt(d);
-				}
-				status5=false;
-			}
-			// bottom right
-			d= (m_x-(cell_x+1-0.5))*(m_x-(cell_x+1-0.5))+(m_y-(cell_y+1-0.5))*(m_y-(cell_y+1-0.5));
-			d=Math.sqrt(d);
-			if (isWall(cell_x+1,cell_y+1) && d-0.4<0){
-				while (d-0.4<0){
-					m_x-=0.01;
-					m_y-=0.01;
-					d= (m_x-(cell_x+1-0.5))*(m_x-(cell_x+1-0.5))+(m_y-(cell_y-1+0.5))*(m_y-(cell_y-1+0.5));
-					d=Math.sqrt(d);
-				}
-				status5=false;
-			}
-			// bottom left
-			d= (m_x-(cell_x-1+0.5))*(m_x-(cell_x-1+0.5))+(m_y-(cell_y+1-0.5))*(m_y-(cell_y+1-0.5));
-			d=Math.sqrt(d);
-			if (isWall(cell_x-1,cell_y+1) && d-0.4<0){
-				while (d-0.4<0){
-					m_x+=0.01;
-					m_y-=0.01;
-					d= (m_x-(cell_x+1-0.5))*(m_x-(cell_x+1-0.5))+(m_y-(cell_y-1+0.5))*(m_y-(cell_y-1+0.5));
-					d=Math.sqrt(d);
-				}
-				status5=false;
-			}
-			// top left
-			d= (m_x-(cell_x-1+0.5))*(m_x-(cell_x-1+0.5))+(m_y-(cell_y-1+0.5))*(m_y-(cell_y-1+0.5));
-			d=Math.sqrt(d);
-			if (isWall(cell_x-1,cell_y-1) && d-0.4<0){
-				while (d-0.4<0){
-					m_x+=0.01;
-					m_y+=0.01;
-					d= (m_x-(cell_x+1-0.5))*(m_x-(cell_x+1-0.5))+(m_y-(cell_y-1+0.5))*(m_y-(cell_y-1+0.5));
-					d=Math.sqrt(d);
-				}
-				status5=false;
-			}
-			if (tempo){
-				rendu(false);
-				m_env.repaint();
-				m_int.repaint();
-				//sleep((int)(1));
-			}
-			
-			m_tactileFrame.repaint();
-			
-			statusL=status1 && status2 && status4;
-		}
-		
-		
-	// compute state for angular movement
-		int adjacent_x = Math.round(m_x);
-		int adjacent_y = Math.round(m_y);
-		
-		// Adjacent square
-		if (m_orientation < ORIENTATION_UP_RIGHT && m_orientation >=ORIENTATION_UP_LEFT)
-			adjacent_y = Math.round(m_y) - 1;
-		if (m_orientation >=ORIENTATION_UP && m_orientation<ORIENTATION_RIGHT){
-			adjacent_x = Math.round(m_x) + 1;
-			adjacent_y = Math.round(m_y) - 1;
-		}
-		if (m_orientation >= ORIENTATION_UP_RIGHT && m_orientation <ORIENTATION_DOWN_RIGHT)
-			adjacent_x = Math.round(m_x) + 1;
-		if (m_orientation >= ORIENTATION_RIGHT && m_orientation <ORIENTATION_DOWN){
-			adjacent_x = Math.round(m_x) + 1;
-			adjacent_y = Math.round(m_y) + 1;
-		}
-		if (m_orientation >= ORIENTATION_DOWN_RIGHT && m_orientation <ORIENTATION_DOWN_LEFT)
-			adjacent_y = Math.round(m_y) + 1;
-		if (m_orientation >= ORIENTATION_DOWN && m_orientation <ORIENTATION_LEFT){
-			adjacent_x = Math.round(m_x) - 1;
-			adjacent_y = Math.round(m_y) + 1;
-		}
-		if (m_orientation >= ORIENTATION_DOWN_LEFT && m_orientation <ORIENTATION_UP_LEFT)
-			adjacent_x = Math.round(m_x) - 1;
-		if (m_orientation >= ORIENTATION_LEFT && m_orientation <ORIENTATION_UP){
-			adjacent_x = Math.round(m_x) - 1;
-			adjacent_y = Math.round(m_y) - 1;
-		}
-		
-		if ((adjacent_x >= 0) && (adjacent_x < m_w) && (adjacent_y >= 0) && (adjacent_y < m_h)){
-			if (isWall(adjacent_x, adjacent_y)){
-				setAnim(adjacent_x,adjacent_y, ANIM_RUB); 
-				statusR = false;
-			}
-		}
-		else
-			statusR = false;
-
-		if ((adjacent_x >= 0) && (adjacent_x < m_w) && (adjacent_y >= 0) && (adjacent_y < m_h))
-			setAnim(adjacent_x, adjacent_y, ANIM_NO);	
-		
-		setChanged();
-		notifyObservers2();			
-		
-		//if (tempo) sleep(10);
-		
-		setChanged();
-		notifyObservers2();
-		
-		
-		rendu(true);
-		
-	// define reward for linear movement
-		int reward=0;
-		
-		if (act==0){
-		// define the "reward" for wall objects
-			if (previousColor.equals(new Color(0,128,  0)) ||
-					previousColor.equals(new Color(0,230, 92)) ||
-					previousColor.equals(new Color(0,230,161)) ){
-				if (!status1 || !status2 || !status5) reward=-100;
-				else                      reward= 100;
-			}
-			else{
-				if (!status4){
-					reward=(int) (100- (Math.max(0, m_v*m_v-0.1)*2) );
-				}
-				else{
-					reward= (int) (100 - (distance*distance*2));
-				}		
-			}
-			if (continuum) m_actionList.get(0).setResults(reward);
-		}
-	// define reward for angular movement
-		else{
-			//reward= 100- Math.abs(m_map.imax-90)*2;
-			reward=(int) (100 - Math.abs( -(angle-90) + a )*4);
-			// point lost
-			if (m_map.max+1<maxPoint) reward=-100;
-			// new point
-			if (m_map.max>maxPoint+1) reward= 100;
-			
-			if (continuum){
-				if (act==1){
-					m_actionList.get(1).setResults(reward);
-				}
-				if (act==2){
-					m_actionList.get(2).setResults(reward);
-				}
-			}
-		}
-		
-		//sleep((int)(70));
-		//m_int.saveImage();
-		
-		//sleep((int)(10));
-		//m_env.saveImage();
-		
-		if (!status4){
-			if (previousColor.equals(new Color(150, 128, 255))) m_objMemory.setValue(previousColor, 100);
-			else                                                m_objMemory.setValue(previousColor,  20);
-			
-			m_v=0;
-		}
-		else if (!status1 || !status2){
-			m_objMemory.setValue(frontColor,-100);
-			m_v=0;
-		}
-		
-		rendu(true);
-		
-		if (act==0) return status1 && status2 && status5;
-		else        return statusR;
 	}
 
 }
