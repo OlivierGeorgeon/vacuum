@@ -15,9 +15,9 @@ import java.io.*;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import java.lang.reflect.InvocationTargetException;
+import javax.vecmath.Vector3f;
 
-import jess.JessException;
+import java.lang.reflect.InvocationTargetException;
 
 
 /**
@@ -99,12 +99,17 @@ public class Model extends Observable
 	// A single agent in the environment.
 	protected float m_x;
 	protected float m_y;
-	public int m_orientation = 1; 
+	public int m_orientation; 
 	public String m_schema = "";
 	protected double m_eyeOrientation = 0;
-	/** The angular orientation of Ernest. (clockwise)*/
+	
+	/** The angular orientation of Ernest. (in radius, clockwise)*/
 	protected double m_orientationAngle = 0;
 
+	/** The angular orientation of Ernest. (in radius - trigonometric - counterclockwise)*/
+	protected double m_orientationRad = 0;
+
+	
 	private int[][] m_dirty;
 	private int[][] m_wall;
 	private int[][] m_anim;
@@ -168,6 +173,7 @@ public class Model extends Observable
 		
 		m_orientation = ORIENTATION_UP;
 		m_orientationAngle = 0;
+		m_orientationRad = Math.PI/2;
 		m_eyeOrientation = 0;
 		
 		for (int i = 0; i < m_dirtyCount; i++)
@@ -209,6 +215,7 @@ public class Model extends Observable
 
 		m_orientation = ORIENTATION_UP;
 		m_orientationAngle = 0;
+		m_orientationRad = Math.PI/2;
 		m_eyeOrientation = 0;
 		
 		BufferedReader br = null;
@@ -327,6 +334,7 @@ public class Model extends Observable
 			}
 
 			m_orientationAngle =  (m_orientation ) * Math.PI/2 / ORIENTATION_RIGHT;
+			m_orientationRad = Math.PI/2 - m_orientationAngle; 
 
 			if (l_x == -1 || l_y == -1)
 				throw new 
@@ -411,9 +419,42 @@ public class Model extends Observable
 		return 	(m_wall[Math.round(x)][Math.round(y)] != EMPTY); 
 	}
 	
-	public boolean affordSee(float x, float y)
+	/**
+	 * @param pos The position to test.
+	 * @return true if this position is wall 
+	 */
+	protected boolean affordWalk(Vector3f pos) 
 	{
-		return 	(m_wall[Math.round(x)][Math.round(y)] != EMPTY); 		
+		return !isWall(Math.round(pos.x), Math.round(pos.y));
+	}
+	/**
+	 * @param pos The position to test.
+	 * @return true if this position is dirty but not food. 
+	 */
+	protected boolean affordTouchSoft(Vector3f pos) 
+	{
+		boolean soft = isDirty(Math.round(pos.x), Math.round(pos.y));
+		if (getDirty(Math.round(pos.x), Math.round(pos.y)) == DIRTY)
+			soft = false;
+		return soft;
+	}
+	/**
+	 * @param pos The position to test.
+	 * @return true if this position is food. 
+	 */
+	protected boolean affordEat(Vector3f pos) 
+	{
+		return (getDirty(Math.round(pos.x), Math.round(pos.y)) == DIRTY);
+	}
+	/**
+	 * @param pos The position to test.
+	 * @return true if this position is dirty or wall. 
+	 */
+	public boolean affordSee(Vector3f pos)
+	{
+		boolean see = (m_wall[Math.round(pos.x)][Math.round(pos.y)] == EMPTY);
+		see = see || isDirty(Math.round(pos.x), Math.round(pos.y));
+		return 	see; 		
 	}
 
 	public void setWall(int x, int y, int wall)
