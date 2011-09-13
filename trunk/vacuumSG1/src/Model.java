@@ -106,8 +106,10 @@ public class Model extends Observable
 	/** The angular orientation of Ernest. (in radius, clockwise)*/
 	protected double m_orientationAngle = 0;
 
+	/** The Cartesian position of Ernest. ((0,0) is bottom-left corner)*/
+	protected Vector3f mPosition;
 	/** The angular orientation of Ernest. (in radius - trigonometric - counterclockwise)*/
-	protected double m_orientationRad = 0;
+	protected Vector3f mRotation;
 
 	
 	private int[][] m_dirty;
@@ -123,8 +125,6 @@ public class Model extends Observable
 	private boolean m_halt = true;
 	private int m_stepCount = m_totalSteps;
 	private int m_score = 0;
-
-	private boolean m_bPenalizeForMovement = false;
 
 	private static final Random m_rand = new Random();
 
@@ -146,7 +146,8 @@ public class Model extends Observable
 	public Model()
 	{
 		m_mainThread = Thread.currentThread();
-		
+		mPosition = new Vector3f();
+		mRotation = new Vector3f();		
 
 	}
 	public void setEnvironnement(EnvironnementFrame env){
@@ -173,7 +174,7 @@ public class Model extends Observable
 		
 		m_orientation = ORIENTATION_UP;
 		m_orientationAngle = 0;
-		m_orientationRad = Math.PI/2;
+		mRotation.z = (float) Math.PI/2;
 		m_eyeOrientation = 0;
 		
 		for (int i = 0; i < m_dirtyCount; i++)
@@ -215,7 +216,7 @@ public class Model extends Observable
 
 		m_orientation = ORIENTATION_UP;
 		m_orientationAngle = 0;
-		m_orientationRad = Math.PI/2;
+		//mRotation.z = (float) Math.PI/2;
 		m_eyeOrientation = 0;
 		
 		BufferedReader br = null;
@@ -271,7 +272,13 @@ public class Model extends Observable
 					{
 						m_orientation = ORIENTATION_UP;
 						l_x = x;
-						l_y = y;	
+						l_y = y;
+						mPosition.x = x;
+						mPosition.y = m_h - y;
+						mPosition.z = 0;
+						mRotation.x = 0;
+						mRotation.y = 0;
+						mRotation.z = (float) Math.PI/2;
 					}
 					// Agent right
 					else if (square[x].equalsIgnoreCase(">"))
@@ -279,6 +286,12 @@ public class Model extends Observable
 						m_orientation = ORIENTATION_RIGHT;
 						l_x = x;
 						l_y = y;	
+						mPosition.x = x;
+						mPosition.y = m_h - y;
+						mPosition.z = 0;
+						mRotation.x = 0;
+						mRotation.y = 0;
+						mRotation.z = 0;
 					}
 					// Agent down
 					else if (square[x].equalsIgnoreCase("v"))
@@ -286,6 +299,12 @@ public class Model extends Observable
 						m_orientation = ORIENTATION_DOWN;
 						l_x = x;
 						l_y = y;	
+						mPosition.x = x;
+						mPosition.y = m_h - y;
+						mPosition.z = 0;
+						mRotation.x = 0;
+						mRotation.y = 0;
+						mRotation.z = (float) - Math.PI/2;
 					}
 					// Agent up
 					else if (square[x].equalsIgnoreCase("<"))
@@ -293,6 +312,12 @@ public class Model extends Observable
 						m_orientation = ORIENTATION_LEFT;
 						l_x = x;
 						l_y = y;	
+						mPosition.x = x;
+						mPosition.y = m_h - y;
+						mPosition.z = 0;
+						mRotation.x = 0;
+						mRotation.y = 0;
+						mRotation.z = (float) Math.PI;
 					}
 					else if (Character.isLetter(square[x].toCharArray()[0]))
 					{
@@ -334,7 +359,7 @@ public class Model extends Observable
 			}
 
 			m_orientationAngle =  (m_orientation ) * Math.PI/2 / ORIENTATION_RIGHT;
-			m_orientationRad = Math.PI/2 - m_orientationAngle; 
+			// mRotation.z = (float) (Math.PI/2 - m_orientationAngle); 
 
 			if (l_x == -1 || l_y == -1)
 				throw new 
@@ -420,40 +445,41 @@ public class Model extends Observable
 	}
 	
 	/**
-	 * @param pos The position to test.
+	 * @param pos The position to test in Cartesian coordinates.
 	 * @return true if this position is wall 
 	 */
 	protected boolean affordWalk(Vector3f pos) 
 	{
-		return !isWall(Math.round(pos.x), Math.round(pos.y));
+		return (m_wall[Math.round(pos.x)][m_h - Math.round(pos.y)] == EMPTY);
+		//return 	!(m_wall[Math.round(pos.x)][m_h - Math.round(pos.y)] != EMPTY); 
 	}
 	/**
-	 * @param pos The position to test.
+	 * @param pos The position to test in Cartesian coordinates
 	 * @return true if this position is dirty but not food. 
 	 */
 	protected boolean affordTouchSoft(Vector3f pos) 
 	{
-		boolean soft = isDirty(Math.round(pos.x), Math.round(pos.y));
-		if (getDirty(Math.round(pos.x), Math.round(pos.y)) == DIRTY)
+		boolean soft = isDirty(Math.round(pos.x), m_h - Math.round(pos.y));
+		if (getDirty(Math.round(pos.x), m_h - Math.round(pos.y)) == DIRTY)
 			soft = false;
 		return soft;
 	}
 	/**
-	 * @param pos The position to test.
+	 * @param pos The position to test in Cartesian coordinates.
 	 * @return true if this position is food. 
 	 */
 	protected boolean affordEat(Vector3f pos) 
 	{
-		return (getDirty(Math.round(pos.x), Math.round(pos.y)) == DIRTY);
+		return (getDirty(Math.round(pos.x), m_h - Math.round(pos.y)) == DIRTY);
 	}
 	/**
-	 * @param pos The position to test.
+	 * @param pos The position to test in cartesian coordinates.
 	 * @return true if this position is dirty or wall. 
 	 */
 	public boolean affordSee(Vector3f pos)
 	{
-		boolean see = (m_wall[Math.round(pos.x)][Math.round(pos.y)] == EMPTY);
-		see = see || isDirty(Math.round(pos.x), Math.round(pos.y));
+		boolean see = (m_wall[Math.round(pos.x)][m_h - Math.round(pos.y)] == EMPTY);
+		see = see || isDirty(Math.round(pos.x), m_h - Math.round(pos.y));
 		return 	see; 		
 	}
 
@@ -607,97 +633,6 @@ public class Model extends Observable
 			return true;
 		}
 		return false;
-	}
-
-	/**
-	 * Move to the left if there is no wall
-	 * @author mcohen
-	 * @author ogeorgeon
-	 */
-	public void left()
-	{
-		if (m_x > 0) 
-		{
-			if (!isWall(m_x - 1,m_y) )
-				m_x--;
-			else
-				setAnim(m_x - 1,m_y, ANIM_BUMP); 
-		}
-		
-		if (m_bPenalizeForMovement) m_score--;
-
-		setChanged();
-		notifyObservers2();
-	}
-
-	/**
-	 * Move to the right if there is no wall
-	 * @author mcohen
-	 * @author ogeorgeon
-	 */
-	public void right()
-	{
-		if (m_x < (m_w-1))
-		{
-			if (!isWall(m_x + 1,m_y))
-				m_x++;
-			else
-				setAnim(m_x + 1,m_y, ANIM_BUMP); 
-		}
-
-		if (m_bPenalizeForMovement) m_score--;
-
-		setChanged();
-		notifyObservers2();
-	}
-
-	/**
-	 * Move up if there is no wall
-	 * @author mcohen
-	 * @author ogeorgeon
-	 */
-	public void up()
-	{
-		if (m_y > 0) 
-		{
-			if  (!isWall(m_x,m_y - 1))
-				m_y--;
-			else
-				setAnim(m_x,m_y - 1, ANIM_BUMP); 
-		}
-		
-		if (m_bPenalizeForMovement) m_score--;
-
-		setChanged();
-		notifyObservers2();
-	}
-
-	/**
-	 * Move down if there is no wall
-	 * @author mcohen
-	 * @author ogeorgeon
-	 */
-	public void down()
-	{
-		if (m_y < (m_h - 1))
-		{
-			if  (!isWall(m_x,m_y + 1))
-				m_y++;
-			else 
-				setAnim(m_x,m_y + 1, ANIM_BUMP); 
-		}
-
-		if (m_bPenalizeForMovement) m_score--;
-
-		setChanged();
-		notifyObservers2();
-	}
-	
-	public void setPenalizeForMovement(boolean bPenalize)
-	{
-		m_bPenalizeForMovement = bPenalize;
-		setChanged();
-		notifyObservers2();
 	}
 
 	public void haltAgent()
