@@ -67,7 +67,6 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
 	private final JCheckBoxMenuItem m_simpleAgent     	= new JCheckBoxMenuItem("Simple Reflex Agent");
 	private final JCheckBoxMenuItem m_modelBasedAgent 	= new JCheckBoxMenuItem("Model Based Agent");
 	private final JCheckBoxMenuItem m_radarSensor     	= new JCheckBoxMenuItem("Enable Radar Sensor");
-	private final JCheckBoxMenuItem m_movePunish      	= new JCheckBoxMenuItem("Penalize for Movement");
 	private final JCheckBoxMenuItem m_speakAloud      	= new JCheckBoxMenuItem("Speak Aloud");
 	
 	
@@ -173,7 +172,6 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
 		m_simpleAgent.setMnemonic(KeyEvent.VK_S);
 		m_modelBasedAgent.setMnemonic(KeyEvent.VK_M);
 		m_radarSensor.setMnemonic(KeyEvent.VK_E);
-		m_movePunish.setMnemonic(KeyEvent.VK_P);
 
 		// file menu...
 		m_file.add(m_openJessAgent);
@@ -200,7 +198,6 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
 		// options menu...
 		m_options.add(m_configureRun);
 		m_options.add(m_radarSensor);
-		m_options.add(m_movePunish);
 		m_options.addSeparator();
 		m_options.add(m_randomBoard);
 		m_options.add(m_configureBoard);
@@ -223,7 +220,6 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
 		m_configureRun.addActionListener(this);
 
 		m_radarSensor.addActionListener(this);
-		m_movePunish.addActionListener(this);
 		m_randomBoard.setSelected(model.getRandomBoard());
 		m_randomBoard.addActionListener(this);
 		m_speakAloud.setSelected(model.getSpeakAloud());
@@ -438,10 +434,6 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
 		{
 			//m_configRunDlg.setVisible(true);
 
-		}
-		else if (e.getSource() == m_movePunish)
-		{
-			m_env.m_model.setPenalizeForMovement(m_movePunish.isSelected());
 		}
 		else if (e.getSource() == m_randomBoard)
 		{

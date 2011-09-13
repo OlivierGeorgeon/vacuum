@@ -135,7 +135,8 @@ public class ErnestModel extends Model
 		float step = a/2;
 		for (float angle = t; angle <= t + a + .001; angle += step) {
 			float x0 = (float) (m_x + 20 * Math.cos(angle));
-			float y0 = (float) (m_y + 20 * Math.sin(angle)); // Y axis is upwards.
+			float y0 = (float) (m_y - 20 * Math.sin(angle)); // Y axis is downwards.
+			//float y0 = (float) (m_y + 20 * Math.sin(angle)); // Y axis is upwards.
 			eyeFixation = rayTrace(m_x, m_y, x0, y0);
 			// We stop when we find a singularity.
 			if (eyeFixation.mRight != WALL_COLOR)
@@ -255,11 +256,14 @@ public class ErnestModel extends Model
 	 * @return The absolute position relative to the board. 
 	 */
 	public Vector3f localToParentRef(Vector3f localVec) {
+		
 		Matrix3f rot = new Matrix3f();
-		rot.rotZ((float) Math.toRadians(m_orientationRad));
+		rot.rotZ(mRotation.z);
+		
 		Vector3f parentVec = new Vector3f();
 		rot.transform(localVec, parentVec);
-		parentVec.add(new Vector3f(m_x, m_y, 0));
+		//parentVec.add(new Vector3f(m_x, m_y, 0));
+		parentVec.add(mPosition);
 		return parentVec;
 	}	
 	
