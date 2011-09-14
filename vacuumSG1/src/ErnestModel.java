@@ -66,7 +66,7 @@ public class ErnestModel extends Model
 	
 	public void closeErnest()
 	{
-		m_tracer.close();
+		//m_tracer.close();
 		m_orientation = ORIENTATION_UP;
 		m_ernest = null;
 	}
@@ -186,19 +186,8 @@ public class ErnestModel extends Model
 	        n += j - (int) Math.round(y1);
 	        error -= (y0 - (Math.round(y0) - .5f)) * dx;
 	    }
-	    for (; n > 0; --n) {
-	    	// Don't go outside the grid
-	    	if ((i < 0) || (j < 0) || (i >= m_w) || (j >= m_h)) 
-	    		return Pair.create(Ernest.INFINITE, WALL_COLOR);
-	    	
-	    	// Examine the block on the ray. Return wall or uninhibited dirty squares.
-	    	Color bgc = getBackgroundColor(i,j);
-	    	if (isWall(i,j) || isDirty(i,j))
-	    	{
-		    		int dist = (int)Math.sqrt(((i-x0)*(i-x0) + (j-y0)*(j-y0)) * 100);
-		    		return Pair.create(dist, bgc);
-    		}
-
+	    for (; n > 0; --n) 
+	    {
 	        // move on along the ray
 	        if (error > cornerTresh) {
 	            j += j_inc;
@@ -212,6 +201,19 @@ public class ErnestModel extends Model
 	    		error += dy - dx;
 	    		--n;
 	        }
+
+	        // Don't go outside the grid
+	    	if ((i < 0) || (j < 0) || (i >= m_w) || (j >= m_h)) 
+	    		return Pair.create(Ernest.INFINITE, WALL_COLOR);
+	    	
+	    	// Examine the block on the ray. Return wall or uninhibited dirty squares.
+	    	Color bgc = getBackgroundColor(i,j);
+	    	if (isWall(i,j) || isDirty(i,j))
+	    	{
+		    		int dist = (int)Math.sqrt(((i-x0)*(i-x0) + (j-y0)*(j-y0)) * 100);
+		    		return Pair.create(dist, bgc);
+    		}
+
 	    }
 		return Pair.create(Ernest.INFINITE, WALL_COLOR);
 	}
@@ -258,7 +260,7 @@ public class ErnestModel extends Model
 	public Vector3f localToParentRef(Vector3f localVec) {
 		
 		Matrix3f rot = new Matrix3f();
-		rot.rotZ(mRotation.z);
+		rot.rotZ(mOrientation.z);
 		
 		Vector3f parentVec = new Vector3f();
 		rot.transform(localVec, parentVec);
@@ -266,5 +268,20 @@ public class ErnestModel extends Model
 		parentVec.add(mPosition);
 		return parentVec;
 	}	
+	
+	/**
+	 * Ernest's 
+	 */
+	public void ernestDynamic()
+	{
+		mTranslation.scale(.9f);
+		mPosition.add(mTranslation);
+		m_x = mPosition.x;
+		m_y = m_h - mPosition.y;
+		
+		mRotation.scale(.9f);
+		mOrientation.add(mRotation);
+		m_orientationAngle+=mRotation.z;
+	}
 	
 }
