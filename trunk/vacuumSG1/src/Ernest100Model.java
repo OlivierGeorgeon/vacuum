@@ -530,7 +530,7 @@ public class Ernest100Model extends ErnestModel
 				//sleep((int)(1));
 			}
 			
-			m_tactileFrame.repaint();
+			m_tactileFrame.paint();
 			
 			statusL=status1 && status2 && status4;
 		}
@@ -1000,7 +1000,7 @@ public class Ernest100Model extends ErnestModel
 			m_objMemory.addObject(frontColor);
 		}
 		
-		m_tactile.touchEnvironment(r);
+		m_tactile.touchEnvironment(r,colorMap);
 		
 		//m_patternMap.addPatern(colorMap2,lastAction);
 		//m_patternFrame.update((int)(m_x*10),(int)(m_y*10),m_orientation);
