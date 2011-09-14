@@ -203,6 +203,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 
 		{
 			m_statusBar.setText("Ready");
+			m_model.setCounter(0);
 			try
 			{ 
 				m_model.init(m_model.getBoardFileName()); 

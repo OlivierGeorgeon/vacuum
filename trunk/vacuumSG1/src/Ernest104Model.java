@@ -71,13 +71,10 @@ public class Ernest104Model extends ErnestModel
 	{
 		m_ernest = new Ernest();
 		m_sensorymotorSystem = new Visual100SensorymotorSystem();
-		//m_tracer = new XMLTracer("trace.xml");
-		//m_tracer = new XMLStreamTracer("http://vm.liris.cnrs.fr:34080/abstract/Ernest-trace-player-tr/php/");
-		//m_tracer = new XMLStreamTracer("http://134.214.142.59/abstract/Ernest-trace-player-test-tr/php/");
+		m_tracer = new XMLTracer("trace.xml");
 		//m_tracer = new XMLStreamTracer("http://vm.liris.cnrs.fr:34080/abstract/light/php/stream/","fjSmkmyvAKgByfDAfXUYGjAJLzrWrf");
 		//m_tracer = new XMLStreamTracer("http://liristyh.univ-lyon1.fr/alite/php/stream/","ewPmHfhGycqtOYLBNBKOMLalAPmQdj");
-
-		m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","vNNcxihGPKSaGNTvIbWklRpyMwThYP");
+		//m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","vNNcxihGPKSaGNTvIbWklRpyMwThYP");
 		
 		// Initialize the Ernest === 
 		
@@ -221,7 +218,7 @@ public class Ernest104Model extends ErnestModel
 	protected boolean turnLeft(){
 		m_eyeOrientation = 0;
 
-		m_Ir = -12;
+		m_Ir = -45;
 		m_v = 0;
 		return impulse(ACTION_LEFT);
 	}
@@ -233,7 +230,7 @@ public class Ernest104Model extends ErnestModel
 	protected boolean turnRight(){
 		m_eyeOrientation = 0;
 		
-		m_Ir = 12;
+		m_Ir = 45;
 		m_v = 0;
 		return impulse(ACTION_RIGHT);
 	}
@@ -244,7 +241,7 @@ public class Ernest104Model extends ErnestModel
 	 */
 	protected boolean forward(){
 		
-		m_If=1f;
+		m_If=1.5f; //1.5f
 		m_theta = 0;
 		return impulse(ACTION_FORWARD);
 	}
@@ -274,7 +271,7 @@ public class Ernest104Model extends ErnestModel
 		float vrmin;
 		
 		vlmin=(float) 0.1;
-		vrmin=(float) 1;
+		vrmin=(float) 10; // when teta<10, Ernest is not turning anymore
 		
 		status3=isDirty(cell_x,cell_y);
 		
@@ -323,7 +320,15 @@ public class Ernest104Model extends ErnestModel
 			if (m_orientation >=360) m_orientation -=360;
 			m_orientationAngle =  m_orientation * Math.PI/2 / ORIENTATION_RIGHT;
 			mOrientation.z = (float) (Math.PI/2 - m_orientationAngle);
-			
+		
+			if (tempo)
+				m_env.repaint();
+				if (m_theta != 0)
+					sleep((int)(20));
+				if (m_v != 0){
+				sleep((int)(1));
+			}
+
 			
 	// compute state
 		// for linear movement
@@ -400,16 +405,10 @@ public class Ernest104Model extends ErnestModel
 				}
 				status5=false;
 			}
-			if (tempo){
-				//rendu(false);
-				m_env.repaint();
-//				m_int.repaint();
-				//sleep((int)(1));
-			}
 			
 //			m_tactileFrame.repaint();
 			
-			statusL = (status1 || status2); // && status4;
+			statusL = (status1 || status2) && status4;
 		}
 		
 		
@@ -473,7 +472,7 @@ public class Ernest104Model extends ErnestModel
 		}
 		
 		if (act==0) 
-			return status1 && status2 && status5;
+			return status1 && status2; //  && status5; bumping corners is not bumping.
 		else        return statusR;
 	}
 	
