@@ -24,7 +24,7 @@ import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 
 /**
- * This tracer logs the trace by sendin it to a remote php script.
+ * This tracer logs the trace by sending it to a remote php script.
  */
 public class XMLStreamTracer implements ITracer<Element>
 {
@@ -50,13 +50,16 @@ public class XMLStreamTracer implements ITracer<Element>
 
 	private String m_url;
 	
+	private String m_cookie;
+	
 	/**
 	 * Initialize the tracer.
 	 * @param fileName The name of the trace file
 	 */
-	public XMLStreamTracer(String url)
+	public XMLStreamTracer(String url, String cookie)
 	{
 		m_url = url;
+		m_cookie = cookie;
 		m_traceId = "test";
 		this.post_new_trace();
 		
@@ -96,11 +99,13 @@ public class XMLStreamTracer implements ITracer<Element>
 			URL base = new URL(m_url + "streamTrace.php");
 			HttpURLConnection baseCon = (HttpURLConnection) base.openConnection();
 			baseCon.setRequestMethod("POST");
-			
-			String data = URLEncoder.encode("traceId", "UTF-8")+
-			            "="+URLEncoder.encode(m_traceId, "UTF-8");
-			data += "&"+URLEncoder.encode("data", "UTF-8")+
-			            "=" + URLEncoder.encode(obselData, "UTF-8");
+
+			String data = URLEncoder.encode("traceId", "UTF-8") + "="
+					+ URLEncoder.encode(m_traceId, "UTF-8");
+			data += "&" + URLEncoder.encode("streamcookie", "UTF-8") + "="
+					+ URLEncoder.encode(m_cookie, "UTF-8");
+			data += "&" + URLEncoder.encode("data", "UTF-8") + "="
+					+ URLEncoder.encode(obselData, "UTF-8");
 
 			//System.err.println(data);
 			
@@ -144,11 +149,14 @@ public class XMLStreamTracer implements ITracer<Element>
 			URL base = new URL(m_url + "newStreamedTrace.php");
 			HttpURLConnection baseCon = (HttpURLConnection) base.openConnection();
 			baseCon.setRequestMethod("POST");
-			
-			String data = "";
+
+			String data = URLEncoder.encode("streamcookie", "UTF-8") + "="
+					+ URLEncoder.encode(m_cookie, "UTF-8");
 			/*data += URLEncoder.encode("traceId", "UTF-8")+
 			            "="+URLEncoder.encode(m_traceId, "UTF-8");*/
 
+			//System.err.println(data);
+			
 			baseCon.setDoOutput(true);
 			baseCon.setDoInput(true);
 			baseCon.setUseCaches (false);
@@ -193,10 +201,14 @@ public class XMLStreamTracer implements ITracer<Element>
 			URL base = new URL(m_url + "endOfStream.php");
 			HttpURLConnection baseCon = (HttpURLConnection) base.openConnection();
 			baseCon.setRequestMethod("POST");
-			
-			String data = URLEncoder.encode("traceId", "UTF-8")+
-			            "="+URLEncoder.encode(m_traceId, "UTF-8");
 
+			String data = URLEncoder.encode("traceId", "UTF-8") + "="
+					+ URLEncoder.encode(m_traceId, "UTF-8");
+			data += "&" + URLEncoder.encode("streamcookie", "UTF-8") + "="
+					+ URLEncoder.encode(m_cookie, "UTF-8");
+
+			//System.err.println(data);
+			
 			baseCon.setDoOutput(true);
 			baseCon.setDoInput(true);
 			baseCon.setUseCaches (false);

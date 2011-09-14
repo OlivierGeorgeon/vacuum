@@ -25,7 +25,6 @@ public class ConfigureRunDlg extends Dialog
 
 	public void setVisible(boolean b)
 	{
-		m_steps.setText(""+m_model.getTotalSteps());
 		m_delay.setText(""+m_model.getDelay());
 		super.setVisible(b);
 	}
@@ -62,7 +61,6 @@ public class ConfigureRunDlg extends Dialog
 
 			if (bRet)
 			{
-				m_model.setTotalSteps(iSteps);
 				m_model.setDelay(iDelay);
 				m_model.putPreferences();
 			}

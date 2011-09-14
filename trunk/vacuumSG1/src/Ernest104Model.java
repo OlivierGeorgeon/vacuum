@@ -35,19 +35,10 @@ public class Ernest104Model extends ErnestModel
 	
 	private double m_rotation_speed = Math.PI/Ernest.RESOLUTION_RETINA;
 	
-	public InternalMap m_map;
 	public float m_If,m_Ir;   				// impulsion counters
-	public int lastAction;
-	public ArrayList<Action> m_actionList;
 	public float distance=0;
 	public float angle=0;
-	public Color frontColor;
 	public boolean tempo=true;
-	public ObjectMemory m_objMemory;
-	public InternalStatesFrame m_int;
-	public TactileMap m_tactile;
-	public TactileMapFrame m_tactileFrame;
-	private EyeView eye;
 	public float m_v;                       // linear speed
 	public float m_theta;					// angular speed
 
@@ -63,28 +54,6 @@ public class Ernest104Model extends ErnestModel
 
 		setChanged();
 		notifyObservers2();					
-
-		m_actionList=new ArrayList<Action>();
-		
-		m_objMemory=new ObjectMemory();
-
-		m_actionList.add(new Action("forward",10,120,150,m_objMemory));
-		m_actionList.add(new Action("turnLeft",1 ,180,180,m_objMemory));
-		m_actionList.add(new Action("turnRight",1 ,180,180,m_objMemory));
-
-		m_map=new InternalMap(m_objMemory);
-		
-		m_tactile=new TactileMap(this);
-		m_tactileFrame=new TactileMapFrame(m_tactile);
-		
-		m_int=new InternalStatesFrame(m_actionList);
-		
-		//m_patternMap=new PatternMap();
-		//m_patternFrame=new PatternMappingFrame(m_patternMap);
-		
-		eye=new EyeView(m_map);
-		
-		frontColor=new Color(0,0,0);
 	}
 
 	/**
@@ -108,7 +77,7 @@ public class Ernest104Model extends ErnestModel
 		//m_tracer = new XMLStreamTracer("http://vm.liris.cnrs.fr:34080/abstract/light/php/stream/","fjSmkmyvAKgByfDAfXUYGjAJLzrWrf");
 		//m_tracer = new XMLStreamTracer("http://liristyh.univ-lyon1.fr/alite/php/stream/","ewPmHfhGycqtOYLBNBKOMLalAPmQdj");
 
-		//m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","AvgDo-TCgqOitzuxXFejkbMAb-TUSH");
+		m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","vNNcxihGPKSaGNTvIbWklRpyMwThYP");
 		
 		// Initialize the Ernest === 
 		
@@ -142,12 +111,12 @@ public class Ernest104Model extends ErnestModel
 	 */
 	public String stepErnest(boolean status)
 	{
-		//m_tracer.startNewEvent(m_counter);
+		m_tracer.startNewEvent(m_counter);
 
 		// See the environment
 		int [][] matrix = new int[Ernest.RESOLUTION_RETINA][8 + 1 + 3];
 		Pair<Integer, Color>[] eyeFixation = null;
-		eyeFixation = getRetina(mRotation.z);
+		eyeFixation = getRetina(mOrientation.z);
 		
 		for (int i = 0; i < Ernest.RESOLUTION_RETINA; i++)
 		{
@@ -219,10 +188,10 @@ public class Ernest104Model extends ErnestModel
 			status = forward();
 
 		// Trace the environmental data
-		//Object environment = m_tracer.newEvent("environment", "position", m_counter);
-		//m_tracer.addSubelement(environment, "x", m_x + "");
-		//m_tracer.addSubelement(environment, "y", m_y + "");
-		//m_tracer.addSubelement(environment,"orientation", m_orientation + "");
+		Object environment = m_tracer.newEvent("environment", "position", m_counter);
+		m_tracer.addSubelement(environment, "x", m_x + "");
+		m_tracer.addSubelement(environment, "y", m_y + "");
+		m_tracer.addSubelement(environment,"orientation", m_orientation + "");
 		
 	    return status;
 	}
@@ -252,12 +221,8 @@ public class Ernest104Model extends ErnestModel
 	protected boolean turnLeft(){
 		m_eyeOrientation = 0;
 
-		rendu(true);
-		angle=m_map.imax;
-		float orientation=(m_actionList.get(ACTION_LEFT)).selectOutput(angle,frontColor)+1;
-		m_Ir=-orientation;
-		
-		lastAction=ACTION_LEFT;
+		m_Ir = -12;
+		m_v = 0;
 		return impulse(ACTION_LEFT);
 	}
 	
@@ -268,12 +233,8 @@ public class Ernest104Model extends ErnestModel
 	protected boolean turnRight(){
 		m_eyeOrientation = 0;
 		
-		rendu(true);
-		angle=m_map.imax;
-		float orientation=(m_actionList.get(ACTION_RIGHT)).selectOutput(angle,frontColor)+1;
-		m_Ir=+orientation;
-		
-		lastAction=ACTION_RIGHT;
+		m_Ir = 12;
+		m_v = 0;
 		return impulse(ACTION_RIGHT);
 	}
 	
@@ -283,10 +244,8 @@ public class Ernest104Model extends ErnestModel
 	 */
 	protected boolean forward(){
 		
-		rendu(true);
-		m_If=(float) ((m_actionList.get(ACTION_FORWARD)).selectOutput(distance,frontColor)+0.1);
-		
-		lastAction=ACTION_FORWARD;
+		m_If=1f;
+		m_theta = 0;
 		return impulse(ACTION_FORWARD);
 	}
 
@@ -302,8 +261,6 @@ public class Ernest104Model extends ErnestModel
 		float step;                  // length of a step
 		float HBradius=(float) 0.4;  // radius of Ernest hitbox 
 		 
-		float maxPoint=m_map.max;
-		
 		int cell_x=Math.round(m_x);
 		int cell_y=Math.round(m_y);
 		
@@ -313,15 +270,11 @@ public class Ernest104Model extends ErnestModel
 		boolean status4=true;         // reach a dirty cell (=false when reach dirty cell)
 		boolean status5=true;         // touch a corner
 		
-		float dist=0;
-		float a=0;
-		Color previousColor=frontColor;
-		
 		float vlmin;
 		float vrmin;
 		
 		vlmin=(float) 0.1;
-		vrmin=(float) 0.1;
+		vrmin=(float) 1;
 		
 		status3=isDirty(cell_x,cell_y);
 		
@@ -358,7 +311,6 @@ public class Ernest104Model extends ErnestModel
 				double dy=-step*Math.cos(m_orientationAngle);
 				cell_x=Math.round(m_x);
 				cell_y=Math.round(m_y);
-				dist+=step;
 				m_x+=dx;
 				m_y+=dy;
 				mPosition.x = m_x;
@@ -367,11 +319,10 @@ public class Ernest104Model extends ErnestModel
 			
 			// for angular movements
 			m_orientation+=m_theta/10;
-			a+=m_theta/10;
 			if (m_orientation < 0)   m_orientation +=360;
 			if (m_orientation >=360) m_orientation -=360;
 			m_orientationAngle =  m_orientation * Math.PI/2 / ORIENTATION_RIGHT;
-			mRotation.z = (float) (Math.PI/2 - m_orientationAngle);
+			mOrientation.z = (float) (Math.PI/2 - m_orientationAngle);
 			
 			
 	// compute state
@@ -450,15 +401,15 @@ public class Ernest104Model extends ErnestModel
 				status5=false;
 			}
 			if (tempo){
-				rendu(false);
+				//rendu(false);
 				m_env.repaint();
-				m_int.repaint();
+//				m_int.repaint();
 				//sleep((int)(1));
 			}
 			
-			m_tactileFrame.repaint();
+//			m_tactileFrame.repaint();
 			
-			statusL=status1 && status2 && status4;
+			statusL = (status1 || status2); // && status4;
 		}
 		
 		
@@ -513,68 +464,20 @@ public class Ernest104Model extends ErnestModel
 		notifyObservers2();
 		
 		
-		rendu(true);
-		
-	// define reward for linear movement
-		int reward=0;
-		
-		if (act==0){
-		// define the "reward" for wall objects
-			if (previousColor.equals(new Color(0,128,  0)) ||
-					previousColor.equals(new Color(0,230, 92)) ||
-					previousColor.equals(new Color(0,230,161)) ){
-				if (!status1 || !status2 || !status5) reward=-100;
-				else                      reward= 100;
-			}
-			else{
-				if (!status4){
-					reward=(int) (100- (Math.max(0, m_v*m_v-0.1)*2) );
-				}
-				else{
-					reward= (int) (100 - (distance*distance*2));
-				}		
-			}
-			m_actionList.get(0).setResults(reward);
-		}
-	// define reward for angular movement
-		else{
-			//reward= 100- Math.abs(m_map.imax-90)*2;
-			reward=(int) (100 - Math.abs( -(angle-90) + a )*4);
-			// point lost
-			if (m_map.max+1<maxPoint) reward=-100;
-			// new point
-			if (m_map.max>maxPoint+1) reward= 100;
-			
-			if (act==1){
-				m_actionList.get(1).setResults(reward);
-			}
-			if (act==2){
-				m_actionList.get(2).setResults(reward);
-			}
-		}
-		
-		//sleep((int)(70));
-		//m_int.saveImage();
-		
-		//sleep((int)(10));
-		//m_env.saveImage();
 		
 		if (!status4){
-			if (previousColor.equals(new Color(150, 128, 255))) m_objMemory.setValue(previousColor, 100);
-			else                                                m_objMemory.setValue(previousColor,  20);
-			
 			m_v=0;
 		}
 		else if (!status1 || !status2){
-			m_objMemory.setValue(frontColor,-100);
 			m_v=0;
 		}
 		
-		rendu(true);
-		
-		if (act==0) return status1 && status2 && status5;
+		if (act==0) 
+			return status1 && status2 && status5;
 		else        return statusR;
 	}
+	
+	
 
 	/**
 	 * Paint Ernest as a shark.
@@ -611,7 +514,7 @@ public class Ernest104Model extends ErnestModel
 		if (m_ernest != null)
 		{
 			// Eye color
-			eyeFixation = getRetina(mRotation.z);
+			eyeFixation = getRetina(mOrientation.z);
 			//eyeFixation=rendu(false);
 			for (int i = 0; i < Ernest.RESOLUTION_RETINA; i++)
 			{
@@ -641,7 +544,6 @@ public class Ernest104Model extends ErnestModel
 		// Retina pixel
 		
 		Arc2D.Double pixelIn = new Arc2D.Double(-20, -20, 40, 40,0, 180 / Ernest.RESOLUTION_RETINA + 1, Arc2D.PIE);
-		Arc2D.Double pixelOut = new Arc2D.Double(-25, -25, 50, 50,0, 180 / Ernest.RESOLUTION_RETINA + 1 , Arc2D.PIE);
 		
 		// The somatomap
 		
@@ -740,8 +642,6 @@ public class Ernest104Model extends ErnestModel
 				for (int j = 0; j < 3; j++)
 					somatoMapColor[i][j] = new Color(m_ernest.getObservation().getColor(i, j).getRGB());
 			
-//			if (m_ernest.getObservation().getLabel() == null)
-//				System.out.println("Observation has no label");
 			if (Ernest.STIMULATION_KINEMATIC_BUMP.equals(m_ernest.getObservation().getKinematic()))
 				kinematicColor = Color.RED;
 		}
@@ -835,364 +735,4 @@ public class Ernest104Model extends ErnestModel
 		return sharkMask;
 	}
 	
-	//******************************************
-	////////////////////////////////////////////
-	//******************************************
-	protected EyeFixation[] rendu(boolean setdistance){
-		double[] r    = new double[360];
-		double[] r2   = new double[180];
-		double[] zMap = new double[360];
-		Color[] colorMap =new Color[360];
-		Color[] colorMap2=new Color[180];
-		int[] corner = new int[360];
-		int[] corner2= new int[180];
-		
-		EyeFixation[] retina= new EyeFixation[Ernest.RESOLUTION_RETINA];
-		
-		double d=0;
-		double d1,d2,d3;
-		double a1,a2,a3;
-		
-		double imin,iplus,jmin,jplus;
-		double imin2,jmin2;
-		
-		int Im_x=Math.round(m_x);
-		int Im_y=Math.round(m_y);
-		
-		for (int i=0;i<360;i++){
-			zMap[i]=1000;
-			r[i]=200;
-			colorMap[i]=new Color(0,0,0);
-		}
-		
-		int sight=20;
-		
-		int orientationDeg= (int)(m_orientationAngle * 180 / Math.PI);
-		
-		
-		for (int i=0;i<sight;i++){
-			for (int j=0;j<sight;j++){
-				
-				// cells on the top right side
-				if ( (i>0)&& (Im_x+i<m_w) && (Im_y-j>=0) ){
-					if (isWall(Im_x+i,Im_y-j) || isDirty(Im_x+i,Im_y-j) ){
-						Color bgc = getBackgroundColor(Im_x+i,Im_y-j);
-						
-						imin =(double)i-0.5 - (m_x-Im_x);
-						imin2=imin*imin;
-						iplus=(double)i+0.5 - (m_x-Im_x);
-						jmin =(double)j-0.5 + (m_y-Im_y);
-						jmin2=jmin*jmin;
-						jplus=(double)j+0.5 + (m_y-Im_y);
-						
-						d1=  imin2 + jmin2;
-						d1=Math.sqrt(d1);
-						d2=  imin2 + (jplus*jplus);
-						d2=Math.sqrt(d2);
-						d3=  (iplus*iplus) + jmin2;
-						d3=Math.sqrt(d3);
-						
-						a1=  Math.toDegrees( Math.acos( jmin/d1));
-						a2=  Math.toDegrees( Math.acos( jplus/d2));
-						a3=  Math.toDegrees( Math.acos( jmin/d3));
-						
-						
-				    	int ai1=(int)a1;
-				    	int ai2=(int)a2;
-				    	int ai3=(int)a3;
-						
-						for (int k=ai2;k<=ai1;k++){
-							d= d2*10 +   (d1-d2)*10*(k-ai2)/(ai1-ai2);
-							if (zMap[k]>d){
-								
-								r[k]=d;
-				    			zMap[k]= d;
-				    			colorMap[k]=bgc;
-				    			
-				    			if      (k==ai2) corner[k]=1;
-				    			else if (k==ai1) corner[k]=2;
-				    			else             corner[k]=0;
-				    			
-							}
-						}		
-						for (int k=ai1;k<=ai3;k++){
-							d= d1*10 +   (d3-d1)*10*(k-ai1)/(ai3-ai1);
-							if (zMap[k]>d){
-								
-								r[k]=d;
-								zMap[k]= d;
-				    			colorMap[k]=bgc;
-
-				    			if      (k==ai1) corner[k]=1;
-				    			else if (k==ai3) corner[k]=2;
-				    			else             corner[k]=0;
-							}
-						}
-						
-					}
-				}
-				
-				
-				// cells on the bottom right side
-				if ( (j>0) && (Im_x+i<m_w) && (Im_y+j<m_h) ){
-					if (isWall(Im_x+i,Im_y+j) || isDirty(Im_x+i,Im_y+j) ){
-						Color bgc = getBackgroundColor(Im_x+i,Im_y+j);
-						
-						imin =(double)i-0.5 - (m_x-Im_x);
-						imin2=imin*imin;
-						iplus=(double)i+0.5 - (m_x-Im_x);
-						jmin =(double)j-0.5 - (m_y-Im_y);
-						jmin2=jmin*jmin;
-						jplus=(double)j+0.5 - (m_y-Im_y);
-						
-						d1=  imin2 + jmin2;
-						d1=Math.sqrt(d1);
-						d2=  (iplus*iplus) + jmin2;
-						d2=Math.sqrt(d2);
-						d3=  imin2 + (jplus*jplus);
-						d3=Math.sqrt(d3);
-						
-						a1=  Math.toDegrees( Math.acos( jmin/d1));
-						a2=  Math.toDegrees( Math.acos( jmin/d2));
-						a3=  Math.toDegrees( Math.acos( jplus/d3));
-						
-				    	int ai1,ai2,ai3;
-				    	
-				    	if (i-0.5>=0){
-				    		ai1=180-(int)a1;
-				    		ai3=180-(int)a3;
-				    	}
-				    	else{
-				    		ai1=180+(int)a1;
-				    		ai3=180+(int)a3;
-				    	}
-				    	ai2=180-(int)a2;
-						
-						for (int k=ai2;k<=ai1;k++){
-							d= ( d2*10 +   (d1-d2)*10*(k-ai2)/(ai1-ai2));
-							if (zMap[k]>d){
-								r[k]=d;
-								zMap[k]= d;
-								colorMap[k]=bgc;
-								
-								if      (k==ai2) corner[k]=1;
-				    			else if (k==ai1) corner[k]=2;
-				    			else             corner[k]=0;
-							}
-						}		
-						for (int k=ai1;k<=ai3;k++){
-							d= ( d1*10 +   (d3-d1)*10*(k-ai1)/(ai3-ai1));
-							if (zMap[k]>d){
-								r[k]=d;
-								zMap[k]= d;
-								colorMap[k]=bgc;
-								if      (k==ai1) corner[k]=1;
-				    			else if (k==ai3) corner[k]=2;
-				    			else             corner[k]=0;
-							}
-						}
-						
-					}
-				}
-				
-				
-				// cells on the bottom left side
-				if ( (i>0) && (Im_x-i>=0) && (Im_y+j<m_h) ){
-					if (isWall(Im_x-i,Im_y+j) || isDirty(Im_x-i,Im_y+j) ){
-						Color bgc = getBackgroundColor(Im_x-i,Im_y+j);
-						
-						imin =(double)i-0.5 + (m_x-Im_x);
-						imin2=imin*imin;
-						iplus=(double)i+0.5 + (m_x-Im_x);
-						jmin =(double)j-0.5 - (m_y-Im_y);
-						jmin2=jmin*jmin;
-						jplus=(double)j+0.5 - (m_y-Im_y);
-						
-						d1=  imin2 + jmin2;
-						d1=Math.sqrt(d1);
-						d2=  imin2 + (jplus*jplus);
-						d2=Math.sqrt(d2);
-						d3=  (iplus*iplus) + jmin2;
-						d3=Math.sqrt(d3);
-						
-						a1=  Math.toDegrees( Math.acos( jmin/d1));
-						a2=  Math.toDegrees( Math.acos( jplus/d2));
-						a3=  Math.toDegrees( Math.acos( jmin/d3));
-						
-				    	int ai1=180+(int)a1;
-				    	int ai2=180+(int)a2;
-				    	int ai3=180+(int)a3;
-						
-						for (int k=ai2;k<=ai1;k++){
-							d=   d2*10 +   (d1-d2)*10*(k-ai2)/(ai1-ai2);
-							if (zMap[k]>d){
-								r[k]=d;
-								zMap[k]=d;
-								colorMap[k]=bgc;
-								if      (k==ai2) corner[k]=1;
-				    			else if (k==ai1) corner[k]=2;
-				    			else             corner[k]=0;
-							}
-						}		
-						for (int k=ai1;k<=ai3;k++){
-							d=  d1*10 +   (d3-d1)*10*(k-ai1)/(ai3-ai1);
-							if (zMap[k]>d){
-								r[k]=d;
-								zMap[k]=d;
-								colorMap[k]=bgc;
-								if      (k==ai1) corner[k]=1;
-				    			else if (k==ai3) corner[k]=2;
-				    			else             corner[k]=0;
-							}
-						}
-						
-					}
-				}
-				
-				// cells exactly on the top
-				if ( (j>0) && (i==0) && (Im_y-j>=0) ){
-					if (isWall(Im_x-i,Im_y-j) || isDirty(Im_x-i,Im_y-j) ){
-						Color bgc = getBackgroundColor(Im_x-i,Im_y-j);
-						
-						imin =(double)i-0.5 + (m_x-Im_x);
-						imin2=imin*imin;
-						iplus=(double)i+0.5 + (m_x-Im_x);
-						jmin =(double)j-0.5 + (m_y-Im_y);
-						jmin2=jmin*jmin;
-						
-						d1=  imin2 + jmin2;
-						d1=Math.sqrt(d1);
-						d2=  (iplus*iplus) + jmin2;
-						d2=Math.sqrt(d2);
-						
-						a1=  Math.toDegrees( Math.acos( jmin/d1));
-						a2=  Math.toDegrees( Math.acos( jmin/d2));
-
-						
-						int ai1,ai2;
-						ai1=(int)a1;
-				    	ai2=360-(int)a2;
-				    	if (ai2==360) ai2=359;
-				    	
-				    	int count=0;
-				    	for (int k=ai2;k<360;k++){
-				    		d= d2*10 +   (d1-d2)*10*(k-ai2)/((ai1-ai2+360)%360);
-				    		if (zMap[k]>d){
-				    			r[k]=d;
-				    			zMap[k]= d;
-				    			colorMap[k]=bgc;
-				    			if      (k==ai2) corner[k]=1;
-				    			else             corner[k]=0;
-							}
-				    		count++;
-				    	}
-				    	for (int k=0;k<=ai1;k++){
-				    		d= d2*10 +   (d1-d2)*10*(k+count)/((ai1-ai2+360)%360);
-				    		if (zMap[k]>d){
-				    			r[k]=d;
-				    			zMap[k]= d;
-				    			colorMap[k]=bgc;
-				    			if (k==ai1) corner[k]=2;
-				    			else        corner[k]=0;
-				    			
-							}
-				    	}
-				    	
-					}
-				}
-				
-				// cells on the top left side
-				if ( (j>0) && (i>0) && (Im_x-i>=0) && (Im_y-j>=0) ){
-					if (isWall(Im_x-i,Im_y-j) || isDirty(Im_x-i,Im_y-j) ){
-						Color bgc = getBackgroundColor(Im_x-i,Im_y-j);
-						
-						imin =(double)i-0.5 + (m_x-Im_x);
-						imin2=imin*imin;
-						iplus=(double)i+0.5 + (m_x-Im_x);
-						jmin =(double)j-0.5 + (m_y-Im_y);
-						jmin2=jmin*jmin;
-						jplus=(double)j+0.5 + (m_y-Im_y);
-						
-						d1=  imin2 + jmin2;
-						d1=Math.sqrt(d1);
-						d2=  (iplus*iplus) + jmin2;
-						d2=Math.sqrt(d2);
-						d3=  imin2 + (jplus*jplus);
-						d3=Math.sqrt(d3);
-						
-						a1=  Math.toDegrees( Math.acos( jmin/d1));
-						a2=  Math.toDegrees( Math.acos( jmin/d2));
-						a3=  Math.toDegrees( Math.acos( jplus/d3));
-						
-						int ai1,ai2,ai3;
-						ai1=360-(int)a1;
-						ai3=360-(int)a3;
-						if (ai1==360) ai1=359;
-						if (ai3==360) ai3=359;
-				    	ai2=360-(int)a2;
-						
-				    	for (int k=ai2;k<=ai1;k++){
-				    		d= d2*10 +   (d1-d2)*10*(k-ai2)/(ai1-ai2);
-				    		if (zMap[k]>d){
-				    			r[k]=d;
-				    			zMap[k]= d;
-				    			colorMap[k]=bgc;
-				    			if      (k==ai2) corner[k]=1;
-				    			else if (k==ai1) corner[k]=2;
-				    			else             corner[k]=0;
-							}
-				    	}		
-				    	for (int k=ai1;k<=ai3;k++){
-				    		d= d1*10 +   (d3-d1)*10*(k-ai1)/(ai3-ai1);
-				    		if (zMap[k]>d-0.01){
-				    			r[k]=d;
-				    			zMap[k]=d;
-				    			colorMap[k]=bgc;
-				    			if      (k==ai1) corner[k]=1;
-				    			else if (k==ai3) corner[k]=2;
-				    			else             corner[k]=0;
-				    		}
-				    	}
-						
-					}
-				}
-				
-				
-			}
-		}
-		
-		
-		
-		for (int i=0;i<180;i++){
-			r2[i]= r[(i+orientationDeg-90+720)%360];
-			colorMap2[i]=colorMap[(i+orientationDeg-90+720)%360];
-			corner2[i]=corner[(i+orientationDeg-90+720)%360];
-		}
-		
-		for (int i=0;i<Ernest.RESOLUTION_RETINA;i++){
-			retina[Ernest.RESOLUTION_RETINA-i-1]= new EyeFixation();
-			retina[Ernest.RESOLUTION_RETINA-i-1].setColor(colorMap2[(int)(i*180/Ernest.RESOLUTION_RETINA+180/Ernest.RESOLUTION_RETINA/2)]);
-			retina[Ernest.RESOLUTION_RETINA-i-1].setDistance((int) r2[(int)(i*180/Ernest.RESOLUTION_RETINA+180/Ernest.RESOLUTION_RETINA/2)]);
-		}
-		
-		if (setdistance){ 
-			distance=(float) r2[90];
-			frontColor=colorMap2[90];
-			m_objMemory.addObject(frontColor);
-		}
-		
-		m_tactile.touchEnvironment(r);
-		
-		//m_patternMap.addPatern(colorMap2,lastAction);
-		//m_patternFrame.update((int)(m_x*10),(int)(m_y*10),m_orientation);
-		//m_patternFrame.paint();
-		
-		m_int.repaint();
-		eye.repaint();
-		m_map.compute(r2, colorMap2);
-		eye.paint(r2,colorMap2,corner2);
-		
-		return retina;
-	}
-
 }

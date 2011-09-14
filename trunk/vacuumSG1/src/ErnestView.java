@@ -1,7 +1,5 @@
 
 
-import ernest.*;
-
 /**
  * The main class that instantiates an Ernest agent and runs it in the environment
  * @author ogeorgeon
@@ -14,12 +12,10 @@ public class ErnestView implements Runnable//implements IView
 	{
 		m_model = m;		
 	}
-	public void init() 
-	{
-		m_model.resetStepCount();
-		m_model.resetScore();
-		m_model.haltAgent();
-	}
+//	public void init() 
+//	{
+//		m_model.haltAgent();
+//	}
 
 	/**
 	 * Run Ernest.
@@ -34,23 +30,13 @@ public class ErnestView implements Runnable//implements IView
 				
 		// Run Ernest an infinite loop ===
 		
-		boolean status = false;
+		boolean status = true; // not bump on step 0.
 		
 		while (!m_model.isAgentStopped())
 		{
 			String intention = m_model.stepErnest(status);
-			status = handleAction(intention);
+			status = m_model.enactSchema(intention);
 		}
 		m_model.closeErnest();
-	}
-
-	/**
-	 * Handles Ernest's actions in the grid
-	 * @return the binary feedback
-	 */
-	protected boolean handleAction(String schema) 
-	{
-		return  m_model.enactSchema(schema);
-	}
-	
+	}	
 }

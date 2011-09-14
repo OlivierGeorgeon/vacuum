@@ -59,11 +59,8 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
 	private final JMenuItem m_setBenchmarkFile 			= new JMenuItem("Set the benchmark File");
 	private final JMenuItem m_setPicture 				= new JMenuItem("Set picture");
 	private final JMenuItem m_exit 						= new JMenuItem("Exit");
-	private final JMenuItem m_configureBoard 			= new JMenuItem("Configure Random Board...");
 	private final JMenuItem m_configureRun        		= new JMenuItem("Configure Run...");
-	private final JCheckBoxMenuItem m_randomBoard 		= new JCheckBoxMenuItem("Random Board");
 	private final JMenuItem m_loadBoard           		= new JMenuItem("Choose Board...");
-	private final JMenuItem m_saveBoard               	= new JMenuItem("Save Board...");
 	private final JCheckBoxMenuItem m_simpleAgent     	= new JCheckBoxMenuItem("Simple Reflex Agent");
 	private final JCheckBoxMenuItem m_modelBasedAgent 	= new JCheckBoxMenuItem("Model Based Agent");
 	private final JCheckBoxMenuItem m_radarSensor     	= new JCheckBoxMenuItem("Enable Radar Sensor");
@@ -73,7 +70,6 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
 	private final JLabel m_statusBar = new JLabel();
 	private JButton m_run = new JButton("Run");
 	private JButton m_stop = new JButton("Stop");
-	private JButton m_rerun = new JButton("Try again");
 	private JButton m_reset = new JButton("Reset");
 	
 	private HelpFrames m_Helpframe;
@@ -105,11 +101,9 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
     
     	m_stop.setEnabled(false);
 		m_run.setEnabled(false);
-		m_rerun.setEnabled(false);
 		m_reset.setEnabled(true);
 		m_stop.addActionListener(this);
 		m_run.addActionListener(this);
-		m_rerun.addActionListener(this);
 		m_reset.addActionListener(this);
     	
 
@@ -132,7 +126,6 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
 		buttonPanel.addKeyListener(this);
 		
 		
-		buttonPanel.add(m_rerun);
 		buttonPanel.add(m_reset);
 		buttonPanel.add(m_run);
 		buttonPanel.add(m_stop);
@@ -164,11 +157,8 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
 		m_exit.setMnemonic(KeyEvent.VK_X);
 
 		m_options.setMnemonic(KeyEvent.VK_O);
-		m_randomBoard.setMnemonic(KeyEvent.VK_A);
-		m_configureBoard.setMnemonic(KeyEvent.VK_B);
 		m_configureRun.setMnemonic(KeyEvent.VK_R);
 		m_loadBoard.setMnemonic(KeyEvent.VK_L);
-		m_saveBoard.setMnemonic(KeyEvent.VK_V);
 		m_simpleAgent.setMnemonic(KeyEvent.VK_S);
 		m_modelBasedAgent.setMnemonic(KeyEvent.VK_M);
 		m_radarSensor.setMnemonic(KeyEvent.VK_E);
@@ -199,10 +189,7 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
 		m_options.add(m_configureRun);
 		m_options.add(m_radarSensor);
 		m_options.addSeparator();
-		m_options.add(m_randomBoard);
-		m_options.add(m_configureBoard);
 		m_options.add(m_loadBoard);
-		m_options.add(m_saveBoard);
 		m_options.addSeparator();
 		ButtonGroup group = new ButtonGroup();
 		m_options.add(m_simpleAgent);
@@ -215,13 +202,9 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
 		m_simpleAgent.addActionListener(this);
 		m_modelBasedAgent.addActionListener(this);
 		m_loadBoard.addActionListener(this);
-		m_saveBoard.addActionListener(this);
-		m_configureBoard.addActionListener(this);
 		m_configureRun.addActionListener(this);
 
 		m_radarSensor.addActionListener(this);
-		m_randomBoard.setSelected(model.getRandomBoard());
-		m_randomBoard.addActionListener(this);
 		m_speakAloud.setSelected(model.getSpeakAloud());
 		m_speakAloud.addActionListener(this);
 
@@ -274,34 +257,11 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
 		
 		if (e.getSource() == m_run)
 		{
-			m_env.m_model.setBoardTempFile(this.boardTempFile);
-			m_env.m_model.saveCurrentBoard();
 			m_env.m_model.startAgent();
 			Thread agentThread = null;
 			System.out.println("Run Ernest ");
 			agentThread.start();
 		}
-		
-		// Rerun from a temp board file
-		
-		else if (e.getSource() == m_rerun) 
-		{
-			if (m_env.m_model.boardTempExists()) {
-				try {
-					m_env.m_model.init(m_env.m_model.getBoardTempFile());
-					m_env.m_model.startAgent();
-					Thread agentThread = null;
-					agentThread.start();
-				} 
-				catch (Exception ex) 
-				{
-					JOptionPane.showMessageDialog(this,
-							"Invalid board file!\n" + ex.getClass().toString()
-									+ ": " + ex.getMessage(), "Error!",
-							JOptionPane.ERROR_MESSAGE);
-				} 
-			}
-		} 
 		
 		// Stops the agent *****
 		
@@ -315,27 +275,17 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
 		else if (e.getSource() == m_reset)
 		{
 			m_env.m_model.setCounter(0);
-			if (m_env.m_model.getRandomBoard())
-			{
-			m_env.m_model.setRandomBoardParameters(m_env.m_model.getWidth(), 
-						 m_env.m_model.getHeight(),
-						 m_env.m_model.getDirtyCount());
-			m_env.m_model.init();
+			try
+			{ 
+				m_env.m_model.init(m_env.m_model.getBoardFileName()); 
 			}
-			else
+			catch (Exception ex)
 			{
-				try
-				{ 
-					m_env.m_model.init(m_env.m_model.getBoardFileName()); 
-				}
-				catch (Exception ex)
-				{
-					JOptionPane.showMessageDialog(this, 
-						"Error while initializing the board! (Check picture file and board file)\n" + 
-						e.getClass().toString() + ": " + ex.getMessage(),
-						"Error!", 
-						JOptionPane.ERROR_MESSAGE);
-				}
+				JOptionPane.showMessageDialog(this, 
+					"Error while initializing the board! (Check picture file and board file)\n" + 
+					e.getClass().toString() + ": " + ex.getMessage(),
+					"Error!", 
+					JOptionPane.ERROR_MESSAGE);
 			}
 			// m_env.m_model.setBoardTempFile(this.boardTempFile);
 		}
@@ -425,36 +375,9 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
 				}
 			}			
 		}
-		else if (e.getSource() == m_configureBoard)
-		{
-			//m_configBoardDlg.setVisible(true);
-
-		}
 		else if (e.getSource() == m_configureRun)
 		{
 			//m_configRunDlg.setVisible(true);
-
-		}
-		else if (e.getSource() == m_randomBoard)
-		{
-			m_env.m_model.setRandomBoard(m_randomBoard.isSelected());
-			if (m_env.m_model.getRandomBoard())
-				m_env.m_model.init();
-			else
-			{
-				try
-				{
-					m_env.m_model.init(m_env.m_model.getBoardFileName());
-				}
-				catch (Exception ex)
-				{
-				JOptionPane.showMessageDialog(this, 
-					"Invalid board file!\n" + 
-					ex.getClass().toString() + ": " + ex.getMessage(),
-					"Error!", 
-					JOptionPane.ERROR_MESSAGE);
-				}
-			}
 
 		}
 		else if (e.getSource() == m_speakAloud)
@@ -478,16 +401,11 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
 	{
 		if (m_env.m_model.isAgentStopped())
 		{
-			if (m_env.m_model.getScore() != 0)
-				m_env.m_model.setLastFinalScore(m_env.m_model.getScore());
  
 			m_file.setEnabled(true);
 			m_options.setEnabled(true);
 			m_help.setEnabled(true);
 
-			if (m_env.m_model.boardTempExists()) {
-				m_rerun.setEnabled(true);
-			}
 			m_run.setEnabled(true);
 			m_reset.setEnabled(true);
 			m_stop.setEnabled(false);
@@ -500,7 +418,6 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
 			m_help.setEnabled(false);
 			m_run.setEnabled(false);
 			m_reset.setEnabled(false);
-			m_rerun.setEnabled(false);
 
 			m_stop.setEnabled(true);
 			m_stop.setSelected(true);

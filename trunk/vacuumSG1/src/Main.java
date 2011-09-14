@@ -17,44 +17,31 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 {
 	public static final long serialVersionUID = 1;
 	
-	public static final int RIVER_TOP = 5;
-	public static final int RIVER_BOTTOM = 6;
-	private int m_previousCounter = 0;
-	
 	public static JFrame MAIN_WIN;
 
 	private static final String TITLE = "Vacuum-SG";
 
-	private final JMenu m_file 		= new JMenu("File");
-	private final JMenu m_options 	= new JMenu("Options");
-	private final JMenu m_help 		= new JMenu("Help");
-
-	private final JMenuItem m_KeyboardLayout 	= new JMenuItem("Key Stroke Short Cuts");
-	private final JMenuItem m_aboutVacuum 		= new JMenuItem("About Vacuumcleaner");
+	private final JMenu m_file 						= new JMenu("File");
+	private final JMenu m_options 					= new JMenu("Options");
+	private final JMenu m_help 						= new JMenu("Help");
+	private final JMenuItem m_KeyboardLayout 		= new JMenuItem("Key Stroke Short Cuts");
+	private final JMenuItem m_aboutVacuum 			= new JMenuItem("About Vacuumcleaner");
+	private final JMenuItem m_exit 					= new JMenuItem("Exit");
+	private final JMenuItem m_configureRun        	= new JMenuItem("Configure Run...");
+	private final JMenuItem m_loadBoard           	= new JMenuItem("Choose Board...");
+	private final JCheckBoxMenuItem m_speakAloud    = new JCheckBoxMenuItem("Speak Aloud");
 	
-	private final JMenuItem m_exit 						= new JMenuItem("Exit");
-
-	private final JMenuItem m_configureBoard 			= new JMenuItem("Configure Random Board...");
-	private final JMenuItem m_configureRun        		= new JMenuItem("Configure Run...");
-	private final JCheckBoxMenuItem m_randomBoard 		= new JCheckBoxMenuItem("Random Board");
-	private final JMenuItem m_loadBoard           		= new JMenuItem("Choose Board...");
-	private final JMenuItem m_saveBoard               	= new JMenuItem("Save Board...");
-	private final JCheckBoxMenuItem m_speakAloud      	= new JCheckBoxMenuItem("Speak Aloud");
-
 	private final JFileChooser m_chooser 			= new JFileChooser();
 	private final JFileChooser m_boardChooser 		= new JFileChooser(); // Uses specific chooser so that it remembers the path
 	
 	private final MyFileFilter m_fileFilter 		= new MyFileFilter();
 
     private static ErnestModel m_model 			    = new Ernest100Model();
- 	private final StatusModel m_statusModel         = new StatusModel();
+ 	//private final StatusModel m_statusModel         = new StatusModel();
 	
 	private HelpFrames m_Helpframe;
 	private ErnestView m_ernest;
 	private EnvSquare[][] m_grid = null;
-
-	//private String logFile;
-	//public  String BenchmarkFile;
 
 	private JPanel m_board;
 	
@@ -64,18 +51,13 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 	private final JLabel m_statusBar = new JLabel();
 	private JButton m_run = new JButton("Run");
 	private JButton m_stop = new JButton("Stop");
-	private JButton m_rerun = new JButton("Try again");
+	private JButton m_step = new JButton("Step");
 	private JButton m_reset = new JButton("Reset");
 	private final javax.swing.Timer m_statusTimer =
 		new javax.swing.Timer(100, new StatusTimerListener());
 
-	private final ConfigureBoardDlg m_configBoardDlg = 
-		new ConfigureBoardDlg(this, m_model);
-
 	private final ConfigureRunDlg m_configRunDlg = 
 		new ConfigureRunDlg(this, m_model);
-
-	private String boardTempFile = "board.tmp";
 
 	/**
 	 * Main
@@ -98,9 +80,6 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 	
 	/**
 	 * Main
-	 * @author mcohen
-	 * @author ogeorgeon (Retrieve saved user preferences)
-	 * @param strModel
 	 */
 	public Main()
 	{
@@ -119,60 +98,44 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		
 		
 		// Initialize the board
-		if (m_model.getRandomBoard())
-			m_model.init();
-		else
+		try
+		{ 
+			m_model.init(m_model.getBoardFileName()); 
+		}
+		catch (Exception e)
 		{
-			try
-			{ 
-				m_model.init(m_model.getBoardFileName()); 
-			}
-			catch (Exception e)
-			{
-				JOptionPane.showMessageDialog(this, 
-					"Error intializing the board!\n" + 
-					e.getClass().toString() + ": " + e.getMessage(),
-					"Error!", 
-					JOptionPane.ERROR_MESSAGE);
-			}
+			JOptionPane.showMessageDialog(this, 
+				"Error intializing the board!\n" + 
+				e.getClass().toString() + ": " + e.getMessage(),
+				"Error!", 
+				JOptionPane.ERROR_MESSAGE);
 		}
 
-		m_model.setBoardTempFile(boardTempFile);
 		m_model.addObserver(this);
 
 		m_stop.setEnabled(false);
 		m_run.setEnabled(false);
-		m_rerun.setEnabled(false);
 		m_reset.setEnabled(true);
+		m_step.setEnabled(false);
 		m_stop.addActionListener(this);
 		m_run.addActionListener(this);
-		m_rerun.addActionListener(this);
 		m_reset.addActionListener(this);
+		m_step.addActionListener(this);
 
 		m_board = new JPanel(new GridLayout(m_model.getHeight(), m_model.getWidth()));
-
-		//JPanel pageStart = new JPanel();
-		//pageStart.setPreferredSize(new Dimension(600, 5));
-		//pageStart.setBackground(new Color(Ernest.COLOR_WALL.getRGB()));
-		
-		//JPanel lineStart = new JPanel();
-		//lineStart.setPreferredSize(new Dimension(5, 400));
-		//lineStart.setBackground(new Color(Ernest.COLOR_WALL.getRGB()));
 
 		getContentPane().setLayout(new BorderLayout());
 
 		getContentPane().add(m_board, BorderLayout.CENTER);
 		
-		
-		
 		JPanel buttonPanel = new JPanel();
 
 		buttonPanel.addKeyListener(this);
 
-		buttonPanel.add(m_rerun);
 		buttonPanel.add(m_reset);
 		buttonPanel.add(m_run);
 		buttonPanel.add(m_stop);
+		buttonPanel.add(m_step);
 		JPanel statusPanel = new JPanel(new BorderLayout());
 		statusPanel.add(m_statusBar, BorderLayout.CENTER);
 		statusPanel.add(buttonPanel, BorderLayout.EAST);
@@ -180,7 +143,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		getContentPane().add(statusPanel, BorderLayout.SOUTH);
 
 
-		m_statusModel.pushPermStatus("Ready.");
+		//m_statusModel.pushPermStatus("Ready.");
 		m_statusBar.setText("Ready.");
 		m_statusBar.setPreferredSize(new Dimension(200, m_statusBar.getHeight()));
 		m_statusTimer.start();
@@ -210,81 +173,49 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		
 		if (e.getSource() == m_run)
 		{
-			m_model.setBoardTempFile(this.boardTempFile);
-			m_model.saveCurrentBoard();
 			m_model.startAgent();
 			Thread agentThread = null;
 			System.out.println("Run Ernest ") ;
 			agentThread = new Thread(getErnestView());
 			agentThread.start();
+			m_statusBar.setText("Playing");
 		}
 		
-		// Rerun from a temp board file
-		
-		else if (e.getSource() == m_rerun) 
-		{
-			if (m_model.boardTempExists()) {
-				try {
-					m_model.init(m_model.getBoardTempFile());
-					m_model.startAgent();
-					Thread agentThread = null;
-					agentThread = new Thread(getErnestView());
-					getErnestView().init();
-					agentThread.start();
-				} 
-				catch (Exception ex) 
-				{
-					JOptionPane.showMessageDialog(this,
-							"Invalid board file!\n" + ex.getClass().toString()
-									+ ": " + ex.getMessage(), "Error!",
-							JOptionPane.ERROR_MESSAGE);
-				} 
-				// finally 
-				// {
-				//	getJessView().init();
-				//	getSoarView().init();
-				//	getHumanView().init();
-				//}
-			}
-		} 
-		
-		// Stops the agent *****
+		// Stop the agent *****
 		
 		else if (e.getSource() == m_stop)
 		{
 			m_model.save();
 			m_model.haltAgent();
-			
+			m_step.setEnabled(true);
+			m_statusBar.setText("Pause");			
+		}
+		
+		// Run one step *****
+		
+		else if (e.getSource() == m_step)
+		{
+			m_statusBar.setText("Step");
 		}
 		
 		// Reset the board ******
-
 		else if (e.getSource() == m_reset)
+
 		{
-			m_model.setCounter(0);
-			if (m_model.getRandomBoard())
-			{
-			m_model.setRandomBoardParameters(m_model.getWidth(), 
-						 m_model.getHeight(),
-						 m_model.getDirtyCount());
-			m_model.init();
+			m_statusBar.setText("Ready");
+			try
+			{ 
+				m_model.init(m_model.getBoardFileName()); 
 			}
-			else
+			catch (Exception ex)
 			{
-				try
-				{ 
-					m_model.init(m_model.getBoardFileName()); 
-				}
-				catch (Exception ex)
-				{
-					JOptionPane.showMessageDialog(this, 
-						"Error while initializing the board! (Check picture file and board file)\n" + 
-						e.getClass().toString() + ": " + ex.getMessage(),
-						"Error!", 
-						JOptionPane.ERROR_MESSAGE);
-				}
+				JOptionPane.showMessageDialog(this, 
+					"Error while initializing the board! (Check board file)\n" + 
+					e.getClass().toString() + ": " + ex.getMessage(),
+					"Error!", 
+					JOptionPane.ERROR_MESSAGE);
 			}
-			// m_model.setBoardTempFile(this.boardTempFile);
+			m_step.setEnabled(false);
 		}
 		else if (e.getSource() == m_exit)
 		{
@@ -314,34 +245,9 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 				}
 			}			
 		}
-		else if (e.getSource() == m_configureBoard)
-		{
-			m_configBoardDlg.setVisible(true);
-		}
 		else if (e.getSource() == m_configureRun)
 		{
 			m_configRunDlg.setVisible(true);
-		}
-		else if (e.getSource() == m_randomBoard)
-		{
-			m_model.setRandomBoard(m_randomBoard.isSelected());
-			if (m_model.getRandomBoard())
-				m_model.init();
-			else
-			{
-				try
-				{
-					m_model.init(m_model.getBoardFileName());
-				}
-				catch (Exception ex)
-				{
-				JOptionPane.showMessageDialog(this, 
-					"Invalid board file!\n" + 
-					ex.getClass().toString() + ": " + ex.getMessage(),
-					"Error!", 
-					JOptionPane.ERROR_MESSAGE);
-				}
-			}
 		}
 		else if (e.getSource() == m_speakAloud)
 		{
@@ -363,25 +269,15 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 	{
 		if (m_model.isAgentStopped())
 		{
-			if (m_model.getScore() != 0)
-				m_model.setLastFinalScore(m_model.getScore());
- 
 			m_file.setEnabled(true);
 			m_options.setEnabled(true);
 			m_help.setEnabled(true);
-			if (m_model.getLastFinalScore() != 0) {
-				m_statusModel.pushPermStatus("Ready. Final Score last run: "
-						+ m_model.getLastFinalScore());
-			} else {
-				m_statusModel.pushPermStatus("Ready.");
-			}
+			//m_statusModel.pushPermStatus("Pause");
 
-			if (m_model.boardTempExists()) {
-				m_rerun.setEnabled(true);
-			}
 			m_run.setEnabled(true);
 			m_reset.setEnabled(true);
 			m_stop.setEnabled(false);
+			//m_step.setEnabled(false);
 			setTitle(TITLE + " - " + m_model.getVersion());
 		}
 		else
@@ -391,13 +287,12 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 			m_help.setEnabled(false);
 			m_run.setEnabled(false);
 			m_reset.setEnabled(false);
-			m_rerun.setEnabled(false);
+			m_step.setEnabled(false);
 
 			m_stop.setEnabled(true);
 			m_stop.setSelected(true);
 
-			m_statusModel.pushPermStatus("Step #" + (m_model.getStepCount() +1 ) + 
-							   ":  SCORE: " + m_model.getScore());
+			//m_statusModel.pushPermStatus("Playing");
 		}
 
 		drawGrid();
@@ -411,35 +306,18 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 	private void drawGrid()
 	{
 		resizeGrid();
-		
-		// Fish move to the right when they are in the river flow
-		
-		if (m_model.getCounter() == 0) m_previousCounter = 0;
-		
-		if (m_model.getCounter() > m_previousCounter)
-		//if ((m_model.getCounter() % 2 == 0) && (m_model.getCounter() > m_previousCounter))
-		{
-			for (int i = m_model.getWidth() - 2; i >= 0 ; i--)
-				for (int j = RIVER_TOP; j <= RIVER_BOTTOM; j++)
-					if (m_model.isDirty(i, j))
-					{
-						if (i < m_model.getWidth() - 2)
-							m_model.setDirty(i + 1, j, m_model.getDirty(i, j));
-						m_model.setDirty(i, j, Model.EMPTY);
-					}
-			m_previousCounter = m_model.getCounter();
-		}
-		
+
+		// Update the square visualization.		
 		for (int y = 0; y < m_model.getHeight(); y++)
 		{
 			for (int x = 0; x < m_model.getWidth(); x++)
 			{
-				
-				// Update the square visualization.
-				
 				m_grid[y][x].udateBackground();
 			}
 		}
+		
+		// Update Ernest's dynamic position.
+		//m_model.ernestDynamic();
 		
 		// handle mouse events from continuous environment
 		int c= m_env.m_env.getClicked();
@@ -495,8 +373,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 	 */
 	private void resizeGrid()
 	{
-
-		
+	
 		if (m_grid == null || 
 			m_grid.length != m_model.getHeight() ||
 			m_grid[0].length != m_model.getWidth())
@@ -535,11 +412,8 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		m_exit.setMnemonic(KeyEvent.VK_X);
 		
 		m_options.setMnemonic(KeyEvent.VK_O);
-		m_randomBoard.setMnemonic(KeyEvent.VK_A);
-		m_configureBoard.setMnemonic(KeyEvent.VK_B);
 		m_configureRun.setMnemonic(KeyEvent.VK_R);
 		m_loadBoard.setMnemonic(KeyEvent.VK_L);
-		m_saveBoard.setMnemonic(KeyEvent.VK_V);
 
 		// file menu...
 		m_file.add(m_exit);
@@ -548,21 +422,12 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 
 		// options menu...
 		m_options.add(m_configureRun);
-		m_options.addSeparator();
-		m_options.add(m_randomBoard);
-		m_options.add(m_configureBoard);
 		m_options.add(m_loadBoard);
-		m_options.add(m_saveBoard);
-		m_options.addSeparator();
 		m_options.add(m_speakAloud);
 
 		m_loadBoard.addActionListener(this);
-		m_saveBoard.addActionListener(this);
-		m_configureBoard.addActionListener(this);
 		m_configureRun.addActionListener(this);
 
-		m_randomBoard.setSelected(m_model.getRandomBoard());
-		m_randomBoard.addActionListener(this);
 		m_speakAloud.setSelected(m_model.getSpeakAloud());
 		m_speakAloud.addActionListener(this);
 
@@ -585,7 +450,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 	{
 		public void actionPerformed(ActionEvent e)
 		{
-			m_statusBar.setText(m_statusModel.getNextStatus());
+			//m_statusBar.setText(m_statusModel.getNextStatus());
 		}
 	}
 
@@ -621,7 +486,6 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 	}
 
 	public void keyPressed(KeyEvent e) {
-
 	}
 
 	public void keyReleased(KeyEvent e) 
