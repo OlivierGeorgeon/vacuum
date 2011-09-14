@@ -30,19 +30,23 @@ public class TactileMapPanel extends JPanel{
 			g.setColor(Color.cyan);
 			g.fillOval(300+(int)(tmap.sensorX[i]-25*tmap.m_tactilePressure[i]), 350+(int)(tmap.sensorY[i]-25*tmap.m_tactilePressure[i]),
 					   (int)(50*tmap.m_tactilePressure[i]), (int)(50*tmap.m_tactilePressure[i]));
-			
+
+		}
+		g.setColor(Color.black);
+		for (int i=0;i<tmap.resolution-1;i++){
 			if (i==tmap.resolution/2) g.setColor(Color.red);
-			else if (tmap.m_tactileVariations[i]== 10) g.setColor(Color.green);
-			else if (tmap.m_tactileVariations[i]==-10) g.setColor(Color.blue );
+			else if (tmap.m_tactileVariations[i]== 20) g.setColor(Color.green);
+			else if (tmap.m_tactileVariations[i]==-20) g.setColor(Color.blue );
 			else g.setColor(Color.black);
 			g.fillOval(300+(int)(tmap.sensorX[i])-2, 350+(int)(tmap.sensorY[i])-2, 4, 4);
 		}
 		
 		/*for (int i=0;i<tmap.resolution;i++){
 			for (int j=0;j<tmap.resolution;j++){
-				System.out.println(tmap.connections[i][j]);
-				g.setColor(new Color((float)Math.max(0,1-(tmap.connections[i][j]/10)),(float)Math.min(1,tmap.connections[i][j]/10),0));
-				g.fillRect(110+i*10, 160+j*10, 10, 10);
+				if (Math.abs(tmap.connections[i][j])-(20- tmap.distances[i][j]/5.5) > 0) g.setColor(Color.blue);
+				else g.setColor(Color.green);
+				//g.setColor(new Color((float)Math.max(0,1-(tmap.connections[i][j]/10)),(float)Math.min(1,tmap.connections[i][j]/10),0));
+				g.fillRect(110+i*21, 160+j*21, 20, (int)(Math.abs(Math.abs(tmap.connections[i][j]) - (20- tmap.distances[i][j]/5.5) ) ) );
 			}
 		}*/
 		
