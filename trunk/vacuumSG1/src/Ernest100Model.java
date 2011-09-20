@@ -89,15 +89,21 @@ public class Ernest100Model extends ErnestModel
 		m_objMemory=new ObjectMemory();
 		m_map=new InternalMap(m_objMemory);
 		
-		m_tactile=new TactileMap(this);
-		m_tactileFrame=new TactileMapFrame(m_tactile);
 		
 		if (!load(m_actionList)){
+			
 			m_actionList.clear();
 			m_actionList.add(new Action("forward",10,120,150,m_objMemory));
 			m_actionList.add(new Action("turnLeft",1 ,180,180,m_objMemory));
 			m_actionList.add(new Action("turnRight",1 ,180,180,m_objMemory));
 		}
+
+		if (m_tactile==null){
+			System.out.println("=====================test0");
+			m_tactile=new TactileMap(this);
+		}
+		m_tactileFrame=new TactileMapFrame(m_tactile);	
+		
 		m_int=new InternalStatesFrame(m_actionList);
 		
 		//m_patternMap=new PatternMap();
@@ -1605,6 +1611,39 @@ public class Ernest100Model extends ErnestModel
 			}*/
 			
 			
+			
+			// sensors positions and connections
+			file.println("sensors "+m_tactile.resolution+" "+m_tactile.sensorRes);
+			file.print("sensorX");
+			for (int i=0;i<m_tactile.resolution*m_tactile.sensorRes;i++){
+				file.print(" "+m_tactile.sensorX[i]);
+			}
+			file.println();
+			
+			file.print("sensorY");
+			for (int i=0;i<m_tactile.resolution*m_tactile.sensorRes;i++){
+				file.print(" "+m_tactile.sensorY[i]);
+			}
+			file.println();
+			
+			// sensorConnections
+			file.println("sensorConnections");
+			for (int i=0;i<m_tactile.resolution*m_tactile.sensorRes;i++){
+				for (int j=0;j<m_tactile.resolution*m_tactile.sensorRes;j++){
+					file.print(m_tactile.connections[i][j]+" ");
+				}
+				file.println();
+			}
+			
+			// sensor confidence
+			file.println("sensorConfidence");
+			for (int i=0;i<m_tactile.resolution*m_tactile.sensorRes;i++){
+				for (int j=0;j<m_tactile.resolution*m_tactile.sensorRes;j++){
+					file.print(m_tactile.confidence[i][j]+" ");
+				}
+				file.println();
+			}
+			
 			file.close();
 			
 			System.out.println("file saved");
@@ -1627,7 +1666,7 @@ public class Ernest100Model extends ErnestModel
 		int nbAct=0;
 		int nbObj=0;
 		int indexObj=0;
-		int matrixType=0;      // 1->selectMap, 2->confidenceMap
+		int matrixType=0;      // 1->selectMap, 2->confidenceMap , 3->sensor connections, 4->sensor confidence
 		int indexLine=0;
 		int h=0;
 		
@@ -1635,7 +1674,6 @@ public class Ernest100Model extends ErnestModel
 			Scanner scanner=new Scanner(new File(fileName));
 			
 			String[] elements;
-			
 			while (scanner.hasNextLine() && succes) {
 			    String line = scanner.nextLine();
 			    
@@ -1645,7 +1683,7 @@ public class Ernest100Model extends ErnestModel
 			    	elements=line.split(" ");
 			    	if (elements.length>0){
 			    		// new non empty line
-
+			    		
 			    		// case new Action
 			    		if (elements[0].equals("Action")){
 			    			if (elements.length == 4){
@@ -1732,13 +1770,59 @@ public class Ernest100Model extends ErnestModel
 			    			}*/
 			    		}
 			    		
+			    		
+			    		// sensor map
+			    		else if (elements[0].equals("sensors")){
+			    			if (elements.length == 3){
+			    				m_tactile=new TactileMap(this, Integer.parseInt(elements[1]),Integer.parseInt(elements[2]));
+			    			}
+			    		}
+			    		
+			    		// sensorX vector
+			    		else if (elements[0].equals("sensorX")){
+			    			if (elements.length == m_tactile.resolution*m_tactile.sensorRes+1){
+			    				for (int i=0;i<m_tactile.resolution*m_tactile.sensorRes;i++){
+			    					m_tactile.sensorX[i]= Double.parseDouble(elements[i+1]);
+			    				}
+			    			}
+			    		}
+			    		// sensorY vector
+			    		else if (elements[0].equals("sensorY")){
+			    			if (elements.length == m_tactile.resolution*m_tactile.sensorRes+1){
+			    				for (int i=0;i<m_tactile.resolution*m_tactile.sensorRes;i++){
+			    					m_tactile.sensorY[i]= Double.parseDouble(elements[i+1]);
+			    				}
+			    			}
+			    		}
+			    		
+			    		
+			    		
+			    		// sensor connections
+			    		else if (elements[0].equals("sensorConnections")){
+			    			matrixType=3;
+		    				indexLine=0;
+			    		}
+			    		
+			    		// sensor confidence
+			    		else if (elements[0].equals("sensorConfidence")){
+			    			matrixType=4;
+		    				indexLine=0;
+			    		}
+			    		
+			    		
 			    		// matrix value (no label)
 			    		else{
 			    			if (indexLine<actList.get(nbAct-1).width){
 			    			int min=Math.min(h, elements.length);
 			    			for (int j=0;j<min;j++){
 			    				if (matrixType==1) actList.get(nbAct-1).selectMap.get(indexObj)[indexLine][j]=Float.parseFloat(elements[j]);
-			    				if (matrixType==2) actList.get(nbAct-1).confidenceMap.get(indexObj)[indexLine][j]=Float.parseFloat(elements[j]);   					
+			    				if (matrixType==2) actList.get(nbAct-1).confidenceMap.get(indexObj)[indexLine][j]=Float.parseFloat(elements[j]); 
+			    			}
+			    			if (matrixType==3 || matrixType==4){
+			    				for (int j=0;j<m_tactile.resolution*m_tactile.sensorRes;j++){
+			    					if (matrixType==3) m_tactile.connections[indexLine][j]= Double.parseDouble(elements[j]);
+			    					if (matrixType==4) m_tactile.confidence[indexLine][j] = Double.parseDouble(elements[j]);
+			    				}
 			    			}
 			   				indexLine++;
 			    			};
@@ -1770,7 +1854,6 @@ public class Ernest100Model extends ErnestModel
 				}
 			}
 		}
-		
 		
 		return succes;
 	}
