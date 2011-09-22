@@ -6,6 +6,10 @@ import javax.swing.JPanel;
 
 public class TactileMapPanel extends JPanel{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	TactileMap tmap;
 	
 	
@@ -16,14 +20,7 @@ public class TactileMapPanel extends JPanel{
 	public void paintComponent(Graphics g){
 		g.setColor(Color.white);
 		g.fillRect(0, 0, 600, 600);
-		/*
-		g.setColor(Color.blue);
-		for (int i=0;i<tmap.resolution*tmap.sensorRes;i++){
-			for (int j=0;j<tmap.resolution*tmap.sensorRes;j++){
-				//g.fillRect(i*16, j*16, 16, (int)((20-tmap.connections[i][j])*(20-tmap.connections[i][j])*16/400));
-				
-			}
-		}*/
+
 		
 		// draw the tactile retina
 		int width=600/(tmap.resolution*tmap.sensorRes);
@@ -38,11 +35,42 @@ public class TactileMapPanel extends JPanel{
 		g.setColor(Color.black);
 		g.drawRect(5, 345, 290, 210);
 		
-		width=200/tmap.mapSize;
-		for (int i=0;i<tmap.mapSize;i++){
-			for (int j=0;j<tmap.mapSize;j++){
-				g.setColor(new Color(tmap.chargeMap[i][j],1-tmap.chargeMap[i][j],0));
-				g.fillRect(150-tmap.mapSize/2*width + i*width, 450-tmap.mapSize/2*width + j*width, width, width);
+		width=200/(40-10);//tmap.mapSize;
+		int offsetX,offsetY;
+		for (int k=0;k<Math.min(3, tmap.flowX1.size());k++){
+			for (int i=10;i<40;i++){
+				for (int j=10;j<40;j++){
+				
+					// potential map
+					//g.setColor(new Color(Math.min(1,tmap.potentialMap[i][j]),1-Math.min(1,tmap.potentialMap[i][j]),0));
+					//g.fillRect(450-tmap.mapSize/2*width + i*width, 450-tmap.mapSize/2*width + j*width, width, width);
+
+					// draw flow
+					g.setColor(new Color(Math.min(1,tmap.potentialMap[i][j]),1-Math.min(1,tmap.potentialMap[i][j]),0));
+				
+				
+					// draw improved flow
+					offsetX=0;
+					offsetY=0;
+					if (k==0){
+						offsetX=450;
+						offsetY=450;
+					}
+					else if (k==1){
+						offsetX=150;
+						offsetY=450;
+					}
+					else if (k==2){
+						offsetX=450;
+						offsetY=250;
+					}
+					
+					if (tmap.flowX1.size()>0 && tmap.flowX1.get(k)[i][j]!=0 || tmap.flowY1.get(k)[i][j]!=0)
+						g.drawLine(offsetX-tmap.mapSize/2*width + i*width+width/2,offsetY-tmap.mapSize/2*width + j*width+width/2,
+								   offsetX-tmap.mapSize/2*width + i*width+width/2+(int)(10*tmap.flowX2.get(k)[i][j]),
+								   offsetY-tmap.mapSize/2*width + j*width+width/2+(int)(10*tmap.flowY2.get(k)[i][j]) );
+				
+				}
 			}
 		}
 		
@@ -91,10 +119,9 @@ public class TactileMapPanel extends JPanel{
 				    g.drawLine(150+(int)tmap.sensorX[i], 250+(int)tmap.sensorY[i],
                     150+(int)tmap.sensorX[i+tmap.resolution], 250+(int)tmap.sensorY[i+tmap.resolution]);
 			}
-			
-			// draw neurons in potential display
-			g.fillOval(150+(int)(tmap.sensorX[i])/2-1, 450+(int)(tmap.sensorY[i])/2-1, 2, 2);
+
 		}
+
 	}
 	
 }

@@ -1,11 +1,8 @@
-import java.util.ArrayList;
-
 import javax.swing.JFrame;
 
 
 public class TactileMapFrame extends JFrame{
 
-	private TactileMap tactileMap;
 	private TactileMapPanel panel;
 	
 	public TactileMapFrame(TactileMap t){
@@ -14,7 +11,6 @@ public class TactileMapFrame extends JFrame{
     	this.setLocationRelativeTo(null);               
     	this.setVisible(true);
 
-    	tactileMap=t;
     	panel=new TactileMapPanel(t);
     	
     	this.setContentPane(panel);
