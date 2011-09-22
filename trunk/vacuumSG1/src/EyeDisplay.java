@@ -2,7 +2,6 @@
 
 
 import java.awt.Graphics;
-import java.util.ArrayList;
 import java.awt.Color;
 
 
@@ -10,6 +9,10 @@ import javax.swing.JPanel;
  
 public class EyeDisplay extends JPanel {
  
+		/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 		private static boolean view=true;
 		private static boolean attractness=true;
 	
