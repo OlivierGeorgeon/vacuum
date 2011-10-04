@@ -186,7 +186,7 @@ public class Ernest100Model extends ErnestModel
 		int [][] matrix = new int[Ernest.RESOLUTION_RETINA][8 + 1 + 3];
 		EyeFixation[] eyeFixation = null;
 		//eyeFixation = retina(Math.PI/2 - m_orientationAngle);
-		eyeFixation = rendu(false,false);
+		eyeFixation = rendu(false);
 		
 		for (int i = 0; i < Ernest.RESOLUTION_RETINA; i++)
 		{
@@ -300,7 +300,7 @@ public class Ernest100Model extends ErnestModel
 	protected boolean turnLeft(){
 		m_eyeOrientation = 0;
 		if (continuum){
-			rendu(true,false);
+			rendu(true);
 			angle=m_map.imax;
 			float orientation=(m_actionList.get(1)).selectOutput(angle,frontColor)+1;
 			m_Ir=-orientation;
@@ -322,7 +322,7 @@ public class Ernest100Model extends ErnestModel
 		m_eyeOrientation = 0;
 		
 		if (continuum){
-			rendu(true,false);
+			rendu(true);
 			angle=m_map.imax;
 			float orientation=(m_actionList.get(2)).selectOutput(angle,frontColor)+1;
 			m_Ir=+orientation;
@@ -343,7 +343,7 @@ public class Ernest100Model extends ErnestModel
 	protected boolean forward(){
 		
 		if (continuum){
-			rendu(true,false);
+			rendu(true);
 			m_If=(float) ((m_actionList.get(0)).selectOutput(distance,frontColor)+0.1);
 		}
 		else{
@@ -379,11 +379,12 @@ public class Ernest100Model extends ErnestModel
 		
 		float dist=0;
 		float a=0;
+		float orientation=Math.round(m_orientation);
 		float previousDistance=distance;
 		Color previousColor=frontColor;
 		
-		int i=10;
-		int j=5;
+		int i=40;
+		int j=20;
 		
 		float vlmin;
 		float vrmin;
@@ -422,16 +423,16 @@ public class Ernest100Model extends ErnestModel
 			else 
 				if (continuum) m_theta-= 0.1*m_theta;
 				else if (j>0) j--;
-				     else m_theta-=m_theta/10;
+				     else m_theta-=0;
 			
-			//if (Math.abs(m_theta)<=0.1) m_theta=0;
+			if (Math.abs(m_theta)<=0.1) m_theta=0;
 			
 	// compute new position
 			
 			// for linear movements
 			double d;
 			if (statusL){
-				if (continuum) step=m_v/90;
+				if (continuum) step=m_v/300;
 				else           step=m_v/10;
 				
 				double dx= step*Math.sin(m_orientationAngle);
@@ -445,12 +446,14 @@ public class Ernest100Model extends ErnestModel
 			
 			// for angular movements
 			if (continuum){
-				m_orientation+=m_theta/10;
-				a+=m_theta/10;
+				orientation+=m_theta/40;
+				a+=m_theta/40;
 			}
 			else m_orientation+=m_theta/9;
-			if (m_orientation < 0)   m_orientation +=360;
-			if (m_orientation >=360) m_orientation -=360;
+			if (orientation < 0)   orientation +=360;
+			if (orientation >=360) orientation -=360;
+			
+			m_orientation=Math.round(orientation);
 			m_orientationAngle =  m_orientation * Math.PI/2 / ORIENTATION_RIGHT;
 			
 			
@@ -530,7 +533,8 @@ public class Ernest100Model extends ErnestModel
 				status5=false;
 			}
 			if (tempo){
-				rendu(false,true);
+				
+				
 				m_env.repaint();
 				m_int.repaint();
 				//sleep((int)(1));
@@ -539,6 +543,16 @@ public class Ernest100Model extends ErnestModel
 			m_tactileFrame.paint();
 			
 			statusL=status1 && status2 && status4;
+			
+			float speed=0;
+			
+			if (lastAction==0) speed=m_v;
+			if (lastAction==1) speed=-m_theta;
+			if (lastAction==2) speed=m_theta;
+			
+			if (!statusL || !status5) speed=0; 
+			
+			rendu(false,true,speed);
 		}
 		
 		
@@ -593,7 +607,7 @@ public class Ernest100Model extends ErnestModel
 		notifyObservers2();
 		
 		
-		rendu(true,false);
+		rendu(true);
 		
 	// define reward for linear movement
 		int reward=0;
@@ -652,18 +666,22 @@ public class Ernest100Model extends ErnestModel
 			m_v=0;
 		}
 		
-		rendu(true,false);
+		rendu(true);
 		
 		if (act==0) return status1 && status2 && status5;
 		else        return statusR;
 	}
 	
 	
-
+	protected EyeFixation[] rendu(boolean setdistance){
+		return rendu(setdistance,false,0);
+	}
+	
+	
 	//******************************************
 	////////////////////////////////////////////
 	//******************************************
-	protected EyeFixation[] rendu(boolean setdistance, boolean sensor){
+	protected EyeFixation[] rendu(boolean setdistance, boolean sensor,float speed){
 		double[] r    = new double[360];
 		double[] r2   = new double[180];
 		double[] zMap = new double[360];
@@ -1006,7 +1024,7 @@ public class Ernest100Model extends ErnestModel
 			m_objMemory.addObject(frontColor);
 		}
 		
-		if (sensor) m_tactile.touchEnvironment(r,colorMap, lastAction);
+		if (sensor) m_tactile.touchEnvironment(r,colorMap, lastAction,speed);
 		
 		//m_patternMap.addPatern(colorMap2,lastAction);
 		//m_patternFrame.update((int)(m_x*10),(int)(m_y*10),m_orientation);
@@ -1041,7 +1059,7 @@ public class Ernest100Model extends ErnestModel
 		}
 		//time1=System.currentTimeMillis();
 		//System.out.print("step : "+(time1-time2)+" millisecondes");
-		rendu(false,false);
+		rendu(false);
 		//time2=System.currentTimeMillis();
 		//System.out.println(" ; rendu : "+(time2-time1)+" millisecondes");
 		//time2=time1;
@@ -1328,7 +1346,7 @@ public class Ernest100Model extends ErnestModel
 		{
 			// Eye color
 			//eyeFixation = retina(Math.PI/2 - m_orientationAngle);
-			eyeFixation=rendu(false,false);
+			eyeFixation=rendu(false);
 			for (int i = 0; i < Ernest.RESOLUTION_RETINA; i++)
 			{
 				pixelColor[i][0] = eyeFixation[i].getColor();

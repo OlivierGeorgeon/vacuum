@@ -7,7 +7,7 @@ public class TactileMapFrame extends JFrame{
 	
 	public TactileMapFrame(TactileMap t){
 		this.setTitle("tactile Map");
-    	this.setSize(600, 600);
+    	this.setSize(800, 800);
     	this.setLocationRelativeTo(null);               
     	this.setVisible(true);
 
