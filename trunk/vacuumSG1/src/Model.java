@@ -100,7 +100,6 @@ public class Model extends Observable
 	protected float m_y;
 	public int m_orientation; 
 	public String m_schema = "";
-	protected double m_eyeOrientation = 0;
 	
 	/** The angular orientation of Ernest. (in radius, clockwise)*/
 	protected double m_orientationAngle = 0;
@@ -167,7 +166,6 @@ public class Model extends Observable
 		m_orientation = ORIENTATION_UP;
 		m_orientationAngle = 0;
 		mOrientation.z = (float) Math.PI/2;
-		m_eyeOrientation = 0;
 		
 		for (int i = 0; i < m_dirtyCount; i++)
 		{
@@ -209,7 +207,6 @@ public class Model extends Observable
 		m_orientation = ORIENTATION_UP;
 		m_orientationAngle = 0;
 		//mRotation.z = (float) Math.PI/2;
-		m_eyeOrientation = 0;
 		
 		BufferedReader br = null;
 		try
@@ -405,7 +402,7 @@ public class Model extends Observable
 	
 	/**
 	 * @param pos The position to test in Cartesian coordinates.
-	 * @return true if this position is wall 
+	 * @return true if this position is a wall 
 	 */
 	protected boolean affordWalk(Vector3f pos) 
 	{
