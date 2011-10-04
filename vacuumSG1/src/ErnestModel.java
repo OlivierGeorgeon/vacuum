@@ -46,7 +46,7 @@ public class ErnestModel extends Model
 	public final static float INV_SQRT_2 = (float) (1/Math.sqrt(2));
 	final private float DIAG2D_PROJ = INV_SQRT_2;
 
-	//Local directions
+	// Local directions
 	final private Vector3f DIRECTION_AHEAD = new Vector3f(1, 0, 0);
 	final private Vector3f DIRECTION_BEHIND = new Vector3f(-1, 0, 0);
 	final private Vector3f DIRECTION_LEFT = new Vector3f(0, 1, 0);
@@ -56,6 +56,16 @@ public class ErnestModel extends Model
 	final private Vector3f DIRECTION_BEHIND_LEFT = new Vector3f(-DIAG2D_PROJ, DIAG2D_PROJ, 0);
 	final private Vector3f DIRECTION_BEHIND_RIGHT = new Vector3f(-DIAG2D_PROJ, -DIAG2D_PROJ, 0);	
 	final private float SOMATO_RADIUS = 1;
+	
+	// Absolute directions in Cartesian coordinates (0,0) bottom left.
+	final protected Vector3f DIRECTION_NORTH = new Vector3f(0, 1, 0);
+	final protected Vector3f DIRECTION_NORTHEAST = new Vector3f(1, 1, 0);
+	final protected Vector3f DIRECTION_EAST = new Vector3f(1, 0, 0);
+	final protected Vector3f DIRECTION_SOUTHEAST = new Vector3f(1, -1, 0);
+	final protected Vector3f DIRECTION_SOUTH = new Vector3f(0, -1, 0);
+	final protected Vector3f DIRECTION_SOUTHWEST = new Vector3f(-1, -1, 0);
+	final protected Vector3f DIRECTION_WEST = new Vector3f(-1, 0, 0);
+	final protected Vector3f DIRECTION_NORTHWEST = new Vector3f(-1, 1, 0);
 
 	/**
 	 * Initialize the Ernest agent.
@@ -255,7 +265,7 @@ public class ErnestModel extends Model
 	}
 	/**
 	 * @param localVec A position relative to Ernest.
-	 * @return The absolute position relative to the board. 
+	 * @return The absolute position relative to the board ((rotZ(mOrientation.z) * localVec) + mPosition). 
 	 */
 	public Vector3f localToParentRef(Vector3f localVec) {
 		
@@ -263,9 +273,9 @@ public class ErnestModel extends Model
 		rot.rotZ(mOrientation.z);
 		
 		Vector3f parentVec = new Vector3f();
-		rot.transform(localVec, parentVec);
+		rot.transform(localVec, parentVec); // (rot * localVec) is placed into parentVec
 		//parentVec.add(new Vector3f(m_x, m_y, 0));
-		parentVec.add(mPosition);
+		parentVec.add(mPosition); // now parentVec = (rotZ(mOrientation.z) * localVec) + mPosition.
 		return parentVec;
 	}	
 	

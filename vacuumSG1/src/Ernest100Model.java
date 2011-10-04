@@ -298,7 +298,6 @@ public class Ernest100Model extends ErnestModel
 	 * @return true if adjacent wall, false if adjacent empty. 
 	 */
 	protected boolean turnLeft(){
-		m_eyeOrientation = 0;
 		if (continuum){
 			rendu(true);
 			angle=m_map.imax;
@@ -319,7 +318,6 @@ public class Ernest100Model extends ErnestModel
 	 * @return true if adjacent wall, false if adjacent empty. 
 	 */
 	protected boolean turnRight(){
-		m_eyeOrientation = 0;
 		
 		if (continuum){
 			rendu(true);

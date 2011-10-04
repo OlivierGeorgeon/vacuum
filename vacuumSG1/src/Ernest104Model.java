@@ -1,5 +1,5 @@
 
-//import javax.vecmath.Vector3f;
+import javax.vecmath.Vector3f;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -71,10 +71,12 @@ public class Ernest104Model extends ErnestModel
 	{
 		m_ernest = new Ernest();
 		m_sensorymotorSystem = new Visual100SensorymotorSystem();
-		m_tracer = new XMLTracer("trace.xml");
+		//m_tracer = new XMLTracer("trace.xml");
 		//m_tracer = new XMLStreamTracer("http://vm.liris.cnrs.fr:34080/abstract/light/php/stream/","fjSmkmyvAKgByfDAfXUYGjAJLzrWrf");
 		//m_tracer = new XMLStreamTracer("http://liristyh.univ-lyon1.fr/alite/php/stream/","ewPmHfhGycqtOYLBNBKOMLalAPmQdj");
 		//m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","vNNcxihGPKSaGNTvIbWklRpyMwThYP");
+		m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","pDCJHmOykTgkgyZbKVtHFEtS-PujoS");
+		
 		
 		// Initialize the Ernest === 
 		
@@ -85,7 +87,7 @@ public class Ernest104Model extends ErnestModel
 		// Ernest's inborn primitive interactions
 		
 		m_sensorymotorSystem.addPrimitiveAct(">", true,    20); // Move
-		m_sensorymotorSystem.addPrimitiveAct(">", false, -100); // Bump 
+		m_sensorymotorSystem.addPrimitiveAct(">", false, -40); // Bump 
 		
 		m_sensorymotorSystem.addPrimitiveAct("^", true,   -10); // Left toward empty
 		m_sensorymotorSystem.addPrimitiveAct("^", false,  -20); // Left toward wall
@@ -216,7 +218,6 @@ public class Ernest104Model extends ErnestModel
 	 * @return true if adjacent wall, false if adjacent empty. 
 	 */
 	protected boolean turnLeft(){
-		m_eyeOrientation = 0;
 
 		m_Ir = -45;
 		m_v = 0;
@@ -228,7 +229,6 @@ public class Ernest104Model extends ErnestModel
 	 * @return true if adjacent wall, false if adjacent empty. 
 	 */
 	protected boolean turnRight(){
-		m_eyeOrientation = 0;
 		
 		m_Ir = 45;
 		m_v = 0;
@@ -338,6 +338,13 @@ public class Ernest104Model extends ErnestModel
 				if (!status3 && isDirty(cell_x,cell_y)) status4=false;
 			}
 			// top cell
+			
+			//Vector3f northPos = new Vector3f(mPosition);
+			//northPos.add(DIRECTION_NORTH);
+			//Vector3f testPos = new Vector3f();
+			//testPos.scaleAdd(1, mPosition, DIRECTION_NORTH);
+			
+			//if ( !affordWalk(northPos) && (m_y-HBradius) < ((float)cell_y-1+0.5) ){
 			if ( (isWall(cell_x,cell_y-1)) && (m_y-HBradius) -((float)cell_y-1+0.5)<0 ){
 				status1=false;
 				m_y+= ((float)cell_y-1+0.5) - (m_y-HBradius);
