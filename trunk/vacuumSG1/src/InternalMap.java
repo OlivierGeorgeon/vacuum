@@ -1,7 +1,9 @@
 import java.awt.Color;
 import java.util.ArrayList;
 
-
+/**
+ * Represents Ernest's retina 
+ */
 public class InternalMap {
 
 	public float[] map;
@@ -9,6 +11,7 @@ public class InternalMap {
 	//public ArrayList<Float> valuesList;
 	public ObjectMemory objMemory;
 	
+	/** The angle of the salience */
 	public int imax;
 	public float max;
 	
@@ -36,6 +39,12 @@ public class InternalMap {
 		return (objList.size());
 	}*/
 	
+	/**
+	 * Computes the angle??
+	 * @param d The matrix of distance?
+	 * @param c The matrix of colors in Ernest's retina?
+	 * @return The angle of the object that has the highest value. 
+	 */
 	public int compute(double[] d,Color[] c){
 		float[] tempMap=new float[180];
 		float[] attract1=new float[180];
@@ -81,8 +90,6 @@ public class InternalMap {
 				imax=i;
 			}
 		}
-		
-		
 		return imax;
 	}
 

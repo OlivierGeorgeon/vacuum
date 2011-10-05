@@ -1,17 +1,34 @@
 import java.awt.Color;
 import java.util.ArrayList;
 
+/**
+ * An action that Ernest can enact.
+ * Currently three actions: "forward", "turnLeft", and "turnRight" 
+ */
 
 public class Action {
 
 	public String name;
-	public int width;                // plage of selection
-	public int height;               // plage of input
+
+	/** The range of selection */
+	public int width; 
+	/** The range of input (angle or distance) */
+	public int height;
+
+	/** The list of matrix of values for this action (There is one matrix in the list per object) */
 	public ArrayList<float[][]> selectMap;
+	
+	/** the list of matrix of reliability  (there is one matrix in the list per object) */
 	public ArrayList<float[][]> confidenceMap;
+	
 	public ObjectMemory objMemory;
+
+	/** The scale */
 	public float scale;
-	public int sampling=5;
+
+	/** The sampling grain */
+	public static int sampling=5; // OG
+	
 	public ArrayList<ArrayList<Float>> distances;
 	
 	
@@ -23,6 +40,14 @@ public class Action {
 	
 	public float Icoef=(float) 0.5;  // initial coefficients of links
 	
+	/**
+	 * Constructor for an action.
+	 * @param n The action's name.
+	 * @param s The action's scale.
+	 * @param w The range of selection.
+	 * @param h The range of input.
+	 * @param objectMemory The reference to Ernest's object memory 
+	 */
 	public Action(String n,float s,int w,int h, ObjectMemory m){
 		
 		name=n;
@@ -41,9 +66,12 @@ public class Action {
 	}
 	
 	
-	// add new matrix
-	// a selectMap is the matrix of values
-	// a confidenceMap give the reliability of each value
+	/**
+	 * Add a new selectMap and confidenceMap. 
+	 * Initialize the new selectMap to 10.
+	 * Initialize the new confidenceMap to 0.
+	 * @return The index of the added matrix. 
+	 */
 	public int addObject(){
 		int index=selectMap.size();
 		selectMap.add(new float[width/sampling][height/sampling]);
@@ -59,7 +87,13 @@ public class Action {
 	}
 	
 	
-	// select a distance step value from the most probable ones
+	/**
+	 * Select a distance step value from the most probable ones 
+	 * @param input The angle to the object with the highest value, in case of rotation. 
+	 *              The distance to the object in front, in case of translation.
+	 * @param rgb The color in front of Ernest.
+	 * @return The selected impulsion value. 
+	 */
 	public float selectOutput(float input,Color rgb){
 		
 		// add matrix if new objects were created

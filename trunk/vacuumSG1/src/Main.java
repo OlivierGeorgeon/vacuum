@@ -160,10 +160,6 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 	}
 	/**
 	 * Performs actions
-	 * @author mcohen
-	 * @author mfriedrich add a rerun button
-	 * @author ogeorgeon  configure log file for soar agent
-	 *                    Set the agent's picture
 	 */
 	public void actionPerformed(ActionEvent e)
 	{
