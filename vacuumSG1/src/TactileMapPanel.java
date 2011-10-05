@@ -116,7 +116,7 @@ public class TactileMapPanel extends JPanel{
 			else if (tmap.m_tactileVariations[i]==-20) g.setColor(Color.blue );
 			else g.setColor(Color.black);
 			
-			// neurons in cartesian display
+			// neurons display
 			g.fillOval(150+(int)(tmap.sensorX[i])-2, 150+(int)(tmap.sensorY[i])-2, 4, 4);
 			
 			// connections of first neuron layer
@@ -143,8 +143,40 @@ public class TactileMapPanel extends JPanel{
 				    g.drawLine(150+(int)tmap.sensorX[i], 150+(int)tmap.sensorY[i],
                     150+(int)tmap.sensorX[i+tmap.resolution], 150+(int)tmap.sensorY[i+tmap.resolution]);
 			}
-
 		}
+		
+		
+		// neurons in constraint display
+		g.setColor(Color.black);
+		int res1,res2;
+		int sensRes1,sensRes2;
+		for (int i=0;i<tmap.resolution*tmap.sensorRes;i++){
+			sensRes1= (int)(i/tmap.resolution);
+			res1=     i-sensRes1*tmap.resolution;
+			g.fillOval((int)(150-(60+sensRes1*30)*Math.sin(360/tmap.resolution*res1*Math.PI/180)),
+					   (int)(450+(60+sensRes1*30)*Math.cos(360/tmap.resolution*res1*Math.PI/180)),
+					   4, 4);
+		}
+
+		// constraint connections
+		for (int i=0;i<tmap.resolution*tmap.sensorRes;i++){
+			sensRes1= (int)(i/tmap.resolution);
+			res1=     i-sensRes1*tmap.resolution;
+			for (int j=0;j<tmap.resolution*tmap.sensorRes;j++){
+				sensRes2= (int)(j/tmap.resolution);
+				res2=     j-sensRes2*tmap.resolution;
+				if (i!=j && tmap.connections[i][j]>0.5){
+					if (tmap.m_constraints[i][j]>0) g.setColor(Color.red);
+					else if (tmap.m_constraints[i][j]<0) g.setColor(Color.blue);
+					else g.setColor(Color.black);
+					g.drawLine((int)(150-(60+sensRes1*30)*Math.sin(360/tmap.resolution*res1*Math.PI/180)),
+							   (int)(450+(60+sensRes1*30)*Math.cos(360/tmap.resolution*res1*Math.PI/180)),
+							   (int)(150-(60+sensRes2*30)*Math.sin(360/tmap.resolution*res2*Math.PI/180)),
+							   (int)(450+(60+sensRes2*30)*Math.cos(360/tmap.resolution*res2*Math.PI/180)));
+				}
+			}
+		}
+		
 		
 		/*
 		// draw flow lines
