@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class TactileMap {
 
 	public float[] m_tactilePressure;
+	public float[][] m_constraints;
 	public float[] m_tactilePressureOld;
 	public float[] m_tactileVariations;
 	public double[][] connections;
@@ -70,6 +71,7 @@ public class TactileMap {
 		m_tactilePressureOld=new float[resolution*sensorRes];
 		m_tactileVariations=new float[resolution*sensorRes];
 		m_tactileObject=new Color[resolution*sensorRes];
+		m_constraints=new float[resolution*sensorRes][resolution*sensorRes];
 		connections=new double[resolution*sensorRes][resolution*sensorRes];
 		confidence =new double[resolution*sensorRes][resolution*sensorRes];
 		sensorX=new double[resolution*sensorRes];
@@ -109,6 +111,7 @@ public class TactileMap {
 			for (int j=0;j<resolution*sensorRes;j++){
 				connections[i][j]=0;
 				confidence[i][j]=0;
+				m_constraints[i][j]=0;
 			}
 			
 			// initialize neurons positions
@@ -205,7 +208,7 @@ public class TactileMap {
 			}
 		}
 		
-		/*
+		
 		// change distance between neuron
 		double rad1,rad2;
 		double a1,a2;
@@ -240,28 +243,28 @@ public class TactileMap {
 						yp=rad2-rad1;
 						
 						distP= xp*xp +yp*yp;
-						distP= Math.sqrt(dist3);*/ /*
+						distP= Math.sqrt(dist3);*/ 
 						
 						
-							sensorX[i]+= ((20-connections[i][j])*( Math.sqrt(rad1+rad2)/2 )/5 -dist3)
+							sensorX[i]+= ((20-connections[i][j])/*( Math.sqrt(rad1+rad2)/2 )/5*/ -dist3)
 							              *( (sensorX[i]-sensorX[j]) / dist )*attraction;
 							
-							sensorY[i]+= ((20-connections[i][j])*( Math.sqrt(rad1+rad2)/2 )/5 -dist3)
+							sensorY[i]+= ((20-connections[i][j])/*( Math.sqrt(rad1+rad2)/2 )/5*/ -dist3)
 							              *( (sensorY[i]-sensorY[j]) / dist )*attraction;
 							
-
+							m_constraints[i][j]=(float) ((20-connections[i][j])-dist3);
 
 					}
 				}
 			}
 		}
 		normalize();
-		*/
+		
 		
 		///////////////////////////////////////////////////////
 		// compute flow
 		///////////////////////////////////////////////////////
-		
+		/*
 		// add new flow map
 		if (flowX1.size()<act+1){
 			while (flowX1.size()<act+1){
@@ -448,13 +451,13 @@ public class TactileMap {
 				}
 			}
 		//}
-			
+		*/
 			
 		
 		////////////////////////////////////////////////////////////////////////
 		// compute average translation and rotation vectors
 		////////////////////////////////////////////////////////////////////////
-		
+		/*
 		count=0;
 		int count2=0;
 		mx=0;
@@ -550,11 +553,12 @@ public class TactileMap {
 				}
 			}
 		}
-		
+		*/
 		
 		////////////////////////////////////////////////////////////////////////
 		// move charges
 		////////////////////////////////////////////////////////////////////////
+		/*
 		mx=my=0;
 		d=0;
 		float countD=0;
@@ -603,7 +607,7 @@ public class TactileMap {
 				chargeMap1[i][j][1]=0;		
 			}
 		}
-		
+		*/
 		
 		
 		////////////////////////////////////////////////////////////////////////
