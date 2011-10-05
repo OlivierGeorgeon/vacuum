@@ -145,7 +145,7 @@ public class TactileMapPanel extends JPanel{
 			}
 		}
 		
-		
+		/*
 		// neurons in constraint display
 		g.setColor(Color.black);
 		int res1,res2;
@@ -176,7 +176,7 @@ public class TactileMapPanel extends JPanel{
 				}
 			}
 		}
-		
+		*/
 		
 		/*
 		// draw flow lines
