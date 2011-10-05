@@ -247,8 +247,8 @@ public class ErnestModel extends Model
 	}
 	/**
 	 * Tactile stimuli. 
-	 * @param direction The direction of the touch as referred to Ernest.
-	 * @return The tactile stimulus in x and y. 
+	 * @param direction The direction of the touch in Ernest's referential.
+	 * @return The tactile stimulus in this direction. 
 	 */
 	protected int soma(Vector3f direction) {
 		int soma = Ernest.STIMULATION_TOUCH_EMPTY.getValue();
