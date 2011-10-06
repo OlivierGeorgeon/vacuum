@@ -59,6 +59,9 @@ public class Ernest100Model extends ErnestModel
 	public TactileMap m_tactile;
 	public TactileMapFrame m_tactileFrame;
 	
+	public Colliculus colliculus;
+	public ColliculusFrame colliculusFrame;
+	
 	public ArrayList<Action> m_actionList;
 	public float distance=0;
 	public float angle=0;
@@ -102,7 +105,7 @@ public class Ernest100Model extends ErnestModel
 			System.out.println("=====================test0");
 			m_tactile=new TactileMap(this);
 		}
-		m_tactileFrame=new TactileMapFrame(m_tactile);	
+		m_tactileFrame=new TactileMapFrame(m_tactile);
 		
 		m_int=new InternalStatesFrame(m_actionList);
 		
@@ -110,6 +113,9 @@ public class Ernest100Model extends ErnestModel
 		//m_patternFrame=new PatternMappingFrame(m_patternMap);
 		
 		eye=new EyeView(m_map);
+		
+		colliculus=new Colliculus(m_tactile);
+		colliculusFrame=new ColliculusFrame(colliculus);
 		
 		frontColor=new Color(0,0,0);
 	}
@@ -539,6 +545,7 @@ public class Ernest100Model extends ErnestModel
 			}
 			
 			m_tactileFrame.paint();
+			colliculusFrame.paint();
 			
 			statusL=status1 && status2 && status4;
 			
@@ -1022,7 +1029,10 @@ public class Ernest100Model extends ErnestModel
 			m_objMemory.addObject(frontColor);
 		}
 		
-		if (sensor) m_tactile.touchEnvironment(r,colorMap, lastAction,speed);
+		if (sensor){
+			m_tactile.touchEnvironment(r,colorMap, lastAction,speed);
+			colliculus.updateRetine(r2, colorMap2);
+		}
 		
 		//m_patternMap.addPatern(colorMap2,lastAction);
 		//m_patternFrame.update((int)(m_x*10),(int)(m_y*10),m_orientation);

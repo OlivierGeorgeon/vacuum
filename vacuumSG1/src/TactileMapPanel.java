@@ -39,23 +39,6 @@ public class TactileMapPanel extends JPanel{
 		int offsetX,offsetY;
 		
 		
-		
-		for (int i=0;i<50;i++){
-			for (int j=0;j<50;j++){
-			
-				// potential map
-				//g.setColor(new Color(Math.min(1,tmap.potentialMap[i][j]),1-Math.min(1,tmap.potentialMap[i][j]),0));
-				//g.fillRect(450-tmap.mapSize/2*width + i*width, 450-tmap.mapSize/2*width + j*width, width, width);
-
-				// charge map
-				g.setColor(new Color(Math.min(1,tmap.chargeMap0[i][j][0]),
-						             Math.min(1,tmap.chargeMap0[i][j][1]),
-						             1-Math.min(1,Math.max(tmap.chargeMap0[i][j][0],tmap.chargeMap0[i][j][1]))) );
-				g.fillRect(550-tmap.mapSize/2*width + i*width, 150-tmap.mapSize/2*width + j*width, width, width);
-			}
-		}
-		
-		
 		for (int k=0;k<Math.min(3, tmap.flowX1.size());k++){
 			
 			for (int i=0;i<50;i+=2){
