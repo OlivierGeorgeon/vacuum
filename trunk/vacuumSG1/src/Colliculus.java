@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.util.ArrayList;
 
 
 
@@ -6,18 +7,20 @@ import java.awt.Color;
 public class Colliculus {
 	
 	public TactileMap tmap;
-	double[] retine;
-	Color[] colorMap;
+	public VisualMap vmap;
+	public ArrayList<int[]> bundleList;    // list of tactile-color bundle
 	
-	public Colliculus(TactileMap t){
+	public Colliculus(TactileMap t,ErnestModel e){
 		tmap=t;
-		retine=new double[180];
-		colorMap=new Color[180];
+		vmap=new VisualMap(e);
+	}
+	
+	public void updateTactile(double[] r,Color[] c,int action,float speed){
+		tmap.touchEnvironment(r, c, action, speed);
 	}
 	
 	public void updateRetine(double[] r,Color[] cm){
-    	retine=r;
-    	colorMap=cm;
+		vmap.seeEnvironement(r, cm);
     }
 	
 }

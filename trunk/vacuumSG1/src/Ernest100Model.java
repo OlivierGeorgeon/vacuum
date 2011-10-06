@@ -114,7 +114,7 @@ public class Ernest100Model extends ErnestModel
 		
 		eye=new EyeView(m_map);
 		
-		colliculus=new Colliculus(m_tactile);
+		colliculus=new Colliculus(m_tactile,this);
 		colliculusFrame=new ColliculusFrame(colliculus);
 		
 		frontColor=new Color(0,0,0);
