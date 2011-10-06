@@ -71,14 +71,23 @@ public class ColliculusPanel extends JPanel{
 						            		               	  (float)(Sum1/countD)))) );
 				}
 				else g.setColor(Color.black);
-				g.fillRect(150-colliculus.tmap.mapSize/2*width + i*width, 500-colliculus.tmap.mapSize/2*width + j*width, width, width);
+				g.fillRect(150-colliculus.tmap.mapSize/2*width + i*width, 500-colliculus.tmap.mapSize/2*width + (30-j)*width, width, width);
 			
 			}
 		}
 		
 		for (int i=0;i<45;i++){
-			g.setColor(colliculus.colorMap[i*4]);
-			g.fillRect((i+22)*width, 550+(int)colliculus.retine[i*4]-2, width, 5);
+			for (int j=0;j<50;j++){
+				
+				if (colliculus.vmap.confidenceMap[i*4][j]!=-1){
+					g.setColor(colliculus.vmap.colorMap[i*4][j]);
+					//g.setColor(new Color(0,(int)(colliculus.vmap.confidenceMap[i*4][j]*10),(int)(200-colliculus.vmap.confidenceMap[i*4][j]*10) ));
+				}
+				else g.setColor(Color.white);
+				
+				g.fillRect((i+22)*width, 550+(50-j)*4, width, 4);
+			}
 		}
+		
 	}
 }
