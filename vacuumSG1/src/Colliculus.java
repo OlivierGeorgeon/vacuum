@@ -10,17 +10,17 @@ public class Colliculus {
 	public VisualMap vmap;
 	public ArrayList<int[]> bundleList;    // list of tactile-color bundle
 	
-	public Colliculus(TactileMap t,ErnestModel e){
+	public Colliculus(TactileMap t,VisualMap v){
 		tmap=t;
-		vmap=new VisualMap(e);
+		vmap=v;
 	}
 	
 	public void updateTactile(double[] r,Color[] c,int action,float speed){
 		tmap.touchEnvironment(r, c, action, speed);
 	}
 	
-	public void updateRetine(double[] r,Color[] cm){
-		vmap.seeEnvironement(r, cm);
+	public void updateRetine(double[] r,Color[] cm,int action,float speed){
+		vmap.seeEnvironment(r, cm, action, speed);
     }
 	
 }

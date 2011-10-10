@@ -445,6 +445,55 @@ public class TactileMap {
 		int l=1;
 		for (int i=l;i<mapSize-l;i++){
 			for (int j=l;j<mapSize-l;j++){
+				
+				if (Math.abs(potentialMapOld[i-l][j]-potentialMapOld[i+l][j])>0.005
+						&& Math.abs(potentialMapOld[i][j]-potentialMapOld[i+l][j])>0.001
+						  && Math.abs(potentialMapOld[i][j]-potentialMapOld[i-l][j])>0.001
+						  && ( ( potentialMapOld[i-l][j]>=potentialMapOld[i][j] && potentialMapOld[i+l][j]<=potentialMapOld[i][j])
+							 ||( potentialMapOld[i-l][j]<=potentialMapOld[i][j] && potentialMapOld[i+l][j]>=potentialMapOld[i][j]) )
+ 
+						  && potentialMap[i  ][j]>0 && potentialMap[i  ][j]<1 && potentialMapOld[i  ][j]>0 && potentialMapOld[i  ][j]<1
+						  && potentialMap[i+l][j]>0 && potentialMap[i+l][j]<1 && potentialMapOld[i+l][j]>0 && potentialMapOld[i+l][j]<1
+						  && potentialMap[i-l][j]>0 && potentialMap[i-l][j]<1 && potentialMapOld[i-l][j]>0 && potentialMapOld[i-l][j]<1
+						  
+						  && testMap[i][j] && testMap[i-l][j] && testMap[i+l][j] && testMap[i][j-l] && testMap[i][j+l]
+						  && speed>1){
+					
+					fx=  (1/speed)* ( (potentialMap[i][j]-potentialMapOld[i][j]) / (potentialMapOld[i-l][j]-potentialMapOld[i+l][j]) );
+					
+				}
+				else fx=0;
+				
+				if (Math.abs(potentialMapOld[i][j-l]-potentialMapOld[i][j+l])>0.005
+						  && Math.abs(potentialMapOld[i][j]-potentialMapOld[i][j+l])>0.001
+						  && Math.abs(potentialMapOld[i][j]-potentialMapOld[i][j-l])>0.001
+						  && ( ( potentialMapOld[i][j-l]>=potentialMapOld[i][j] && potentialMapOld[i][j+l]<=potentialMapOld[i][j])
+							 ||( potentialMapOld[i][j-l]<=potentialMapOld[i][j] && potentialMapOld[i][j+l]>=potentialMapOld[i][j]) )
+						
+							 
+						  && potentialMap[i  ][j]>0 && potentialMap[i  ][j]<1 && potentialMapOld[i  ][j]>0 && potentialMapOld[i  ][j]<1
+						  && potentialMap[i][j+l]>0 && potentialMap[i][j+l]<1 && potentialMapOld[i][j+l]>0 && potentialMapOld[i][j+l]<1
+						  && potentialMap[i][j-l]>0 && potentialMap[i][j-l]<1 && potentialMapOld[i][j-l]>0 && potentialMapOld[i][j-l]<1
+						  
+						  && testMap[i][j] && testMap[i-l][j] && testMap[i+l][j] && testMap[i][j-l] && testMap[i][j+l]
+						  && speed>1){
+					
+					fy=  (1/speed)* ( (potentialMap[i][j]-potentialMapOld[i][j]) / (potentialMapOld[i][j-l]-potentialMapOld[i][j+l]) );
+					
+				}
+				else fy=0;
+				
+				if (fx!=0 || fy!=0){
+					
+					if (fx!=0) flowX1.get(act)[i][j]= ( flowX1.get(act)[i][j]*confidenceFlow.get(act)[i][j] + fx ) 
+					                      /(confidenceFlow.get(act)[i][j]+1);
+					if (fy!=0) flowY1.get(act)[i][j]= ( flowY1.get(act)[i][j]*confidenceFlow.get(act)[i][j] + fy ) 
+					                      /(confidenceFlow.get(act)[i][j]+1);
+				
+					if (confidenceFlow.get(act)[i][j]<50000) confidenceFlow.get(act)[i][j]++;
+				}
+				
+				/*
 				if ( Math.abs(potentialMapOld[i-l][j]-potentialMapOld[i+l][j])>0.005
 				  && Math.abs(potentialMapOld[i][j]-potentialMapOld[i+l][j])>0.002
 				  && Math.abs(potentialMapOld[i][j]-potentialMapOld[i-l][j])>0.002
@@ -471,11 +520,9 @@ public class TactileMap {
 					//fx=((potentialMap[i][j]-potentialMapOld[i][j]) / (potentialMapOld[i-l][j]-potentialMapOld[i+l][j]));
 					//fy=((potentialMap[i][j]-potentialMapOld[i][j]) / (potentialMapOld[i][j-l]-potentialMapOld[i][j+l]));
 					
-					fx=  (1/speed)* ( (potentialMap[i][j]-potentialMapOld[i][j]) / (potentialMapOld[i-l][j]-potentialMapOld[i+l][j]) );
+					fx=(1/speed)* ( (potentialMap[i][j]-potentialMapOld[i][j]) / (potentialMapOld[i-l][j]-potentialMapOld[i+l][j]) );
 					
-					fy=  (1/speed)* ( (potentialMap[i][j]-potentialMapOld[i][j]) / (potentialMapOld[i][j-l]-potentialMapOld[i][j+l]) );
-					
-					//System.out.println("=================== "+speed+" ; "+fx+ " ; "+fy);
+					fy=(1/speed)* ( (potentialMap[i][j]-potentialMapOld[i][j]) / (potentialMapOld[i][j-l]-potentialMapOld[i][j+l]) );
 					
 					
 					if (fx!=0 || fy!=0){
@@ -493,7 +540,7 @@ public class TactileMap {
 					flowX1.get(act)[i][j]=0;
 					flowY1.get(act)[i][j]=0;
 					confidenceFlow.get(act)[i][j]=0;
-				}
+				}*/
 			}
 		}
 		
@@ -506,12 +553,13 @@ public class TactileMap {
 		//for (int k=0;k<flowX1.size();k++){
 			for (int i=a;i<mapSize-a;i++){
 				for (int j=a;j<mapSize-a;j++){
-					flowX2.get(k)[i][j]=0;
-					flowY2.get(k)[i][j]=0;
-					count=0;
-					mx=0;
-					my=0;
-					for (int i2=-a;i2<=a;i2++){
+					if (testMap[i][j]){
+						flowX2.get(k)[i][j]=0;
+						flowY2.get(k)[i][j]=0;
+						count=0;
+						mx=0;
+						my=0;
+						for (int i2=-a;i2<=a;i2++){
 						for (int j2=-a;j2<=a;j2++){
 							i3=i+i2;
 							j3=j+j2;
@@ -521,18 +569,18 @@ public class TactileMap {
 								my+=flowY1.get(k)[i3][j3];
 							}
 						}
-					}
+						}
 					
-					if (count>30 && (mx!=0 || my!=0)){
-						mx=mx/(float)count;
-						my=my/(float)count;
+						if (count>30 && (mx!=0 || my!=0)){
+							mx=mx/(float)count;
+							my=my/(float)count;
 						
 						
-						flowX2.get(k)[i][j]=mx;
-						flowY2.get(k)[i][j]=my;
+							flowX2.get(k)[i][j]=mx;
+							flowY2.get(k)[i][j]=my;
 						
+						}
 					}
-					
 				}
 			}
 		//}
@@ -551,7 +599,7 @@ public class TactileMap {
 		double theta0,theta1;
 		for (int i=a;i<mapSize-a;i++){
 			for (int j=a;j<mapSize-a;j++){
-				if (testMap[i][j]){
+				if (testMap[i][j] && confidenceFlow.get(act)[i][j]>10){
 					// translation
 					mx+=flowX2.get(k)[i][j];
 					my+=flowY2.get(k)[i][j];
@@ -590,9 +638,11 @@ public class TactileMap {
 				}
 			}
 		}
-		mTranslationX.set(act, mx/(float)count);
-		mTranslationY.set(act, my/(float)count);
-		mRotation.set(act, mTheta/(float)count);
+		if (count>0){
+			mTranslationX.set(act, mx/(float)count);
+			mTranslationY.set(act, my/(float)count);
+			mRotation.set(act, mTheta/(float)count);
+		}
 		
 		// set the extrapolated flow field
 		fx=0;
@@ -616,8 +666,8 @@ public class TactileMap {
 					count2=0;
 					mx=0;
 					my=0;
-					for (int i2=-6;i2<6;i2++){
-						for (int j2=-6;j2<6;j2++){
+					for (int i2=-4;i2<4;i2++){
+						for (int j2=-4;j2<4;j2++){
 							if ( (i+i2)>=0 && (i+i2)<mapSize && (j+j2)>=0 && (j+j2)<mapSize){
 								if (testMap[i+i2][j+j2]){
 									mx+=flowX2.get(k)[i+i2][j+j2];
