@@ -48,8 +48,8 @@ public class ColliculusPanel extends JPanel{
 				//else g.setColor(Color.blue);
 				
 				g.setColor(new Color(0,
-									 colliculus.vmap.potentialMap[i][j],
-									 1-colliculus.vmap.potentialMap[i][j]));
+									 colliculus.vmap.chargeMap0[i][j],
+									 1-colliculus.vmap.chargeMap0[i][j]));
 				
 				
 				g.fillRect(500-colliculus.vmap.mapSize/2*width + i*width,
