@@ -36,7 +36,7 @@ public class ColliculusPanel extends JPanel{
 						             1-Math.min(1,Math.max(colliculus.tmap.chargeMap0[i][j][0],
 						            		               colliculus.tmap.chargeMap0[i][j][1]))) );
 				g.fillRect(150-colliculus.tmap.mapSize/2*width + i*width, 150-colliculus.tmap.mapSize/2*width + j*width, width, width);
-			
+
 			}
 		}
 		
@@ -48,8 +48,10 @@ public class ColliculusPanel extends JPanel{
 				//else g.setColor(Color.blue);
 				
 				g.setColor(new Color(0,
-									 colliculus.vmap.chargeMap0[i][j],
+									   colliculus.vmap.chargeMap0[i][j],
 									 1-colliculus.vmap.chargeMap0[i][j]));
+				
+				//if (!colliculus.vmap.testMap[i][j]) g.setColor(Color.red);
 				
 				
 				g.fillRect(500-colliculus.vmap.mapSize/2*width + i*width,
@@ -78,13 +80,13 @@ public class ColliculusPanel extends JPanel{
 		for (int i=0;i<180;i++){
 			for (int j=0;j<50;j++){
 				
-				if (colliculus.vmap.confidenceMap[i][j]>0){
-					g.setColor(colliculus.vmap.colorMap[i][j]);
-					//g.setColor(new Color(0,(int)(colliculus.vmap.confidenceMap[i*4][j]*10),(int)(200-colliculus.vmap.confidenceMap[i*4][j]*10) ));
-				}
-				else g.setColor(Color.white);
+				g.setColor(new Color(  colliculus.vmap.potentialMap[i][j],
+						             1-colliculus.vmap.potentialMap[i][j],
+						             0) );
 				
-				g.fillRect((i+90)*width/4, 500+(50-j)*4, width/4, 4);
+				//if (colliculus.vmap.testMap[i][j]) g.setColor(Color.red);
+				//else g.setColor(Color.green);
+				g.fillRect((i+90)*width/4, 500+(50-j)*4, width/4+1, 4);
 			}
 		}
 		

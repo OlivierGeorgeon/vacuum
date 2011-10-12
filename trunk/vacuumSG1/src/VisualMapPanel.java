@@ -54,21 +54,12 @@ public class VisualMapPanel extends JPanel{
 
 					// draw improved flow
 
-					if (tmap.testMap[i][j]){
-						//g.setColor(new Color(Math.min(1,tmap.potentialMap[i][j]),1-Math.min(1,tmap.potentialMap[i][j]),0));
-						g.setColor(Color.blue);
-						g.drawLine(offsetX-tmap.mapSize/2*width + i*width+width/2,
-								   offsetY-tmap.mapSize/2*width + j*width+width/2,
-								   offsetX-tmap.mapSize/2*width + i*width+width/2+(int)(1000*tmap.flowX2.get(k)[i][j]),
-								   offsetY-tmap.mapSize/2*width + j*width+width/2+(int)(1000*tmap.flowY2.get(k)[i][j]) );
-					}
-					else{
-						g.setColor(Color.blue);
-						g.drawLine(offsetX-tmap.mapSize/2*width + i*width+width/2,
-								   offsetY-tmap.mapSize/2*width + j*width+width/2,
-								   offsetX-tmap.mapSize/2*width + i*width+width/2+(int)(1000*tmap.flowX2.get(k)[i][j]),
-								   offsetY-tmap.mapSize/2*width + j*width+width/2+(int)(1000*tmap.flowY2.get(k)[i][j]) );
-					}
+					//g.setColor(new Color(Math.min(1,tmap.potentialMap[i][j]),1-Math.min(1,tmap.potentialMap[i][j]),0));
+					g.setColor(Color.blue);
+					g.drawLine(offsetX-tmap.mapSize/2*width + i*width+width,
+							   offsetY-tmap.mapSize/2*width + j*width+width/2,
+							   offsetX-tmap.mapSize/2*width + i*width+width+(int)(1000*tmap.flowX3.get(k)[i][j]),
+							   offsetY-tmap.mapSize/2*width + j*width+width/2+(int)(1000*tmap.flowY3.get(k)[i][j]) );
 				}
 			}
 		}
