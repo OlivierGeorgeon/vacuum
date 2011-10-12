@@ -425,7 +425,7 @@ public class Ernest100Model extends ErnestModel
 				else if (i>0) i--;
 				     else m_v=0;
 			
-			if (m_v<=0.1) m_v=0;
+			if (m_v<=0.5) m_v=0;
 			
 			// set angular impulsion
 			if (m_Ir!=0){
@@ -564,7 +564,7 @@ public class Ernest100Model extends ErnestModel
 			if (lastAction==1) speed=-m_theta;
 			if (lastAction==2) speed=m_theta;
 			
-			if (!statusL || !status5) speed=0; 
+			if (lastAction==0 && (!statusL || !status5) ) speed=0; 
 			
 			rendu(false,true,speed);
 		}
@@ -698,6 +698,7 @@ public class Ernest100Model extends ErnestModel
 	protected EyeFixation[] rendu(boolean setdistance, boolean sensor,float speed){
 		double[] r    = new double[360];
 		double[] r2   = new double[180];
+		double[] r3   = new double[360];
 		double[] zMap = new double[360];
 		Color[] colorMap =new Color[360];
 		Color[] colorMap2=new Color[180];
@@ -1026,6 +1027,10 @@ public class Ernest100Model extends ErnestModel
 			corner2[i]=corner[(i+orientationDeg-90+720)%360];
 		}
 		
+		for (int i=0;i<360;i++){
+			r3[i]= r[(i+orientationDeg+720)%360];
+		}
+		
 		for (int i=0;i<Ernest.RESOLUTION_RETINA;i++){
 			retina[Ernest.RESOLUTION_RETINA-i-1]= new EyeFixation();
 			retina[Ernest.RESOLUTION_RETINA-i-1].setColor(colorMap2[(int)(i*180/Ernest.RESOLUTION_RETINA+180/Ernest.RESOLUTION_RETINA/2)]);
@@ -1039,8 +1044,7 @@ public class Ernest100Model extends ErnestModel
 		}
 		
 		if (sensor){
-			m_tactile.touchEnvironment(r,colorMap, lastAction,speed);
-			m_visual.seeEnvironment(r2, colorMap2, lastAction,speed);
+			colliculus.update(r, colorMap, r2, colorMap2,corner2, lastAction, speed,r3);
 		}
 		
 		//m_patternMap.addPatern(colorMap2,lastAction);
