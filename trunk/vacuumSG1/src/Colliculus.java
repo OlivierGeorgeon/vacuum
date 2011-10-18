@@ -19,7 +19,7 @@ public class Colliculus {
 	}
 	
 	public void update(double[] r,Color[] c,double[] rm,Color[] cm,int[] corners,int action,float speed,double[] r3){
-		
+		/*
 		for (int i=0;i<50;i++){
 			for (int j=0;j<50;j++){
 				worldMap[i][j]=0;
@@ -33,7 +33,7 @@ public class Colliculus {
 			if (x>=0 && x<50 && y>=0 && y<50){
 				worldMap[x][y]=1;
 			}
-		}
+		}*/
 		
 		tmap.touchEnvironment(r, c, action, speed);
 		//vmap.seeEnvironment(rm, cm,corners, action, speed);

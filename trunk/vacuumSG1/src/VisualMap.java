@@ -86,6 +86,7 @@ public class VisualMap {
 		for (int i=0;i<mapSize;i++){
 			for (int j=0;j<mapSize;j++){
 				testMap[i][j]=false;
+				chargeMap1[i][j]=0;
 			}
 		}
 		
@@ -216,8 +217,8 @@ public class VisualMap {
 					
 					sum1=0;
 					count1=0;
-					for (int i2=-1;i2<=1;i2++){
-						for (int j2=-1;j2<=1;j2++){
+					for (int i2=-2;i2<=2;i2++){
+						for (int j2=-2;j2<=2;j2++){
 							if (x2+i2>=0 && x2+i2<mapSizeR && y2+j2>=0 && y2+j2<mapSizeTheta){
 								d= ((float)(x2+i2)-r0    )*((float)(x2+i2)-r0    ) 
 							      +((float)(y2+j2)-theta0)*((float)(y2+j2)-theta0);
@@ -374,9 +375,12 @@ public class VisualMap {
 			}
 		}
 		if (count>0){
-			mTranslationX.set(act, mx3/(float)count/2);
-			mTranslationY.set(act, my3/(float)count/2);
-			mRotation.set(act, (float)((mTheta/(float)count)*Math.PI/180));
+			if (act==0){
+				mTranslationX.set(act, mx3/(float)count/2);
+				mTranslationY.set(act, my3/(float)count/2);
+			}else{
+				mRotation.set(act, (float)((mTheta/(float)count)*Math.PI/180));
+			}
 		}
 		
 		// fill cartesian flow map
@@ -443,13 +447,41 @@ public class VisualMap {
 		for (int i=0;i<mapSize;i++){
 			for (int j=0;j<mapSize;j++){
 				chargeMap0[i][j]=Math.min(1,chargeMap1[i][j]);
-				chargeMap0[i][j]=Math.min(1,chargeMap1[i][j]);
-				chargeMap1[i][j]=0;
-				chargeMap1[i][j]=0;		
+				chargeMap1[i][j]=0;	
 			}
 		}
 		
-
+		////////////////////////////////////////////////////////////////////////
+		// detection of hight probability area
+		////////////////////////////////////////////////////////////////////////
+		for (int i=1;i<mapSize-1;i++){
+			for (int j=1;j<mapSize-1;j++){
+				if ( chargeMap0[i][j]>0.2
+					&& chargeMap0[i][j] >= chargeMap0[i-1][j]
+				    && chargeMap0[i][j] >= chargeMap0[i+1][j]
+				    && chargeMap0[i][j] >= chargeMap0[i][j-1]
+				    && chargeMap0[i][j] >= chargeMap0[i][j+1]  
+				                                         
+				    && chargeMap0[i][j] >= chargeMap0[i-1][j-1]
+				    && chargeMap0[i][j] >= chargeMap0[i+1][j-1]
+				    && chargeMap0[i][j] >= chargeMap0[i-1][j+1]
+				    && chargeMap0[i][j] >= chargeMap0[i+1][j+1]){
+					
+					
+					chargeMap1[i][j]=1;
+					float val=chargeMap0[i][j]*3/4;
+					
+					for (int i2=-10;i2<=10;i2++){
+						for (int j2=-10;j2<=10;j2++){
+							if (i+i2>=0 && i+i2<mapSize && j+j2>=0 && j+j2<mapSize){
+								if (chargeMap0[i+i2][j+j2]>val) chargeMap1[i+i2][j+j2]=1;
+							}
+						}
+					}
+				}
+			}
+		}
+		
 	}
 	
 	
