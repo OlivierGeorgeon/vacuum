@@ -150,7 +150,7 @@ public class Ernest100Model extends ErnestModel
 		
 		// Initialize the Ernest === 
 		
-		m_ernest.setParameters(5, 1, 4);
+		m_ernest.setParameters(5, 4);
 		m_ernest.setTracer(m_tracer);
 		m_ernest.setSensorymotorSystem(m_sensorymotorSystem);
 		

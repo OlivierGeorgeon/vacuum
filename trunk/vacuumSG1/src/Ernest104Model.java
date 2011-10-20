@@ -80,20 +80,20 @@ public class Ernest104Model extends ErnestModel
 		
 		// Initialize the Ernest === 
 		
-		m_ernest.setParameters(5, 1, 4);
+		m_ernest.setParameters(5, 4);
 		m_ernest.setTracer(m_tracer);
 		m_ernest.setSensorymotorSystem(m_sensorymotorSystem);
 
 		// Ernest's inborn primitive interactions
 		
-		m_sensorymotorSystem.addPrimitiveAct(">", true,    20); // Move
-		m_sensorymotorSystem.addPrimitiveAct(">", false, -40); // Bump 
+		m_ernest.addInteraction(">", "t",    20); // Move
+		m_ernest.addInteraction(">", "f", -40); // Bump 
 		
-		m_sensorymotorSystem.addPrimitiveAct("^", true,   -10); // Left toward empty
-		m_sensorymotorSystem.addPrimitiveAct("^", false,  -20); // Left toward wall
+		m_ernest.addInteraction("^", "t",   -10); // Left toward empty
+		m_ernest.addInteraction("^", "f",  -20); // Left toward wall
 
-		m_sensorymotorSystem.addPrimitiveAct("v", true,   -10); // Right toward empty
-		m_sensorymotorSystem.addPrimitiveAct("v", false,  -20); // Right toward wall
+		m_ernest.addInteraction("v", "t",   -10); // Right toward empty
+		m_ernest.addInteraction("v", "f",  -20); // Right toward wall
 		
 		System.out.println("Ernest initialized") ;
 	}
