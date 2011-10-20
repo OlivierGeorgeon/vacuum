@@ -4,19 +4,33 @@ import java.util.ArrayList;
 
 public class TactileMap {
 
-	public float[] m_tactilePressure;               // value of sensor neurons
-	public int[] m_lastVariation;
+	public float[] m_tactilePressure;               // value of each sensor neurons
+	public float[] m_tactilePressureOld;
+	
+	public float[] m_tactileValue;                  // value of sensors
+	
 	public float[][] m_constraints;
 	public double[][] m_distances;
 	public float[][] m_connectionsLenght;
-	public float[] m_tactilePressureOld;
-	public float[] m_tactileVariations;
-	public double[][] connections;
-	public double[][] confidence;
+	
+	public float[] m_tactileVariations;				// neurons "capacity"
+	
+	public double[][] connections;					// average distance between neurons
+	public double[][] connectConfidence;
+	
+	public ArrayList<float[]> flowVectorX;			// movement vector on each neuron
+	public ArrayList<float[]> flowVectorY;
+	public ArrayList<float[]> vectorConfidence;
+
 	public Color[] m_tactileObject;
 	public double[] sensorX;                        // position of sensor neurons
 	public double[] sensorY;
+	public double[] valueX;							// position of the detected point
+	public double[] valueY;
+	public double[] valueOldX;
+	public double[] valueOldY;
 	public double attraction,repulsion;
+	
 	public ErnestModel ernest;
 	
 	public int resolution;                              // nb of tactile sensors
@@ -26,20 +40,26 @@ public class TactileMap {
 	public float chargeMap1[][][];
 	public float chargeMapP[][][];
 	public float objectMap[][][];
+	
 	public float potentialMap[][];
 	public float potentialMap2[][][];
 	public float potentialMapOld[][];
 	public float potentialConfidenceMap[][];
-	public boolean testMap[][];
+	
+	public boolean potentialTestMap[][];
+	public boolean chargeTestMap[][];
+	
 	public ArrayList<float[][]> flowX1;				// real flow
 	public ArrayList<float[][]> flowY1;
 	public ArrayList<float[][]> flowX2;				// flow with reduced noise
 	public ArrayList<float[][]> flowY2;
 	public ArrayList<float[][]> confidenceFlow;
+	
 	public ArrayList<float[][][]> flowLineX1;		// flow line chains
 	public ArrayList<float[][][]> flowLineY1;
 	public ArrayList<float[][][]> flowLineX2;		// extrapolated flow line chains
 	public ArrayList<float[][][]> flowLineY2;
+	
 	public int mapSize,mapPSize1,mapPSize2;
 	public int flowLength;
 	
@@ -73,17 +93,24 @@ public class TactileMap {
 		mapPSize2=30;
 		
 		m_tactilePressure=new float[resolution*sensorRes];
-		m_lastVariation=new int[resolution*sensorRes];
+		m_tactileValue=new float[resolution];
 		m_tactilePressureOld=new float[resolution*sensorRes];
 		m_tactileVariations=new float[resolution*sensorRes];
-		m_tactileObject=new Color[resolution*sensorRes];
+		flowVectorX=new ArrayList<float[]>();
+		flowVectorY=new ArrayList<float[]>();
+		vectorConfidence=new ArrayList<float[]>();
+		m_tactileObject=new Color[resolution];
 		m_constraints=new float[resolution*sensorRes][resolution*sensorRes];
 		m_distances=new double[resolution*sensorRes][resolution*sensorRes];
 		m_connectionsLenght=new float[resolution*sensorRes][resolution*sensorRes];
 		connections=new double[resolution*sensorRes][resolution*sensorRes];
-		confidence =new double[resolution*sensorRes][resolution*sensorRes];
+		connectConfidence =new double[resolution*sensorRes][resolution*sensorRes];
 		sensorX=new double[resolution*sensorRes];
 		sensorY=new double[resolution*sensorRes];
+		valueX=new double[resolution];
+		valueY=new double[resolution];
+		valueOldX=new double[resolution];
+		valueOldY=new double[resolution];
 		attraction=0.001;
 		
 		
@@ -95,7 +122,8 @@ public class TactileMap {
 		potentialMap2=new float[mapSize][mapSize][3];
 		potentialMapOld=new float[mapSize][mapSize];
 		potentialConfidenceMap=new float[mapSize][mapSize];
-		testMap=new boolean[mapSize][mapSize];
+		potentialTestMap=new boolean[mapSize][mapSize];
+		chargeTestMap=new boolean[mapSize][mapSize];
 		flowX1=new ArrayList<float[][]>();
 		flowY1=new ArrayList<float[][]>();
 		flowX2=new ArrayList<float[][]>();
@@ -114,12 +142,11 @@ public class TactileMap {
 		
 		for (int i=0;i<resolution*sensorRes;i++){
 			m_tactilePressure[i]=0;
-			m_lastVariation[i]=0;
 			m_tactilePressureOld[i]=0;
 			m_tactileVariations[i]=0;
 			for (int j=0;j<resolution*sensorRes;j++){
 				connections[i][j]=0;
-				confidence[i][j]=0;
+				connectConfidence[i][j]=0;
 				m_constraints[i][j]=0;
 				m_distances[i][j]=0.5;				
 				m_connectionsLenght[i][j]=0;
@@ -134,8 +161,8 @@ public class TactileMap {
 		for (int j=0;j<sensorRes;j++){
 			for (int i=0;i<resolution;i++){
 				float r=0;
-				if (j==0) r=15;
-				if (j==1) r=21;
+				if (j==0) r=10;
+				if (j==1) r=20;
 				if (j==2) r=30;
 				sensorX[i+j*resolution]= -(r)*Math.sin(360/resolution*i*Math.PI/180);
 				sensorY[i+j*resolution]=  (r)*Math.cos(360/resolution*i*Math.PI/180);
@@ -157,7 +184,8 @@ public class TactileMap {
 				potentialMap2[i][j][0]=0;
 				potentialMap2[i][j][1]=0;
 				potentialMap2[i][j][2]=0;
-				testMap[i][j]=false;
+				potentialTestMap[i][j]=false;
+				chargeTestMap[i][j]=false;
 				
 			}
 		}
@@ -182,7 +210,10 @@ public class TactileMap {
 		for (int i=0;i<resolution*sensorRes;i++){
 			m_tactilePressureOld[i]=m_tactilePressure[i];
 		}
-		
+		for (int i=0;i<resolution;i++){
+			valueOldX[i]=valueX[i];
+			valueOldY[i]=valueY[i];
+		}
 		
 		
 		////////////////////////////////////////////////////////
@@ -202,7 +233,7 @@ public class TactileMap {
 		///////////////////////////////////////////////////////////////
 		double dist,dist2,dist3;
 		double a,b;
-		/*
+		
 		float capacity=500; 
 		
         // compute neuron "capacitor"
@@ -217,7 +248,7 @@ public class TactileMap {
                 }
         }
         
-		
+		/*
         // compute relation between neurons
         for (int i=0;i<resolution*sensorRes;i++){
                 for (int j=0;j<resolution*sensorRes;j++){
@@ -225,15 +256,15 @@ public class TactileMap {
                                 if ( (m_tactileVariations[i]== capacity && m_tactileVariations[j]>0) 
                                   || (m_tactileVariations[i]==-capacity && m_tactileVariations[j]<0) ){
                                         
-                                        connections[i][j]= (connections[i][j]*confidence[i][j]
-                                                           + Math.abs(m_tactileVariations[j]))/(confidence[i][j]+1);
-                                        if (confidence[i][j]<10000) confidence[i][j]++;
+                                        connections[i][j]= (connections[i][j]*connectConfidence[i][j]
+                                                           + Math.abs(m_tactileVariations[j]))/(connectConfidence[i][j]+1);
+                                        if (connectConfidence[i][j]<10000) connectConfidence[i][j]++;
                                 }
                         }
                 }
         }
 		
-        
+        /*
 		// change distance between neuron
 		for (int k=0;k<5;k++){
 			for (int i=0;i<resolution*sensorRes;i++){
@@ -267,6 +298,7 @@ public class TactileMap {
 		}
 		normalize();
 		/*
+		// change distance scale according to the distance from the center
 		for (int i=0;i<resolution*sensorRes;i++){
 			for (int j=0;j<resolution*sensorRes;j++){
 				
@@ -317,6 +349,10 @@ public class TactileMap {
 				flowY2.add(new float[mapSize][mapSize]);
 				confidenceFlow.add(new float[mapSize][mapSize]);
 				
+				flowVectorX.add(new float[resolution*sensorRes]);
+				flowVectorY.add(new float[resolution*sensorRes]);
+				vectorConfidence.add(new float[resolution*sensorRes]);
+				
 				flowLineX1.add(new float[mapSize][mapSize][flowLength]);
 				flowLineY1.add(new float[mapSize][mapSize][flowLength]);
 				flowLineX2.add(new float[mapSize][mapSize][flowLength]);
@@ -341,6 +377,12 @@ public class TactileMap {
 						}
 					}
 				}
+				
+				for (int i=0;i<resolution*sensorRes;i++){
+					flowVectorX.get(act)[i]=0;
+					flowVectorY.get(act)[i]=0;
+					vectorConfidence.get(act)[i]=0;
+				}
 			}
 		}
 		
@@ -354,15 +396,162 @@ public class TactileMap {
 				potentialMap2[i][j][1]=0;
 				potentialMap2[i][j][2]=0;
 				potentialConfidenceMap[i][j]=0;
-				testMap[i][j]=false;
+				potentialTestMap[i][j]=false;
+				chargeTestMap[i][j]=false;
 			}
 		}
 		
-		// set potential and charge Map values
-		float scale=400/mapSize;
-		int x,y;
-		double d;
+		
+		
+		// compute neuron flow
+		double d=0;
+		double vect,vx,vy;
+		double dt=0;
 		for (int i=0;i<resolution*sensorRes;i++){
+			for (int j=resolution;j<resolution*2;j++){
+				if (i!=j){
+					if ( (m_tactileVariations[i]== capacity && m_tactileVariations[j]>0) 
+                      || (m_tactileVariations[i]==-capacity && m_tactileVariations[j]<0)
+                      /*|| (m_tactileVariations[j]==-capacity && m_tactileVariations[i]<0)
+                      || (m_tactileVariations[j]==-capacity && m_tactileVariations[i]<0)*/){
+						
+						d=Math.sqrt( (sensorX[i]-sensorX[j])*(sensorX[i]-sensorX[j])
+                                    +(sensorY[i]-sensorY[j])*(sensorY[i]-sensorY[j]) );
+                                    
+						dt=Math.abs(m_tactileVariations[i])-Math.abs(m_tactileVariations[j]);
+                                    
+						if (dt!=0 && d>0 && d<20 && speed>1){
+                                    
+							vect= d/dt;
+                                    
+							vx= (1/speed)*vect * (sensorX[i]-sensorX[j])/d;
+							vy= (1/speed)*vect * (sensorY[i]-sensorY[j])/d;
+
+							flowVectorX.get(act)[j]=  (float) ((flowVectorX.get(act)[j]*vectorConfidence.get(act)[j] + vx)
+                                    						 / (vectorConfidence.get(act)[j] +1));
+							
+							flowVectorY.get(act)[j]=  (float) ((flowVectorY.get(act)[j]*vectorConfidence.get(act)[j] + vy)
+                                            				 / (vectorConfidence.get(act)[j] +1));
+                                    
+							if (vectorConfidence.get(act)[j]<100000) vectorConfidence.get(act)[j]++;
+                                   
+						}
+						
+					}
+
+				}
+            }
+		}
+		
+		
+		// set potential and charge Map values
+		float scale=200/mapSize;
+		double x,y;
+		double dx,dy;
+		float val=0;
+		float value=0;
+		int ix,jy;
+		
+		/*
+		// set position of the detected point
+		for (int i=0;i<resolution;i++){
+			valueX[i]=0;
+			valueY[i]=0;
+			if (m_tactileValue[i] >=0 && m_tactileValue[i] < 5){
+				valueX[i]= (sensorX[i]*(5-m_tactileValue[i])/5 + sensorX[i+resolution]*m_tactileValue[i]/5);
+				valueY[i]= (sensorY[i]*(5-m_tactileValue[i])/5 + sensorY[i+resolution]*m_tactileValue[i]/5);
+			}
+			if (m_tactileValue[i] >=5 && m_tactileValue[i] <= 10){
+				valueX[i]= (sensorX[i+resolution]*(10-m_tactileValue[i])/5 + sensorX[i+resolution*2]*(m_tactileValue[i]-5)/5);
+				valueY[i]= (sensorY[i+resolution]*(10-m_tactileValue[i])/5 + sensorY[i+resolution*2]*(m_tactileValue[i]-5)/5);
+			}
+		}
+		
+		
+		// fill the potential and charge map
+		for (int i=0;i<resolution*(sensorRes-1);i++){
+			int res=5;
+			if (i>=resolution*(sensorRes-2)) res=6;
+			for (int j=0;j<res;j++){
+				
+				dx=(sensorX[i+resolution]-sensorX[i])/5;
+				dy=(sensorY[i+resolution]-sensorY[i])/5;
+					
+				// /!\ only because difference between two sensor neurons is 5
+				if (i<resolution) val=j;
+				else if (i<resolution*2) val=j+5;
+				else val=j+10;
+					
+				
+				int i2= i%resolution;
+				if (m_tactileValue[i2]<=val+1 && m_tactileValue[i2]>=val-1) value=1;
+				//if (m_tactileValue[i2]<=val) value=1;
+				else value=0;
+
+				if (j==0){
+					x= Math.min(49, Math.max(0, (sensorX[i]+100)/scale));
+					y= Math.min(49, Math.max(0, (sensorY[i]+100)/scale));
+				}
+				else if (j==5){
+					x= Math.min(49, Math.max(0, (sensorX[i+resolution]+100)/scale));
+					y= Math.min(49, Math.max(0, (sensorY[i+resolution]+100)/scale));
+				}
+				else{
+					x= Math.min(49, Math.max(0, (sensorX[i]+j*dx+100)/scale));
+					y= Math.min(49, Math.max(0, (sensorY[i]+j*dy+100)/scale));
+				}
+				
+				ix=(int) Math.round(x);
+				jy=(int) Math.round(y);
+				
+				
+				
+				int dmax=2;
+				for (int j2=-dmax;j2<=dmax;j2++){
+					for (int k2=-dmax;k2<=dmax;k2++){
+						if (x+j2<49 && x+j2>0 && y+k2<49 && y+k2>0){
+							//d= (x-(ix+j2))*(x-(ix+j2)) + (y-(jy+k2))*(y-(jy+k2));
+							//d=Math.sqrt(d)*10+0.01;
+							
+							potentialMap[ix+j2][jy+k2]=  (  potentialMap[ix+j2][jy+k2]*potentialConfidenceMap[ix+j2][jy+k2]
+							                            +  value )
+						                              /( potentialConfidenceMap[ix+j2][jy+k2]+ 1 );
+							
+							if (m_tactileObject[i2].equals(new Color(0,128,0))){
+								potentialMap2[ix+j2][jy+k2][0]=  (  potentialMap2[ix+j2][jy+k2][0]*potentialConfidenceMap[ix+j2][jy+k2]
+								                                +  value )
+								                    	      /( potentialConfidenceMap[ix+j2][jy+k2]+ 1 );
+								potentialMap2[ix+j2][jy+k2][1]=  (  potentialMap2[ix+j2][jy+k2][1]*potentialConfidenceMap[ix+j2][jy+k2] )
+								                			  /( potentialConfidenceMap[ix+j2][jy+k2]+ 1);
+								
+							}
+							else{
+								potentialMap2[ix+j2][jy+k2][1]=  (  potentialMap2[ix+j2][jy+k2][1]*potentialConfidenceMap[ix+j2][jy+k2]
+								                                +  value )
+								                			  /( potentialConfidenceMap[ix+j2][jy+k2]+ 1);
+								potentialMap2[ix+j2][jy+k2][0]=  (  potentialMap2[ix+j2][jy+k2][0]*potentialConfidenceMap[ix+j2][jy+k2] )
+								                			  /( potentialConfidenceMap[ix+j2][jy+k2]+ 1);
+
+							}
+							
+							potentialMap2[ix+j2][jy+k2][2]=  (  potentialMap2[ix+j2][jy+k2][2]*potentialConfidenceMap[ix+j2][jy+k2]
+							                                +  (1-value) )
+														  /( potentialConfidenceMap[ix+j2][jy+k2]+ 1);
+							
+
+							potentialConfidenceMap[ix+j2][jy+k2]++;
+
+							potentialTestMap[ix+j2][jy+k2]=true;
+						}
+					}
+				}
+				chargeTestMap[ix][jy]=true;
+
+			}
+		}
+		
+		
+		/*for (int i=0;i<resolution*sensorRes;i++){
 			x= (int) Math.min(49, Math.max(0, Math.round((sensorX[i]+200)/scale)));
 			y= (int) Math.min(49, Math.max(0, Math.round((sensorY[i]+200)/scale)));
 			
@@ -370,9 +559,9 @@ public class TactileMap {
 			for (int j=-dmax;j<=dmax;j++){
 				for (int k=-dmax;k<=dmax;k++){
 					if (x+j<50 && x+j>=0 && y+k<50 && y+k>=0){
-						d= Math.sqrt( (float)(j*j+k*k) );
+						d= Math.sqrt( (float)(j*j+k*k) )-1;
 						if (d<=dmax){
-							if (d<1){
+							if (d<=0){
 								potentialMap[x+j][y+k]=  (  potentialMap[x+j][y+k]*potentialConfidenceMap[x+j][y+k]
 							                               +  m_tactilePressure[i]        )
 							                              /( potentialConfidenceMap[x+j][y+k]+ 1);
@@ -432,20 +621,20 @@ public class TactileMap {
 					}
 				}
 			}
-		}
+		}*/
 		
-		
+		/*
 		for (int i=0;i<mapSize;i++){
 			for (int j=0;j<mapSize;j++){
-				if (testMap[i][j]){
+				if (chargeTestMap[i][j]){
 					chargeMap1[i][j][0]=potentialMap2[i][j][0];
 					chargeMap1[i][j][1]=potentialMap2[i][j][1];
 					chargeMap1[i][j][2]=potentialMap2[i][j][2];
 				}			
 			}
-		}
+		}*/
 		
-		
+		/*
 		// compute flow
 		float fx,fy;
 		int l=1;
@@ -467,7 +656,8 @@ public class TactileMap {
 						  && potentialMap[i+l][j]>0 && potentialMap[i+l][j]<1 && potentialMapOld[i+l][j]>0 && potentialMapOld[i+l][j]<1
 						  && potentialMap[i-l][j]>0 && potentialMap[i-l][j]<1 && potentialMapOld[i-l][j]>0 && potentialMapOld[i-l][j]<1
 						  
-						  && testMap[i][j] && testMap[i-l][j] && testMap[i+l][j] && testMap[i][j-l] && testMap[i][j+l]
+						  && potentialTestMap[i][j] && potentialTestMap[i-l][j] 
+						  && potentialTestMap[i+l][j] && potentialTestMap[i][j-l] && potentialTestMap[i][j+l]
 						  && speed>1){
 					
 					fx=  (1/speed)* ( (potentialMap[i][j]-potentialMapOld[i][j]) / (potentialMapOld[i-l][j]-potentialMapOld[i+l][j]) );
@@ -489,7 +679,8 @@ public class TactileMap {
 						  && potentialMap[i][j+l]>0 && potentialMap[i][j+l]<1 && potentialMapOld[i][j+l]>0 && potentialMapOld[i][j+l]<1
 						  && potentialMap[i][j-l]>0 && potentialMap[i][j-l]<1 && potentialMapOld[i][j-l]>0 && potentialMapOld[i][j-l]<1
 						  
-						  && testMap[i][j] && testMap[i-l][j] && testMap[i+l][j] && testMap[i][j-l] && testMap[i][j+l]
+						  && potentialTestMap[i][j] && potentialTestMap[i-l][j] && potentialTestMap[i+l][j] 
+						  && potentialTestMap[i][j-l] && potentialTestMap[i][j+l]
 						  && speed>1){
 					
 					fy=  (1/speed)* ( (potentialMap[i][j]-potentialMapOld[i][j]) / (potentialMapOld[i][j-l]-potentialMapOld[i][j+l]) );
@@ -522,7 +713,7 @@ public class TactileMap {
 
 		for (int i=s;i<mapSize-s;i++){
 				for (int j=s;j<mapSize-s;j++){
-					if (testMap[i][j]){
+					if (potentialTestMap[i][j]){
 						flowX2.get(k)[i][j]=0;
 						flowY2.get(k)[i][j]=0;
 						count=0;
@@ -551,7 +742,7 @@ public class TactileMap {
 						}
 					}
 				}
-		}
+		}*/
 
 		
 			
@@ -568,7 +759,7 @@ public class TactileMap {
 		double theta0,theta1;
 		for (int i=s;i<mapSize-s;i++){
 			for (int j=s;j<mapSize-s;j++){
-				if (testMap[i][j] && confidenceFlow.get(act)[i][j]>10){
+				if (potentialTestMap[i][j] && confidenceFlow.get(act)[i][j]>10){
 					// translation
 					mx+=flowX2.get(k)[i][j];
 					my+=flowY2.get(k)[i][j];
@@ -608,12 +799,12 @@ public class TactileMap {
 			}
 		}
 		if (count>0){
-			if (act==0){
+			//if (act==0){
 				mTranslationX.set(act, mx/(float)count);
 				mTranslationY.set(act, my/(float)count);
-			}else{
+			//}else{
 				mRotation.set(act, mTheta/(float)count);
-			}
+			//}
 		}
 		
 		// set the extrapolated flow field
@@ -621,7 +812,7 @@ public class TactileMap {
 		fy=0;
 		for (int i=0;i<mapSize;i++){
 			for (int j=0;j<mapSize;j++){
-				if (!testMap[i][j]){
+				if (!potentialTestMap[i][j]){
 					
 					fx= (float) ((float)(i-mapSize/2)*Math.cos(mRotation.get(act)) - (float)(j-mapSize/2)*Math.sin(mRotation.get(act)));
 					fy= (float) ((float)(i-mapSize/2)*Math.sin(mRotation.get(act)) + (float)(j-mapSize/2)*Math.cos(mRotation.get(act)));
@@ -641,7 +832,7 @@ public class TactileMap {
 					for (int i2=-4;i2<4;i2++){
 						for (int j2=-4;j2<4;j2++){
 							if ( (i+i2)>=0 && (i+i2)<mapSize && (j+j2)>=0 && (j+j2)<mapSize){
-								if (testMap[i+i2][j+j2]){
+								if (potentialTestMap[i+i2][j+j2]){
 									mx+=flowX2.get(k)[i+i2][j+j2];
 									my+=flowY2.get(k)[i+i2][j+j2];
 									count++;
@@ -659,13 +850,13 @@ public class TactileMap {
 					
 				}
 			}
-		}
+		} /* */
 		
 		
 		////////////////////////////////////////////////////////////////////////
 		// move charges
 		////////////////////////////////////////////////////////////////////////
-		
+		/*
 		mx=my=0;
 		d=0;
 		float countD=0;
@@ -679,8 +870,8 @@ public class TactileMap {
 					mx=(float)i-flowX2.get(act)[i][j]*speed;
 					my=(float)j-flowY2.get(act)[i][j]*speed;
 			
-					int ix=Math.round(mx);
-					int jy=Math.round(my);
+					ix=Math.round(mx);
+					jy=Math.round(my);
 				
 					chargeSum0=0;
 					chargeSum1=0;
@@ -704,7 +895,7 @@ public class TactileMap {
 						chargeSum0=chargeSum0/countD;
 						chargeSum1=chargeSum1/countD;
 						chargeSum2=chargeSum2/countD;
-						if (!testMap[i][j]){
+						if (!chargeTestMap[i][j]){
 							chargeMap1[i][j][0]=(float) Math.min(1,chargeSum0);
 							chargeMap1[i][j][1]=(float) Math.min(1,chargeSum1);
 							chargeMap1[i][j][2]=(float) Math.min(1,chargeSum2);
@@ -718,7 +909,7 @@ public class TactileMap {
 				//}
 
 			}
-		}
+		}/**/ /*
 		for (int i=0;i<mapSize;i++){
 			for (int j=0;j<mapSize;j++){
 				chargeMap0[i][j][0]=Math.min(1,chargeMap1[i][j][0]);
@@ -742,8 +933,8 @@ public class TactileMap {
 				px=(float) ((double)j*Math.cos( ((double)i*4+90)*Math.PI/180))+25;
 				py=(float) ((double)j*Math.sin( ((double)i*4+90)*Math.PI/180))+25;
 				
-				int ix=Math.round(px);
-				int jy=Math.round(py);
+				ix=Math.round(px);
+				jy=Math.round(py);
 				
 				if (ix>=0 && jy>=0 && ix<50 && jy<50){
 					
@@ -767,7 +958,7 @@ public class TactileMap {
 					chargeMapP[i][j][1]=(float)(Sum1/countD);
 				}
 			}
-		}*/
+		}/* */
 		
 		
 
@@ -784,30 +975,31 @@ public class TactileMap {
 		for (int i=0;i<360;i+=angle){
 			distance=(float) r[(i+E_angle)%360];
 			for (int j=0;j<sensorRes;j++){
+				
+				index=i/angle;
+				m_tactileValue[index]=Math.min(16, distance-5);
+				m_tactileObject[index]=c[(i+E_angle)%360];
+				
 				if (j==0){
 					index=i/angle;
-					if (distance<=10){
+					if (distance<=5){
 						distance2=1;
 						//distance2= Math.min(1,1- (distance-5)/5);
 						m_tactilePressure[index]= distance2;
-						m_tactileObject[index]=c[(i+E_angle)%360];
 					}
 					else{
 						m_tactilePressure[index]=0;
-						m_tactileObject[index]=Color.black;
 					}
 				}
 				else if (j==1){
 					index=i/angle+resolution;
-					if (distance<=12){
+					if (distance<=10){
 						distance2=1;
 						//distance2=(float) Math.min(1,1- (distance-7)/5);
 						m_tactilePressure[index]= distance2;
-						m_tactileObject[index]=c[(i+E_angle)%360];
 					}
 					else{
 						m_tactilePressure[index]=0;
-						m_tactileObject[index]=Color.black;
 					}
 				}
 				else{
@@ -816,11 +1008,9 @@ public class TactileMap {
 						distance2=1;
 						//distance2=(float) Math.min(1,1- (distance-10)/5);
 						m_tactilePressure[index]= distance2;
-						m_tactileObject[index]=c[(i+E_angle)%360];
 					}
 					else{
 						m_tactilePressure[index]=0;
-						m_tactileObject[index]=Color.black;
 					}
 				}
 			}

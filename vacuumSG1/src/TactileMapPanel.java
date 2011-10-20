@@ -41,6 +41,31 @@ public class TactileMapPanel extends JPanel{
 		
 		for (int k=0;k<Math.min(3, tmap.flowX1.size());k++){
 			
+			// draw neuron flow vector
+			for (int i=0;i<tmap.resolution*tmap.sensorRes;i++){
+			
+				offsetX=50;
+				offsetY=0;
+				if (k==0){
+					offsetX=550;
+					offsetY=550;
+				}
+				else if (k==1){
+					offsetX=200;
+					offsetY=550;
+				}
+				else if (k==2){
+					offsetX=550;
+					offsetY=150;
+				}
+				
+				g.setColor(Color.blue);
+				g.drawLine(offsetX+(int)(tmap.sensorX[i]), offsetY+(int)(tmap.sensorY[i]),
+						   offsetX+(int)(tmap.sensorX[i]+1000*tmap.flowVectorX.get(k)[i]),
+						   offsetY+(int)(tmap.sensorY[i]+1000*tmap.flowVectorY.get(k)[i]) );
+			}
+			
+			/*
 			for (int i=0;i<50;i+=2){
 				for (int j=0;j<50;j+=2){
 
@@ -62,7 +87,7 @@ public class TactileMapPanel extends JPanel{
 					}
 					
 					
-					if (tmap.testMap[i][j]){
+					if (tmap.potentialTestMap[i][j]){
 						g.setColor(new Color(Math.min(1,tmap.potentialMap[i][j]),1-Math.min(1,tmap.potentialMap[i][j]),0));
 					
 						g.drawLine(offsetX-tmap.mapSize/2*width + i*width+width/2,
@@ -78,7 +103,7 @@ public class TactileMapPanel extends JPanel{
 								   offsetY-tmap.mapSize/2*width + j*width+width/2+(int)(1000*tmap.flowY2.get(k)[i][j]) );
 					}
 				}
-			}
+			} /**/
 		}
 		
 		
@@ -86,7 +111,7 @@ public class TactileMapPanel extends JPanel{
 		g.setColor(Color.black);
 		g.drawRect(5, 50, 290, 195);		
 		for (int i=0;i<tmap.resolution*tmap.sensorRes;i++){
-			g.setColor(tmap.m_tactileObject[i]);
+			g.setColor(tmap.m_tactileObject[i%tmap.resolution]);
 			g.fillOval(150+(int)(tmap.sensorX[i]-25*tmap.m_tactilePressure[i]), 150+(int)(tmap.sensorY[i]-25*tmap.m_tactilePressure[i]),
 					   (int)(50*tmap.m_tactilePressure[i]), (int)(50*tmap.m_tactilePressure[i]));
 		}

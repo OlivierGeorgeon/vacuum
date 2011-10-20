@@ -1678,7 +1678,7 @@ public class Ernest100Model extends ErnestModel
 			file.println("sensorConfidence");
 			for (int i=0;i<m_tactile.resolution*m_tactile.sensorRes;i++){
 				for (int j=0;j<m_tactile.resolution*m_tactile.sensorRes;j++){
-					file.print(m_tactile.confidence[i][j]+" ");
+					file.print(m_tactile.connectConfidence[i][j]+" ");
 				}
 				file.println();
 			}
@@ -1860,7 +1860,7 @@ public class Ernest100Model extends ErnestModel
 			    			if (matrixType==3 || matrixType==4){
 			    				for (int j=0;j<m_tactile.resolution*m_tactile.sensorRes;j++){
 			    					if (matrixType==3) m_tactile.connections[indexLine][j]= Double.parseDouble(elements[j]);
-			    					if (matrixType==4) m_tactile.confidence[indexLine][j] = Double.parseDouble(elements[j]);
+			    					if (matrixType==4) m_tactile.connectConfidence[indexLine][j] = Double.parseDouble(elements[j]);
 			    				}
 			    			}
 			   				indexLine++;

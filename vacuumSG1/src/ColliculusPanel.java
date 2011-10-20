@@ -23,38 +23,61 @@ public class ColliculusPanel extends JPanel{
 		
 		float x,y;
 		
-		
+		/*
+		for (int i=0;i<colliculus.tmap.resolution;i++){
+			g.setColor(Color.blue);
+			g.drawLine((int)(colliculus.tmap.sensorX[i]*2)+150, (int)(colliculus.tmap.sensorY[i]*2)+150,
+					   (int)(colliculus.tmap.sensorX[i+colliculus.tmap.resolution]*2)+150,
+					   (int)(colliculus.tmap.sensorY[i+colliculus.tmap.resolution]*2)+150);
+			
+			g.drawLine((int)(colliculus.tmap.sensorX[i+colliculus.tmap.resolution]*2)+150,
+					   (int)(colliculus.tmap.sensorY[i+colliculus.tmap.resolution]*2)+150,
+					   (int)(colliculus.tmap.sensorX[i+colliculus.tmap.resolution*2]*2)+150,
+					   (int)(colliculus.tmap.sensorY[i+colliculus.tmap.resolution*2]*2)+150);
+			
+			g.setColor(Color.red);
+			g.fillOval((int)(colliculus.tmap.valueX[i]*2)+150,
+					   (int)(colliculus.tmap.valueY[i]*2)+150,
+					   3, 3);
+		}*/
+		int offsetX,offsetY;
 		for (int i=0;i<50;i++){
 			for (int j=0;j<50;j++){
-				// potential map
+				// tactile potential map
+				/*offsetX=150;
+				offsetY=150;
 				g.setColor(new Color(  Math.min(1,colliculus.tmap.potentialMap[i][j]),
 									 1-Math.min(1,colliculus.tmap.potentialMap[i][j]),
 									 0));
-				g.fillRect(150-colliculus.tmap.mapSize/2*width + i*width,
-						   150-colliculus.tmap.mapSize/2*width + j*width,
+				g.fillRect(offsetX-colliculus.tmap.mapSize/2*width + i*width,
+						   offsetY-colliculus.tmap.mapSize/2*width + j*width,
 						   width, width);
-				
+				*/
 				//--------------------------------------------------------------
 				// tactile colliculus in Cartesian referential
-				/*g.setColor(new Color(Math.min(1,colliculus.tmap.chargeMap0[i][j][0]),
+				offsetX=500;
+				offsetY=150;
+				g.setColor(new Color(Math.min(1,colliculus.tmap.chargeMap0[i][j][0]),
 						             Math.min(1,colliculus.tmap.chargeMap0[i][j][1]),
 						             Math.min(1,colliculus.tmap.chargeMap0[i][j][2])) );
 
-				g.fillRect(150-colliculus.tmap.mapSize/2*width + i*width,
-						   150-colliculus.tmap.mapSize/2*width + j*width,
+				g.fillRect(offsetX-colliculus.tmap.mapSize/2*width + i*width,
+						   offsetY-colliculus.tmap.mapSize/2*width + j*width,
 						   width, width);
-				*/
 				
 				//---------------------------------------------------------------
 				// visual colliculus in Cartesian referential
+				offsetX=500;
+				offsetY=150;
 				g.setColor(new Color(0,
 									   colliculus.vmap.chargeMap0[i][j],
 									 1-colliculus.vmap.chargeMap0[i][j]));
 				
 				
-				g.fillRect(500-colliculus.vmap.mapSize/2*width + i*width,
-						   150-colliculus.vmap.mapSize/2*width + j*width, 
+				g.fillRect(offsetX-colliculus.vmap.mapSize/2*width + i*width,
+						   offsetY-colliculus.vmap.mapSize/2*width + j*width, 
 						   width, width);
+				
 			}
 		}
 		
