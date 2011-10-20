@@ -11,9 +11,13 @@ public class Colliculus {
 	public ArrayList<int[]> bundleList;    // list of tactile-color bundle
 	public float[][] worldMap;
 	
-	public Colliculus(TactileMap t,VisualMap v){
-		tmap=t;
+	public float t,r;
+	
+	public Colliculus(TactileMap tact,VisualMap v){
+		tmap=tact;
 		vmap=v;
+		t=0;
+		r=0;
 
 		worldMap =new float[50][50];
 	}
@@ -36,7 +40,7 @@ public class Colliculus {
 		}*/
 		
 		tmap.touchEnvironment(r, c, action, speed);
-		//vmap.seeEnvironment(rm, cm,corners, action, speed);
+		vmap.seeEnvironment(rm, cm,corners, action, speed);
 	}
 
 }
