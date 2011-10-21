@@ -11,7 +11,7 @@ public class ColliculusPanel extends JPanel{
 	
 	public ColliculusPanel(Colliculus c){
 		colliculus=c;
-		width=200/(40-10);
+		width=100/(40-10);
 	}
 	
 	
@@ -41,12 +41,12 @@ public class ColliculusPanel extends JPanel{
 					   3, 3);
 		}*/
 		int offsetX,offsetY;
-		for (int i=0;i<50;i++){
-			for (int j=0;j<50;j++){
+		for (int i=0;i<100;i++){
+			for (int j=0;j<100;j++){
 				// tactile potential map
-				/*offsetX=150;
+				offsetX=150;
 				offsetY=150;
-				g.setColor(new Color(  Math.min(1,colliculus.tmap.potentialMap[i][j]),
+				/*g.setColor(new Color(  Math.min(1,colliculus.tmap.potentialMap[i][j]),
 									 1-Math.min(1,colliculus.tmap.potentialMap[i][j]),
 									 0));
 				g.fillRect(offsetX-colliculus.tmap.mapSize/2*width + i*width,
@@ -55,11 +55,11 @@ public class ColliculusPanel extends JPanel{
 				*/
 				//--------------------------------------------------------------
 				// tactile colliculus in Cartesian referential
-				offsetX=500;
+				offsetX=150;
 				offsetY=150;
-				g.setColor(new Color(Math.min(1,colliculus.tmap.chargeMap0[i][j][0]),
-						             Math.min(1,colliculus.tmap.chargeMap0[i][j][1]),
-						             Math.min(1,colliculus.tmap.chargeMap0[i][j][2])) );
+				g.setColor(new Color(Math.min(1,colliculus.tmap.chargeMap1[i][j][2]),
+						             Math.min(1,colliculus.tmap.chargeMap1[i][j][1]),
+						             Math.min(1,colliculus.tmap.chargeMap1[i][j][0])) );
 
 				g.fillRect(offsetX-colliculus.tmap.mapSize/2*width + i*width,
 						   offsetY-colliculus.tmap.mapSize/2*width + j*width,
@@ -81,13 +81,13 @@ public class ColliculusPanel extends JPanel{
 			}
 		}
 		
-		
+		/*
 		g.setColor(Color.lightGray);
-		g.fillOval((24)*width, (24)*width, 3*width,3*width );
+		g.fillOval((50)*width, (50)*width, 2*width,2*width );
 		
 		g.setColor(Color.lightGray);
 		g.fillOval(500-colliculus.vmap.mapSize/2*width + 24*width,  150-colliculus.vmap.mapSize/2*width + 24*width, 3*width,3*width );
-		
+		*/
 		
 		//----------------------------------------------------------------
 		// charge map in Polar referential

@@ -30,7 +30,7 @@ public class VisualMap {
 	
 	public VisualMap(ErnestModel e){
 		ernest=e;
-		mapSize=50;
+		mapSize=100;
 		mapSizeTheta=180;
 		mapSizeR=100;
 		colorMap=new Color[mapSizeTheta][mapSizeR];
@@ -72,10 +72,11 @@ public class VisualMap {
 	}
 	
 	
-	public void seeEnvironment(double[] r,Color[] c,int[] corners, int act,float speed){
-		
-		
-		
+	
+	//*********************************************************************
+	// set sensor values
+	//*********************************************************************
+	public void seeEnvironment(double[] r,Color[] c,int act,float speed){
 		// reset maps
 		for (int i=0;i<mapSizeTheta;i++){
 			for (int j=0;j<mapSizeR;j++){
@@ -94,7 +95,7 @@ public class VisualMap {
 		// set colors on polar map
 		for (int i=0;i<mapSizeTheta;i++){
 			
-			int confidence=Math.min(40, Math.abs(i-90)/2+1);
+			//int confidence=Math.min(40, Math.abs(i-90)/2+1);
 			int min=(int) r[i]-1;//(int) Math.max(0, r[i]-confidence/2);
 			int max=(int) r[i]+5;//(int) Math.min(mapSizeR, r[i]+confidence/2+1);
 
@@ -116,15 +117,89 @@ public class VisualMap {
 			}
 			
 		}
-
+		
 		
 		
 		///////////////////////////////////////////////////////
-		// compute flow
+		// fill potential map
 		///////////////////////////////////////////////////////
+		double sum;
+		double counter;
+		for (int i=0;i<mapSizeTheta;i++){
+			for (int j=0;j<mapSizeR;j++){
+				
+				counter=0;
+				sum=0;
+				
+				for (int i2=-2;i2<=2;i2++){
+					for (int j2=-2;j2<=2;j2++){
+						if (i+i2>=0 && i+i2<mapSizeTheta && j+j2>=0 && j+j2<mapSizeR){
+							if (confidenceMap[i+i2][j+j2]>=0){
+								sum+=1;
+								counter+=1;
+							}
+							else{
+								counter+=1;
+							}
+						}
+					}
+				}
+				potentialMap[i][j]=(float) (sum/counter);
+				
+			}
+		}
 		
-		
+		// fill charge map
+		double theta0,r0;
+		double sum1,count1,d;
+		for (int i=0;i<mapSize;i++){
+			for (int j=0;j<mapSize/2+1;j++){
+				
+					
+				r0= (float) Math.sqrt( (float)((i-mapSize/2)*(i-mapSize/2) + (j-mapSize/2)*(j-mapSize/2)) );
+				
+				if (j-mapSize/2<=0){
+					theta0=0;
+					if (j-mapSize/2 <0) theta0=(float)( Math.atan( -((float)i-mapSize/2)/((float)j-mapSize/2) )*180/Math.PI);
+					else if (j-mapSize/2==0 && i-mapSize/2>0) theta0= 90;
+					else if (j-mapSize/2==0 && i-mapSize/2<0) theta0=-90;
+						
+					//r0=r0*2;
+					theta0=theta0+90;
+					
+					int x2=(int) Math.round(r0);
+					int y2=(int) Math.round(theta0);
+					
+					sum1=0;
+					count1=0;
+					for (int i2=-2;i2<=2;i2++){
+						for (int j2=-2;j2<=2;j2++){
+							if (x2+i2>=0 && x2+i2<mapSizeR && y2+j2>=0 && y2+j2<mapSizeTheta){
+								d= ((float)(x2+i2)-r0    )*((float)(x2+i2)-r0    ) 
+							      +((float)(y2+j2)-theta0)*((float)(y2+j2)-theta0);
+								d=Math.min(1,Math.sqrt(d));
+								
+								sum1+=potentialMap[y2+j2][x2+i2]*(1-d);
+								count1+=(1-d);
+							}
+						}
+					}
+					
+					if (count1>0){
+						chargeMap1[i][j]=(float) (sum1/count1);
+					}
+					
+					if (x2>=0 && x2<mapSizeR && y2>=0 && y2<mapSizeTheta){
+						testMap[i][j]=testMapP[y2][x2];
+					}
+				}
 
+			}
+		}
+	}
+	
+	
+	public void coefficients(double[] r,Color[] c, int act,float speed){
 		
 		// add new flow map
 		if (flowX1.size()<act+1){
@@ -158,90 +233,6 @@ public class VisualMap {
 				}
 			}
 		}
-		
-		// fill potentialMap
-		double sum;
-		double counter;
-		for (int i=0;i<mapSizeTheta;i++){
-			for (int j=0;j<mapSizeR;j++){
-				
-				counter=0;
-				sum=0;
-				
-				for (int i2=-2;i2<=2;i2++){
-					for (int j2=-2;j2<=2;j2++){
-						if (i+i2>=0 && i+i2<mapSizeTheta && j+j2>=0 && j+j2<mapSizeR){
-							if (confidenceMap[i+i2][j+j2]>=0){
-								sum+=1;
-								counter+=1;
-							}
-							else{
-								counter+=1;
-							}
-						}
-					}
-				}
-				potentialMap[i][j]=(float) (sum/counter);
-				
-				/*if (confidenceMap[i][j]>=0){
-					potentialMap[i][j]=1;
-				}
-				else{
-					potentialMap[i][j]=0;
-				}*/
-				
-			}
-		}
-		
-		
-		// fill charge map
-		double theta0,r0;
-		double sum1,count1,d;
-		for (int i=0;i<mapSize;i++){
-			for (int j=0;j<mapSize/2+1;j++){
-				
-					
-				r0= (float) Math.sqrt( (float)((i-25)*(i-25) + (j-25)*(j-25)) );
-				
-				if (j-25<=0){
-					theta0=0;
-					if (j-25 <0) theta0=(float)( Math.atan( -((float)i-25)/((float)j-25) )*180/Math.PI);
-					else if (j-25==0 && i-25>0) theta0= 90;
-					else if (j-25==0 && i-25<0) theta0=-90;
-						
-					r0=r0*2;
-					theta0=theta0+90;
-					
-					int x2=(int) Math.round(r0);
-					int y2=(int) Math.round(theta0);
-					
-					sum1=0;
-					count1=0;
-					for (int i2=-2;i2<=2;i2++){
-						for (int j2=-2;j2<=2;j2++){
-							if (x2+i2>=0 && x2+i2<mapSizeR && y2+j2>=0 && y2+j2<mapSizeTheta){
-								d= ((float)(x2+i2)-r0    )*((float)(x2+i2)-r0    ) 
-							      +((float)(y2+j2)-theta0)*((float)(y2+j2)-theta0);
-								d=Math.min(1,Math.sqrt(d));
-								
-								sum1+=potentialMap[y2+j2][x2+i2]*(1-d);
-								count1+=(1-d);
-							}
-						}
-					}
-					
-					if (count1>0){
-						chargeMap1[i][j]=(float) (sum1/count1);
-					}
-					
-					if (x2>=0 && x2<mapSizeR && y2>=0 && y2<mapSizeTheta){
-						testMap[i][j]=testMapP[y2][x2];
-					}
-				}
-
-			}
-		}
-		
 		
 		
 		// compute flow
@@ -302,8 +293,9 @@ public class VisualMap {
 			}
 		}
 
-
+		////////////////////////////////////////////////////////////////////////
 		// reduce noise
+		////////////////////////////////////////////////////////////////////////
 		int count;
 		float mx,my;
 		int a=4;
@@ -339,7 +331,6 @@ public class VisualMap {
 				}	
 			}
 		}
-		
 		
 		////////////////////////////////////////////////////////////////////////
 		// compute average translation and rotation vectors
@@ -383,38 +374,61 @@ public class VisualMap {
 			}
 		}
 		
-		// fill cartesian flow map
-		fx=0;
-		fy=0;
-		for (int i=0;i<mapSize;i++){
-			for (int j=0;j<mapSize;j++){
-					
-					fx= (float) ((float)(i-mapSize/2)*Math.cos(mRotation.get(act)) 
-					  - (float)(j-mapSize/2)*Math.sin(mRotation.get(act)));
-					fy= (float) ((float)(i-mapSize/2)*Math.sin(mRotation.get(act)) 
-					  + (float)(j-mapSize/2)*Math.cos(mRotation.get(act)));
-					
-					fx-=(float)(i-mapSize/2);
-					fy-=(float)(j-mapSize/2);
-					
-					flowX3.get(act)[i][j]=fx +mTranslationX.get(act);
-					flowY3.get(act)[i][j]=fy +mTranslationY.get(act);
-			}
-		}
+		 // fill cartesian flow map
+        fx=0;
+        fy=0;
+        for (int i=0;i<mapSize;i++){
+                for (int j=0;j<mapSize;j++){
+                                
+                                fx= (float) ((float)(i-mapSize/2)*Math.cos(mRotation.get(act)) 
+                                  - (float)(j-mapSize/2)*Math.sin(mRotation.get(act)));
+                                fy= (float) ((float)(i-mapSize/2)*Math.sin(mRotation.get(act)) 
+                                  + (float)(j-mapSize/2)*Math.cos(mRotation.get(act)));
+                                
+                                fx-=(float)(i-mapSize/2);
+                                fy-=(float)(j-mapSize/2);
+                                
+                                flowX3.get(act)[i][j]=fx +mTranslationX.get(act);
+                                flowY3.get(act)[i][j]=fy +mTranslationY.get(act);
+                }
+        }
+
+		
+	}
+	
+	public void moveCharges(double translationX,double translationY,double rotation,float speed){
 		
 		////////////////////////////////////////////////////////////////////////
 		// move charges
 		////////////////////////////////////////////////////////////////////////
-		
-		mx=my=0;
-		d=0;
+		float fx=0;
+		float fy=0;
+		double flowX=0;
+		double flowY=0;
+		float mx=0;
+		float my=0;
+		float d=0;
 		float countD=0;
 		float chargeSum0=0;
 		for (int i=0;i<mapSize;i++){
 			for (int j=0;j<mapSize;j++){
+					
+				// compute local movement vector
 				if (!testMap[i][j]){
-					mx=(float)i+flowX3.get(act)[i][j]*speed;
-					my=(float)j+flowY3.get(act)[i][j]*speed;
+					fx= (float) ((float)(i-mapSize/2)*Math.cos(rotation) 
+					  - (float)(j-mapSize/2)*Math.sin(rotation));
+					fy= (float) ((float)(i-mapSize/2)*Math.sin(rotation) 
+					  + (float)(j-mapSize/2)*Math.cos(rotation));
+					
+					fx-=(float)(i-mapSize/2);
+					fy-=(float)(j-mapSize/2);
+					
+					flowX=fx +translationX;
+					flowY=fy +translationY;
+
+				
+					mx=(float)i+(float)(flowX*speed);
+					my=(float)j+(float)(flowY*speed);
 			
 					int ix=Math.round(mx);
 					int jy=Math.round(my);
@@ -450,6 +464,9 @@ public class VisualMap {
 				chargeMap1[i][j]=0;	
 			}
 		}
+	}
+	
+	public void seeEnvironment2(double[] r,Color[] c,int[] corners, int act,float speed){
 		
 		////////////////////////////////////////////////////////////////////////
 		// detection of hight probability area
