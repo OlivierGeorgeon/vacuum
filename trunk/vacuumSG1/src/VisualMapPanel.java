@@ -16,7 +16,7 @@ public class VisualMapPanel extends JPanel{
 	
 	public VisualMapPanel(VisualMap v){
 		tmap=v;
-		width=200/(40-10);//tmap.mapSize;
+		width=100/(40-10);//tmap.mapSize;
 	}
 	
 	public void paintComponent(Graphics g){
@@ -25,8 +25,8 @@ public class VisualMapPanel extends JPanel{
 		
 		int offsetX,offsetY;
 		
-		for (int i=0;i<50;i++){
-			for (int j=0;j<26;j++){
+		for (int i=0;i<100;i++){
+			for (int j=0;j<50;j++){
 				// draw charge map
 				g.setColor(new Color(Math.min(1,tmap.chargeMap0[i][j]),1-Math.min(1,tmap.chargeMap0[i][j]),0));
 				g.fillRect(50+ i*width, 50+ j*width, width, width);
@@ -49,8 +49,8 @@ public class VisualMapPanel extends JPanel{
 				offsetX=550;
 				offsetY=150;
 			}
-			for (int i=0;i<50;i+=2){
-				for (int j=0;j<50;j+=2){
+			for (int i=0;i<100;i+=4){
+				for (int j=0;j<100;j+=4){
 
 					// draw improved flow
 

@@ -10,37 +10,43 @@ public class Colliculus {
 	public VisualMap vmap;
 	public ArrayList<int[]> bundleList;    // list of tactile-color bundle
 	public float[][] worldMap;
-	
-	public float t,r;
+	public ArrayList<Float> TranslationX;
+	public ArrayList<Float> TranslationY;
+	public ArrayList<Float> Rotation;
 	
 	public Colliculus(TactileMap tact,VisualMap v){
 		tmap=tact;
 		vmap=v;
-		t=0;
-		r=0;
 
-		worldMap =new float[50][50];
+		TranslationX=new ArrayList<Float>();
+		TranslationY=new ArrayList<Float>();
+		Rotation    =new ArrayList<Float>();
+
 	}
 	
 	public void update(double[] r,Color[] c,double[] rm,Color[] cm,int[] corners,int action,float speed,double[] r3){
-		/*
-		for (int i=0;i<50;i++){
-			for (int j=0;j<50;j++){
-				worldMap[i][j]=0;
+		
+		// add new coefficient set
+		if (Rotation.size()<action+1){
+			while (Rotation.size()<action+1){
+				TranslationX.add((float) 0);
+				TranslationY.add((float) 0);
+				Rotation.add((float) 0);
 			}
 		}
 		
-		for (int i=0;i<360;i++){
-			int x= (int) (r3[i]*Math.cos(i*Math.PI/180));
-			int y= (int) (r3[i]*Math.sin(i*Math.PI/180));
-			
-			if (x>=0 && x<50 && y>=0 && y<50){
-				worldMap[x][y]=1;
-			}
-		}*/
+		vmap.seeEnvironment(rm, cm, action, speed);
+		vmap.coefficients(rm, cm, action, speed);
+		TranslationX=vmap.mTranslationX;
+		TranslationY=vmap.mTranslationY;
+		Rotation    =vmap.mRotation;
+		vmap.moveCharges(TranslationX.get(action), TranslationY.get(action), Rotation.get(action), speed);
 		
 		tmap.touchEnvironment(r, c, action, speed);
-		vmap.seeEnvironment(rm, cm,corners, action, speed);
+		//tmap.coefficients(r, c, action, speed);
+		tmap.moveCharges(-TranslationX.get(action), -TranslationY.get(action), -Rotation.get(action), speed);
+		
+		
 	}
 
 }
