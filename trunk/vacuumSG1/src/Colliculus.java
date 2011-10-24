@@ -9,7 +9,6 @@ public class Colliculus {
 	public TactileMap tmap;
 	public VisualMap vmap;
 	public ArrayList<int[]> bundleList;    // list of tactile-color bundle
-	public float[][] worldMap;
 	public ArrayList<Float> TranslationX;
 	public ArrayList<Float> TranslationY;
 	public ArrayList<Float> Rotation;

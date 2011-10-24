@@ -28,7 +28,7 @@ public class VisualMapPanel extends JPanel{
 		for (int i=0;i<100;i++){
 			for (int j=0;j<50;j++){
 				// draw charge map
-				g.setColor(new Color(Math.min(1,tmap.chargeMap0[i][j]),1-Math.min(1,tmap.chargeMap0[i][j]),0));
+				g.setColor(new Color(Math.min(1,tmap.chargeMap0[i][j][1]),1-Math.min(1,tmap.chargeMap0[i][j][1]),0));
 				g.fillRect(50+ i*width, 50+ j*width, width, width);
 			}
 		}
