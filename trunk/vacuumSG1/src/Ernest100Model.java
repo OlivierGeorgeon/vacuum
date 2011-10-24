@@ -304,7 +304,8 @@ public class Ernest100Model extends ErnestModel
 		if (taste == DIRTY) 	
 			suck();
 
-		return taste;
+		int stimulation = ((taste == DIRTY) ? Ernest.STIMULATION_GUSTATORY_FISH.getValue() : Ernest.STIMULATION_GUSTATORY_NOTHING.getValue());
+		return stimulation;
 	}
 	
 	/**
