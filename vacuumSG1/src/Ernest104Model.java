@@ -532,14 +532,15 @@ public class Ernest104Model extends ErnestModel
 			for (int i = 0; i < 3; i++)
 				for (int j = 0; j < 3; j++)
 				{
-					if (somatoMap[i][j] == Ernest.STIMULATION_TOUCH_EMPTY.getValue())
-						somatoMapColor[i][j] = new Color(Ernest.COLOR_TOUCH_EMPTY.getRGB());//Ernest.COLOR_TOUCH_EMPTY;
-					if (somatoMap[i][j] == Ernest.STIMULATION_TOUCH_SOFT.getValue())
-						somatoMapColor[i][j] = new Color(Ernest.COLOR_TOUCH_ALGA.getRGB());
-					if (somatoMap[i][j] == Ernest.STIMULATION_TOUCH_WALL.getValue())
-						somatoMapColor[i][j] = new Color(Ernest.COLOR_TOUCH_WALL.getRGB());
-					if (somatoMap[i][j] == Ernest.STIMULATION_TOUCH_FISH.getValue())
-						somatoMapColor[i][j] = new Color(Ernest.COLOR_TOUCH_FISH.getRGB());
+					somatoMapColor[i][j] = new Color(somatoMap[i][j]);
+//					if (somatoMap[i][j] == Ernest.STIMULATION_TOUCH_EMPTY.getValue())
+//						somatoMapColor[i][j] = new Color(Ernest.COLOR_TOUCH_EMPTY.getRGB());//Ernest.COLOR_TOUCH_EMPTY;
+//					if (somatoMap[i][j] == Ernest.STIMULATION_TOUCH_SOFT.getValue())
+//						somatoMapColor[i][j] = new Color(Ernest.COLOR_TOUCH_ALGA.getRGB());
+//					if (somatoMap[i][j] == Ernest.STIMULATION_TOUCH_WALL.getValue())
+//						somatoMapColor[i][j] = new Color(Ernest.COLOR_TOUCH_WALL.getRGB());
+//					if (somatoMap[i][j] == Ernest.STIMULATION_TOUCH_FISH.getValue())
+//						somatoMapColor[i][j] = new Color(Ernest.COLOR_TOUCH_FISH.getRGB());
 				}
 		}
 		
@@ -640,13 +641,14 @@ public class Ernest104Model extends ErnestModel
 			{
 				span = m_ernest.getObservation().getSalience().getSpan();
 				direction = m_ernest.getObservation().getSalience().getDirection() / 10f - span / 2f + .5f;
-				eyeColor = new Color(m_ernest.getObservation().getSalience().getColor().getRGB());
+				eyeColor = new Color(m_ernest.getObservation().getSalience().getBundle().getVisualStimulation().getValue());
+				//eyeColor = new Color(m_ernest.getObservation().getSalience().getColor().getRGB());
 			}
 						
 			// Somatomap color
 			for (int i = 0; i < 3; i++)
 				for (int j = 0; j < 3; j++)
-					somatoMapColor[i][j] = new Color(m_ernest.getObservation().getColor(i, j).getRGB());
+					somatoMapColor[i][j] = new Color(m_ernest.getObservation().getColor(i, j));
 			
 			if (Ernest.STIMULATION_KINEMATIC_BUMP.equals(m_ernest.getObservation().getKinematic()))
 				kinematicColor = Color.RED;
@@ -692,7 +694,8 @@ public class Ernest104Model extends ErnestModel
 		
 		Area sharkMask = sharkmask();
 
-		g2d.setColor(new Color(Ernest.COLOR_WALL.getRGB()));
+		g2d.setColor(WALL_COLOR);
+		//g2d.setColor(new Color(Ernest.COLOR_WALL.getRGB()));
 		if (isNight()) g2d.setColor(new Color(80,80,80)) ;
 		g2d.fill(sharkMask);
 		
