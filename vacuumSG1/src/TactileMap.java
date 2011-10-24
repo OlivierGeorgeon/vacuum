@@ -58,7 +58,7 @@ public class TactileMap {
 	public ArrayList<float[][][]> flowLineX2;		// extrapolated flow line chains
 	public ArrayList<float[][][]> flowLineY2;
 	
-	public int mapSize,mapPSize1,mapPSize2;
+	public int mapSize,mapSizeTheta,mapSizeR;
 	public int flowLength;
 	
 	public ArrayList<Float> mTranslationX;
@@ -95,8 +95,8 @@ public class TactileMap {
 	//*************************************************************************
 	private void initialize(){
 		mapSize=100;
-		mapPSize1=90;
-		mapPSize2=30;
+		mapSizeTheta=180;
+		mapSizeR=100;
 		
 		m_tactilePressure=new float[resolution*sensorRes];
 		m_tactileValue=new float[resolution];
@@ -122,7 +122,7 @@ public class TactileMap {
 		
 		chargeMap0=new float[mapSize][mapSize][3];
 		chargeMap1=new float[mapSize][mapSize][3];
-		chargeMapP=new float[mapPSize1][mapPSize2][3];
+		chargeMapP=new float[mapSizeTheta][mapSizeR][3];
 		objectMap=new float[mapSize][mapSize][3];
 		potentialTestMap=new boolean[mapSize][mapSize];
 		chargeTestMap=new boolean[mapSize][mapSize];
@@ -186,8 +186,8 @@ public class TactileMap {
 			}
 		}
 		
-		for (int i=0;i<mapPSize1;i++){
-			for (int j=0;j<mapPSize2;j++){
+		for (int i=0;i<mapSizeTheta;i++){
+			for (int j=0;j<mapSizeR;j++){
 				chargeMapP[i][j][0]=0;
 				chargeMapP[i][j][1]=0;
 				chargeMapP[i][j][2]=0;
@@ -485,6 +485,9 @@ public class TactileMap {
 	
 	
 	
+	//*********************************************************************
+	// move "charges" on the charge map and generate polar charge map
+	//*********************************************************************
 	public void moveCharges(double translationX,double translationY,double rotation,float speed){
 		////////////////////////////////////////////////////////////////////////
 		// move charges
@@ -552,10 +555,52 @@ public class TactileMap {
 				}
 			}
 		}
+		
+		////////////////////////////////////////////////////////////////////////
+		// generate polar map
+		////////////////////////////////////////////////////////////////////////
+		
+		double Sum0,Sum1,Sum2;
+		float px,py;
+		for (int i=0;i<mapSizeTheta;i++){
+			for (int j=0;j<mapSizeR;j++){
+				
+				px=(float) ((double)j*Math.cos( ((double)(i*2+90))*Math.PI/180))+mapSize/2;
+				py=(float) ((double)j*Math.sin( ((double)(i*2+90))*Math.PI/180))+mapSize/2;
+				
+				ix=Math.round(px);
+				jy=Math.round(py);
+				
+				if (ix>=0 && jy>=0 && ix<mapSize && jy<mapSize){
+					
+					Sum0=0;
+					Sum1=0;
+					Sum2=0;
+					countD=0;
+					for (int i2=-1;i2<=1;i2++){
+						for (int j2=-1;j2<=1;j2++){
+							if (ix+i2>=0 && ix+i2<mapSize && jy+j2>=0 && jy+j2<mapSize){
+								d= ((float)(ix+i2)-px)*((float)(ix+i2)-px) 
+								  +((float)(jy+j2)-py)*((float)(jy+j2)-py);
+								d=Math.min(1,Math.sqrt(d));
+								Sum0+=chargeMap0[ix+i2][jy+j2][0]*(1-d);
+								Sum1+=chargeMap0[ix+i2][jy+j2][1]*(1-d);
+								Sum2+=chargeMap0[ix+i2][jy+j2][2]*(1-d);
+								countD+=(1-d);
+							}
+						}
+					}
+					
+					chargeMapP[i][j][0]=Math.min(1,(float)(Sum0/countD));
+					chargeMapP[i][j][1]=Math.min(1,(float)(Sum1/countD));
+					chargeMapP[i][j][2]=Math.min(1,(float)(Sum2/countD));
+				}
+			}
+		}
 
 	}
 	
-	
+	/*
 	public void touchEnvironment2(double[] r,Color[] c, int act,float speed){
 		
 
@@ -568,7 +613,7 @@ public class TactileMap {
 		int ix,jy;
 
 		
-		/*
+		
 		for (int i=0;i<mapSize;i++){
 			for (int j=0;j<mapSize;j++){
 				if (chargeTestMap[i][j]){
@@ -792,120 +837,9 @@ public class TactileMap {
 					
 				}
 			}
-		} /* */
-		
-		
-		////////////////////////////////////////////////////////////////////////
-		// move charges
-		////////////////////////////////////////////////////////////////////////
-		/*
-		mx=my=0;
-		d=0;
-		float countD=0;
-		float chargeSum0=0;
-		float chargeSum1=0;
-		float chargeSum2=0;
-		for (int i=0;i<mapSize;i++){
-			for (int j=0;j<mapSize;j++){
-				
-				//if (!testMap[i][j]){
-					mx=(float)i-flowX2.get(act)[i][j]*speed;
-					my=(float)j-flowY2.get(act)[i][j]*speed;
-			
-					ix=Math.round(mx);
-					jy=Math.round(my);
-				
-					chargeSum0=0;
-					chargeSum1=0;
-					chargeSum2=0;
-					countD=0;
-					for (int i2=-1;i2<=1;i2++){
-						for (int j2=-1;j2<=1;j2++){
-							if (ix+i2>=0 && ix+i2<mapSize && jy+j2>=0 && jy+j2<mapSize){
-								d= ((float)(ix+i2)-mx)*((float)(ix+i2)-mx) 
-							      +((float)(jy+j2)-my)*((float)(jy+j2)-my);
-								d=Math.min(1,Math.sqrt(d));
-								chargeSum0+=chargeMap0[ix+i2][jy+j2][0]*(1-d);
-								chargeSum1+=chargeMap0[ix+i2][jy+j2][1]*(1-d);
-								chargeSum2+=chargeMap0[ix+i2][jy+j2][2]*(1-d);
-								countD+=(1-d);
-							}
-						}
-					}
-				
-					if (countD>0){
-						chargeSum0=chargeSum0/countD;
-						chargeSum1=chargeSum1/countD;
-						chargeSum2=chargeSum2/countD;
-						if (!chargeTestMap[i][j]){
-							chargeMap1[i][j][0]=(float) Math.min(1,chargeSum0);
-							chargeMap1[i][j][1]=(float) Math.min(1,chargeSum1);
-							chargeMap1[i][j][2]=(float) Math.min(1,chargeSum2);
-						}
-						else{
-							chargeMap1[i][j][0]=potentialMap2[i][j][0];
-							chargeMap1[i][j][1]=potentialMap2[i][j][1];
-							chargeMap1[i][j][2]=potentialMap2[i][j][2];
-						}
-					}
-				//}
+		} 
 
-			}
-		}/**/ /*
-		for (int i=0;i<mapSize;i++){
-			for (int j=0;j<mapSize;j++){
-				chargeMap0[i][j][0]=Math.min(1,chargeMap1[i][j][0]);
-				chargeMap0[i][j][1]=Math.min(1,chargeMap1[i][j][1]);
-				chargeMap0[i][j][2]=Math.min(1,chargeMap1[i][j][2]);
-				chargeMap1[i][j][0]=0;
-				chargeMap1[i][j][1]=0;
-				chargeMap1[i][j][2]=0;		
-			}
-		}
-		
-		////////////////////////////////////////////////////////////////////////
-		// generate polar map
-		////////////////////////////////////////////////////////////////////////
-		
-		double Sum0,Sum1;
-		float px,py;
-		for (int i=0;i<90;i++){
-			for (int j=0;j<30;j++){
-				
-				px=(float) ((double)j*Math.cos( ((double)i*4+90)*Math.PI/180))+25;
-				py=(float) ((double)j*Math.sin( ((double)i*4+90)*Math.PI/180))+25;
-				
-				ix=Math.round(px);
-				jy=Math.round(py);
-				
-				if (ix>=0 && jy>=0 && ix<50 && jy<50){
-					
-					Sum0=0;
-					Sum1=0;
-					countD=0;
-					for (int i2=-1;i2<=1;i2++){
-						for (int j2=-1;j2<=1;j2++){
-							if (ix+i2>=0 && ix+i2<50 && jy+j2>=0 && jy+j2<50){
-								d= ((float)(ix+i2)-px)*((float)(ix+i2)-px) 
-								  +((float)(jy+j2)-py)*((float)(jy+j2)-py);
-								d=Math.min(1,Math.sqrt(d));
-								Sum0+=chargeMap0[ix+i2][jy+j2][0]*(1-d);
-								Sum1+=chargeMap0[ix+i2][jy+j2][1]*(1-d);
-								countD+=(1-d);
-							}
-						}
-					}
-					
-					chargeMapP[i][j][0]=(float)(Sum0/countD);
-					chargeMapP[i][j][1]=(float)(Sum1/countD);
-				}
-			}
-		}/* */
-		
-		
-
-		
-	}
+	}*/
 
 
 	public void senseAround(double[] r,Color[] c){
