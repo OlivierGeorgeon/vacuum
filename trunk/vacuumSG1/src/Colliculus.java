@@ -100,6 +100,15 @@ public class Colliculus {
 				count=0;
 				// create Salience
 				if (thetaMin>0){
+					if      (val==1) val=32768;       //   0*65536 + 128*256 +   0
+					else if (val==2) val=7595520;     // 115*65536 + 230*256 +   0
+					else if (val==3) val=9863423;     // 150*65536 + 128*256 + 255
+					else if (val==4) val=3073536;     //  46*65536 + 230*256 +   0
+					else if (val==5) val=59110;       //   0*65536 + 230*256 + 230
+					else if (val==6) val=58972;       //   0*65536 + 230*256 +  92
+					else if (val==7) val=15126272;    // 230*65536 + 207*256 +   0
+					else if (val==8) val=59041;       //   0*65536 + 230*256 + 161
+					else if (val==9) val=12117504;    // 184*65536 + 230*256 +   0
 					list.add(new Salience(val, 0, (float)((theta-90)*Math.PI/180), d, (float)(span*Math.PI/180) ) );
 				}
 			}

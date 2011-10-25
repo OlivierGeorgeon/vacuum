@@ -122,7 +122,7 @@ public class VisualMap {
 	// set sensor values
 	//*********************************************************************
 	public void seeEnvironment(double[] r,Color[] c,int act,float speed){
-		// reset maps
+		// reset maps and save previous values
 		for (int i=0;i<mapSizeTheta;i++){
 			for (int j=0;j<mapSizeR;j++){
 				potentialMapOld[i][j]=potentialMap[i][j];
@@ -210,6 +210,7 @@ public class VisualMap {
 		double sum0[];
 		sum0=new double[10];
 		double count0,d;
+		int x2i2,y2j2;
 		for (int i=0;i<mapSize;i++){
 			for (int j=0;j<mapSize/2+1;j++){
 				
@@ -228,37 +229,41 @@ public class VisualMap {
 					count0=0;
 					for (int i2=-2;i2<=2;i2++){
 						for (int j2=-2;j2<=2;j2++){
-							if (x2+i2>=0 && x2+i2<mapSizeR && y2+j2>=0 && y2+j2<mapSizeTheta){
-								d= ((float)(x2+i2)-r0    )*((float)(x2+i2)-r0    ) 
-							      +((float)(y2+j2)-theta0)*((float)(y2+j2)-theta0);
+							
+							x2i2=x2+i2;
+							y2j2=y2+j2;
+							
+							if (x2i2>=0 && x2i2<mapSizeR && y2j2>=0 && y2j2<mapSizeTheta){
+								d= ((float)(x2i2)-r0    )*((float)(x2i2)-r0    ) 
+							      +((float)(y2j2)-theta0)*((float)(y2j2)-theta0);
 								d=Math.min(1,Math.sqrt(d));
 								
-								if (confidenceMap[y2+j2][x2+i2]>=0){
-									if (colorMap[y2+j2][x2+i2].equals(Color.black)){
+								if (confidenceMap[y2j2][x2i2]>=0){
+									if (colorMap[y2j2][x2i2].equals(Color.black)){
 										sum0[0]+= 1-d;
 									}
-									else if (colorMap[y2+j2][x2+i2].equals(new Color(0,128,0)) ){
+									else if (colorMap[y2j2][x2i2].equals(new Color(0,128,0)) ){
 										sum0[1]+= 1-d;
 									}
-									else if (colorMap[y2+j2][x2+i2].equals(new Color(115,230,0)) ){
+									else if (colorMap[y2j2][x2i2].equals(new Color(115,230,0)) ){
 										sum0[2]+= 1-d;
 									}
-									else if (colorMap[y2+j2][x2+i2].equals(new Color(150,128,255)) ){
+									else if (colorMap[y2j2][x2i2].equals(new Color(150,128,255)) ){
 										sum0[3]+= 1-d;
 									}
-									else if (colorMap[y2+j2][x2+i2].equals(new Color(46,230,0)) ){
+									else if (colorMap[y2j2][x2i2].equals(new Color(46,230,0)) ){
 										sum0[4]+= 1-d;
 									}
-									else if (colorMap[y2+j2][x2+i2].equals(new Color(0,230,230)) ){
+									else if (colorMap[y2j2][x2i2].equals(new Color(0,230,230)) ){
 										sum0[5]+= 1-d;
 									}
-									else if (colorMap[y2+j2][x2+i2].equals(new Color(0,230,92)) ){
+									else if (colorMap[y2j2][x2i2].equals(new Color(0,230,92)) ){
 										sum0[6]+= 1-d;
 									}
-									else if (colorMap[y2+j2][x2+i2].equals(new Color(230,207,0)) ){
+									else if (colorMap[y2j2][x2i2].equals(new Color(230,207,0)) ){
 										sum0[7]+= 1-d;
 									}
-									else if (colorMap[y2+j2][x2+i2].equals(new Color(0,230,161)) ){
+									else if (colorMap[y2j2][x2i2].equals(new Color(0,230,161)) ){
 										sum0[8]+= 1-d;
 									}
 									else{
@@ -333,21 +338,28 @@ public class VisualMap {
 		float fx,fy;
 		int l=1;
 		boolean test1,test2;
+		int iml,ipl,jml,jpl;
 		for (int i=45+l;i<135-l;i++){
 			for (int j=l;j<40;j++){
 				test1=true;
 				test2=true;
-				if (( ( potentialMapOld[i-l][j]>potentialMapOld[i][j] && potentialMapOld[i+l][j]<potentialMapOld[i][j])
-							 ||( potentialMapOld[i-l][j]<potentialMapOld[i][j] && potentialMapOld[i+l][j]>potentialMapOld[i][j]) )
+				
+				iml=i-l;
+				ipl=i+l;
+				jml=j-l;
+				jpl=j+l;
+				
+				if (( ( potentialMapOld[iml][j]>potentialMapOld[i][j] && potentialMapOld[ipl][j]<potentialMapOld[i][j])
+							 ||( potentialMapOld[iml][j]<potentialMapOld[i][j] && potentialMapOld[ipl][j]>potentialMapOld[i][j]) )
  
 						  && potentialMap[i  ][j]>0 && potentialMap[i  ][j]<1 && potentialMapOld[i  ][j]>0 && potentialMapOld[i  ][j]<1
-						  && potentialMap[i+l][j]>0 && potentialMap[i+l][j]<1 && potentialMapOld[i+l][j]>0 && potentialMapOld[i+l][j]<1
-						  && potentialMap[i-l][j]>0 && potentialMap[i-l][j]<1 && potentialMapOld[i-l][j]>0 && potentialMapOld[i-l][j]<1
+						  && potentialMap[ipl][j]>0 && potentialMap[ipl][j]<1 && potentialMapOld[ipl][j]>0 && potentialMapOld[ipl][j]<1
+						  && potentialMap[iml][j]>0 && potentialMap[iml][j]<1 && potentialMapOld[iml][j]>0 && potentialMapOld[iml][j]<1
 						  
-						  && testMapP[i][j] && testMapP[i-l][j] && testMapP[i+l][j] && testMapP[i][j-l] && testMapP[i][j+l]
+						  && testMapP[i][j] && testMapP[iml][j] && testMapP[ipl][j] && testMapP[i][jml] && testMapP[i][jpl]
 						  && speed>1){
 					
-					fx=  (1/speed)* ( (potentialMap[i][j]-potentialMapOld[i][j]) / (potentialMapOld[i-l][j]-potentialMapOld[i+l][j]) );
+					fx=  (1/speed)* ( (potentialMap[i][j]-potentialMapOld[i][j]) / (potentialMapOld[iml][j]-potentialMapOld[ipl][j]) );
 					
 				}
 				else{
@@ -355,18 +367,18 @@ public class VisualMap {
 					fx=0;
 				}
 				
-				if (( ( potentialMapOld[i][j-l]>potentialMapOld[i][j] && potentialMapOld[i][j+l]<potentialMapOld[i][j])
-							 ||( potentialMapOld[i][j-l]<potentialMapOld[i][j] && potentialMapOld[i][j+l]>potentialMapOld[i][j]) )
+				if (( ( potentialMapOld[i][jml]>potentialMapOld[i][j] && potentialMapOld[i][jpl]<potentialMapOld[i][j])
+							 ||( potentialMapOld[i][jml]<potentialMapOld[i][j] && potentialMapOld[i][jpl]>potentialMapOld[i][j]) )
 						
 							 
 						  && potentialMap[i  ][j]>0 && potentialMap[i  ][j]<1 && potentialMapOld[i  ][j]>0 && potentialMapOld[i  ][j]<1
-						  && potentialMap[i][j+l]>0 && potentialMap[i][j+l]<1 && potentialMapOld[i][j+l]>0 && potentialMapOld[i][j+l]<1
-						  && potentialMap[i][j-l]>0 && potentialMap[i][j-l]<1 && potentialMapOld[i][j-l]>0 && potentialMapOld[i][j-l]<1
+						  && potentialMap[i][jpl]>0 && potentialMap[i][jpl]<1 && potentialMapOld[i][jpl]>0 && potentialMapOld[i][jpl]<1
+						  && potentialMap[i][jml]>0 && potentialMap[i][jml]<1 && potentialMapOld[i][jml]>0 && potentialMapOld[i][jml]<1
 						  
-						  && testMapP[i][j] && testMapP[i-l][j] && testMapP[i+l][j] && testMapP[i][j-l] && testMapP[i][j+l]
+						  && testMapP[i][j] && testMapP[iml][j] && testMapP[ipl][j] && testMapP[i][jml] && testMapP[i][jpl]
 						  && speed>1){
 					
-					fy=  (1/speed)* ( (potentialMap[i][j]-potentialMapOld[i][j]) / (potentialMapOld[i][j-l]-potentialMapOld[i][j+l]) );
+					fy=  (1/speed)* ( (potentialMap[i][j]-potentialMapOld[i][j]) / (potentialMapOld[i][jml]-potentialMapOld[i][jpl]) );
 					
 				}
 				else{
@@ -471,16 +483,20 @@ public class VisualMap {
 		 // fill cartesian flow map
         fx=0;
         fy=0;
+        float imap,jmap;
         for (int i=0;i<mapSize;i++){
                 for (int j=0;j<mapSize;j++){
+                               
+                	imap=i-mapSize/2;
+                    jmap=j-mapSize/2;
+                	
+                                fx= (float)(imap*Math.cos(mRotation.get(act)) )
+                                  - (float)(jmap*Math.sin(mRotation.get(act)) );
+                                fy= (float)(imap*Math.sin(mRotation.get(act)) ) 
+                                  + (float)(jmap*Math.cos(mRotation.get(act)) );
                                 
-                                fx= (float) ((float)(i-mapSize/2)*Math.cos(mRotation.get(act)) 
-                                  - (float)(j-mapSize/2)*Math.sin(mRotation.get(act)));
-                                fy= (float) ((float)(i-mapSize/2)*Math.sin(mRotation.get(act)) 
-                                  + (float)(j-mapSize/2)*Math.cos(mRotation.get(act)));
-                                
-                                fx-=(float)(i-mapSize/2);
-                                fy-=(float)(j-mapSize/2);
+                                fx-=imap;
+                                fy-=jmap;
                                 
                                 flowX3.get(act)[i][j]=fx +mTranslationX.get(act);
                                 flowY3.get(act)[i][j]=fy +mTranslationY.get(act);
@@ -506,19 +522,21 @@ public class VisualMap {
 		double d=0;
 		float countD=0;
 		float chargeSum0[];
+		float imap,jmap;
 		chargeSum0=new float[10];
 		for (int i=0;i<mapSize;i++){
 			for (int j=0;j<mapSize;j++){
-					
+				imap=i-mapSize/2;
+                jmap=j-mapSize/2;
 				// compute local movement vector
 				if (!chargeTestMap[i][j]){
-					fx= (float) ((float)(i-mapSize/2)*Math.cos(rotation) 
-					  - (float)(j-mapSize/2)*Math.sin(rotation));
-					fy= (float) ((float)(i-mapSize/2)*Math.sin(rotation) 
-					  + (float)(j-mapSize/2)*Math.cos(rotation));
+					fx= (float)(imap*Math.cos(rotation) )
+					  - (float)(jmap*Math.sin(rotation) );
+					fy= (float)(imap*Math.sin(rotation) )
+					  + (float)(jmap*Math.cos(rotation) );
 					
-					fx-=(float)(i-mapSize/2);
-					fy-=(float)(j-mapSize/2);
+					fx-=imap;
+					fy-=jmap;
 					
 					flowX=fx +translationX;
 					flowY=fy +translationY;
@@ -537,13 +555,16 @@ public class VisualMap {
 					countD=0;
 					for (int i2=-1;i2<=1;i2++){
 						for (int j2=-1;j2<=1;j2++){
+							d= ((float)(ix+i2)-mx)*((float)(ix+i2)-mx) 
+						      +((float)(jy+j2)-my)*((float)(jy+j2)-my);
+							d=(float) Math.min(1,Math.sqrt(d));
 							if (ix+i2>=0 && ix+i2<mapSize && jy+j2>=0 && jy+j2<mapSize){
-								d= ((float)(ix+i2)-mx)*((float)(ix+i2)-mx) 
-							      +((float)(jy+j2)-my)*((float)(jy+j2)-my);
-								d=(float) Math.min(1,Math.sqrt(d));
 								for (int k=0;k<10;k++){
 									chargeSum0[k]+=chargeMap0[ix+i2][jy+j2][k]*(1-d);
 								}
+								countD+=(1-d);
+							}
+							else{
 								countD+=(1-d);
 							}
 						}
