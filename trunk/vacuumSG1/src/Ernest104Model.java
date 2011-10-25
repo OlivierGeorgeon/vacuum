@@ -86,14 +86,14 @@ public class Ernest104Model extends ErnestModel
 
 		// Ernest's inborn primitive interactions
 		
-		m_ernest.addInteraction(">", "t",    20); // Move
-		m_ernest.addInteraction(">", "f", -40); // Bump 
+		m_ernest.addInteraction(">", " ",   20); // Move
+		m_ernest.addInteraction(">", "w", -100); // Bump 
 		
-		m_ernest.addInteraction("^", "t",   -10); // Left toward empty
-		m_ernest.addInteraction("^", "f",  -20); // Left toward wall
+		m_ernest.addInteraction("^", " ",  -10); // Left toward empty
+		m_ernest.addInteraction("^", "w",  -20); // Left toward wall
 
-		m_ernest.addInteraction("v", "t",   -10); // Right toward empty
-		m_ernest.addInteraction("v", "f",  -20); // Right toward wall
+		m_ernest.addInteraction("v", " ",  -10); // Right toward empty
+		m_ernest.addInteraction("v", "w",  -20); // Right toward wall
 		
 		System.out.println("Ernest initialized") ;
 	}
@@ -624,7 +624,7 @@ public class Ernest104Model extends ErnestModel
 		Color eyeColor = UNANIMATED_COLOR;
 		Color kinematicColor = Color.WHITE;
 		float direction = 5.5f;
-		int span = 1;
+		float span = (float)Math.PI / 12;
 		
 		// body Color
 		
