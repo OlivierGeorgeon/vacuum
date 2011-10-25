@@ -157,17 +157,25 @@ public class Ernest100Model extends ErnestModel
 
 
 		// Ernest's inborn primitive interactions
-		m_sensorymotorSystem.addPrimitiveAct(">", true,   100); // Move
-		m_sensorymotorSystem.addPrimitiveAct(">", false, -100); // Bump 
 		
 		if (continuum){
-			m_sensorymotorSystem.addPrimitiveAct("^", true,   -50); // Left toward empty
-			m_sensorymotorSystem.addPrimitiveAct("^", false,  -70); // Left toward wall
+			m_ernest.addInteraction(">", " ",   20); // Move
+			m_ernest.addInteraction(">", "w", -100); // Bump 
+			
+			m_ernest.addInteraction("^", " ",  -10); // Left toward empty
+			m_ernest.addInteraction("^", "w",  -20); // Left toward wall
+	
+			m_ernest.addInteraction("v", " ",  -10); // Right toward empty
+			m_ernest.addInteraction("v", "w",  -20); // Right toward wall
+			//m_sensorymotorSystem.addPrimitiveAct("^", true,   -50); // Left toward empty
+			//m_sensorymotorSystem.addPrimitiveAct("^", false,  -70); // Left toward wall
 
-			m_sensorymotorSystem.addPrimitiveAct("v", true,   -50); // Right toward empty
-			m_sensorymotorSystem.addPrimitiveAct("v", false,  -70); // Right toward wall
+			//m_sensorymotorSystem.addPrimitiveAct("v", true,   -50); // Right toward empty
+			//m_sensorymotorSystem.addPrimitiveAct("v", false,  -70); // Right toward wall
 		}
 		else{
+			m_sensorymotorSystem.addPrimitiveAct(">", true,   100); // Move
+			m_sensorymotorSystem.addPrimitiveAct(">", false, -100); // Bump 
 			m_sensorymotorSystem.addPrimitiveAct("^", true,   -10); // Left toward empty
 			m_sensorymotorSystem.addPrimitiveAct("^", false,  -20); // Left toward wall
 
@@ -1472,7 +1480,7 @@ public class Ernest100Model extends ErnestModel
 		Color eyeColor = UNANIMATED_COLOR;
 		Color kinematicColor = Color.WHITE;
 		float direction = 5.5f;
-		int span = 1;
+		float span = (float)Math.PI / 12;
 		
 		// body Color
 		
