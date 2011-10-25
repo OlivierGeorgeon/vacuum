@@ -49,7 +49,7 @@ public class Ernest100Model extends ErnestModel
 	public float m_If,m_Ir;   				// impulsion counters
 	public int lastAction;
 	
-	public InternalStatesFrame m_int;
+	//public InternalStatesFrame m_int;
 	public InternalMap m_map;
 	public ObjectMemory m_objMemory;
 	
@@ -115,7 +115,7 @@ public class Ernest100Model extends ErnestModel
 		m_tactileFrame=new TactileMapFrame(m_tactile);
 		m_visualFrame=new VisualMapFrame(m_visual);
 		
-		m_int=new InternalStatesFrame(m_actionList);
+		//m_int=new InternalStatesFrame(m_actionList);
 		
 		//m_patternMap=new PatternMap();
 		//m_patternFrame=new PatternMappingFrame(m_patternMap);
@@ -549,7 +549,7 @@ public class Ernest100Model extends ErnestModel
 				
 				
 				m_env.repaint();
-				m_int.repaint();
+				//m_int.repaint();
 				//sleep((int)(1));
 			}
 			
@@ -1052,7 +1052,7 @@ public class Ernest100Model extends ErnestModel
 		//m_patternFrame.update((int)(m_x*10),(int)(m_y*10),m_orientation);
 		//m_patternFrame.paint();
 		
-		m_int.repaint();
+		//m_int.repaint();
 		eye.repaint();
 		m_map.compute(r2, colorMap2);
 		eye.paint(r2,colorMap2,corner2);

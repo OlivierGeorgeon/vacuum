@@ -11,6 +11,8 @@ public class VisualMap {
 	public float chargeMap0[][][];
 	public float chargeMap1[][][];
 	public float chargeMapP[][][];
+	public int maximumMap[][];
+	public int output[][];
 	private boolean[][] chargeTestMap;
 	public float[][] confidenceMap;
 	public float[][] potentialConfidenceMap;
@@ -27,6 +29,15 @@ public class VisualMap {
 	public ArrayList<Float> mTranslationY;
 	public ArrayList<Float> mRotation;
 	
+	public double polar2cartesianX[][];
+	public double polar2cartesianY[][];
+	
+	public double polar2cartesian2X[][];
+	public double polar2cartesian2Y[][];
+	
+	public double cartesian2polarR[][];
+	public double cartesian2polarT[][];
+	
 	public ErnestModel ernest;
 	public int mapSize,mapSizeTheta,mapSizeR;
 	
@@ -42,6 +53,9 @@ public class VisualMap {
 		chargeMap0=new float[mapSize][mapSize][10];
 		chargeMap1=new float[mapSize][mapSize][10];
 		chargeMapP=new float[mapSizeTheta][mapSizeR][10];
+		maximumMap=new int[mapSizeTheta][mapSizeR];
+		output=new int[mapSizeTheta][4];
+		
 		chargeTestMap=new boolean[mapSize][mapSize];
 		confidenceMap=new float[mapSizeTheta][mapSizeR];
 		potentialConfidenceMap=new float[mapSize][mapSize];
@@ -54,6 +68,12 @@ public class VisualMap {
 		flowX3=new ArrayList<float[][]>();
 		flowY3=new ArrayList<float[][]>();
 		confidenceFlow=new ArrayList<float[][]>();
+		polar2cartesianX=new double[mapSizeTheta][mapSizeR];
+		polar2cartesianY=new double[mapSizeTheta][mapSizeR];
+		polar2cartesian2X=new double[mapSizeTheta][mapSizeR];
+		polar2cartesian2Y=new double[mapSizeTheta][mapSizeR];
+		cartesian2polarR=new double[mapSize][mapSize];
+		cartesian2polarT=new double[mapSize][mapSize];
 		
 		mTranslationX=new ArrayList<Float>();
 		mTranslationY=new ArrayList<Float>();
@@ -62,6 +82,15 @@ public class VisualMap {
 		for (int i=0;i<180;i++){
 			for (int j=0;j<mapSizeR;j++){
 				confidenceMap[i][j]=-1;
+				for (int k=0;k<10;k++){
+					chargeMapP[i][j][k]=0;
+				}
+				
+				polar2cartesianX[i][j]=((double)j*Math.cos( ((double)(i*2+90))*Math.PI/180))+mapSize/2;
+				polar2cartesianY[i][j]=((double)j*Math.sin( ((double)(i*2+90))*Math.PI/180))+mapSize/2;
+
+				polar2cartesian2X[i][j]=( (float)j * Math.cos((float)i*Math.PI/180) );
+				polar2cartesian2Y[i][j]=( (float)j * Math.sin((float)i*Math.PI/180) );
 			}
 		}
 		for (int i=0;i<mapSize;i++){
@@ -73,6 +102,15 @@ public class VisualMap {
 					chargeMap1[i][j][k]=0;
 				}
 				potentialConfidenceMap[i][j]=0;
+				
+				cartesian2polarR[i][j]= Math.sqrt( (float)((i-mapSize/2)*(i-mapSize/2) + (j-mapSize/2)*(j-mapSize/2)) );
+				
+				double theta0=0;
+				if (j-mapSize/2 <0) theta0=(float)( Math.atan( -((float)i-mapSize/2)/((float)j-mapSize/2) )*180/Math.PI);
+				else if (j-mapSize/2==0 && i-mapSize/2>0) theta0= 90;
+				else if (j-mapSize/2==0 && i-mapSize/2<0) theta0=-90;
+						
+				cartesian2polarT[i][j]=theta0+90;
 			}
 		}
 		
@@ -93,7 +131,11 @@ public class VisualMap {
 		}
 		for (int i=0;i<mapSize;i++){
 			for (int j=0;j<mapSize;j++){
+				for (int k=0;k<10;k++){
+					chargeMap0[i][j][k]=chargeMap1[i][j][k];
+				}
 				testMap[i][j]=false;
+				chargeTestMap[i][j]=false;
 			}
 		}
 		
@@ -161,17 +203,6 @@ public class VisualMap {
 			}
 		}
 		
-		
-		// reset maps
-		for (int i=0;i<mapSize;i++){
-			for (int j=0;j<mapSize;j++){
-				for (int k=0;k<10;k++){
-					chargeMap0[i][j][k]=chargeMap1[i][j][k];
-				}
-				chargeTestMap[i][j]=false;
-			}
-		}
-		
 		///////////////////////////////////////////////////////
 		// fill charge map (Cartesian)
 		///////////////////////////////////////////////////////
@@ -183,15 +214,10 @@ public class VisualMap {
 			for (int j=0;j<mapSize/2+1;j++){
 				
 					
-				r0= (float) Math.sqrt( (float)((i-mapSize/2)*(i-mapSize/2) + (j-mapSize/2)*(j-mapSize/2)) );
+				r0=cartesian2polarR[i][j];
 				
 				if (j-mapSize/2<=0){
-					theta0=0;
-					if (j-mapSize/2 <0) theta0=(float)( Math.atan( -((float)i-mapSize/2)/((float)j-mapSize/2) )*180/Math.PI);
-					else if (j-mapSize/2==0 && i-mapSize/2>0) theta0= 90;
-					else if (j-mapSize/2==0 && i-mapSize/2<0) theta0=-90;
-						
-					theta0=theta0+90;
+					theta0=cartesian2polarT[i][j];;
 					
 					int x2=(int) Math.round(r0);
 					int y2=(int) Math.round(theta0);
@@ -238,9 +264,9 @@ public class VisualMap {
 									else{
 										sum0[9]+= 1-d;
 									}
+									
+									count0+=1-d;
 								}
-								
-								count0+=1-d;
 							}
 						}
 					}
@@ -251,6 +277,7 @@ public class VisualMap {
 						}
 						chargeTestMap[i][j]=true;
 					}
+					else chargeTestMap[i][j]=false;
 					
 					if (x2>=0 && x2<mapSizeR && y2>=0 && y2<mapSizeTheta){
 						testMap[i][j]=testMapP[y2][x2];
@@ -306,8 +333,8 @@ public class VisualMap {
 		float fx,fy;
 		int l=1;
 		boolean test1,test2;
-		for (int i=l;i<mapSizeTheta-l;i++){
-			for (int j=l;j<20;j++){
+		for (int i=45+l;i<135-l;i++){
+			for (int j=l;j<40;j++){
 				test1=true;
 				test2=true;
 				if (( ( potentialMapOld[i-l][j]>potentialMapOld[i][j] && potentialMapOld[i+l][j]<potentialMapOld[i][j])
@@ -416,8 +443,8 @@ public class VisualMap {
 					mTheta-=flowX2.get(k)[i][j];
 					
 					// translation
-					mx= (float) ( (float)j * Math.cos((float)i*Math.PI/180) );
-					my= (float) ( (float)j * Math.sin((float)i*Math.PI/180) );
+					mx= (float) polar2cartesian2X[i][j];
+					my= (float) polar2cartesian2Y[i][j];
 					
 					mx2= (float) ( ((float)j+flowY2.get(k)[i][j]) 
 						* Math.cos( ((float)i+flowX2.get(k)[i][j])*Math.PI/180) );
@@ -433,12 +460,12 @@ public class VisualMap {
 			}
 		}
 		if (count>0){
-			if (act==0){
+			//if (act==0){
 				mTranslationX.set(act, mx3/(float)count/2);
 				mTranslationY.set(act, my3/(float)count/2);
-			}else{
+			//}else{
 				mRotation.set(act, (float)((mTheta/(float)count)*Math.PI/180));
-			}
+			//}
 		}
 		
 		 // fill cartesian flow map
@@ -540,16 +567,16 @@ public class VisualMap {
 		
 		double Sum0[];
 		Sum0=new double[10];
-		float px,py;
+		double px,py;
 		int ix,jy;
 		for (int i=0;i<mapSizeTheta;i++){
 			for (int j=0;j<mapSizeR;j++){
 				
-				px=(float) ((double)j*Math.cos( ((double)(i*2+90))*Math.PI/180))+mapSize/2;
-				py=(float) ((double)j*Math.sin( ((double)(i*2+90))*Math.PI/180))+mapSize/2;
+				px=polar2cartesianX[i][j];
+				py=polar2cartesianY[i][j];;
 				
-				ix=Math.round(px);
-				jy=Math.round(py);
+				ix=(int) Math.round(px);
+				jy=(int) Math.round(py);
 				
 				if (ix>=0 && jy>=0 && ix<mapSize && jy<mapSize){
 					
@@ -576,7 +603,103 @@ public class VisualMap {
 				}
 			}
 		}
-
+		
+		/*
+		////////////////////////////////////////////////////////////////////////
+		// detection of high probability area
+		////////////////////////////////////////////////////////////////////////
+		float max=(float) 0.1;
+		int index=-1;
+		for (int i=1;i<mapSizeTheta-1;i++){
+			for (int j=1;j<mapSizeR-1;j++){
+				max=(float) 0.1;
+				index=-1;
+				maximumMap[i][j]=-1;
+				for (int k=0;k<10;k++){
+					if (chargeMapP[i][j][k]>max){
+						max=chargeMapP[i][j][k];
+						index=k;
+					}
+				}
+				if (index>=0){
+					if (    chargeMapP[i][j][index] >= chargeMapP[i][j-1][index]
+					     && chargeMapP[i][j][index] >= chargeMapP[i][j+1][index]){
+						
+						maximumMap[i][j]=index;
+					}
+				}
+			}
+		}*/
+		
+		
+		////////////////////////////////////////////////////////////////////////
+		// fill the output vector
+		////////////////////////////////////////////////////////////////////////
+		boolean test;							// first maximum found
+		int j;
+		float max=0;					// value of the first maximum
+		int index=0;							// index of the first maximum
+		int position=-1;
+		
+		for (int i=0;i<mapSizeTheta;i++){
+			
+			index=0;
+			position=-1;
+			max=0;
+			
+			
+			// find value, position and index of first maximum
+			j=0;
+			test=false;
+			while (!test && j<mapSizeR-1){
+				for (int k=1;k<10;k++){
+					if (    chargeMapP[i][j][k]>=0.99 
+						|| (chargeMapP[i][j][k]>=0.1  && chargeMapP[i][j+1][k]<chargeMapP[i][j][k]) ){
+						test=true;
+						max=chargeMapP[i][j][k];
+						index=k;
+						position=j;
+					}
+				}
+				j++;
+			}
+			
+			output[i][0]=index;
+			output[i][1]=position;
+			output[i][2]=position;
+			output[i][3]=position;
+			
+			// if maximum found, find the area of the object
+			if (test){
+				
+				j=0;
+				boolean test2=false;
+				while (!test2 && position-j>=0){
+					
+					if (chargeMapP[i][position-j][index]<=max/2){
+						test2=true;
+					}
+					
+					j++;
+				}
+				output[i][2]=position-j;
+				
+				j=0;
+				test2=false;
+				while (!test2 && position+j<mapSizeR){
+					
+					if (chargeMapP[i][position+j][index]<=max/2){
+						test2=true;
+					}
+					
+					j++;
+				}
+				output[i][3]=position+j;
+				
+			}
+			
+		}
+		
 	}
 	
 	/*
