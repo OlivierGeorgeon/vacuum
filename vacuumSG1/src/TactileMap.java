@@ -40,9 +40,13 @@ public class TactileMap {
 	public float chargeMap1[][][];						//               1 => solid object
 	public float chargeMapP[][][];						//               2 => soft object
 														// map0 -> construction, map1-> final, mapP->polar
+	public int maximumMap[][];
+	public int output[][];
 	
 	public float objectMap[][][];
 
+	public double polar2cartesianX[][];
+	public double polar2cartesianY[][];
 	
 	public boolean potentialTestMap[][];
 	public boolean chargeTestMap[][];
@@ -123,6 +127,9 @@ public class TactileMap {
 		chargeMap0=new float[mapSize][mapSize][3];
 		chargeMap1=new float[mapSize][mapSize][3];
 		chargeMapP=new float[mapSizeTheta][mapSizeR][3];
+		maximumMap=new int[mapSizeTheta][mapSizeR];
+		output=new int[mapSizeTheta][4];
+		
 		objectMap=new float[mapSize][mapSize][3];
 		potentialTestMap=new boolean[mapSize][mapSize];
 		chargeTestMap=new boolean[mapSize][mapSize];
@@ -131,6 +138,9 @@ public class TactileMap {
 		flowX2=new ArrayList<float[][]>();
 		flowY2=new ArrayList<float[][]>();
 		confidenceFlow=new ArrayList<float[][]>();
+		
+		polar2cartesianX=new double[mapSizeTheta][mapSizeR];
+		polar2cartesianY=new double[mapSizeTheta][mapSizeR];
 		
 		flowLength=60;
 		flowLineX1=new ArrayList<float[][][]>();
@@ -187,10 +197,16 @@ public class TactileMap {
 		}
 		
 		for (int i=0;i<mapSizeTheta;i++){
+			
+			output[i][0]=-1;
+			
 			for (int j=0;j<mapSizeR;j++){
 				chargeMapP[i][j][0]=0;
 				chargeMapP[i][j][1]=0;
 				chargeMapP[i][j][2]=0;
+				
+				polar2cartesianX[i][j]=((double)j*Math.cos( ((double)(i*2+90))*Math.PI/180))+mapSize/2;
+				polar2cartesianY[i][j]=((double)j*Math.sin( ((double)(i*2+90))*Math.PI/180))+mapSize/2;
 			}
 		}
 		
@@ -359,14 +375,24 @@ public class TactileMap {
 				if (x<mapSize-1 && x>0 && y<mapSize-1 && y>0){
 					
 					if (value>=0){
-						if (m_tactileObject[i2].equals(new Color(0,128,0))){
-							chargeMap1[ix][jy][1]=value;
+						if (value>0){
+							if (m_tactileObject[i2].equals(new Color(0,128,0))){
+								chargeMap1[ix][jy][1]=1;
+								chargeMap1[ix][jy][2]=0;
+								chargeMap1[ix][jy][0]=0;
+							}
+							else{
+								chargeMap1[ix][jy][1]=0;
+								chargeMap1[ix][jy][2]=1;
+								chargeMap1[ix][jy][0]=0;
+							}
 						}
 						else{
-							chargeMap1[ix][jy][2]=value;
+							chargeMap1[ix][jy][0]=1;
+							chargeMap1[ix][jy][1]=0;
+							chargeMap1[ix][jy][2]=0;
 						}
 						
-						chargeMap1[ix][jy][0]=1-value;
 						
 						chargeTestMap[ix][jy]=true;
 					}
@@ -561,15 +587,15 @@ public class TactileMap {
 		////////////////////////////////////////////////////////////////////////
 		
 		double Sum0,Sum1,Sum2;
-		float px,py;
+		double px,py;
 		for (int i=0;i<mapSizeTheta;i++){
 			for (int j=0;j<mapSizeR;j++){
 				
-				px=(float) ((double)j*Math.cos( ((double)(i*2+90))*Math.PI/180))+mapSize/2;
-				py=(float) ((double)j*Math.sin( ((double)(i*2+90))*Math.PI/180))+mapSize/2;
+				px=polar2cartesianX[i][j];
+				py=polar2cartesianY[i][j];
 				
-				ix=Math.round(px);
-				jy=Math.round(py);
+				ix=(int) Math.round(px);
+				jy=(int) Math.round(py);
 				
 				if (ix>=0 && jy>=0 && ix<mapSize && jy<mapSize){
 					
@@ -596,6 +622,103 @@ public class TactileMap {
 					chargeMapP[i][j][2]=Math.min(1,(float)(Sum2/countD));
 				}
 			}
+		}
+		
+		/*
+		////////////////////////////////////////////////////////////////////////
+		// detection of high probability area
+		////////////////////////////////////////////////////////////////////////
+		float max=(float) 0.1;
+		int index=-1;
+		for (int i=1;i<mapSizeTheta-1;i++){
+			for (int j=1;j<mapSizeR-1;j++){
+				max=(float) 0.1;
+				index=-1;
+				maximumMap[i][j]=-1;
+				for (int k=0;k<3;k++){
+					
+					if (chargeMapP[i][j][k]>max){
+						max=chargeMapP[i][j][k];
+						index=k;
+					}
+				}
+				if (index>=0){
+					if (    chargeMapP[i][j][index] >= chargeMapP[i][j-1][index]
+					     && chargeMapP[i][j][index] >= chargeMapP[i][j+1][index]){
+						
+						maximumMap[i][j]=index;
+					}
+				}
+			}
+		}*/
+		
+		
+		////////////////////////////////////////////////////////////////////////
+		// fill the output vector
+		////////////////////////////////////////////////////////////////////////
+		boolean test;						// first maximum found
+		int j;
+		float max=0;						// value of the first maximum
+		int index=0;						// index of the first maximum
+		int position=-1;
+		
+		for (int i=0;i<mapSizeTheta;i++){
+			
+			index=0;
+			position=-1;
+			max=0;
+			
+			
+			// find value, position and index of first maximum
+			j=0;
+			test=false;
+			while (!test && j<mapSizeR-1){
+				for (int k=1;k<3;k++){
+					if (    chargeMapP[i][j][k]>=0.99 
+						|| (chargeMapP[i][j][k]>=0.1  && chargeMapP[i][j+1][k]<chargeMapP[i][j][k]) ){
+						test=true;
+						max=chargeMapP[i][j][k];
+						index=k;
+						position=j;
+					}
+				}
+				j++;
+			}
+			
+			output[i][0]=index;
+			output[i][1]=position;
+			output[i][2]=position;
+			output[i][3]=position;
+			
+			// if maximum found, find the area of the object
+			if (test){
+				
+				j=0;
+				boolean test2=false;
+				while (!test2 && position-j>=0){
+					
+					if (chargeMapP[i][position-j][index]<=max*0.3){
+						test2=true;
+					}
+					
+					j++;
+				}
+				output[i][2]=position-j;
+				
+				j=0;
+				test2=false;
+				while (!test2 && position+j<mapSizeR){
+					
+					if (chargeMapP[i][position+j][index]<=max*0.3){
+						test2=true;
+					}
+					
+					j++;
+				}
+				output[i][3]=position+j;
+				
+			}
+			
 		}
 
 	}
