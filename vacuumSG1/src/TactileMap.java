@@ -221,13 +221,17 @@ public class TactileMap {
 		//////////////////////////////////////////////////////
 		// save previous values
 		//////////////////////////////////////////////////////
+		// pressure on each neuron
 		for (int i=0;i<resolution*sensorRes;i++){
 			m_tactilePressureOld[i]=m_tactilePressure[i];
 		}
-		for (int i=0;i<resolution;i++){
+		// position of detected point for each sensor
+		/*for (int i=0;i<resolution;i++){
 			valueOldX[i]=valueX[i];
 			valueOldY[i]=valueY[i];
-		}
+		}*/
+		
+		
 		
 		////////////////////////////////////////////////////////
 		// set sensors values
@@ -235,7 +239,7 @@ public class TactileMap {
 		// sensors around ernest
 		senseAround(r,c);
 		
-		// sensors in front of ernest
+		// sensors in front of ernest (to redefine)
 		//senseFront(r,c);
 		
 		
@@ -244,7 +248,7 @@ public class TactileMap {
 		/////////////////////////////////////////////////////////
 		// place neurons on the map
 		/////////////////////////////////////////////////////////
-		double dist,dist2,dist3;
+		/*double dist,dist2,dist3;
 		double a,b;
 		
 		float capacity=500; 
@@ -257,7 +261,7 @@ public class TactileMap {
                         if (m_tactileVariations[i] > 0) m_tactileVariations[i]--;
                         else if (m_tactileVariations[i] < 0) m_tactileVariations[i]++;
                 }
-        }
+        }*/
         
 		/*
         // compute relation between neurons
@@ -526,19 +530,22 @@ public class TactileMap {
 		float chargeSum1=0;
 		float chargeSum2=0;
 		int ix,jy;
+		int ixi2,jyj2;
 		double flowX,flowY;
 		
 		for (int i=0;i<mapSize;i++){
 			for (int j=0;j<mapSize;j++){
+				float imap=i-mapSize/2;
+				float jmap=j-mapSize/2;
 				
 				// compute local movement vector
-				flowX= (float) ((float)(i-mapSize/2)*Math.cos(rotation)
-                     - (float)(j-mapSize/2)*Math.sin(rotation));
-                flowY= (float) ((float)(i-mapSize/2)*Math.sin(rotation)
-                     + (float)(j-mapSize/2)*Math.cos(rotation));
+				flowX= (float)(imap*Math.cos(rotation))
+                     - (float)(jmap*Math.sin(rotation));
+                flowY= (float)(imap*Math.sin(rotation))
+                     + (float)(jmap*Math.cos(rotation));
                       
-                flowX-=(float)(i-mapSize/2);
-                flowY-=(float)(j-mapSize/2);
+                flowX-=imap;
+                flowY-=jmap;
                 
 				flowX+=translationX;
 				flowY+=translationY;
@@ -557,13 +564,21 @@ public class TactileMap {
 					countD=0;
 					for (int i2=-1;i2<=1;i2++){
 						for (int j2=-1;j2<=1;j2++){
-							if (ix+i2>=0 && ix+i2<mapSize && jy+j2>=0 && jy+j2<mapSize){
-								d= ((float)(ix+i2)-mx)*((float)(ix+i2)-mx) 
-							      +((float)(jy+j2)-my)*((float)(jy+j2)-my);
-								d=Math.min(1,Math.sqrt(d));
-								chargeSum0+=chargeMap0[ix+i2][jy+j2][0]*(1-d);
-								chargeSum1+=chargeMap0[ix+i2][jy+j2][1]*(1-d);
-								chargeSum2+=chargeMap0[ix+i2][jy+j2][2]*(1-d);
+							
+							ixi2=ix+i2;
+							jyj2=jy+j2;
+							
+							d= ((float)(ixi2)-mx)*((float)(ixi2)-mx) 
+						      +((float)(jyj2)-my)*((float)(jyj2)-my);
+							d=Math.min(1,Math.sqrt(d));
+							
+							if (ixi2>=0 && ixi2<mapSize && jyj2>=0 && jyj2<mapSize){
+								chargeSum0+=chargeMap0[ixi2][jyj2][0]*(1-d);
+								chargeSum1+=chargeMap0[ixi2][jyj2][1]*(1-d);
+								chargeSum2+=chargeMap0[ixi2][jyj2][2]*(1-d);
+								countD+=(1-d);
+							}
+							else{
 								countD+=(1-d);
 							}
 						}
@@ -605,13 +620,15 @@ public class TactileMap {
 					countD=0;
 					for (int i2=-1;i2<=1;i2++){
 						for (int j2=-1;j2<=1;j2++){
-							if (ix+i2>=0 && ix+i2<mapSize && jy+j2>=0 && jy+j2<mapSize){
-								d= ((float)(ix+i2)-px)*((float)(ix+i2)-px) 
-								  +((float)(jy+j2)-py)*((float)(jy+j2)-py);
+							ixi2=ix+i2;
+							jyj2=jy+j2;
+							if (ixi2>=0 && ixi2<mapSize && jyj2>=0 && jyj2<mapSize){
+								d= ((float)(ixi2)-px)*((float)(ixi2)-px) 
+								  +((float)(jyj2)-py)*((float)(jyj2)-py);
 								d=Math.min(1,Math.sqrt(d));
-								Sum0+=chargeMap0[ix+i2][jy+j2][0]*(1-d);
-								Sum1+=chargeMap0[ix+i2][jy+j2][1]*(1-d);
-								Sum2+=chargeMap0[ix+i2][jy+j2][2]*(1-d);
+								Sum0+=chargeMap0[ixi2][jyj2][0]*(1-d);
+								Sum1+=chargeMap0[ixi2][jyj2][1]*(1-d);
+								Sum2+=chargeMap0[ixi2][jyj2][2]*(1-d);
 								countD+=(1-d);
 							}
 						}
