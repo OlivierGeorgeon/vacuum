@@ -3,7 +3,10 @@ import java.awt.Graphics;
 
 import javax.swing.JPanel;
 
-
+/**
+ * Panel used to display informations concerning colliculus
+ * @author simon
+ */
 public class ColliculusPanel extends JPanel{
 	
 	public Colliculus colliculus;

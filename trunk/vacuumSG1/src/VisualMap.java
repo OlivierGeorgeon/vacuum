@@ -2,12 +2,16 @@ import java.awt.Color;
 import java.util.ArrayList;
 
 
-
+/**
+ * Visual colliculus
+ * @author simon
+ */
 public class VisualMap {
 
 	public Color[][] colorMap;
 	public float[][] potentialMap;
 	public float[][] potentialMapOld;
+	
 	public float chargeMap0[][][];
 	public float chargeMap1[][][];
 	public float chargeMapP[][][];
@@ -118,10 +122,12 @@ public class VisualMap {
 	
 	
 	
-	//*********************************************************************
-	// set sensor values
-	//*********************************************************************
-	public void seeEnvironment(double[] r,Color[] c,int act,float speed){
+	/**
+	 * set sensor values, fill charge map in polar and Cartesian referential
+	 * @param r		Distance vector
+	 * @param c		Color vector
+	 */
+	public void seeEnvironment(double[] r,Color[] c){
 		// reset maps and save previous values
 		for (int i=0;i<mapSizeTheta;i++){
 			for (int j=0;j<mapSizeR;j++){
@@ -294,11 +300,12 @@ public class VisualMap {
 	}
 	
 	
-	
-	//*********************************************************************
-	// compute average t and r coefficients
-	//*********************************************************************
-	public void coefficients(double[] r,Color[] c, int act,float speed){
+	/**
+	 * compute average t and r coefficients
+	 * @param act	current action performed by the agent
+	 * @param speed	value of the action
+	 */
+	public void coefficients(int act,float speed){
 		
 		// add new flow map
 		if (flowX1.size()<act+1){
@@ -505,9 +512,13 @@ public class VisualMap {
 	}
 	
 	
-	//*********************************************************************
-	// move "charges" on the charge map and generate polar charge map
-	//*********************************************************************
+	/**
+	 * move "charges" on the charge map and generate polar charge map
+	 * @param translationX	Average translation component on X  axis, given by the global colliculus
+	 * @param translationY	Average translation component on Y  axis, given by the global colliculus
+	 * @param rotation		Average rotation value, given by the global colliculus
+	 * @param speed			Value of the current action
+	 */
 	public void moveCharges(double translationX,double translationY,double rotation,float speed){
 		
 		////////////////////////////////////////////////////////////////////////

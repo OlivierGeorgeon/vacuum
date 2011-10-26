@@ -1036,10 +1036,6 @@ public class Ernest100Model extends ErnestModel
 			corner2[i]=corner[(i+orientationDeg-90+720)%360];
 		}
 		
-		for (int i=0;i<360;i++){
-			r3[i]= r[(i+orientationDeg+720)%360];
-		}
-		
 		for (int i=0;i<Ernest.RESOLUTION_RETINA;i++){
 			retina[Ernest.RESOLUTION_RETINA-i-1]= new EyeFixation();
 			retina[Ernest.RESOLUTION_RETINA-i-1].setColor(colorMap2[(int)(i*180/Ernest.RESOLUTION_RETINA+180/Ernest.RESOLUTION_RETINA/2)]);
@@ -1053,7 +1049,7 @@ public class Ernest100Model extends ErnestModel
 		}
 		
 		if (sensor){
-			colliculus.update(r, colorMap, r2, colorMap2,corner2, lastAction, speed,r3);
+			colliculus.update(r, colorMap, r2, colorMap2, lastAction, speed);
 		}
 		
 		//m_patternMap.addPatern(colorMap2,lastAction);
