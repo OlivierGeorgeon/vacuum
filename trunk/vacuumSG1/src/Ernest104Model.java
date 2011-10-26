@@ -87,13 +87,13 @@ public class Ernest104Model extends ErnestModel
 		// Ernest's inborn primitive interactions
 		
 		m_ernest.addInteraction(">", " ",   20); // Move
-		m_ernest.addInteraction(">", "w", -100); // Bump 
+		//m_ernest.addInteraction(">", "w", -100); // Bump 
 		
 		m_ernest.addInteraction("^", " ",  -10); // Left toward empty
-		m_ernest.addInteraction("^", "w",  -20); // Left toward wall
+		//m_ernest.addInteraction("^", "w",  -20); // Left toward wall
 
 		m_ernest.addInteraction("v", " ",  -10); // Right toward empty
-		m_ernest.addInteraction("v", "w",  -20); // Right toward wall
+		//m_ernest.addInteraction("v", "w",  -20); // Right toward wall
 		
 		System.out.println("Ernest initialized") ;
 	}
@@ -110,7 +110,8 @@ public class Ernest104Model extends ErnestModel
 	 */
 	public String stepErnest(boolean status)
 	{
-		m_tracer.startNewEvent(m_counter);
+		if (m_tracer != null)
+			m_tracer.startNewEvent(m_counter);
 
 		// See the environment
 		int [][] matrix = new int[Ernest.RESOLUTION_RETINA][8 + 1 + 3];
@@ -187,11 +188,13 @@ public class Ernest104Model extends ErnestModel
 			status = forward();
 
 		// Trace the environmental data
-		Object environment = m_tracer.newEvent("environment", "position", m_counter);
-		m_tracer.addSubelement(environment, "x", m_x + "");
-		m_tracer.addSubelement(environment, "y", m_y + "");
-		m_tracer.addSubelement(environment,"orientation", m_orientation + "");
-		
+		if (m_tracer != null)
+		{
+			Object environment = m_tracer.newEvent("environment", "position", m_counter);
+			m_tracer.addSubelement(environment, "x", m_x + "");
+			m_tracer.addSubelement(environment, "y", m_y + "");
+			m_tracer.addSubelement(environment,"orientation", m_orientation + "");
+		}		
 	    return status;
 	}
 
@@ -534,14 +537,6 @@ public class Ernest104Model extends ErnestModel
 				for (int j = 0; j < 3; j++)
 				{
 					somatoMapColor[i][j] = new Color(somatoMap[i][j]);
-//					if (somatoMap[i][j] == Ernest.STIMULATION_TOUCH_EMPTY.getValue())
-//						somatoMapColor[i][j] = new Color(Ernest.COLOR_TOUCH_EMPTY.getRGB());//Ernest.COLOR_TOUCH_EMPTY;
-//					if (somatoMap[i][j] == Ernest.STIMULATION_TOUCH_SOFT.getValue())
-//						somatoMapColor[i][j] = new Color(Ernest.COLOR_TOUCH_ALGA.getRGB());
-//					if (somatoMap[i][j] == Ernest.STIMULATION_TOUCH_WALL.getValue())
-//						somatoMapColor[i][j] = new Color(Ernest.COLOR_TOUCH_WALL.getRGB());
-//					if (somatoMap[i][j] == Ernest.STIMULATION_TOUCH_FISH.getValue())
-//						somatoMapColor[i][j] = new Color(Ernest.COLOR_TOUCH_FISH.getRGB());
 				}
 		}
 		
