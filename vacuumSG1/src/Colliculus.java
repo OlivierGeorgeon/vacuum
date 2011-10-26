@@ -96,9 +96,10 @@ public class Colliculus {
 		// Tactile salience points
 		int j=0;
 		int i=0;
-		while ( j<tmap.mapSizeTheta || salience ){
+		int mapSizeTheta=tmap.mapSizeTheta;
+		while ( (j<mapSizeTheta || salience) && j<2*mapSizeTheta ){
 			
-			i=j%tmap.mapSizeTheta;
+			i=j%mapSizeTheta;
 			
 			// if new salience point detected
 			if (!salience && tmap.output[i][0]>0){
@@ -134,8 +135,8 @@ public class Colliculus {
 				dSum+=(float)(tmap.output[i][3]+tmap.output[i][2])/2;
 				count++;
 				
-				int next=(j+1)%tmap.mapSizeTheta;
-				
+				int next=(j+1)%mapSizeTheta;
+
 				if (  tmap.output[next][2] > tmap.output[i][3] || tmap.output[next][3] < tmap.output[i][2] ){
 					stop=true;
 				}
@@ -155,9 +156,10 @@ public class Colliculus {
 
 		j=0;
 		i=0;
-		while ( j<vmap.mapSizeTheta || salience ){
+		mapSizeTheta=vmap.mapSizeTheta;
+		while ( (j<mapSizeTheta || salience) && j<2*mapSizeTheta ){
 			
-			i=j%vmap.mapSizeTheta;
+			i=j%mapSizeTheta;
 			
 			// if new salience point detected
 			if (!salience && vmap.output[i][0]>0){
@@ -200,7 +202,7 @@ public class Colliculus {
 			if (salience){
 				dSum+=(float)(vmap.output[i][3]+vmap.output[i][2])/2;
 				count++;
-				int next=(j+1)%vmap.mapSizeTheta;
+				int next=(j+1)%mapSizeTheta;
 				
 				if (  vmap.output[next][2] > vmap.output[i][3] || vmap.output[next][3] < vmap.output[i][2] ){
 					stop=true;
