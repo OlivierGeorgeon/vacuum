@@ -93,7 +93,7 @@ public class Colliculus {
 		boolean salience=false;
 		boolean stop=false;
 		
-		// Visual salience points
+		// Tactile salience points
 		int j=0;
 		int i=0;
 		while ( j<tmap.mapSizeTheta || salience ){
@@ -125,7 +125,7 @@ public class Colliculus {
 					else if (val==1) val=Ernest.STIMULATION_TOUCH_WALL.getValue();
 					else if (val==2) val=Ernest.STIMULATION_TOUCH_SOFT.getValue();
 					else if (val==3) val=Ernest.STIMULATION_TOUCH_FISH.getValue();
-					list.add(new Salience(val, Ernest.MODALITY_VISUAL, (float)((theta-90)*Math.PI/180), d, (float)(span*Math.PI/180) ) );
+					list.add(new Salience(val, Ernest.MODALITY_TACTILE, (float)((theta-90)*Math.PI/180), d, (float)(span*Math.PI/180) ) );
 				}
 			}
 			
@@ -145,7 +145,7 @@ public class Colliculus {
 		
 		
 		
-		// Tactile salience points
+		// Visual salience points
 		
 		salience=false;
 		stop=false;
@@ -188,7 +188,7 @@ public class Colliculus {
 					else if (val==7) val=15126272;    // 230*65536 + 207*256 +   0
 					else if (val==8) val=59041;       //   0*65536 + 230*256 + 161
 					else if (val==9) val=12117504;    // 184*65536 + 230*256 +   0
-					list.add(new Salience(val, Ernest.MODALITY_TACTILE, (float)((theta-90)*Math.PI/180), d, (float)(span*Math.PI/180) ) );
+					list.add(new Salience(val, Ernest.MODALITY_VISUAL, (float)((theta-90)*Math.PI/180), d, (float)(span*Math.PI/180) ) );
 				
 					
 					
