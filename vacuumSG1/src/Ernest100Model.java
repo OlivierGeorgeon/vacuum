@@ -144,9 +144,8 @@ public class Ernest100Model extends ErnestModel
 		m_ernest = new Ernest();
 		
 		m_sensorymotorSystem = new Visual100SensorymotorSystem();
-		m_tracer = new XMLTracer("trace.xml");
-		//m_tracer = new XMLStreamTracer("http://vm.liris.cnrs.fr:34080/abstract/Ernest-trace-player-tr/php/");
-		//m_tracer = new XMLStreamTracer("http://134.214.142.59/abstract/Ernest-trace-player-test-tr/php/");
+		//m_tracer = new XMLTracer("trace.xml");
+		m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","pDCJHmOykTgkgyZbKVtHFEtS-PujoS");
 		
 		// Initialize the Ernest === 
 		
@@ -160,13 +159,13 @@ public class Ernest100Model extends ErnestModel
 		
 		if (continuum){
 			m_ernest.addInteraction(">", " ",   20); // Move
-			m_ernest.addInteraction(">", "w", -100); // Bump 
+			//m_ernest.addInteraction(">", "w", -100); // Bump 
 			
 			m_ernest.addInteraction("^", " ",  -10); // Left toward empty
-			m_ernest.addInteraction("^", "w",  -20); // Left toward wall
+			//m_ernest.addInteraction("^", "w",  -20); // Left toward wall
 	
 			m_ernest.addInteraction("v", " ",  -10); // Right toward empty
-			m_ernest.addInteraction("v", "w",  -20); // Right toward wall
+			//m_ernest.addInteraction("v", "w",  -20); // Right toward wall
 			//m_sensorymotorSystem.addPrimitiveAct("^", true,   -50); // Left toward empty
 			//m_sensorymotorSystem.addPrimitiveAct("^", false,  -70); // Left toward wall
 
@@ -202,7 +201,8 @@ public class Ernest100Model extends ErnestModel
 	 */
 	public String stepErnest(boolean status)
 	{
-		//m_tracer.startNewEvent(m_counter);
+		if (m_tracer != null)
+			m_tracer.startNewEvent(m_counter);
 
 		// See the environment
 		int [][] matrix = new int[Ernest.RESOLUTION_RETINA][8 + 1 + 3];
@@ -246,6 +246,9 @@ public class Ernest100Model extends ErnestModel
 		// Circadian (information on day or night)
 		
 		matrix[2][8] = (isNight() ? 1 : 0);		
+		
+		// The salience list.
+		m_ernest.setSalienceList(colliculus.getSalienceList());
 
 		String intention = m_ernest.step(matrix);
 		return intention;
@@ -288,10 +291,13 @@ public class Ernest100Model extends ErnestModel
 				status = forward();
 	
 			// Trace the environmental data
-			//Object environment = m_tracer.newEvent("environment", "position", m_counter);
-			//m_tracer.addSubelement(environment, "x", m_x + "");
-			//m_tracer.addSubelement(environment, "y", m_y + "");
-			//m_tracer.addSubelement(environment,"orientation", m_orientation + "");
+			if (m_tracer != null)
+			{
+				Object environment = m_tracer.newEvent("environment", "position", m_counter);
+				m_tracer.addSubelement(environment, "x", m_x + "");
+				m_tracer.addSubelement(environment, "y", m_y + "");
+				m_tracer.addSubelement(environment,"orientation", m_orientation + "");
+			}
 		}
 		
 	    return status;
@@ -1197,144 +1203,144 @@ public class Ernest100Model extends ErnestModel
 	}
 
 	
-	public int[][] somatoMap()
-	{
-		int[][] somatoMap = new int[3][3];
-		somatoMap[1][1] = soma(m_x, m_y);
-
-		// Orientation up [0, PI/8]
-		if (m_orientationAngle < ORIENTATION_UP * Math.PI/2 / ORIENTATION_RIGHT + Math.PI/8)
-		{
-			somatoMap[0][0] = soma(m_x - 1, m_y -1);
-			somatoMap[1][0] = soma(m_x , m_y - 1);
-			somatoMap[2][0] = soma(m_x + 1, m_y - 1);
-			somatoMap[2][1] = soma(m_x + 1, m_y);
-			somatoMap[2][2] = soma(m_x + 1, m_y + 1);
-			somatoMap[1][2] = soma(m_x, m_y + 1);
-			somatoMap[0][2] = soma(m_x - 1, m_y + 1);
-			somatoMap[0][1] = soma(m_x - 1, m_y);			
-		}
-		// Orientation up right [PI/8, 3PI/8]
-		else if (m_orientationAngle < ORIENTATION_UP_RIGHT * Math.PI/2 / ORIENTATION_RIGHT + Math.PI/8)
-		{
-			somatoMap[0][1] = soma(m_x - 1, m_y -1);
-			somatoMap[0][0] = soma(m_x , m_y - 1);
-			somatoMap[1][0] = soma(m_x + 1, m_y - 1);
-			somatoMap[2][0] = soma(m_x + 1, m_y);
-			somatoMap[2][1] = soma(m_x + 1, m_y + 1);
-			somatoMap[2][2] = soma(m_x, m_y + 1);
-			somatoMap[1][2] = soma(m_x - 1, m_y + 1);
-			somatoMap[0][2] = soma(m_x - 1, m_y);			
-		}
-		
-		// Orientation right [3PI/8, 5PI/8]]
-		else if (m_orientationAngle < ORIENTATION_RIGHT * Math.PI/2 / ORIENTATION_RIGHT + Math.PI/8)
-		{
-			somatoMap[0][2] = soma(m_x - 1, m_y -1);
-			somatoMap[0][1] = soma(m_x , m_y - 1);
-			somatoMap[0][0] = soma(m_x + 1, m_y - 1);
-			somatoMap[1][0] = soma(m_x + 1, m_y);
-			somatoMap[2][0] = soma(m_x + 1, m_y + 1);
-			somatoMap[2][1] = soma(m_x, m_y + 1);
-			somatoMap[2][2] = soma(m_x - 1, m_y + 1);
-			somatoMap[1][2] = soma(m_x - 1, m_y);			
-		}
-		
-		// Orientation down right [5PI/8, 7PI/8]
-		else if (m_orientationAngle < ORIENTATION_DOWN_RIGHT * Math.PI/2 / ORIENTATION_RIGHT + Math.PI/8)
-		{
-			somatoMap[1][2] = soma(m_x - 1, m_y -1);
-			somatoMap[0][2] = soma(m_x , m_y - 1);
-			somatoMap[0][1] = soma(m_x + 1, m_y - 1);
-			somatoMap[0][0] = soma(m_x + 1, m_y);
-			somatoMap[1][0] = soma(m_x + 1, m_y + 1);
-			somatoMap[2][0] = soma(m_x, m_y + 1);
-			somatoMap[2][1] = soma(m_x - 1, m_y + 1);
-			somatoMap[2][2] = soma(m_x - 1, m_y);			
-		}
-		
-		// Orientation down [7PI/8, 9PI/8]
-		else if (m_orientationAngle < ORIENTATION_DOWN * Math.PI/2 / ORIENTATION_RIGHT + Math.PI/8)
-		{
-			somatoMap[2][2] = soma(m_x - 1, m_y -1);
-			somatoMap[1][2] = soma(m_x , m_y - 1);
-			somatoMap[0][2] = soma(m_x + 1, m_y - 1);
-			somatoMap[0][1] = soma(m_x + 1, m_y);
-			somatoMap[0][0] = soma(m_x + 1, m_y + 1);
-			somatoMap[1][0] = soma(m_x, m_y + 1);
-			somatoMap[2][0] = soma(m_x - 1, m_y + 1);
-			somatoMap[2][1] = soma(m_x - 1, m_y);			
-		}
-		
-		// Orientation down left [9PI/8, 11PI/8]
-		else if (m_orientationAngle < ORIENTATION_DOWN_LEFT * Math.PI/2 / ORIENTATION_RIGHT + Math.PI/8)
-		{
-			somatoMap[2][1] = soma(m_x - 1, m_y -1);
-			somatoMap[2][2] = soma(m_x , m_y - 1);
-			somatoMap[1][2] = soma(m_x + 1, m_y - 1);
-			somatoMap[0][2] = soma(m_x + 1, m_y);
-			somatoMap[0][1] = soma(m_x + 1, m_y + 1);
-			somatoMap[0][0] = soma(m_x, m_y + 1);
-			somatoMap[1][0] = soma(m_x - 1, m_y + 1);
-			somatoMap[2][0] = soma(m_x - 1, m_y);			
-		}
-		
-		// Orientation left [11PI/8, 13PI/8]
-		else if (m_orientationAngle < ORIENTATION_LEFT * Math.PI/2 / ORIENTATION_RIGHT + Math.PI/8)
-		{
-			somatoMap[2][0] = soma(m_x - 1, m_y -1);
-			somatoMap[2][1] = soma(m_x , m_y - 1);
-			somatoMap[2][2] = soma(m_x + 1, m_y - 1);
-			somatoMap[1][2] = soma(m_x + 1, m_y);
-			somatoMap[0][2] = soma(m_x + 1, m_y + 1);
-			somatoMap[0][1] = soma(m_x, m_y + 1);
-			somatoMap[0][0] = soma(m_x - 1, m_y + 1);
-			somatoMap[1][0] = soma(m_x - 1, m_y);			
-		}
-		
-		// Orientation up left [13PI/8, 15PI/8]
-		else if (m_orientationAngle < ORIENTATION_UP_LEFT * Math.PI/2 / ORIENTATION_RIGHT + Math.PI/8)
-		{
-			somatoMap[1][0] = soma(m_x - 1, m_y -1);
-			somatoMap[2][0] = soma(m_x , m_y - 1);
-			somatoMap[2][1] = soma(m_x + 1, m_y - 1);
-			somatoMap[2][2] = soma(m_x + 1, m_y);
-			somatoMap[1][2] = soma(m_x + 1, m_y + 1);
-			somatoMap[0][2] = soma(m_x, m_y + 1);
-			somatoMap[0][1] = soma(m_x - 1, m_y + 1);
-			somatoMap[0][0] = soma(m_x - 1, m_y);			
-		}
-		// Orientation up [15PI/8, 2PI]
-		else
-		{
-			somatoMap[0][0] = soma(m_x - 1, m_y -1);
-			somatoMap[1][0] = soma(m_x , m_y - 1);
-			somatoMap[2][0] = soma(m_x + 1, m_y - 1);
-			somatoMap[2][1] = soma(m_x + 1, m_y);
-			somatoMap[2][2] = soma(m_x + 1, m_y + 1);
-			somatoMap[1][2] = soma(m_x, m_y + 1);
-			somatoMap[0][2] = soma(m_x - 1, m_y + 1);
-			somatoMap[0][1] = soma(m_x - 1, m_y);			
-		}
-		
-		return somatoMap;
-	}
-	
-	public int soma(float m_x, float m_y)
-	{
-		int soma = 0;
-		if (m_x < 0 || m_y < 0 || m_x >= m_w || m_y >= m_h)
-			return Ernest.STIMULATION_TOUCH_WALL.getValue();
-		if (isDirty(Math.round(m_x),Math.round(m_y)))
-		{
-			if (getDirty(Math.round(m_x),Math.round(m_y)) == DIRTY)
-				soma = Ernest.STIMULATION_TOUCH_FISH.getValue();
-			else
-				soma = Ernest.STIMULATION_TOUCH_SOFT.getValue();
-		}
-		if (isWall(Math.round(m_x),Math.round(m_y))) soma = Ernest.STIMULATION_TOUCH_WALL.getValue();
-		return soma;
-	}
+//	public int[][] somatoMap()
+//	{
+//		int[][] somatoMap = new int[3][3];
+//		somatoMap[1][1] = soma(m_x, m_y);
+//
+//		// Orientation up [0, PI/8]
+//		if (m_orientationAngle < ORIENTATION_UP * Math.PI/2 / ORIENTATION_RIGHT + Math.PI/8)
+//		{
+//			somatoMap[0][0] = soma(m_x - 1, m_y -1);
+//			somatoMap[1][0] = soma(m_x , m_y - 1);
+//			somatoMap[2][0] = soma(m_x + 1, m_y - 1);
+//			somatoMap[2][1] = soma(m_x + 1, m_y);
+//			somatoMap[2][2] = soma(m_x + 1, m_y + 1);
+//			somatoMap[1][2] = soma(m_x, m_y + 1);
+//			somatoMap[0][2] = soma(m_x - 1, m_y + 1);
+//			somatoMap[0][1] = soma(m_x - 1, m_y);			
+//		}
+//		// Orientation up right [PI/8, 3PI/8]
+//		else if (m_orientationAngle < ORIENTATION_UP_RIGHT * Math.PI/2 / ORIENTATION_RIGHT + Math.PI/8)
+//		{
+//			somatoMap[0][1] = soma(m_x - 1, m_y -1);
+//			somatoMap[0][0] = soma(m_x , m_y - 1);
+//			somatoMap[1][0] = soma(m_x + 1, m_y - 1);
+//			somatoMap[2][0] = soma(m_x + 1, m_y);
+//			somatoMap[2][1] = soma(m_x + 1, m_y + 1);
+//			somatoMap[2][2] = soma(m_x, m_y + 1);
+//			somatoMap[1][2] = soma(m_x - 1, m_y + 1);
+//			somatoMap[0][2] = soma(m_x - 1, m_y);			
+//		}
+//		
+//		// Orientation right [3PI/8, 5PI/8]]
+//		else if (m_orientationAngle < ORIENTATION_RIGHT * Math.PI/2 / ORIENTATION_RIGHT + Math.PI/8)
+//		{
+//			somatoMap[0][2] = soma(m_x - 1, m_y -1);
+//			somatoMap[0][1] = soma(m_x , m_y - 1);
+//			somatoMap[0][0] = soma(m_x + 1, m_y - 1);
+//			somatoMap[1][0] = soma(m_x + 1, m_y);
+//			somatoMap[2][0] = soma(m_x + 1, m_y + 1);
+//			somatoMap[2][1] = soma(m_x, m_y + 1);
+//			somatoMap[2][2] = soma(m_x - 1, m_y + 1);
+//			somatoMap[1][2] = soma(m_x - 1, m_y);			
+//		}
+//		
+//		// Orientation down right [5PI/8, 7PI/8]
+//		else if (m_orientationAngle < ORIENTATION_DOWN_RIGHT * Math.PI/2 / ORIENTATION_RIGHT + Math.PI/8)
+//		{
+//			somatoMap[1][2] = soma(m_x - 1, m_y -1);
+//			somatoMap[0][2] = soma(m_x , m_y - 1);
+//			somatoMap[0][1] = soma(m_x + 1, m_y - 1);
+//			somatoMap[0][0] = soma(m_x + 1, m_y);
+//			somatoMap[1][0] = soma(m_x + 1, m_y + 1);
+//			somatoMap[2][0] = soma(m_x, m_y + 1);
+//			somatoMap[2][1] = soma(m_x - 1, m_y + 1);
+//			somatoMap[2][2] = soma(m_x - 1, m_y);			
+//		}
+//		
+//		// Orientation down [7PI/8, 9PI/8]
+//		else if (m_orientationAngle < ORIENTATION_DOWN * Math.PI/2 / ORIENTATION_RIGHT + Math.PI/8)
+//		{
+//			somatoMap[2][2] = soma(m_x - 1, m_y -1);
+//			somatoMap[1][2] = soma(m_x , m_y - 1);
+//			somatoMap[0][2] = soma(m_x + 1, m_y - 1);
+//			somatoMap[0][1] = soma(m_x + 1, m_y);
+//			somatoMap[0][0] = soma(m_x + 1, m_y + 1);
+//			somatoMap[1][0] = soma(m_x, m_y + 1);
+//			somatoMap[2][0] = soma(m_x - 1, m_y + 1);
+//			somatoMap[2][1] = soma(m_x - 1, m_y);			
+//		}
+//		
+//		// Orientation down left [9PI/8, 11PI/8]
+//		else if (m_orientationAngle < ORIENTATION_DOWN_LEFT * Math.PI/2 / ORIENTATION_RIGHT + Math.PI/8)
+//		{
+//			somatoMap[2][1] = soma(m_x - 1, m_y -1);
+//			somatoMap[2][2] = soma(m_x , m_y - 1);
+//			somatoMap[1][2] = soma(m_x + 1, m_y - 1);
+//			somatoMap[0][2] = soma(m_x + 1, m_y);
+//			somatoMap[0][1] = soma(m_x + 1, m_y + 1);
+//			somatoMap[0][0] = soma(m_x, m_y + 1);
+//			somatoMap[1][0] = soma(m_x - 1, m_y + 1);
+//			somatoMap[2][0] = soma(m_x - 1, m_y);			
+//		}
+//		
+//		// Orientation left [11PI/8, 13PI/8]
+//		else if (m_orientationAngle < ORIENTATION_LEFT * Math.PI/2 / ORIENTATION_RIGHT + Math.PI/8)
+//		{
+//			somatoMap[2][0] = soma(m_x - 1, m_y -1);
+//			somatoMap[2][1] = soma(m_x , m_y - 1);
+//			somatoMap[2][2] = soma(m_x + 1, m_y - 1);
+//			somatoMap[1][2] = soma(m_x + 1, m_y);
+//			somatoMap[0][2] = soma(m_x + 1, m_y + 1);
+//			somatoMap[0][1] = soma(m_x, m_y + 1);
+//			somatoMap[0][0] = soma(m_x - 1, m_y + 1);
+//			somatoMap[1][0] = soma(m_x - 1, m_y);			
+//		}
+//		
+//		// Orientation up left [13PI/8, 15PI/8]
+//		else if (m_orientationAngle < ORIENTATION_UP_LEFT * Math.PI/2 / ORIENTATION_RIGHT + Math.PI/8)
+//		{
+//			somatoMap[1][0] = soma(m_x - 1, m_y -1);
+//			somatoMap[2][0] = soma(m_x , m_y - 1);
+//			somatoMap[2][1] = soma(m_x + 1, m_y - 1);
+//			somatoMap[2][2] = soma(m_x + 1, m_y);
+//			somatoMap[1][2] = soma(m_x + 1, m_y + 1);
+//			somatoMap[0][2] = soma(m_x, m_y + 1);
+//			somatoMap[0][1] = soma(m_x - 1, m_y + 1);
+//			somatoMap[0][0] = soma(m_x - 1, m_y);			
+//		}
+//		// Orientation up [15PI/8, 2PI]
+//		else
+//		{
+//			somatoMap[0][0] = soma(m_x - 1, m_y -1);
+//			somatoMap[1][0] = soma(m_x , m_y - 1);
+//			somatoMap[2][0] = soma(m_x + 1, m_y - 1);
+//			somatoMap[2][1] = soma(m_x + 1, m_y);
+//			somatoMap[2][2] = soma(m_x + 1, m_y + 1);
+//			somatoMap[1][2] = soma(m_x, m_y + 1);
+//			somatoMap[0][2] = soma(m_x - 1, m_y + 1);
+//			somatoMap[0][1] = soma(m_x - 1, m_y);			
+//		}
+//		
+//		return somatoMap;
+//	}
+//	
+//	public int soma(float m_x, float m_y)
+//	{
+//		int soma = 0;
+//		if (m_x < 0 || m_y < 0 || m_x >= m_w || m_y >= m_h)
+//			return Ernest.STIMULATION_TOUCH_WALL.getValue();
+//		if (isDirty(Math.round(m_x),Math.round(m_y)))
+//		{
+//			if (getDirty(Math.round(m_x),Math.round(m_y)) == DIRTY)
+//				soma = Ernest.STIMULATION_TOUCH_FISH.getValue();
+//			else
+//				soma = Ernest.STIMULATION_TOUCH_SOFT.getValue();
+//		}
+//		if (isWall(Math.round(m_x),Math.round(m_y))) soma = Ernest.STIMULATION_TOUCH_WALL.getValue();
+//		return soma;
+//	}
 	
 	/**
 	 * Paint Ernest as a shark.

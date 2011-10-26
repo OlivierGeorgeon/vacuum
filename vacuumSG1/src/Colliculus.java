@@ -1,6 +1,8 @@
 import java.awt.Color;
 import java.util.ArrayList;
 
+import ernest.Ernest;
+
 import spas.ISalience;
 import spas.Salience;
 
@@ -91,7 +93,7 @@ public class Colliculus {
 		boolean salience=false;
 		boolean stop=false;
 		
-		// tactile salience points
+		// Visual salience points
 		int j=0;
 		int i=0;
 		while ( j<tmap.mapSizeTheta || salience ){
@@ -128,7 +130,7 @@ public class Colliculus {
 					else if (val==7) val=15126272;    // 230*65536 + 207*256 +   0
 					else if (val==8) val=59041;       //   0*65536 + 230*256 + 161
 					else if (val==9) val=12117504;    // 184*65536 + 230*256 +   0
-					list.add(new Salience(val, 0, (float)((theta-90)*Math.PI/180), d, (float)(span*Math.PI/180) ) );
+					list.add(new Salience(val, Ernest.MODALITY_VISUAL, (float)((theta-90)*Math.PI/180), d, (float)(span*Math.PI/180) ) );
 				}
 			}
 			
@@ -148,7 +150,7 @@ public class Colliculus {
 		
 		
 		
-		// visual salience points
+		// Tactile salience points
 		
 		salience=false;
 		stop=false;
@@ -182,7 +184,7 @@ public class Colliculus {
 				count=0;
 				// create Salience
 				if (thetaMin>0){
-					list.add(new Salience(val, 1, (float)((theta-90)*Math.PI/180), d, (float)(span*Math.PI/180) ) );
+					list.add(new Salience(val, Ernest.MODALITY_TACTILE, (float)((theta-90)*Math.PI/180), d, (float)(span*Math.PI/180) ) );
 				}
 			}
 			
