@@ -127,9 +127,9 @@ public class TactileMap {
 		attraction=0.001;
 		
 		
-		chargeMap0=new float[mapSize][mapSize][3];
-		chargeMap1=new float[mapSize][mapSize][3];
-		chargeMapP=new float[mapSizeTheta][mapSizeR][3];
+		chargeMap0=new float[mapSize][mapSize][4];
+		chargeMap1=new float[mapSize][mapSize][4];
+		chargeMapP=new float[mapSizeTheta][mapSizeR][4];
 		maximumMap=new int[mapSizeTheta][mapSizeR];
 		output=new int[mapSizeTheta][4];
 		
@@ -189,10 +189,12 @@ public class TactileMap {
 				chargeMap0[i][j][0]=0;
 				chargeMap0[i][j][1]=0;
 				chargeMap0[i][j][2]=0;
+				chargeMap0[i][j][3]=0;
 				
 				chargeMap1[i][j][0]=0;
 				chargeMap1[i][j][1]=0;
 				chargeMap1[i][j][2]=0;
+				chargeMap1[i][j][3]=0;
 				potentialTestMap[i][j]=false;
 				chargeTestMap[i][j]=false;
 				
@@ -207,6 +209,7 @@ public class TactileMap {
 				chargeMapP[i][j][0]=0;
 				chargeMapP[i][j][1]=0;
 				chargeMapP[i][j][2]=0;
+				chargeMapP[i][j][3]=0;
 				
 				polar2cartesianX[i][j]=((double)j*Math.cos( ((double)(i*2+90))*Math.PI/180))+mapSize/2;
 				polar2cartesianY[i][j]=((double)j*Math.sin( ((double)(i*2+90))*Math.PI/180))+mapSize/2;
@@ -326,6 +329,7 @@ public class TactileMap {
 				chargeMap0[i][j][0]=chargeMap1[i][j][0];
 				chargeMap0[i][j][1]=chargeMap1[i][j][1];
 				chargeMap0[i][j][2]=chargeMap1[i][j][2];
+				chargeMap0[i][j][3]=chargeMap1[i][j][3];
 				chargeTestMap[i][j]=false;
 			}
 		}
@@ -383,21 +387,32 @@ public class TactileMap {
 					
 					if (value>=0){
 						if (value>0){
-							if (m_tactileObject[i2].equals(new Color(0,128,0))){
+							if (   m_tactileObject[i2].equals(new Color(0,128,  0))
+								|| m_tactileObject[i2].equals(new Color(0,230, 92))
+								|| m_tactileObject[i2].equals(new Color(0,230,161)) ){
+								chargeMap1[ix][jy][0]=0;
 								chargeMap1[ix][jy][1]=1;
 								chargeMap1[ix][jy][2]=0;
-								chargeMap1[ix][jy][0]=0;
+								chargeMap1[ix][jy][3]=0;
 							}
-							else{
+							else if (!m_tactileObject[i2].equals(new Color(150,128,  255)) ){
+								chargeMap1[ix][jy][0]=0;
 								chargeMap1[ix][jy][1]=0;
 								chargeMap1[ix][jy][2]=1;
+								chargeMap1[ix][jy][3]=0;
+							}
+							else{
 								chargeMap1[ix][jy][0]=0;
+								chargeMap1[ix][jy][1]=0;
+								chargeMap1[ix][jy][2]=0;
+								chargeMap1[ix][jy][3]=1;
 							}
 						}
 						else{
 							chargeMap1[ix][jy][0]=1;
 							chargeMap1[ix][jy][1]=0;
 							chargeMap1[ix][jy][2]=0;
+							chargeMap1[ix][jy][3]=0;
 						}
 						
 						
@@ -538,6 +553,7 @@ public class TactileMap {
 		float chargeSum0=0;
 		float chargeSum1=0;
 		float chargeSum2=0;
+		float chargeSum3=0;
 		int ix,jy;
 		int ixi2,jyj2;
 		double flowX,flowY;
@@ -585,6 +601,7 @@ public class TactileMap {
 								chargeSum0+=chargeMap0[ixi2][jyj2][0]*(1-d);
 								chargeSum1+=chargeMap0[ixi2][jyj2][1]*(1-d);
 								chargeSum2+=chargeMap0[ixi2][jyj2][2]*(1-d);
+								chargeSum3+=chargeMap0[ixi2][jyj2][3]*(1-d);
 								countD+=(1-d);
 							}
 							else{
@@ -597,10 +614,12 @@ public class TactileMap {
 						chargeSum0=chargeSum0/countD;
 						chargeSum1=chargeSum1/countD;
 						chargeSum2=chargeSum2/countD;
+						chargeSum3=chargeSum3/countD;
 
 						chargeMap1[i][j][0]=(float) Math.min(1,chargeSum0) ;
 						chargeMap1[i][j][1]=(float) Math.min(1,chargeSum1) ;
 						chargeMap1[i][j][2]=(float) Math.min(1,chargeSum2) ;
+						chargeMap1[i][j][3]=(float) Math.min(1,chargeSum3) ;
 					}
 				}
 			}
@@ -610,7 +629,7 @@ public class TactileMap {
 		// generate polar map
 		////////////////////////////////////////////////////////////////////////
 		
-		double Sum0,Sum1,Sum2;
+		double Sum0,Sum1,Sum2,Sum3;
 		double px,py;
 		for (int i=0;i<mapSizeTheta;i++){
 			for (int j=0;j<mapSizeR;j++){
@@ -626,6 +645,7 @@ public class TactileMap {
 					Sum0=0;
 					Sum1=0;
 					Sum2=0;
+					Sum3=0;
 					countD=0;
 					for (int i2=-1;i2<=1;i2++){
 						for (int j2=-1;j2<=1;j2++){
@@ -638,6 +658,7 @@ public class TactileMap {
 								Sum0+=chargeMap0[ixi2][jyj2][0]*(1-d);
 								Sum1+=chargeMap0[ixi2][jyj2][1]*(1-d);
 								Sum2+=chargeMap0[ixi2][jyj2][2]*(1-d);
+								Sum3+=chargeMap0[ixi2][jyj2][3]*(1-d);
 								countD+=(1-d);
 							}
 						}
@@ -646,6 +667,7 @@ public class TactileMap {
 					chargeMapP[i][j][0]=Math.min(1,(float)(Sum0/countD));
 					chargeMapP[i][j][1]=Math.min(1,(float)(Sum1/countD));
 					chargeMapP[i][j][2]=Math.min(1,(float)(Sum2/countD));
+					chargeMapP[i][j][3]=Math.min(1,(float)(Sum3/countD));
 				}
 			}
 		}
@@ -699,7 +721,7 @@ public class TactileMap {
 			j=0;
 			test=false;
 			while (!test && j<mapSizeR-1){
-				for (int k=1;k<3;k++){
+				for (int k=1;k<4;k++){
 					if (    chargeMapP[i][j][k]>=0.99 
 						|| (chargeMapP[i][j][k]>=0.1  && chargeMapP[i][j+1][k]<chargeMapP[i][j][k]) ){
 						test=true;

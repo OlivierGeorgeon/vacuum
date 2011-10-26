@@ -145,7 +145,7 @@ public class Ernest100Model extends ErnestModel
 		
 		m_sensorymotorSystem = new Visual100SensorymotorSystem();
 		//m_tracer = new XMLTracer("trace.xml");
-		m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","pDCJHmOykTgkgyZbKVtHFEtS-PujoS");
+		//m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","pDCJHmOykTgkgyZbKVtHFEtS-PujoS");
 		
 		// Initialize the Ernest === 
 		

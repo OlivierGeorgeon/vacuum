@@ -27,12 +27,22 @@ public class ColliculusPanel extends JPanel{
 		float x,y;
 
 		int offsetX,offsetY;
+		offsetX=160;
+		offsetY=170;
+		g.setColor(Color.black);
+		g.drawString("tactile cartesian", offsetX-colliculus.tmap.mapSize/2*width+2,
+				                          offsetY-colliculus.tmap.mapSize/2*width-2);
+		offsetX=160;
+		offsetY=500;
+		g.setColor(Color.black);
+		g.drawString("visual cartesian", offsetX-colliculus.tmap.mapSize/2*width+2,
+				                          offsetY-colliculus.tmap.mapSize/2*width-2);
 		for (int i=0;i<100;i++){
 			for (int j=0;j<100;j++){
 				//--------------------------------------------------------------
 				// tactile colliculus in Cartesian referential
-				offsetX=150;
-				offsetY=150;
+				offsetX=160;
+				offsetY=170;
 				g.setColor(new Color(Math.min(1,colliculus.tmap.chargeMap1[i][j][2]),
 						             Math.min(1,colliculus.tmap.chargeMap1[i][j][1]),
 						             Math.min(1,colliculus.tmap.chargeMap1[i][j][0])) );
@@ -40,10 +50,10 @@ public class ColliculusPanel extends JPanel{
 				g.fillRect(offsetX-colliculus.tmap.mapSize/2*width + i*width,
 						   offsetY-colliculus.tmap.mapSize/2*width + j*width,
 						   width, width);
-				
+				/* */
 				//---------------------------------------------------------------
 				// visual colliculus in Cartesian referential
-				offsetX=150;
+				offsetX=160;
 				offsetY=500;
 				float max=0;
 				for (int k=2;k<10;k++){
@@ -74,12 +84,22 @@ public class ColliculusPanel extends JPanel{
 		double Sum0,Sum1,countD,d;
 		float max=0;
 		int red=0,green,blue;
+		offsetX=500;
+		offsetY=170;
+		g.setColor(Color.black);
+		g.drawString("tactile polar", offsetX-colliculus.tmap.mapSize/2*width+2,
+				                          offsetY-colliculus.tmap.mapSize/2*width-2);
+		offsetX=500;
+		offsetY=500;
+		g.setColor(Color.black);
+		g.drawString("visual polar", offsetX-colliculus.tmap.mapSize/2*width+2,
+				                          offsetY-colliculus.tmap.mapSize/2*width-2);
 		for (int i=0;i<180;i++){
 			for (int j=0;j<100;j++){
 				//----------------------------------------------------------------
 				// tactile charge map in Polar referential
 				offsetX=500;
-				offsetY=150;
+				offsetY=170;
 				g.setColor(new Color( Math.min(1,colliculus.tmap.chargeMapP[i][j][2]),
 									  Math.min(1,colliculus.tmap.chargeMapP[i][j][1]),
 									  Math.min(1,colliculus.tmap.chargeMapP[i][j][0])) );
