@@ -1,12 +1,12 @@
-
-
-
 import java.awt.Graphics;
 import java.awt.Color;
-
-
 import javax.swing.JPanel;
- 
+
+
+/**
+ * Panel used to display environment on the point of view of the agent
+ * @author simon
+ */
 public class EyeDisplay extends JPanel {
  
 		/**
@@ -31,6 +31,12 @@ public class EyeDisplay extends JPanel {
         	map=m;
         }
         
+        /**
+         * update the environment characteristics
+         * @param r    Distance vector
+         * @param cm   Color vector
+         * @param cor  Position of the corners of squares
+         */
         public void updateRetine(double[] r,Color[] cm,int[] cor){
         	retine=r;
         	colorMap=cm;
@@ -38,8 +44,6 @@ public class EyeDisplay extends JPanel {
         }
 	
         public void paintComponent(Graphics g){
-
-        		
         	if (view){
         		g.setColor(Color.BLUE);
             	g.fillRect(0,0,720,150);

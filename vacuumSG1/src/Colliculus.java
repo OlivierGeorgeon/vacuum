@@ -6,7 +6,10 @@ import spas.Salience;
 
 
 
-
+/**
+ * a global colliculus that return salience points of the immediate environment.
+ * @author simon
+ */
 public class Colliculus {
 	
 	public TactileMap tmap;
@@ -33,7 +36,19 @@ public class Colliculus {
 
 	}
 	
-	public void update(double[] r,Color[] c,double[] rm,Color[] cm,int[] corners,int action,float speed,double[] r3){
+	/**
+	 * set environment configuration in polar referential to be "read" by sensors
+	 * of partial colliculus.
+	 * the parameters r, c, rm and cm are given by the rendu function of Ernest100Model and
+	 * give information given by the 1 dimension retina
+	 * @param r       Vector that give the distance of objects around the agent for each theta
+	 * @param c       Colors of objects around the agent 
+	 * @param rm      Vector that give distances in front of the agent
+	 * @param cm      Colors of objects in front of the agent
+	 * @param action  Current action performed by the agent
+	 * @param speed   Value of the action
+	 */
+	public void update(double[] r,Color[] c,double[] rm,Color[] cm,int action,float speed){
 		
 		// add new coefficient set
 		if (Rotation.size()<action+1){
@@ -44,20 +59,24 @@ public class Colliculus {
 			}
 		}
 		
-		vmap.seeEnvironment(rm, cm, action, speed);
-		vmap.coefficients(rm, cm, action, speed);
+		vmap.seeEnvironment(rm, cm);
+		vmap.coefficients(action, speed);
 		TranslationX=vmap.mTranslationX;
 		TranslationY=vmap.mTranslationY;
 		Rotation    =vmap.mRotation;
 		vmap.moveCharges(TranslationX.get(action), TranslationY.get(action), Rotation.get(action), speed);
 		
-		tmap.touchEnvironment(r, c, action, speed);
-		//tmap.coefficients(r, c, action, speed);
+		tmap.touchEnvironment(r, c);
+		//tmap.coefficients(action, speed);
 		tmap.moveCharges(-TranslationX.get(action), -TranslationY.get(action), -Rotation.get(action), speed);
 
 		
 	}
 	
+	/**
+	 * get the list of salience points around the agent
+	 * @return the list of salience points
+	 */
 	public  ArrayList<ISalience> getSalienceList(){
 		ArrayList<ISalience> list;
 		list=new  ArrayList<ISalience>();
@@ -179,14 +198,9 @@ public class Colliculus {
 			}
 			j++;
 		}
-		
-		
-		
-		
+
 		//liste=(ArrayList<ISalience>) list.clone();
 
-
-		
 		return list;
 	}
 

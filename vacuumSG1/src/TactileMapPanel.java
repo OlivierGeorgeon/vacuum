@@ -3,7 +3,10 @@ import java.awt.Graphics;
 
 import javax.swing.JPanel;
 
-
+/**
+ * Panel used to display several information on the tactile colliculus
+ * @author simon
+ */
 public class TactileMapPanel extends JPanel{
 
 	/**

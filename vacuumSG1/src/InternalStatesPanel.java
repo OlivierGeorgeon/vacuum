@@ -10,7 +10,10 @@ import javax.imageio.ImageIO;
 import javax.imageio.stream.FileImageOutputStream;
 import javax.swing.JPanel;
 
-
+/**
+ * Panel used to display Action matrix values
+ * @author simon
+ */
 public class InternalStatesPanel extends JPanel{
 
 	private ArrayList<Action> actList;
@@ -21,7 +24,10 @@ public class InternalStatesPanel extends JPanel{
 	}
 
 	
-	
+	/**
+	 * draw matrix for each action and objects
+	 * @param g Graphic object
+	 */
 	public void draw2D(Graphics g){
 		
 		int xoffset=102;
@@ -88,7 +94,18 @@ public class InternalStatesPanel extends JPanel{
 	
 	
 	
-	/////////////////////////////////////////////
+	/**
+	 * draw two matrix, chosen by the user, in 3 dimensions
+	 * @param g         Graphic object
+	 * @param act1		act of the first matrix
+	 * @param obj1		object of the first matrix
+	 * @param input1	input value of the first matrix
+	 * @param output1	output value of the first matrix
+	 * @param act2		act of the second matrix
+	 * @param obj2		object of the second matrix
+	 * @param input2	input value of the second matrix
+	 * @param output2	output value of the second matrix
+	 */
 	public void draw3D(Graphics g,Action act1,int obj1,int input1,int output1,
                                   Action act2,int obj2,int input2,int output2){
 		

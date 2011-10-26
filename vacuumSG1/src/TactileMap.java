@@ -1,7 +1,10 @@
 import java.awt.Color;
 import java.util.ArrayList;
 
-
+/**
+ * tactile colliculus
+ * @author simon
+ */
 public class TactileMap {
 
 	public float[] m_tactilePressure;               // value of each sensor neurons
@@ -94,9 +97,9 @@ public class TactileMap {
 	}
 	
 
-	//*************************************************************************
-	// initialisation
-	//*************************************************************************
+	/**
+	 * initialization of parameters
+	 */
 	private void initialize(){
 		mapSize=100;
 		mapSizeTheta=180;
@@ -213,10 +216,10 @@ public class TactileMap {
 		counter=0;
 	}
 	
-	//*********************************************************************
-	// set sensor values
-	//*********************************************************************
-	public void touchEnvironment(double[] r,Color[] c, int act,float speed){
+	/**
+	 * read sensor values, map sensors and fill the potential map
+	 */
+	public void touchEnvironment(double[] r,Color[] c){
 		
 		//////////////////////////////////////////////////////
 		// save previous values
@@ -408,12 +411,14 @@ public class TactileMap {
 	}
 	
 	
-	
-	
-	//********************************************************************
-	// compute rotation and translation coefficients
-	//********************************************************************
-	public void coefficients(double[] r,Color[] c, int act,float speed){
+
+
+	/**
+	 * compute rotation and translation coefficients
+	 * @param act	actual action performed by the agent
+	 * @param speed	value of the action
+	 */
+	public void coefficients(int act,float speed){
 		
 		///////////////////////////////////////////////////////////////
         // add new flow map
@@ -514,10 +519,14 @@ public class TactileMap {
 	}
 	
 	
-	
-	//*********************************************************************
-	// move "charges" on the charge map and generate polar charge map
-	//*********************************************************************
+
+	/**
+	 * move "charges" on the charge map and generate polar charge map
+	 * @param translationX	Average translation component on X  axis, given by the global colliculus
+	 * @param translationY	Average translation component on Y  axis, given by the global colliculus
+	 * @param rotation		Average rotation value, given by the global colliculus
+	 * @param speed			Value of the current action
+	 */
 	public void moveCharges(double translationX,double translationY,double rotation,float speed){
 		////////////////////////////////////////////////////////////////////////
 		// move charges
@@ -982,6 +991,9 @@ public class TactileMap {
 	}*/
 
 
+	/**
+	 * read sensors when distance sensor are divided around Ernest
+	 */
 	public void senseAround(double[] r,Color[] c){
 		float distance,distance2;
 		int angle=360/resolution;
@@ -1081,7 +1093,9 @@ public class TactileMap {
 		}
 	}
 	
-	// normalize position and angle of the neuron network
+	/**
+	 * normalize position and angle of the global sensor network
+	 */
 	public void normalize(){
 		float mx=0;
 		float my=0;
