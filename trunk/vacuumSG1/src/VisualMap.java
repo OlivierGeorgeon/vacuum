@@ -224,7 +224,7 @@ public class VisualMap {
 				r0=cartesian2polarR[i][j];
 				
 				if (j-mapSize/2<=0){
-					theta0=cartesian2polarT[i][j];;
+					theta0=cartesian2polarT[i][j];
 					
 					int x2=(int) Math.round(r0);
 					int y2=(int) Math.round(theta0);
@@ -346,7 +346,7 @@ public class VisualMap {
 		int l=1;
 		boolean test1,test2;
 		int iml,ipl,jml,jpl;
-		for (int i=45+l;i<135-l;i++){
+		for (int i=l;i<180-l;i++){
 			for (int j=l;j<40;j++){
 				test1=true;
 				test2=true;

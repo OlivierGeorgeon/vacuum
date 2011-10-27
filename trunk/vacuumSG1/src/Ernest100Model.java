@@ -75,7 +75,7 @@ public class Ernest100Model extends ErnestModel
 	public Color frontColor;
 	
 	public boolean tempo=true;
-	public boolean continuum=true;
+	public boolean continuum=false;
 	
 	/**
 	 * Initialize the agent in the grid
@@ -334,12 +334,15 @@ public class Ernest100Model extends ErnestModel
 			m_Ir=-orientation;
 		}
 		else{
-			float rand= (float) (Math.random()*20-10);
-			m_Ir=-45+rand;
+			//float rand= (float) (Math.random()*20-10);
+			//m_Ir=-45+rand;
+			
+			m_Ir = -45*5;
+			m_v = 0;
 		}
 		
-		lastAction=1;
-		return impulse(1);
+		lastAction=ACTION_LEFT;
+		return impulse(ACTION_LEFT);
 	}
 	
 	/**
@@ -355,12 +358,15 @@ public class Ernest100Model extends ErnestModel
 			m_Ir=+orientation;
 		}
 		else{
-			float rand= (float) (Math.random()*20-10);
-			m_Ir=45+rand;
+			//float rand= (float) (Math.random()*20-10);
+			//m_Ir=45+rand;
+			
+			m_Ir = 45*5;
+			m_v = 0;
 		}
 		
-		lastAction=2;
-		return impulse(2);
+		lastAction=ACTION_RIGHT;
+		return impulse(ACTION_RIGHT);
 	}
 	
 	/**
@@ -374,18 +380,23 @@ public class Ernest100Model extends ErnestModel
 			m_If=(float) ((m_actionList.get(0)).selectOutput(distance,frontColor)+0.1);
 		}
 		else{
-			float rand= (float) (Math.random()-0.5);
-			m_If=1+rand;
+			//float rand= (float) (Math.random()-0.5);
+			//m_If=1+rand;
+			
+			m_If=1.5f; //1.5f
+			m_theta = 0;
 		}
 		
-		lastAction=0;
-		return impulse(0);
+		lastAction=ACTION_FORWARD;
+		return impulse(ACTION_FORWARD);
 	}
 
 	
-	////////////////////////////////////////////////////
-	//
-	////////////////////////////////////////////////////
+	/**
+	 * move Ernest with an impulsion
+	 * @param act Action to perform
+	 * @return result of the interaction
+	 */
 	public boolean impulse(int act){
 		
 		boolean statusL=true;
@@ -406,7 +417,7 @@ public class Ernest100Model extends ErnestModel
 		
 		float dist=0;
 		float a=0;
-		float orientation=Math.round(m_orientation);
+		float orientation=(m_orientation);
 		float previousDistance=distance;
 		Color previousColor=frontColor;
 		
@@ -421,8 +432,8 @@ public class Ernest100Model extends ErnestModel
 			vrmin=(float) 0.1;
 		}
 		else{
-			vlmin=0;
-			vrmin=0;
+			vlmin=(float) 0.1;
+			vrmin=(float) 0.1;
 		}
 		
 		
@@ -437,10 +448,9 @@ public class Ernest100Model extends ErnestModel
 			}
 			else 
 				if (continuum) m_v-= 0.01*m_v;
-				else if (i>0) i--;
-				     else m_v=0;
+				else m_v-= 0.02*m_v;
 			
-			if (m_v<=0.5) m_v=0;
+			if (m_v<=0.1) m_v=0;
 			
 			// set angular impulsion
 			if (m_Ir!=0){
@@ -449,10 +459,9 @@ public class Ernest100Model extends ErnestModel
 			}
 			else 
 				if (continuum) m_theta-= 0.1*m_theta;
-				else if (j>0) j--;
-				     else m_theta-=0;
+				else m_theta-= 0.1*m_theta;
 			
-			if (Math.abs(m_theta)<=0.1) m_theta=0;
+			//if (Math.abs(m_theta)<=10) m_theta=0;
 			
 	// compute new position
 			
@@ -460,7 +469,7 @@ public class Ernest100Model extends ErnestModel
 			double d;
 			if (statusL){
 				if (continuum) step=m_v/300;
-				else           step=m_v/10;
+				else           step=m_v/100;
 				
 				double dx= step*Math.sin(m_orientationAngle);
 				double dy=-step*Math.cos(m_orientationAngle);
@@ -469,6 +478,8 @@ public class Ernest100Model extends ErnestModel
 				dist+=step;
 				m_x+=dx;
 				m_y+=dy;
+				mPosition.x = m_x;
+				mPosition.y = (float) m_h - m_y;
 			}
 			
 			// for angular movements
@@ -476,12 +487,15 @@ public class Ernest100Model extends ErnestModel
 				orientation+=m_theta/40;
 				a+=m_theta/40;
 			}
-			else m_orientation+=m_theta/9;
+			else orientation+=m_theta/50;
 			if (orientation < 0)   orientation +=360;
 			if (orientation >=360) orientation -=360;
-			
+        
 			m_orientation=Math.round(orientation);
 			m_orientationAngle =  m_orientation * Math.PI/2 / ORIENTATION_RIGHT;
+
+			mOrientation.z = (float) (Math.PI/2 - m_orientationAngle);
+			
 			
 			
 	// compute state
@@ -560,8 +574,7 @@ public class Ernest100Model extends ErnestModel
 				status5=false;
 			}
 			if (tempo){
-				
-				
+
 				m_env.repaint();
 				//m_int.repaint();
 				//sleep((int)(1));
