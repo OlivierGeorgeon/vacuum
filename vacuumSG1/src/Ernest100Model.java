@@ -75,7 +75,8 @@ public class Ernest100Model extends ErnestModel
 	public Color frontColor;
 	
 	public boolean tempo=true;
-	public boolean continuum=false;
+	public boolean continuum = false;   // Use fixed impulsion values. 
+	//public boolean continuum = true; // Compute the impulsion values.
 	
 	/**
 	 * Initialize the agent in the grid
@@ -145,7 +146,7 @@ public class Ernest100Model extends ErnestModel
 		
 		m_sensorymotorSystem = new Visual100SensorymotorSystem();
 		//m_tracer = new XMLTracer("trace.xml");
-		//m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","pDCJHmOykTgkgyZbKVtHFEtS-PujoS");
+		m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","pDCJHmOykTgkgyZbKVtHFEtS-PujoS");
 		
 		// Initialize the Ernest === 
 		
@@ -173,13 +174,19 @@ public class Ernest100Model extends ErnestModel
 			//m_sensorymotorSystem.addPrimitiveAct("v", false,  -70); // Right toward wall
 		}
 		else{
-			m_sensorymotorSystem.addPrimitiveAct(">", true,   100); // Move
-			m_sensorymotorSystem.addPrimitiveAct(">", false, -100); // Bump 
-			m_sensorymotorSystem.addPrimitiveAct("^", true,   -10); // Left toward empty
-			m_sensorymotorSystem.addPrimitiveAct("^", false,  -20); // Left toward wall
+			m_ernest.addInteraction(">", " ",   20); // Move
+			
+			m_ernest.addInteraction("^", " ",  -10); // Left toward empty
+	
+			m_ernest.addInteraction("v", " ",  -10); // Right toward empty
 
-			m_sensorymotorSystem.addPrimitiveAct("v", true,   -10); // Right toward empty
-			m_sensorymotorSystem.addPrimitiveAct("v", false,  -20); // Right toward wall
+//			m_sensorymotorSystem.addPrimitiveAct(">", true,   100); // Move
+//			m_sensorymotorSystem.addPrimitiveAct(">", false, -100); // Bump 
+//			m_sensorymotorSystem.addPrimitiveAct("^", true,   -10); // Left toward empty
+//			m_sensorymotorSystem.addPrimitiveAct("^", false,  -20); // Left toward wall
+//
+//			m_sensorymotorSystem.addPrimitiveAct("v", true,   -10); // Right toward empty
+//			m_sensorymotorSystem.addPrimitiveAct("v", false,  -20); // Right toward wall
 		}
 		System.out.println("Ernest initialized") ;
 	}
