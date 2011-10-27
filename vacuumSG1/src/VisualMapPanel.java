@@ -25,11 +25,11 @@ public class VisualMapPanel extends JPanel{
 		
 		int offsetX,offsetY;
 		
-		for (int i=0;i<100;i+=2){
-			for (int j=0;j<50;j+=2){
+		for (int i=0;i<180;i++){
+			for (int j=0;j<70;j++){
 				// draw charge map
 				g.setColor(new Color(Math.min(1,tmap.potentialMap[i][j]),1-Math.min(1,tmap.potentialMap[i][j]),0));
-				g.fillRect(50+ i*width, 50+ j*width, width*2, width*2);
+				g.fillRect(10+ i*width, 10+ (70-j)*width, width*2, width*2);
 			}
 		}
 		
