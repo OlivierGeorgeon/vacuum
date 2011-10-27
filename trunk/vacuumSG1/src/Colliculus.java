@@ -35,6 +35,18 @@ public class Colliculus {
 		
 		tactileStimulis=new int[180][100];
 		visualStimulis =new int[180][100];
+		
+         TranslationX.add(0f);
+         TranslationX.add(0f);
+         TranslationX.add(0f);
+
+         TranslationY.add(-0.59f);
+         TranslationY.add(0f);
+         TranslationY.add(0f);
+
+         Rotation.add(0f);
+         Rotation.add(-0.001f);
+         Rotation.add(0.001f);
 
 	}
 	
@@ -62,10 +74,10 @@ public class Colliculus {
 		}
 		
 		vmap.seeEnvironment(rm, cm);
-		vmap.coefficients(action, speed);
-		TranslationX=vmap.mTranslationX;
-		TranslationY=vmap.mTranslationY;
-		Rotation    =vmap.mRotation;
+		//vmap.coefficients(action, speed);
+		//TranslationX=vmap.mTranslationX;
+		//TranslationY=vmap.mTranslationY;
+		//Rotation    =vmap.mRotation;
 		vmap.moveCharges(TranslationX.get(action), TranslationY.get(action), Rotation.get(action), speed);
 		
 		tmap.touchEnvironment(r, c);

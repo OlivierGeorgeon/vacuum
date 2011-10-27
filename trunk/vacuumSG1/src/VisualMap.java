@@ -11,6 +11,7 @@ public class VisualMap {
 	public Color[][] colorMap;
 	public float[][] potentialMap;
 	public float[][] potentialMapOld;
+	public int[][] timerMap;
 	
 	public float chargeMap0[][][];
 	public float chargeMap1[][][];
@@ -54,6 +55,7 @@ public class VisualMap {
 		colorMap=new Color[mapSizeTheta][mapSizeR];
 		potentialMap=new float[mapSizeTheta][mapSizeR];
 		potentialMapOld=new float[mapSizeTheta][mapSizeR];
+		timerMap=new int[mapSizeTheta][mapSizeR];
 		chargeMap0=new float[mapSize][mapSize][10];
 		chargeMap1=new float[mapSize][mapSize][10];
 		chargeMapP=new float[mapSizeTheta][mapSizeR][10];
@@ -89,6 +91,8 @@ public class VisualMap {
 				for (int k=0;k<10;k++){
 					chargeMapP[i][j][k]=0;
 				}
+				
+				timerMap[i][j]=0;
 				
 				polar2cartesianX[i][j]=((double)j*Math.cos( ((double)(i*2+90))*Math.PI/180))+mapSize/2;
 				polar2cartesianY[i][j]=((double)j*Math.sin( ((double)(i*2+90))*Math.PI/180))+mapSize/2;
@@ -190,7 +194,7 @@ public class VisualMap {
 				
 				counter=0;
 				sum=0;
-				
+				/*
 				for (int i2=-2;i2<=2;i2++){
 					for (int j2=-2;j2<=2;j2++){
 						if (i+i2>=0 && i+i2<mapSizeTheta && j+j2>=0 && j+j2<mapSizeR){
@@ -205,6 +209,15 @@ public class VisualMap {
 					}
 				}
 				potentialMap[i][j]=(float) (sum/counter);
+				*/
+				if (confidenceMap[i][j]>=0 && !colorMap[i][j].equals(Color.black)){
+					potentialMap[i][j]=1;
+				}else{
+					potentialMap[i][j]=0;
+				}
+				
+				if (potentialMap[i][j]!=potentialMapOld[i][j]) timerMap[i][j]=20;
+				else if (timerMap[i][j]>0) timerMap[i][j]--;
 				
 			}
 		}
@@ -340,7 +353,21 @@ public class VisualMap {
 			}
 		}
 		
+		/*
+		// compute flow
+		float fx,fy;
+		int l=1;
+		for (int i=l;i<180-l;i++){
+			for (int j=l;j<70;j++){
+				if (timerMap[i][j]==20){
+					
+					
+					confidenceFlow.get(act)[i][j]++;
+				}
+			}
+		}*/
 		
+		/*
 		// compute flow
 		float fx,fy;
 		int l=1;
@@ -404,8 +431,8 @@ public class VisualMap {
 				}
 
 			}
-		}
-
+		}*/
+		/*
 		////////////////////////////////////////////////////////////////////////
 		// reduce noise
 		////////////////////////////////////////////////////////////////////////
@@ -443,8 +470,8 @@ public class VisualMap {
 					}
 				}	
 			}
-		}
-		
+		}*/
+		/*
 		////////////////////////////////////////////////////////////////////////
 		// compute average translation and rotation vectors
 		////////////////////////////////////////////////////////////////////////
@@ -508,7 +535,7 @@ public class VisualMap {
                                 flowX3.get(act)[i][j]=fx +mTranslationX.get(act);
                                 flowY3.get(act)[i][j]=fy +mTranslationY.get(act);
                 }
-        }
+        }*/
 	}
 	
 	
