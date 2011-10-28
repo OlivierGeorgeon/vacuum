@@ -146,7 +146,7 @@ public class Ernest100Model extends ErnestModel
 		
 		m_sensorymotorSystem = new Visual100SensorymotorSystem();
 		//m_tracer = new XMLTracer("trace.xml");
-		m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","pDCJHmOykTgkgyZbKVtHFEtS-PujoS");
+		//m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","pDCJHmOykTgkgyZbKVtHFEtS-PujoS");
 		
 		// Initialize the Ernest === 
 		
@@ -466,7 +466,7 @@ public class Ernest100Model extends ErnestModel
 			}
 			else 
 				if (continuum) m_theta-= 0.1*m_theta;
-				else m_theta-= 0.05*m_theta;
+				else m_theta-= 0.1*m_theta;
 			
 			//if (Math.abs(m_theta)<=10) m_theta=0;
 			
