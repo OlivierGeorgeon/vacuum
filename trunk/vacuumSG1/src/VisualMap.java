@@ -30,6 +30,7 @@ public class VisualMap {
 	public ArrayList<float[][]> flowX3;				// flow in Cartesian referential
 	public ArrayList<float[][]> flowY3;
 	public ArrayList<float[][]> confidenceFlow;
+	public ArrayList<float[][]> confidenceFlowC;
 	public ArrayList<Float> mTranslationX;
 	public ArrayList<Float> mTranslationY;
 	public ArrayList<Float> mRotation;
@@ -74,6 +75,7 @@ public class VisualMap {
 		flowX3=new ArrayList<float[][]>();
 		flowY3=new ArrayList<float[][]>();
 		confidenceFlow=new ArrayList<float[][]>();
+		confidenceFlowC=new ArrayList<float[][]>();
 		polar2cartesianX=new double[mapSizeTheta][mapSizeR];
 		polar2cartesianY=new double[mapSizeTheta][mapSizeR];
 		polar2cartesian2X=new double[mapSizeTheta][mapSizeR];
@@ -216,7 +218,7 @@ public class VisualMap {
 					potentialMap[i][j]=0;
 				}
 				
-				if (potentialMap[i][j]!=potentialMapOld[i][j]) timerMap[i][j]=20;
+				if (potentialMap[i][j]!=potentialMapOld[i][j]) timerMap[i][j]=40;
 				else if (timerMap[i][j]>0) timerMap[i][j]--;
 				
 			}
@@ -330,6 +332,7 @@ public class VisualMap {
 				flowX3.add(new float[mapSize][mapSize]);
 				flowY3.add(new float[mapSize][mapSize]);
 				confidenceFlow.add(new float[mapSizeTheta][mapSizeR]);
+				confidenceFlowC.add(new float[mapSize][mapSize]);
 				
 				mTranslationX.add((float) 0);
 				mTranslationY.add((float) 0);
@@ -348,24 +351,68 @@ public class VisualMap {
 					for (int j=0;j<mapSize;j++){
 						flowX3.get(act)[i][j]=0;
 						flowY3.get(act)[i][j]=0;
+						confidenceFlowC.get(act)[i][j]=0;
 					}
 				}
 			}
 		}
-		
 		/*
-		// compute flow
-		float fx,fy;
-		int l=1;
-		for (int i=l;i<180-l;i++){
-			for (int j=l;j<70;j++){
-				if (timerMap[i][j]==20){
-					
-					
-					confidenceFlow.get(act)[i][j]++;
-				}
+		for (int i=0;i<mapSizeTheta;i++){
+			for (int j=0;j<mapSizeR;j++){
+				flowX1.get(act)[i][j]=0;
+				flowY1.get(act)[i][j]=0;
+				confidenceFlow.get(act)[i][j]=0;
 			}
 		}*/
+		// compute flow
+		int l=3;
+		double d;
+		int ii2,jj2;
+		float fx,fy;
+		int confidenceX=0,confidenceY=0;
+		for (int i=l;i<180-l;i++){
+			for (int j=l;j<70;j++){
+				if (timerMap[i][j]==40 && speed>0.1){
+					if (act==0) d=1;
+					else d=100;
+					
+					confidenceX=0;
+					confidenceY=0;
+					fx=0;
+					fy=0;
+					for (int i2=-l;i2<=l;i2++){
+						for (int j2=-l;j2<=l;j2++){
+							
+							if (i2!=0 || j2!=0){
+								ii2=i+i2;
+								jj2=j+j2;
+								if (timerMap[ii2][jj2]>0 && timerMap[ii2][jj2]<40){
+									d=Math.sqrt(i2*i2+j2*j2);
+									
+									if (i2!=0){
+										fx+=(1/speed) * i2/(40-timerMap[ii2][jj2]);
+										confidenceX++;
+									}
+									if (j2!=0){
+										fy+=(1/speed) * j2/(40-timerMap[ii2][jj2]);
+										confidenceY++;
+									}
+								}
+							}
+						}
+					}
+					
+					if (confidenceX>0 && confidenceY>0){
+						flowX1.get(act)[i][j]=(float)( ( flowX1.get(act)[i][j]*confidenceFlow.get(act)[i][j] + fx/confidenceX)
+						                           	 / (confidenceFlow.get(act)[i][j]+1)  );
+						flowY1.get(act)[i][j]=(float)( ( flowY1.get(act)[i][j]*confidenceFlow.get(act)[i][j] + fy/confidenceY)
+	                           	 / (confidenceFlow.get(act)[i][j]+1)  );
+						if (confidenceFlow.get(act)[i][j]<10) confidenceFlow.get(act)[i][j]++;
+					}
+
+				}
+			}
+		}
 		
 		/*
 		// compute flow
@@ -432,7 +479,7 @@ public class VisualMap {
 
 			}
 		}*/
-		/*
+		
 		////////////////////////////////////////////////////////////////////////
 		// reduce noise
 		////////////////////////////////////////////////////////////////////////
@@ -466,12 +513,30 @@ public class VisualMap {
 						my=my/(float)count;
 						
 						flowX2.get(k)[i][j]=mx;
-						flowY2.get(k)[i][j]=my;	
+						flowY2.get(k)[i][j]=my;
+						/*
+						mx= (float) polar2cartesian2X[i][j];
+						my= (float) polar2cartesian2Y[i][j];
+						
+						float mx2,my2;
+						mx2= (float) ( ((float)j+flowY2.get(k)[i][j]) 
+							* Math.cos( ((float)i+flowX2.get(k)[i][j])*Math.PI/180) );
+						my2= (float) ( ((float)j+flowY2.get(k)[i][j]) 
+							* Math.sin( ((float)i+flowX2.get(k)[i][j])*Math.PI/180) );
+						
+						if (polar2cartesian2X[i][j]+mapSize/2>=0 && polar2cartesian2X[i][j]+mapSize/2<mapSize-1
+							&& polar2cartesian2Y[i][j]+mapSize/2>=0 && polar2cartesian2Y[i][j]+mapSize/2<mapSize-1){
+						flowX3.get(k)[(int) mx+mapSize/2][(int) my+mapSize/2]=mx2-mx;
+						flowY3.get(k)[(int) mx+mapSize/2][(int) my+mapSize/2]=my2-my;
+						}*/
 					}
 				}	
 			}
-		}*/
-		/*
+		}
+		
+
+		
+		
 		////////////////////////////////////////////////////////////////////////
 		// compute average translation and rotation vectors
 		////////////////////////////////////////////////////////////////////////
@@ -514,15 +579,15 @@ public class VisualMap {
 			//}
 		}
 		
-		 // fill cartesian flow map
+		// fill cartesian flow map
         fx=0;
         fy=0;
         float imap,jmap;
         for (int i=0;i<mapSize;i++){
                 for (int j=0;j<mapSize;j++){
                                
-                	imap=i-mapSize/2;
-                    jmap=j-mapSize/2;
+                	imap=(float)(i-mapSize/2);
+                    jmap=(float)(j-mapSize/2);
                 	
                                 fx= (float)(imap*Math.cos(mRotation.get(act)) )
                                   - (float)(jmap*Math.sin(mRotation.get(act)) );
@@ -535,7 +600,7 @@ public class VisualMap {
                                 flowX3.get(act)[i][j]=fx +mTranslationX.get(act);
                                 flowY3.get(act)[i][j]=fy +mTranslationY.get(act);
                 }
-        }*/
+        }
 	}
 	
 	

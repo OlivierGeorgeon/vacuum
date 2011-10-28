@@ -29,7 +29,7 @@ public class VisualMapPanel extends JPanel{
 			for (int j=0;j<70;j++){
 				// draw charge map
 				//g.setColor(new Color(Math.min(1,vmap.potentialMap[i][j]),1-Math.min(1,vmap.potentialMap[i][j]),0));
-				g.setColor(new Color(vmap.timerMap[i][j]*10,(20-vmap.timerMap[i][j])*10,0));
+				g.setColor(new Color(vmap.timerMap[i][j]*5,(40-vmap.timerMap[i][j])*5,0));
 				g.fillRect(10+ i*width, 10+ (70-j)*width, width*2, width*2);
 			}
 		}
@@ -50,6 +50,7 @@ public class VisualMapPanel extends JPanel{
 				offsetX=550;
 				offsetY=150;
 			}
+			/*
 			for (int i=0;i<100;i+=8){
 				for (int j=0;j<100;j+=8){
 
@@ -62,7 +63,38 @@ public class VisualMapPanel extends JPanel{
 							   offsetX-vmap.mapSize/2*width + i*width+width+(int)(1000*vmap.flowX3.get(k)[i][j]),
 							   offsetY-vmap.mapSize/2*width + j*width+width/2+(int)(1000*vmap.flowY3.get(k)[i][j]) );
 				}
-			}
+			}*/
+			
+			/*
+			for (int i=0;i<180;i+=6){
+				for (int j=0;j<70;j+=6){
+					int lenght=40;
+					if (k>0) lenght=100;
+					// draw improved flow
+
+					//g.setColor(new Color(Math.min(1,tmap.potentialMap[i][j]),1-Math.min(1,tmap.potentialMap[i][j]),0));
+					g.setColor(Color.blue);
+					g.drawLine(offsetX-vmap.mapSize/2*width + i*width/2+width,
+							   offsetY-vmap.mapSize/2*width + (70-j)*width+width/2,
+							   offsetX-vmap.mapSize/2*width + i*width/2+width+(int)(lenght*vmap.flowX2.get(k)[i][j]),
+							   offsetY-vmap.mapSize/2*width + (70-j)*width+width/2+(int)(lenght*vmap.flowY2.get(k)[i][j]) );
+				}
+			}/* */
+			
+			
+			for (int i=0;i<100;i+=4){
+				for (int j=0;j<100;j+=4){
+
+					// draw improved flow
+
+					//g.setColor(new Color(Math.min(1,tmap.potentialMap[i][j]),1-Math.min(1,tmap.potentialMap[i][j]),0));
+					g.setColor(Color.blue);
+					g.drawLine(offsetX-vmap.mapSize/2*width + i*width+width,
+							   offsetY-vmap.mapSize/2*width + j*width+width,
+							   offsetX-vmap.mapSize/2*width + i*width+width+(int)(500*vmap.flowX3.get(k)[i][j]),
+							   offsetY-vmap.mapSize/2*width + j*width+width+(int)(500*vmap.flowY3.get(k)[i][j]) );
+				}
+			}/* */
 		}
 		
 
