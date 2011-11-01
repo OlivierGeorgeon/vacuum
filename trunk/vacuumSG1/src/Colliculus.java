@@ -40,13 +40,13 @@ public class Colliculus {
          TranslationX.add(0f);
          TranslationX.add(0f);
 
-         TranslationY.add(-0.667f);
+         TranslationY.add(-0.333f);
          TranslationY.add(0f);
          TranslationY.add(0f);
 
          Rotation.add(0f);
-         Rotation.add(-0.00349f);
-         Rotation.add(0.00349f);
+         Rotation.add(-0.00175f);
+         Rotation.add(0.00175f);
 		 
 	}
 	
@@ -74,7 +74,7 @@ public class Colliculus {
 		}
 		
 		vmap.seeEnvironment(rm, cm);
-		//vmap.coefficients(action, speed);
+		vmap.coefficients(action, speed);
 		//TranslationX=vmap.mTranslationX;
 		//TranslationY=vmap.mTranslationY;
 		//Rotation    =vmap.mRotation;

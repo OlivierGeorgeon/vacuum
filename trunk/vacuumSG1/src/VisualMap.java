@@ -10,11 +10,14 @@ public class VisualMap {
 
 	public Color[][] colorMap;
 	public float[][] potentialMap;
+	public float[][] potentialMapReduced1;
+	public float[][] potentialMapReduced2;
 	public float[][] potentialMapOld;
-	public float[][] potentialCMap;
-	public float[][] potentialCMapOld;
 	public int[][] timerMap;
-	public int[][] timerCMap;
+	
+	public int blobMap[][];
+	public int blobIndex;
+	public ArrayList<int[]> pixelList;
 	
 	public float chargeMap0[][][];
 	public float chargeMap1[][][];
@@ -34,6 +37,7 @@ public class VisualMap {
 	public ArrayList<float[][]> flowY3;
 	public ArrayList<float[][]> confidenceFlow;
 	public ArrayList<float[][]> confidenceFlowC;
+	
 	public ArrayList<Float> mTranslationX;
 	public ArrayList<Float> mTranslationY;
 	public ArrayList<Float> mRotation;
@@ -58,14 +62,17 @@ public class VisualMap {
 		mapSizeR=100;
 		colorMap=new Color[mapSizeTheta][mapSizeR];
 		potentialMap=new float[mapSizeTheta][mapSizeR];
+		potentialMapReduced1=new float[mapSizeTheta][mapSizeR];
+		potentialMapReduced2=new float[mapSizeTheta][mapSizeR];
 		potentialMapOld=new float[mapSizeTheta][mapSizeR];
-		potentialCMap=new float[mapSize][mapSize];
-		potentialCMapOld=new float[mapSize][mapSize];
 		timerMap=new int[mapSizeTheta][mapSizeR];
-		timerCMap=new int[mapSize][mapSize];
 		chargeMap0=new float[mapSize][mapSize][10];
 		chargeMap1=new float[mapSize][mapSize][10];
 		chargeMapP=new float[mapSizeTheta][mapSizeR][10];
+		
+		blobMap=new int[mapSizeTheta][mapSizeR];
+		pixelList=new ArrayList<int[]>();
+		
 		maximumMap=new int[mapSizeTheta][mapSizeR];
 		output=new int[mapSizeTheta][4];
 		
@@ -113,9 +120,6 @@ public class VisualMap {
 		
 		for (int i=0;i<mapSize;i++){
 			for (int j=0;j<mapSize;j++){
-				potentialCMap[i][j]=0;
-				potentialCMapOld[i][j]=0;
-				timerCMap[i][j]=0;
 				
 				for (int k=0;k<10;k++){
 					chargeMap0[i][j][k]=0;
@@ -153,7 +157,6 @@ public class VisualMap {
 		}
 		for (int i=0;i<mapSize;i++){
 			for (int j=0;j<mapSize;j++){
-				potentialCMapOld[i][j]=potentialCMap[i][j];
 				for (int k=0;k<10;k++){
 					chargeMap0[i][j][k]=chargeMap1[i][j][k];
 				}
@@ -161,6 +164,7 @@ public class VisualMap {
 				chargeTestMap[i][j]=false;
 			}
 		}
+		
 		
 		///////////////////////////////////////////////////////
 		// set colors on polar map
@@ -202,8 +206,8 @@ public class VisualMap {
 		///////////////////////////////////////////////////////
 		double sum;
 		double counter;
-		for (int i=0;i<mapSizeTheta;i+=5){
-			for (int j=0;j<mapSizeR;j+=5){
+		for (int i=0;i<mapSizeTheta;i+=2){
+			for (int j=0;j<mapSizeR;j+=2){
 				
 				counter=0;
 				sum=0;
@@ -215,13 +219,129 @@ public class VisualMap {
 				}
 				
 				//if (potentialMap[i][j]==1 && potentialMapOld[i][j]==0) timerMap[i][j]=20;
-				if (potentialMap[i][j]!=potentialMapOld[i][j]) timerMap[i][j]=20;
-				else if (timerMap[i][j]>0) timerMap[i][j]--;
+				//if (potentialMap[i][j]!=potentialMapOld[i][j]) timerMap[i][j]=20;
+				//else if (timerMap[i][j]>0) timerMap[i][j]--;
 				
 			}
 		}
 		
 		double theta0,r0;
+		
+		
+		///////////////////////////////////////////////////////
+		// reduction of potential map
+		///////////////////////////////////////////////////////
+		
+
+		// Initialization
+		int count=0;
+		int ii2,jj2;
+		for (int i=2;i<mapSizeTheta-2;i+=2){
+			for (int j=2;j<mapSizeR-2;j+=2){
+				count=0;
+				if (potentialMap[i][j]==1){
+					for (int i2=-1;i2<=1;i2++){
+						for (int j2=-1;j2<=1;j2++){
+							ii2=i+i2*2;
+							jj2=j+j2*2;
+							if ( (ii2!=0 || jj2!=0) && potentialMap[ii2][jj2]==1) count++; 
+						}
+					}
+					if (count>6) potentialMapReduced1[i][j]=1;
+					else potentialMapReduced1[i][j]=0;
+				}
+				else potentialMapReduced1[i][j]=0;
+			}
+		}
+		
+		for (int i=0;i<mapSizeTheta;i+=2){
+			for (int j=0;j<mapSizeR;j+=2){
+				potentialMapReduced2[i][j]=0;
+			}
+		}
+		
+		///////////////////////////////////////////////////////
+		// fill blob map (Polar)
+		///////////////////////////////////////////////////////
+		blobIndex=0;
+		pixelList.clear();
+		for (int i=0;i<mapSizeTheta;i++){
+			for (int j=0;j<mapSizeR;j++){
+				blobMap[i][j]=-1;
+			}
+		}
+		
+		int px,py;
+		int mx,my;
+		int sumBlob;
+		
+		for (int i=0;i<mapSizeTheta;i+=2){
+			for (int j=0;j<mapSizeR;j+=2){
+				
+				if (timerMap[i][j]>0) timerMap[i][j]--;
+				
+				if (blobMap[i][j]==-1 && potentialMapReduced1[i][j]==1){
+					blobMap[i][j]=blobIndex;
+					
+					mx=0;
+					my=0;
+					sumBlob=0;
+					
+					mx+=i;
+					my+=j;
+					sumBlob++;
+					
+					for (int i2=-1;i2<=1;i2++){
+						for (int j2=-1;j2<=1;j2++){
+							ii2=i+i2*2;
+							jj2=j+j2*2;
+							if ( (i2!=0 || j2!=0) && ii2>=0 && ii2<mapSizeTheta && jj2>=0 && jj2<mapSizeR){
+								if (blobMap[ii2][jj2]==-1 && potentialMapReduced1[ii2][jj2]==1){
+									blobMap[ii2][jj2]=blobIndex;
+									int[] pixel={ii2,jj2};
+									pixelList.add( pixel );
+								}
+							}
+						}
+					}
+					
+					while (!pixelList.isEmpty()){
+						px=pixelList.get(0)[0];
+						py=pixelList.get(0)[1];
+						
+						mx+=px;
+						my+=py;
+						sumBlob++;
+						
+						pixelList.remove(0);
+						
+						for (int i2=-1;i2<=1;i2++){
+							for (int j2=-1;j2<=1;j2++){
+								ii2=px+i2*2;
+								jj2=py+j2*2;
+								if ( (i2!=0 || j2!=0) && ii2>=0 && ii2<mapSizeTheta && jj2>=0 && jj2<mapSizeR){
+									if (blobMap[ii2][jj2]==-1 && potentialMapReduced1[ii2][jj2]==1){
+										blobMap[ii2][jj2]=blobIndex;
+										int[] pixel={ii2,jj2};
+										pixelList.add( pixel );
+									}
+								}
+							}
+						}
+					}
+					
+					blobIndex++;
+					
+					mx=Math.round((float)mx/(float)sumBlob);
+					my=Math.round((float)my/(float)sumBlob);
+					
+					potentialMapReduced2[mx][my]=1;
+					
+					timerMap[i][j]=10;
+				}
+			}
+		}
+		
 		
 		///////////////////////////////////////////////////////
 		// fill charge map (Cartesian)
@@ -363,9 +483,9 @@ public class VisualMap {
 		int l=1;
 		
 		int confidenceX=0,confidenceY=0;
-		for (int i=5*l;i<180-5*l;i+=5){
-			for (int j=5*l;j<100-5*l;j+=5){
-				if (timerMap[i][j]==20 && speed>0.1){
+		for (int i=2*l;i<180-2*l;i+=2){
+			for (int j=2*l;j<100-2*l;j+=2){
+				if (timerMap[i][j]==10 && speed>0.1){
 					
 					confidenceX=0;
 					confidenceY=0;
@@ -375,17 +495,17 @@ public class VisualMap {
 						for (int j2=-l;j2<=l;j2++){
 							
 							if (i2!=0 || j2!=0){
-								ii2=i+i2*5;
-								jj2=j+j2*5;
-								if (timerMap[ii2][jj2]>0 && timerMap[ii2][jj2]<15){
-									d=Math.sqrt(i2*i2+j2*j2);
+								ii2=i+i2*2;
+								jj2=j+j2*2;
+								if (timerMap[ii2][jj2]>0 && timerMap[ii2][jj2]<10){
+									//d=Math.sqrt(i2*i2+j2*j2);
 									
 									if (i2!=0){
-										fx-=(1/speed) * i2/(20-timerMap[ii2][jj2]);
+										fx-=(1/speed) * i2/(10-timerMap[ii2][jj2]);
 										confidenceX++;
 									}
 									if (j2!=0){
-										fy+=(1/speed) * j2/(20-timerMap[ii2][jj2]);
+										fy+=(1/speed) * j2/(10-timerMap[ii2][jj2]);
 										confidenceY++;
 									}
 								}
@@ -396,7 +516,11 @@ public class VisualMap {
 					}
 					
 					
-					if (confidenceX>0 && confidenceY>0){
+					
+					if (confidenceX>0 || confidenceY>0){
+		
+						if (confidenceX==0)confidenceX=1;
+						if (confidenceY==0)confidenceY=1;
 						
 						flowX1.get(act)[i][j]=(float)( ( flowX1.get(act)[i][j]*confidenceFlow.get(act)[i][j] + fx/confidenceX)
 						                           	 / (confidenceFlow.get(act)[i][j]+1)  );
@@ -417,9 +541,9 @@ public class VisualMap {
 		float mx,my;
 		int k=act;
 		int i3,j3;
-		for (int i=10;i<mapSizeTheta-10;i+=5){
-			for (int j=10;j<mapSizeR-10;j+=5){
-				if (flowX1.get(k)[i][j]!=0 && flowY1.get(k)[i][j]!=0){
+		for (int i=10;i<mapSizeTheta-10;i+=2){
+			for (int j=10;j<mapSizeR-10;j+=2){
+				if (flowX1.get(k)[i][j]!=0 || flowY1.get(k)[i][j]!=0){
 					flowX2.get(k)[i][j]=0;
 					flowY2.get(k)[i][j]=0;
 					count=0;
@@ -427,8 +551,8 @@ public class VisualMap {
 					my=0;
 					for (int i2=-1;i2<=1;i2++){
 					for (int j2=-1;j2<=1;j2++){
-						i3=i+i2*5;
-						j3=j+j2*5;
+						i3=i+i2*2;
+						j3=j+j2*2;
 						if (flowX1.get(k)[i3][j3]!=0 || flowY1.get(k)[i3][j3]!=0){
 							count++;
 							mx+=flowX1.get(k)[i3][j3];
@@ -437,7 +561,7 @@ public class VisualMap {
 					}
 					}
 					
-					if (count>3 && (mx!=0 || my!=0)){
+					if (count>0 && (mx!=0 || my!=0)){
 						mx=mx/(float)count;
 						my=my/(float)count;
 						
@@ -460,9 +584,9 @@ public class VisualMap {
 		float mx2,my2;
 		float mx3=0;
 		float my3=0;
-		int a=5;
-		for (int i=a;i<mapSizeTheta-a;i+=5){
-			for (int j=a;j<mapSizeR-a;j+=5){
+		int a=2;
+		for (int i=a;i<mapSizeTheta-a;i+=2){
+			for (int j=a;j<mapSizeR-a;j+=2){
 				
 				if (confidenceFlow.get(act)[i][j]>0){
 					// rotation
@@ -472,17 +596,19 @@ public class VisualMap {
 					//mx= (float) polar2cartesian2X[i][j];
 					//my= (float) polar2cartesian2Y[i][j];
 					
-					mx= (float) ((float)j* Math.cos((float)i *Math.PI/180 ));
-					my= (float) ((float)j* Math.sin((float)i *Math.PI/180));
+					mx= (float) ((float)j/2* Math.cos((float)(i) *Math.PI/180 ));
+					my= (float) ((float)j/2* Math.sin((float)(i) *Math.PI/180));
 					
-					mx2= (float) ( ((float)j+flowY2.get(k)[i][j]) 
-						* Math.cos( ((float)i+flowX2.get(k)[i][j])*Math.PI/180) );
-					my2= (float) ( ((float)j+flowY2.get(k)[i][j]) 
-						* Math.sin( ((float)i+flowX2.get(k)[i][j])*Math.PI/180) );
+
+					mx2= (float) ( ((float)j+flowY2.get(k)[i][j]) /2
+						* Math.cos( ((float)i-flowX2.get(k)[i][j])*Math.PI/180) );
+					my2= (float) ( ((float)j+flowY2.get(k)[i][j]) /2
+						* Math.sin( ((float)i-flowX2.get(k)[i][j])*Math.PI/180) );
+
 					
 					mx3+=mx2-mx;
 					my3+=my2-my;
-					
+
 					count++;
 				}
 				
@@ -744,41 +870,7 @@ public class VisualMap {
 		
 	}
 	
-	/*
-	public void seeEnvironment2(double[] r,Color[] c,int[] corners, int act,float speed){
-		
-		////////////////////////////////////////////////////////////////////////
-		// detection of hight probability area
-		////////////////////////////////////////////////////////////////////////
-		for (int i=1;i<mapSize-1;i++){
-			for (int j=1;j<mapSize-1;j++){
-				if ( chargeMap0[i][j]>0.2
-					&& chargeMap0[i][j] >= chargeMap0[i-1][j]
-				    && chargeMap0[i][j] >= chargeMap0[i+1][j]
-				    && chargeMap0[i][j] >= chargeMap0[i][j-1]
-				    && chargeMap0[i][j] >= chargeMap0[i][j+1]  
-				                                         
-				    && chargeMap0[i][j] >= chargeMap0[i-1][j-1]
-				    && chargeMap0[i][j] >= chargeMap0[i+1][j-1]
-				    && chargeMap0[i][j] >= chargeMap0[i-1][j+1]
-				    && chargeMap0[i][j] >= chargeMap0[i+1][j+1]){
-					
-					
-					chargeMap1[i][j]=1;
-					float val=chargeMap0[i][j]*3/4;
-					
-					for (int i2=-10;i2<=10;i2++){
-						for (int j2=-10;j2<=10;j2++){
-							if (i+i2>=0 && i+i2<mapSize && j+j2>=0 && j+j2<mapSize){
-								if (chargeMap0[i+i2][j+j2]>val) chargeMap1[i+i2][j+j2]=1;
-							}
-						}
-					}
-				}
-			}
-		}
-		
-	}*/
+
 	
 	
 }
