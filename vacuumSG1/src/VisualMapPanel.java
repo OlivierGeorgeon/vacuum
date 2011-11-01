@@ -26,12 +26,26 @@ public class VisualMapPanel extends JPanel{
 		int offsetX,offsetY;
 		
 		
-		for (int i=0;i<180;i++){
-			for (int j=0;j<70;j++){
+		for (int i=0;i<180;i+=2){
+			for (int j=0;j<100;j+=2){
 				// draw charge map
-				g.setColor(new Color(Math.min(1,vmap.potentialMap[i][j]),1-Math.min(1,vmap.potentialMap[i][j]),0));
-				//g.setColor(new Color((int)vmap.timerMap[i][j]*5,(20-(int)vmap.timerMap[i][j])*5,0));
-				g.fillRect(10+ i*width, 10+ (70-j)*width, width*2, width*2);
+				//g.setColor(new Color(Math.min(1,vmap.potentialMap[i][j]),1-Math.min(1,vmap.potentialMap[i][j]),0));
+				g.setColor(new Color((int)vmap.timerMap[i][j]*20,(10-(int)vmap.timerMap[i][j])*20,0));
+				
+				/*
+				switch(vmap.blobMap[i][j]){
+				case -1: g.setColor(Color.black); break;
+				case 0 : g.setColor(Color.red);break;
+				case 1 : g.setColor(Color.green);break;
+				case 2 : g.setColor(Color.blue);break;
+				case 3 : g.setColor(Color.cyan);break;
+				default: g.setColor(Color.yellow);break;
+				} /* */
+				
+				
+				//g.setColor(new Color(Math.min(1,vmap.potentialMapReduced2[i][j]),1-Math.min(1,vmap.potentialMapReduced2[i][j]),0));
+				
+				g.fillRect(10+ i*width, 10+ (100-j)*width, width*2*2, width*2*2);
 			}
 		}/* */
 		
@@ -59,9 +73,10 @@ public class VisualMapPanel extends JPanel{
 				offsetX=550;
 				offsetY=150;
 			}
+			
 			/*
-			for (int i=0;i<100;i+=8){
-				for (int j=0;j<100;j+=8){
+			for (int i=0;i<100;i+=4){
+				for (int j=0;j<100;j+=4){
 
 					// draw improved flow
 
@@ -69,32 +84,32 @@ public class VisualMapPanel extends JPanel{
 					g.setColor(Color.blue);
 					g.drawLine(offsetX-vmap.mapSize/2*width + i*width+width,
 							   offsetY-vmap.mapSize/2*width + j*width+width/2,
-							   offsetX-vmap.mapSize/2*width + i*width+width+(int)(1000*vmap.flowX3.get(k)[i][j]),
-							   offsetY-vmap.mapSize/2*width + j*width+width/2+(int)(1000*vmap.flowY3.get(k)[i][j]) );
+							   offsetX-vmap.mapSize/2*width + i*width+width+(int)(100*vmap.flowX3.get(k)[i][j]),
+							   offsetY-vmap.mapSize/2*width + j*width+width/2+(int)(100*vmap.flowY3.get(k)[i][j]) );
 				}
 			}/* */
 			
 			
-			for (int i=0;i<180;i+=5){
-				for (int j=0;j<100;j+=5){
-					int lenght=100;
-					if (k>0) lenght=500;
+			for (int i=0;i<180;i+=2){
+				for (int j=0;j<100;j+=2){
+					int lenght=20;
+					if (k>0) lenght=50;
 					// draw improved flow
 
 					//g.setColor(new Color(Math.min(1,tmap.potentialMap[i][j]),1-Math.min(1,tmap.potentialMap[i][j]),0));
 					g.setColor(Color.blue);
 					g.drawLine(offsetX-vmap.mapSize/2*width + i*width/2+width,
-							   offsetY-vmap.mapSize/2*width + j*width+width,
+							   offsetY-vmap.mapSize/2*width + (100-j)*width+width,
 							   offsetX-vmap.mapSize/2*width + i*width/2+width+(int)(lenght*vmap.flowX2.get(k)[i][j]),
-							   offsetY-vmap.mapSize/2*width + j*width+width+(int)(lenght*vmap.flowY2.get(k)[i][j]) );
+							   offsetY-vmap.mapSize/2*width + (100-j)*width+width+(int)(lenght*vmap.flowY2.get(k)[i][j]) );
 				}
 			}/* */
 			
 			/*
 			for (int i=0;i<100;i+=4){
 				for (int j=0;j<100;j+=4){
-					int lenght=1000;
-					if (k>0) lenght=500;
+					int lenght=100;
+					if (k>0) lenght=100;
 
 					//g.setColor(new Color(Math.min(1,tmap.potentialMap[i][j]),1-Math.min(1,tmap.potentialMap[i][j]),0));
 					g.setColor(Color.blue);

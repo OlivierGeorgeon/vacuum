@@ -455,7 +455,7 @@ public class Ernest100Model extends ErnestModel
 			}
 			else 
 				if (continuum) m_v-= 0.01*m_v;
-				else m_v-= 0.1*m_v;
+				else m_v-= 0.03*m_v;
 			
 			if (m_v<=0.1) m_v=0;
 			
@@ -466,7 +466,7 @@ public class Ernest100Model extends ErnestModel
 			}
 			else 
 				if (continuum) m_theta-= 0.1*m_theta;
-				else m_theta-= 0.2*m_theta;
+				else m_theta-= 0.1*m_theta;
 			
 			//if (Math.abs(m_theta)<=10) m_theta=0;
 			
@@ -476,7 +476,7 @@ public class Ernest100Model extends ErnestModel
 			double d;
 			if (statusL){
 				if (continuum) step=m_v/300;
-				else           step=m_v/15;
+				else           step=m_v/30;
 				
 				double dx= step*Math.sin(m_orientationAngle);
 				double dy=-step*Math.cos(m_orientationAngle);
@@ -494,7 +494,7 @@ public class Ernest100Model extends ErnestModel
 				orientation+=m_theta/40;
 				a+=m_theta/20;
 			}
-			else orientation+=m_theta/5;
+			else orientation+=m_theta/10;
 			if (orientation < 0)   orientation +=360;
 			if (orientation >=360) orientation -=360;
         
