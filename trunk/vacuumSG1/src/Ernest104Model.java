@@ -74,8 +74,8 @@ public class Ernest104Model extends ErnestModel
 		//m_tracer = new XMLTracer("trace.xml");
 		//m_tracer = new XMLStreamTracer("http://vm.liris.cnrs.fr:34080/abstract/light/php/stream/","fjSmkmyvAKgByfDAfXUYGjAJLzrWrf");
 		//m_tracer = new XMLStreamTracer("http://liristyh.univ-lyon1.fr/alite/php/stream/","ewPmHfhGycqtOYLBNBKOMLalAPmQdj");
-		//m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","vNNcxihGPKSaGNTvIbWklRpyMwThYP");
-		m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","pDCJHmOykTgkgyZbKVtHFEtS-PujoS");
+		//m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","pDCJHmOykTgkgyZbKVtHFEtS-PujoS");
+		m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","h-yXVWrEwtYclxuPQUlmTOXprcFzol");
 		
 		
 		// Initialize the Ernest === 
@@ -114,6 +114,7 @@ public class Ernest104Model extends ErnestModel
 			m_tracer.startNewEvent(m_counter);
 
 		// See the environment
+		// 12 visual pixels * 8 visual info + 1 miscelaneous + 3 tactile
 		int [][] matrix = new int[Ernest.RESOLUTION_RETINA][8 + 1 + 3];
 		Pair<Integer, Color>[] eyeFixation = null;
 		eyeFixation = getRetina(mOrientation.z);
@@ -146,10 +147,11 @@ public class Ernest104Model extends ErnestModel
 		
 		// Tactile
 		
-		int [][] somatoMap = somatoMap();
-		for (int i = 0; i < 3; i++)
-			for (int j = 0; j < 3; j++)
-				matrix[i][9 + j] = somatoMap[i][j];
+		int [] somatoMap = somatoMap();
+		//for (int i = 0; i < 3; i++)
+			//for (int j = 0; j < 3; j++)
+		for (int i = 0; i < 9; i++)
+				matrix[i][9] = somatoMap[i];
 		
 		// Circadian (information on day or night)
 		
@@ -245,7 +247,7 @@ public class Ernest104Model extends ErnestModel
 	 */
 	protected boolean forward(){
 		
-		m_If=1.5f; //1.5f
+		m_If=1f; //1.5f
 		m_theta = 0;
 		return impulse(ACTION_FORWARD);
 	}
@@ -349,23 +351,34 @@ public class Ernest104Model extends ErnestModel
 			//testPos.scaleAdd(1, mPosition, DIRECTION_NORTH);
 			
 			//if ( !affordWalk(northPos) && (m_y-HBradius) < ((float)cell_y-1+0.5) ){
-			if ( (isWall(cell_x,cell_y-1)) && (m_y-HBradius) -((float)cell_y-1+0.5)<0 ){
-				status1=false;
+			// top cell
+			if ( (isWall(cell_x,cell_y-1)) && (m_y-HBradius) -((float)cell_y-1+0.5)<0 )
+			{
+				if ((mOrientation.z > (float)Math.PI/4 && mOrientation.z < 3*(float)Math.PI/4) ||
+					(mOrientation.z < - 5*(float)Math.PI/4 && mOrientation.z > -7*(float)Math.PI/4))
+					// It counts as a bump only if the angle is closer to perpendicular plus or minus PI/4
+					status1=false;
 				m_y+= ((float)cell_y-1+0.5) - (m_y-HBradius);
 			}
 			// right cell
 			if ( (isWall(cell_x+1,cell_y)) && ((float)cell_x+1-0.5) -(m_x+HBradius)<0 ){
-				status2=false;
+				if ((mOrientation.z > - (float)Math.PI/4 && mOrientation.z < (float)Math.PI/4) ||
+					(mOrientation.z > 7 * (float)Math.PI/4))	
+					status2=false;
 				m_x-= (m_x+HBradius) - ((float)cell_x+1-0.5);
 			}
 			// bottom cell
 			if ( (isWall(cell_x,cell_y+1)) && ((float)cell_y+1-0.5) -(m_y+HBradius)<0 ){
-				status1=false;
+				if ((mOrientation.z < - (float)Math.PI/4 && mOrientation.z > - 3 *(float)Math.PI/4) ||
+					(mOrientation.z > 5*(float)Math.PI/4 && mOrientation.z < 7 *(float)Math.PI/4))
+					status1=false;
 				m_y-= (m_y+HBradius) - ((float)cell_y+1-0.5);
 			}
 			// left cell
 			if ( (isWall(cell_x-1,cell_y)) && (m_x-HBradius) -((float)cell_x-1+0.5)<0 ){
-				status2=false;
+				if ((mOrientation.z > 3*(float)Math.PI/4 && mOrientation.z < 5*(float)Math.PI/4) ||
+						(mOrientation.z < - 3*(float)Math.PI/4))
+					status2=false;
 				m_x+= ((float)cell_x-1+0.5) - (m_x-HBradius);
 			}
 			// top right
@@ -532,12 +545,22 @@ public class Ernest104Model extends ErnestModel
 			}
 			
 			// Somatomap color
-			int [][] somatoMap = somatoMap();
-			for (int i = 0; i < 3; i++)
-				for (int j = 0; j < 3; j++)
-				{
-					somatoMapColor[i][j] = new Color(somatoMap[i][j]);
-				}
+			int [] somatoMap = somatoMap();
+			somatoMapColor[2][2] = new Color(somatoMap[0]);
+			somatoMapColor[2][1] = new Color(somatoMap[1]);
+			somatoMapColor[2][0] = new Color(somatoMap[2]);
+			somatoMapColor[1][0] = new Color(somatoMap[3]);
+			somatoMapColor[0][0] = new Color(somatoMap[4]);
+			somatoMapColor[0][1] = new Color(somatoMap[5]);
+			somatoMapColor[0][2] = new Color(somatoMap[6]);
+			somatoMapColor[1][2] = new Color(somatoMap[7]);
+			somatoMapColor[1][1] = new Color(somatoMap[8]);
+
+//			for (int i = 0; i < 3; i++)
+//				for (int j = 0; j < 3; j++)
+//				{
+//					somatoMapColor[i][j] = new Color(somatoMap[i][j]);
+//				}
 		}
 		
 		// The shark body
@@ -630,24 +653,24 @@ public class Ernest104Model extends ErnestModel
 		
 		// Animate Ernest when he is alive
 
-		if (m_ernest != null && m_ernest.getObservation() != null)
+		if (m_ernest != null)
 		{
 			// Eye
-			if (m_ernest.getObservation().getSalience() != null)
-			{
-				span = m_ernest.getObservation().getSalience().getSpan();
-				direction = m_ernest.getObservation().getSalience().getDirection() / 10f - span / 2f + .5f;
-				eyeColor = new Color(m_ernest.getObservation().getSalience().getBundle().getVisualStimulation().getValue());
-				//eyeColor = new Color(m_ernest.getObservation().getSalience().getColor().getRGB());
-			}
+//			if (m_ernest.getObservation().getSalience() != null)
+//			{
+//				span = m_ernest.getObservation().getSalience().getSpan();
+//				direction = m_ernest.getObservation().getSalience().getDirection() / 10f - span / 2f + .5f;
+//				eyeColor = new Color(m_ernest.getObservation().getSalience().getBundle().getVisualStimulation().getValue());
+//				//eyeColor = new Color(m_ernest.getObservation().getSalience().getColor().getRGB());
+//			}
 						
 			// Somatomap color
 			for (int i = 0; i < 3; i++)
 				for (int j = 0; j < 3; j++)
-					somatoMapColor[i][j] = new Color(m_ernest.getObservation().getColor(i, j));
+					somatoMapColor[i][j] = new Color(m_ernest.getValue(i, j));
 			
-			if (Ernest.STIMULATION_KINEMATIC_BUMP.equals(m_ernest.getObservation().getKinematic()))
-				kinematicColor = Color.RED;
+//			if (Ernest.STIMULATION_KINEMATIC_BUMP.equals(m_ernest.getObservation().getKinematic()))
+//				kinematicColor = Color.RED;
 		}
 		
 		// Retina pixel
