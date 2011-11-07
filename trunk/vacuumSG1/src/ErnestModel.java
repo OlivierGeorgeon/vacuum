@@ -232,17 +232,28 @@ public class ErnestModel extends Model
 	 * Compute the tactile stimuli 
 	 * @return The matrix of tactile stimuli. 
 	 */
-	protected int[][] somatoMap() {
-		int[][] somatoMap = new int[3][3];
-		somatoMap[1][1] = soma(new Vector3f());
-		somatoMap[0][0] = soma(DIRECTION_AHEAD_LEFT);
-		somatoMap[1][0] = soma(DIRECTION_AHEAD);
-		somatoMap[2][0] = soma(DIRECTION_AHEAD_RIGHT);
-		somatoMap[2][1] = soma(DIRECTION_RIGHT);
-		somatoMap[2][2] = soma(DIRECTION_BEHIND_RIGHT);
-		somatoMap[1][2] = soma(DIRECTION_BEHIND);
-		somatoMap[0][2] = soma(DIRECTION_BEHIND_LEFT);
-		somatoMap[0][1] = soma(DIRECTION_LEFT);
+	protected int[] somatoMap() {
+		int[] somatoMap = new int[9];
+//		somatoMap[1][1] = soma(new Vector3f());
+//		somatoMap[0][0] = soma(DIRECTION_AHEAD_LEFT);
+//		somatoMap[1][0] = soma(DIRECTION_AHEAD);
+//		somatoMap[2][0] = soma(DIRECTION_AHEAD_RIGHT);
+//		somatoMap[2][1] = soma(DIRECTION_RIGHT);
+//		somatoMap[2][2] = soma(DIRECTION_BEHIND_RIGHT);
+//		somatoMap[1][2] = soma(DIRECTION_BEHIND);
+//		somatoMap[0][2] = soma(DIRECTION_BEHIND_LEFT);
+//		somatoMap[0][1] = soma(DIRECTION_LEFT);
+		
+		somatoMap[0] = soma(DIRECTION_BEHIND_RIGHT);
+		somatoMap[1] = soma(DIRECTION_RIGHT);
+		somatoMap[2] = soma(DIRECTION_AHEAD_RIGHT);
+		somatoMap[3] = soma(DIRECTION_AHEAD);
+		somatoMap[4] = soma(DIRECTION_AHEAD_LEFT);
+		somatoMap[5] = soma(DIRECTION_LEFT);
+		somatoMap[6] = soma(DIRECTION_BEHIND_LEFT);
+		somatoMap[7] = soma(DIRECTION_BEHIND);
+		somatoMap[8] = soma(new Vector3f());
+
 		return somatoMap;
 	}
 	/**
