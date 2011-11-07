@@ -245,10 +245,12 @@ public class Ernest100Model extends ErnestModel
 		
 		// Tactile
 		
-		int [][] somatoMap = somatoMap();
-		for (int i = 0; i < 3; i++)
-			for (int j = 0; j < 3; j++)
-				matrix[i][9 + j] = somatoMap[i][j];
+		int [] somatoMap = somatoMap();
+//		for (int i = 0; i < 3; i++)
+//			for (int j = 0; j < 3; j++)
+//				matrix[i][9 + j] = somatoMap[i][j];
+		for (int i = 0; i < 9; i++)
+			matrix[i][9] = somatoMap[i];
 		
 		// Circadian (information on day or night)
 		
@@ -1406,20 +1408,16 @@ public class Ernest100Model extends ErnestModel
 			}
 			
 			// Somatomap color
-			int [][] somatoMap = somatoMap();
-			for (int i = 0; i < 3; i++)
-				for (int j = 0; j < 3; j++)
-				{
-					somatoMapColor[i][j] = new Color(somatoMap[i][j]);
-//					if (somatoMap[i][j] == Ernest.STIMULATION_TOUCH_EMPTY.getValue())
-//						somatoMapColor[i][j] = new Color(Ernest.COLOR_TOUCH_EMPTY.getRGB());//Ernest.COLOR_TOUCH_EMPTY;
-//					if (somatoMap[i][j] == Ernest.STIMULATION_TOUCH_SOFT.getValue())
-//						somatoMapColor[i][j] = new Color(Ernest.COLOR_TOUCH_ALGA.getRGB());
-//					if (somatoMap[i][j] == Ernest.STIMULATION_TOUCH_WALL.getValue())
-//						somatoMapColor[i][j] = new Color(Ernest.COLOR_TOUCH_WALL.getRGB());
-//					if (somatoMap[i][j] == Ernest.STIMULATION_TOUCH_FISH.getValue())
-//						somatoMapColor[i][j] = new Color(Ernest.COLOR_TOUCH_FISH.getRGB());
-				}
+			int [] somatoMap = somatoMap();
+			somatoMapColor[2][2] = new Color(somatoMap[0]);
+			somatoMapColor[2][1] = new Color(somatoMap[1]);
+			somatoMapColor[2][0] = new Color(somatoMap[2]);
+			somatoMapColor[1][0] = new Color(somatoMap[3]);
+			somatoMapColor[0][0] = new Color(somatoMap[4]);
+			somatoMapColor[0][1] = new Color(somatoMap[5]);
+			somatoMapColor[0][2] = new Color(somatoMap[6]);
+			somatoMapColor[1][2] = new Color(somatoMap[7]);
+			somatoMapColor[1][1] = new Color(somatoMap[8]);
 		}
 		
 		// The shark body
@@ -1513,26 +1511,26 @@ public class Ernest100Model extends ErnestModel
 		
 		// Animate Ernest when he is alive
 
-		if (m_ernest != null && m_ernest.getObservation() != null)
+		if (m_ernest != null)
 		{
 			// Eye
-			if (m_ernest.getObservation().getSalience() != null)
-			{
-				span = m_ernest.getObservation().getSalience().getSpan();
-				direction = m_ernest.getObservation().getSalience().getDirection() / 10f - span / 2f + .5f;
-				//eyeColor = new Color(m_ernest.getObservation().getSalience().getColor().getRGB());
-				eyeColor = new Color(m_ernest.getObservation().getSalience().getBundle().getVisualStimulation().getValue());
-			}
+//			if (m_ernest.getObservation().getSalience() != null)
+//			{
+//				span = m_ernest.getObservation().getSalience().getSpan();
+//				direction = m_ernest.getObservation().getSalience().getDirection() / 10f - span / 2f + .5f;
+//				//eyeColor = new Color(m_ernest.getObservation().getSalience().getColor().getRGB());
+//				eyeColor = new Color(m_ernest.getObservation().getSalience().getBundle().getVisualStimulation().getValue());
+//			}
 						
 			// Somatomap color
 			for (int i = 0; i < 3; i++)
 				for (int j = 0; j < 3; j++)
-					somatoMapColor[i][j] = new Color(m_ernest.getObservation().getColor(i, j));
+					somatoMapColor[i][j] = new Color(m_ernest.getValue(i, j));
 			
 //			if (m_ernest.getObservation().getLabel() == null)
 //				System.out.println("Observation has no label");
-			if (Ernest.STIMULATION_KINEMATIC_BUMP.equals(m_ernest.getObservation().getKinematic()))
-				kinematicColor = Color.RED;
+//			if (Ernest.STIMULATION_KINEMATIC_BUMP.equals(m_ernest.getObservation().getKinematic()))
+//				kinematicColor = Color.RED;
 		}
 		
 		// Retina pixel
