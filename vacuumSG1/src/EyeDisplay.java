@@ -14,7 +14,7 @@ public class EyeDisplay extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 		private static boolean view=true;
-		private static boolean attractness=true;
+		private static boolean attractness=false;
 	
 		double[] retine;
 		Color[] colorMap;
@@ -45,6 +45,7 @@ public class EyeDisplay extends JPanel {
 	
         public void paintComponent(Graphics g){
         	if (view){
+        		
         		g.setColor(Color.BLUE);
             	g.fillRect(0,0,720,150);
             	
@@ -62,11 +63,11 @@ public class EyeDisplay extends JPanel {
             		g.drawLine(i, (int)( 150+ 100/ (Math.max(0.1,retine[i/4]/10.)) ), i, (int)( 150+ 100/ (Math.max(0.1,retine[i/4]/10.)) ));
             		
               	  	if ((corner[i/4]==1)){
-              	  		//g.drawLine((int)(i/4)*4  ,(int)(retine[i/4]/2+80),(int)(i/4)*4  ,300-(int)(retine[i/4]/2)-80);
+              	  		//g.drawLine((int)(i/2)*2  ,(int)(retine[i/2]/2+80),(int)(i/2)*2  ,300-(int)(retine[i/2]/2)-80);
               	  		g.drawLine((int)(i/4)*4  ,(int)( 150- 100/ (Math.max(0.1,retine[i/4]/10.)) ),(int)(i/4)*4  ,(int)( 150+ 100/ (Math.max(0.1,retine[i/4])/10.)  ));
               	  	}
               	  	if ((corner[i/4]==2)){
-            	  		//g.drawLine((int)(i/4)*4  ,(int)(retine[i/4]/2+80),(int)(i/4)*4  ,300-(int)(retine[i/4]/2)-80);
+            	  		//g.drawLine((int)(i/2)*2  ,(int)(retine[i/2]/2+80),(int)(i/2)*2  ,300-(int)(retine[i/2]/2)-80);
             	  		g.drawLine((int)(i/4)*4+3  ,(int)( 150- 100/ (Math.max(0.1,retine[i/4]/10.)) ),(int)(i/4)*4+3  ,(int)( 150+ 100/ (Math.max(0.1,retine[i/4])/10.)  ));
             	  	}
                 }

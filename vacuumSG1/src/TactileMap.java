@@ -418,6 +418,12 @@ public class TactileMap {
 						
 						chargeTestMap[ix][jy]=true;
 					}
+					else{
+						chargeMap1[ix][jy][0]=0;
+						chargeMap1[ix][jy][1]=0;
+						chargeMap1[ix][jy][2]=0;
+						chargeMap1[ix][jy][3]=0;
+					}
 				}
 			}
 		}
@@ -586,6 +592,7 @@ public class TactileMap {
 					chargeSum0=0;
 					chargeSum1=0;
 					chargeSum2=0;
+					chargeSum3=0;
 					countD=0;
 					for (int i2=-1;i2<=1;i2++){
 						for (int j2=-1;j2<=1;j2++){

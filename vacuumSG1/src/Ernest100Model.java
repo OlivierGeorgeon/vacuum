@@ -650,7 +650,7 @@ public class Ernest100Model extends ErnestModel
 			setAnim(adjacent_x, adjacent_y, ANIM_NO);	
 		
 		setChanged();
-		notifyObservers2();			
+		//notifyObservers2();			
 		
 		//if (tempo) sleep(10);
 		
