@@ -23,6 +23,8 @@ public class Colliculus {
 	public int[][] tactileStimulis;
 	public int[][] visualStimulis;
 	
+	public int[][] bundles;
+	
 	//public ArrayList<ISalience> liste;
 
 	public Colliculus(TactileMap tact,VisualMap v){
@@ -35,6 +37,14 @@ public class Colliculus {
 		
 		tactileStimulis=new int[180][100];
 		visualStimulis =new int[180][100];
+		
+		
+		bundles=new int[10][4];
+		for (int i=0;i<10;i++){
+			for (int j=0;j<3;j++){
+				bundles[i][j]=0;
+			}	
+		}
 		
          TranslationX.add(0f);
          TranslationX.add(0f);
@@ -84,6 +94,34 @@ public class Colliculus {
 		//tmap.coefficients(action, speed);
 		tmap.moveCharges(-TranslationX.get(action), -TranslationY.get(action), -Rotation.get(action), speed);
 
+		
+		// generate bundles
+		// for each cell
+		for (int i=1;i<99;i++){
+			for (int j=1;j<99;j++){
+				// for each tactile stimuli
+				for (int i2=0;i2<4;i2++){
+					if (tmap.chargeMap1[i][j][i2]>0.99
+							&& tmap.chargeMap1[i+1][j][i2]>0.8
+							&& tmap.chargeMap1[i-1][j][i2]>0.8
+							&& tmap.chargeMap1[i][j+1][i2]>0.8
+							&& tmap.chargeMap1[i][j-1][i2]>0.8){
+						
+						// for each visual stimuli
+						for (int j2=0;j2<10;j2++){
+							if (vmap.chargeMap1[i][j][j2]>0.99
+									&& vmap.chargeMap1[i+1][j][j2]>0.8
+									&& vmap.chargeMap1[i-1][j][j2]>0.8
+									&& vmap.chargeMap1[i][j+1][j2]>0.8
+									&& vmap.chargeMap1[i][j-1][j2]>0.8){
+								bundles[j2][i2]=1;
+							}
+						}
+						
+					}
+				}
+			}
+		}
 		
 	}
 	

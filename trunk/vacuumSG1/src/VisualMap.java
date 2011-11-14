@@ -585,6 +585,7 @@ public class VisualMap {
 		float mx3=0;
 		float my3=0;
 		int a=2;
+		float translationX=0,translationY=0;
 		for (int i=a;i<mapSizeTheta-a;i+=2){
 			for (int j=a;j<mapSizeR-a;j+=2){
 				
@@ -604,7 +605,11 @@ public class VisualMap {
 						* Math.cos( ((float)i-flowX2.get(k)[i][j])*Math.PI/180) );
 					my2= (float) ( ((float)j+flowY2.get(k)[i][j]) /2
 						* Math.sin( ((float)i-flowX2.get(k)[i][j])*Math.PI/180) );
-
+					/*
+					if ( Math.round(mx+50)>0 && Math.round(mx+50)<mapSize && Math.round(my+50)>0 && Math.round(my+50)<mapSize){
+						flowX3.get(act)[Math.round(mx+50)][Math.round(my+50)]=mx-mx2;
+						flowY3.get(act)[Math.round(mx+50)][Math.round(my+50)]=my-my2;
+					}*/
 					
 					mx3+=mx2-mx;
 					my3+=my2-my;
@@ -614,6 +619,11 @@ public class VisualMap {
 				
 			}
 		}
+		
+		translationX= mx3/(float)count;
+		translationY= my3/(float)count;
+
+		
 		if (count>0){
 			//if (act==0){
 				mTranslationX.set(act, mx3/(float)count/2);
@@ -622,6 +632,7 @@ public class VisualMap {
 				mRotation.set(act, (float)((mTheta/(float)count)*Math.PI/180));
 			//}
 		}
+		
 		
 		// fill cartesian flow map
         fx=0;

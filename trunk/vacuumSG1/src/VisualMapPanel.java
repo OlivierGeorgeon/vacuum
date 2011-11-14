@@ -63,11 +63,11 @@ public class VisualMapPanel extends JPanel{
 			offsetY=0;
 			if (k==0){
 				offsetX=550;
-				offsetY=550;
+				offsetY=500;
 			}
 			else if (k==1){
 				offsetX=200;
-				offsetY=550;
+				offsetY=500;
 			}
 			else if (k==2){
 				offsetX=550;
@@ -89,7 +89,7 @@ public class VisualMapPanel extends JPanel{
 				}
 			}/* */
 			
-			
+			/*
 			for (int i=0;i<180;i+=2){
 				for (int j=0;j<100;j+=2){
 					int lenght=20;
@@ -105,18 +105,18 @@ public class VisualMapPanel extends JPanel{
 				}
 			}/* */
 			
-			/*
+			
 			for (int i=0;i<100;i+=4){
 				for (int j=0;j<100;j+=4){
-					int lenght=100;
-					if (k>0) lenght=100;
+					int lenght=200;
+					if (k>0) lenght=400;
 
 					//g.setColor(new Color(Math.min(1,tmap.potentialMap[i][j]),1-Math.min(1,tmap.potentialMap[i][j]),0));
 					g.setColor(Color.blue);
 					g.drawLine(offsetX-vmap.mapSize/2*width + i*width+width,
-							   offsetY-vmap.mapSize/2*width + j*width+width,
+							   offsetY-vmap.mapSize/2*width + (100-j)*width+width,
 							   offsetX-vmap.mapSize/2*width + i*width+width+(int)(lenght*vmap.flowX3.get(k)[i][j]),
-							   offsetY-vmap.mapSize/2*width + j*width+width+(int)(lenght*vmap.flowY3.get(k)[i][j]) );
+							   offsetY-vmap.mapSize/2*width + (100-j)*width+width-(int)(lenght*vmap.flowY3.get(k)[i][j]) );
 				}
 			}/* */
 		}
