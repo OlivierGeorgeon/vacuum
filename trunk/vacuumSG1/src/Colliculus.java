@@ -24,6 +24,7 @@ public class Colliculus {
 	public int[][] visualStimulis;
 	
 	public int[][] bundles;
+	public Color[][] bundleColor;
 	
 	//public ArrayList<ISalience> liste;
 
@@ -40,12 +41,39 @@ public class Colliculus {
 		
 		
 		bundles=new int[10][4];
+		bundleColor=new Color[11][5];
 		for (int i=0;i<10;i++){
 			for (int j=0;j<3;j++){
 				bundles[i][j]=0;
 			}	
 		}
+		bundleColor[0][0]=Color.black;
 		
+		bundleColor[0][1]=new Color(250,250,250);
+		bundleColor[0][2]=new Color(0,0,0);
+		bundleColor[0][3]=new Color(150,150,150);
+		bundleColor[0][4]=new Color(100,100,100);
+		
+		bundleColor[1][0]=new Color(220,220,250);
+		bundleColor[2][0]=new Color(0,128,0);
+		bundleColor[3][0]=new Color(115,230,0);
+		bundleColor[4][0]=new Color(150,128,255);
+		bundleColor[5][0]=new Color(46,230,0);
+		bundleColor[6][0]=new Color(0,230,230);
+		bundleColor[7][0]=new Color(0,230,92);
+		bundleColor[8][0]=new Color(230,207,0);
+		bundleColor[9][0]=new Color(0,230,161);
+		bundleColor[10][0]=new Color(184,230,0);
+		
+		for (int i=1;i<11;i++){
+			for (int j=1;j<5;j++){
+				bundleColor[i][j]= new Color( (bundleColor[i][0].getRed()+bundleColor[0][j].getRed() )/2,
+											  (bundleColor[i][0].getGreen()+bundleColor[0][j].getGreen() )/2,
+											  (bundleColor[i][0].getBlue()+bundleColor[0][j].getBlue() )/2);
+			}
+		}
+
+			
          TranslationX.add(0f);
          TranslationX.add(0f);
          TranslationX.add(0f);
