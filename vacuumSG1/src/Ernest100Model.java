@@ -1078,6 +1078,7 @@ public class Ernest100Model extends ErnestModel
 		
 		if (sensor){
 			colliculus.update(r, colorMap, r2, colorMap2, lastAction, speed);
+			//colliculusFrame.saveImage();
 		}
 		
 		//m_patternMap.addPatern(colorMap2,lastAction);
