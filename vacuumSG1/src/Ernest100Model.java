@@ -237,11 +237,11 @@ public class Ernest100Model extends ErnestModel
 		// Kinematic (simulates sensors of body action) 
 		
 		if (m_schema.equals(">"))
-			matrix[1][8] = (status ? Ernest.STIMULATION_KINEMATIC_FORWARD.getValue() : Ernest.STIMULATION_KINEMATIC_BUMP.getValue());
+			matrix[1][8] = (status ? Ernest.STIMULATION_KINEMATIC_FORWARD : Ernest.STIMULATION_KINEMATIC_BUMP);
 		else if (m_schema.equals("^"))
-			matrix[1][8] = (status ? Ernest.STIMULATION_KINEMATIC_LEFT_EMPTY.getValue() : Ernest.STIMULATION_KINEMATIC_LEFT_WALL.getValue());
+			matrix[1][8] = (status ? Ernest.STIMULATION_KINEMATIC_LEFT_EMPTY : Ernest.STIMULATION_KINEMATIC_LEFT_WALL);
 		else if (m_schema.equals("v"))
-			matrix[1][8] = (status ? Ernest.STIMULATION_KINEMATIC_RIGHT_EMPTY.getValue() : Ernest.STIMULATION_KINEMATIC_RIGHT_WALL.getValue());
+			matrix[1][8] = (status ? Ernest.STIMULATION_KINEMATIC_RIGHT_EMPTY : Ernest.STIMULATION_KINEMATIC_RIGHT_WALL);
 		
 		// Tactile
 		
@@ -327,7 +327,7 @@ public class Ernest100Model extends ErnestModel
 		if (taste == DIRTY) 	
 			suck();
 
-		int stimulation = ((taste == DIRTY) ? Ernest.STIMULATION_GUSTATORY_FISH.getValue() : Ernest.STIMULATION_GUSTATORY_NOTHING.getValue());
+		int stimulation = ((taste == DIRTY) ? Ernest.STIMULATION_GUSTATORY_FISH : Ernest.STIMULATION_GUSTATORY_NOTHING);
 		return stimulation;
 	}
 	

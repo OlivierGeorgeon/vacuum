@@ -262,16 +262,16 @@ public class ErnestModel extends Model
 	 * @return The tactile stimulus in this direction. 
 	 */
 	protected int soma(Vector3f direction) {
-		int soma = Ernest.STIMULATION_TOUCH_EMPTY.getValue();
+		int soma = Ernest.STIMULATION_TOUCH_EMPTY;
 		Vector3f localPoint = new Vector3f(direction);
 		localPoint.scale(SOMATO_RADIUS);
 		Vector3f point = localToParentRef(localPoint);
 		if (affordTouchSoft(point))
-			soma = Ernest.STIMULATION_TOUCH_SOFT.getValue();
+			soma = Ernest.STIMULATION_TOUCH_SOFT;
 		if (affordEat(point))
-			soma = Ernest.STIMULATION_TOUCH_FISH.getValue();
+			soma = Ernest.STIMULATION_TOUCH_FISH;
 		if (!affordWalk(point)) 
-			soma = Ernest.STIMULATION_TOUCH_WALL.getValue();
+			soma = Ernest.STIMULATION_TOUCH_WALL;
 		return soma;
 	}
 	/**

@@ -172,10 +172,10 @@ public class Colliculus {
 				count=0;
 				// create Salience
 				if (thetaMin>0){
-					if      (val==0) val=Ernest.STIMULATION_TOUCH_EMPTY.getValue();
-					else if (val==1) val=Ernest.STIMULATION_TOUCH_WALL.getValue();
-					else if (val==2) val=Ernest.STIMULATION_TOUCH_SOFT.getValue();
-					else if (val==3) val=Ernest.STIMULATION_TOUCH_FISH.getValue();
+					if      (val==0) val=Ernest.STIMULATION_TOUCH_EMPTY;
+					else if (val==1) val=Ernest.STIMULATION_TOUCH_WALL;
+					else if (val==2) val=Ernest.STIMULATION_TOUCH_SOFT;
+					else if (val==3) val=Ernest.STIMULATION_TOUCH_FISH;
 					list.add(new Salience(val, Ernest.MODALITY_TACTILE, (float)((theta-90)*Math.PI/180), d, (float)(span*Math.PI/180) ) );
 				}
 			}
