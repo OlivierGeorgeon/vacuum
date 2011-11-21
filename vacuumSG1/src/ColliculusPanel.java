@@ -32,6 +32,9 @@ public class ColliculusPanel extends JPanel{
 		g.setColor(Color.black);
 		g.drawString("tactile cartesian", offsetX-colliculus.tmap.mapSize/2*width+2,
 				                          offsetY-colliculus.tmap.mapSize/2*width-2);
+		g.setColor(Color.black);
+		g.fillRect(offsetX-50*width, offsetY-50*width, 100*width, 100*width);		
+		
 		offsetX=160;
 		offsetY=500;
 		g.setColor(Color.black);
@@ -53,8 +56,8 @@ public class ColliculusPanel extends JPanel{
 			for (int j=0;j<100;j++){
 				//--------------------------------------------------------------
 				// tactile colliculus in Cartesian referential
-				offsetX=160;
-				offsetY=170;
+				//offsetX=160;
+				/*offsetY=170;
 				g.setColor(new Color(Math.min(1,Math.max(colliculus.tmap.chargeMap1[i][j][2],colliculus.tmap.chargeMap1[i][j][3])),
 						             Math.min(1,colliculus.tmap.chargeMap1[i][j][1]),
 						             Math.min(1,colliculus.tmap.chargeMap1[i][j][0])) );
@@ -63,9 +66,30 @@ public class ColliculusPanel extends JPanel{
 						   offsetY-colliculus.tmap.mapSize/2*width + j*width,
 						   width, width);
 				/* */
+				
+				//--------------------------------------------------------------
+				// tactile colliculus in Cartesian referential (real colors)
+				offsetX=160;
+				offsetY=170;
+				float max1=0,max2=0;
+				int imax1=-1,imax2=-1;
+				for (int i2=0;i2<4;i2++){
+					if (colliculus.tmap.chargeMap1[i][j][i2]>max2){
+						max2=colliculus.tmap.chargeMap1[i][j][i2];
+						imax2=i2;
+					}
+				}
+				if (max2>0.05){
+					g.setColor(colliculus.bundleColor[0][imax2+1]);
+					g.fillRect(offsetX-colliculus.tmap.mapSize/2*width + i*width,
+							   offsetY-colliculus.tmap.mapSize/2*width + j*width,
+							   width, width);
+				}
+				/* */
+				
 				//---------------------------------------------------------------
 				// visual colliculus in Cartesian referential
-				offsetX=160;
+				/*offsetX=160;
 				offsetY=500;
 				float max=0;
 				for (int k=2;k<10;k++){
@@ -79,15 +103,37 @@ public class ColliculusPanel extends JPanel{
 				g.fillRect(offsetX-colliculus.vmap.mapSize/2*width + i*width,
 						   offsetY-colliculus.vmap.mapSize/2*width + j*width, 
 						   width, width);
-				
-				
+				/* */
+				//--------------------------------------------------------------
+				// visual colliculus in Cartesian referential (real colors)
+				offsetX=160;
+				offsetY=500;
+				max1=0;
+				max2=0;
+				imax1=-1;
+				imax2=-1;
+				for (int i2=0;i2<10;i2++){
+					if (colliculus.vmap.chargeMap1[i][j][i2]>max1){
+						max1=colliculus.vmap.chargeMap1[i][j][i2];
+						imax1=i2;
+					}
+				}
+				if (max1>0.05){
+					g.setColor(colliculus.bundleColor[imax1+1][0]);
+					g.fillRect(offsetX-colliculus.tmap.mapSize/2*width + i*width,
+							   offsetY-colliculus.tmap.mapSize/2*width + j*width,
+							   width, width);
+				}
+				/* */
 				
 				//---------------------------------------------------------------
 				// bundle map
 				offsetX=500;
 				offsetY=170;
-				float max1=0,max2=0;
-				int imax1=-1,imax2=-1;
+				max1=0;
+				max2=0;
+				imax1=-1;
+				imax2=-1;
 				for (int i2=0;i2<10;i2++){
 					if (colliculus.vmap.chargeMap1[i][j][i2]>max1){
 						max1=colliculus.vmap.chargeMap1[i][j][i2];
@@ -106,18 +152,15 @@ public class ColliculusPanel extends JPanel{
 							   offsetY-colliculus.tmap.mapSize/2*width + j*width,
 							   width, width);
 				}
-
+				/* */
 			}
 		}
 		
-		/*
-		g.setColor(Color.lightGray);
-		g.fillOval((50)*width, (50)*width, 2*width,2*width );
 		
-		g.setColor(Color.lightGray);
-		g.fillOval(500-colliculus.vmap.mapSize/2*width + 24*width,  150-colliculus.vmap.mapSize/2*width + 24*width, 3*width,3*width );
-		*/
-		
+		g.setColor(Color.red);
+		g.fillOval(158, 168, 2*width,2*width );
+		g.fillOval(158, 498, 2*width,2*width );
+		g.fillOval(498, 168, 2*width,2*width );
 		
 		// draw bundle connections
 		offsetX=500;

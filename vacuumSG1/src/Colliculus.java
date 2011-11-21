@@ -49,10 +49,10 @@ public class Colliculus {
 		}
 		bundleColor[0][0]=Color.black;
 		
-		bundleColor[0][1]=new Color(250,250,250);
-		bundleColor[0][2]=new Color(0,0,0);
-		bundleColor[0][3]=new Color(150,150,150);
-		bundleColor[0][4]=new Color(100,100,100);
+		bundleColor[0][1]=new Color(240,240,240);
+		bundleColor[0][2]=new Color(70,70,70);
+		bundleColor[0][3]=new Color(170,170,170);
+		bundleColor[0][4]=new Color(130,130,130);
 		
 		bundleColor[1][0]=new Color(220,220,250);
 		bundleColor[2][0]=new Color(0,128,0);
@@ -112,7 +112,7 @@ public class Colliculus {
 		}
 		
 		vmap.seeEnvironment(rm, cm);
-		vmap.coefficients(action, speed);
+		//vmap.coefficients(action, speed);
 		//TranslationX=vmap.mTranslationX;
 		//TranslationY=vmap.mTranslationY;
 		//Rotation    =vmap.mRotation;

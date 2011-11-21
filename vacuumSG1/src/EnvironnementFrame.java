@@ -223,6 +223,8 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
 	}
     
     
+	
+	
     public void paint(){
     	m_env.repaint();
     }
@@ -431,11 +433,12 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
 	
 	public void saveImage(){
 		
-		String path="/home/simon/Bureau/Ernest/";
+		String path="/home/simon/Bureau/Ernest/env/";
 		
-		if (indexImage<10) path+="000"+indexImage+".jpg";
-		else if (indexImage<100) path+="00"+indexImage+".jpg";
-		else                     path+="0" +indexImage+".jpg";
+		if (indexImage<10) path+="0000"+indexImage+".jpg";
+		else if (indexImage<100 ) path+="000"+indexImage+".jpg";
+		else if (indexImage<1000) path+="00" +indexImage+".jpg";
+		else                      path+="0"  +indexImage+".jpg";
 		
 		 BufferedImage image = new BufferedImage(this.getWidth(),
                 this.getHeight(),
