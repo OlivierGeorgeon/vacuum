@@ -375,7 +375,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 			m_grid[0].length != m_model.getWidth())
 		{
 			m_board.removeAll();
-			m_board.setBackground(new Color(Ernest.STIMULATION_VISUAL_WALL));
+			m_board.setBackground(new Color(0,128,0));
 			m_board.setLayout(new GridLayout(m_model.getHeight(),  m_model.getWidth()));
 			m_grid = new EnvSquare[m_model.getHeight()][m_model.getWidth()];
 			
