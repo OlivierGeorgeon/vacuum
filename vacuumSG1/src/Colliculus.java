@@ -26,6 +26,9 @@ public class Colliculus {
 	public int[][] bundles;
 	public Color[][] bundleColor;
 	
+	public float bundleMapProba[][];
+	public int   bundleMapType[][][];
+	
 	//public ArrayList<ISalience> liste;
 
 	public Colliculus(TactileMap tact,VisualMap v){
@@ -38,7 +41,15 @@ public class Colliculus {
 		
 		tactileStimulis=new int[180][100];
 		visualStimulis =new int[180][100];
-		
+		bundleMapProba=new float[100][100];
+		bundleMapType =new int[100][100][2];
+		for (int i=0;i<100;i++){
+			for (int j=0;j<100;j++){
+				bundleMapProba[i][j]=0;
+				bundleMapType[i][j][0]=0;
+				bundleMapType[i][j][1]=0;
+			}	
+		}
 		
 		bundles=new int[10][4];
 		bundleColor=new Color[11][5];
@@ -122,6 +133,7 @@ public class Colliculus {
 		//tmap.coefficients(action, speed);
 		tmap.moveCharges(-TranslationX.get(action), -TranslationY.get(action), -Rotation.get(action), speed);
 
+		computeBundleMap();
 		
 		// generate bundles
 		// for each cell
@@ -292,6 +304,50 @@ public class Colliculus {
 		//liste=(ArrayList<ISalience>) list.clone();
 
 		return list;
+	}
+	
+	private void computeBundleMap(){
+		float p1=0;
+		float p2=0;
+		float Sp1=0;
+		float Sp2=0;
+		
+		float max=0;
+		
+		for (int i=0;i<100;i++){
+			for (int j=0;j<100;j++){
+				
+				bundleMapProba[i][j]=0;
+				max=0;
+				for (int i2=0;i2<10;i2++){
+					Sp1+=vmap.chargeMap1[i][j][i2];
+				}
+				for (int j2=0;j2<4;j2++){
+					Sp2+=tmap.chargeMap1[i][j][j2];
+				}
+				
+				Sp1=(1 - Math.min(1,Sp1) )/10;
+				Sp2=(1 - Math.min(1,Sp2) )/4;
+				
+				for (int i2=0;i2<10;i2++){
+					for (int j2=0;j2<4;j2++){
+						if (bundles[i2][j2]!=0){
+							p1=vmap.chargeMap1[i][j][i2]+ Sp1;
+							p2=tmap.chargeMap1[i][j][j2]+ Sp2;
+							
+							if (p1*p2>max){
+								max=p1*p2;
+								bundleMapProba[i][j]=max;
+								bundleMapType[i][j][0]=i2;
+								bundleMapType[i][j][1]=j2;
+							}
+						}
+					}
+				}
+				
+			}
+		}
+		
 	}
 
 }
