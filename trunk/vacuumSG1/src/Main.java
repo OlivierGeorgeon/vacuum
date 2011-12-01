@@ -35,7 +35,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 	
 	private final MyFileFilter m_fileFilter 		= new MyFileFilter();
 
-    private static ErnestModel m_model 			    = new Ernest100Model();
+    private static ErnestModel m_model;// 			    = new Ernest100Model();
  	//private final StatusModel m_statusModel         = new StatusModel();
 	
 	private HelpFrames m_Helpframe;

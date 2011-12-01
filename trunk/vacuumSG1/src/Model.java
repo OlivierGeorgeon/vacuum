@@ -36,9 +36,27 @@ public class Model extends Observable
 	public static final int HUMANLOGFILE   = 3;
 	public static final int ERNEST         = 4;
 	
+	// tactile properties
 	public static final int EMPTY         = 0;
-	public static final int DIRTY         = 1;
+	public static final int SMOOTH        = 1;
 	public static final int FOOD          = 2;
+	public static final int HARD		  = 3;
+	
+	// visual properties
+	public static final Color FIELD_COLOR = Color.white;
+	public static final Color WALL1       = new Color(  0,128,  0);
+	public static final Color WALL2       = new Color(  0,230, 92);
+	public static final Color WALL3       = new Color(  0,230,161);
+	public static final Color ALGA1       = new Color(115,230,  0);
+	public static final Color ALGA2       = new Color( 46,230,  0);
+	public static final Color ALGA3       = new Color(  0,230,230);
+	public static final Color ALGA4       = new Color(230,207,  0);
+	public static final Color ALGA5       = new Color(184,230,  0);
+	public static final Color FISH1       = new Color(150,128,255);
+	
+	//public static final int EMPTY         = 0;
+	public static final int DIRTY         = 1;
+	//public static final int FOOD          = 2;
 	public static final int WALL          = 1; // default wall 
 	public static final int WALL_INFORMATION = 10;
 	public static final int WALL_INFORMATION2 = 11;
@@ -48,7 +66,7 @@ public class Model extends Observable
 	public static final int ANIM_RUB      = 2;
 	public static final int ANIM_TOUCH    = 3;
 	
-	public static final Color FIELD_COLOR = Color.white; //new Color(150, 255, 150);
+	//public static final Color FIELD_COLOR = Color.white; //new Color(150, 255, 150);
 	public static final Color WALL_COLOR  = new Color(0, 128, 0); // Color.getHSBColor(1/3f, 1f, 0.5f)
 	public static final Color WATER_COLOR = new Color(150, 128, 255); // Color.getHSBColor(1/3f, 1f, 0.5f)
 	//public static final Color WATER_COLOR = new Color(0,0,255); // Color.getHSBColor(1/3f, 1f, 0.5f)
