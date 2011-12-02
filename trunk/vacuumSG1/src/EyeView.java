@@ -22,8 +22,9 @@ class EyeView extends JFrame{
 
     }
     
-    public void paint(double[] retine,Color[] colormap,int[] corner){
-    	ED.updateRetine(retine,colormap,corner);
+    public void paint(double[] retine,Color[] colormap,int[] corner,
+    		          double[] tactile,int[] tactileMap,int[] corner2){
+    	ED.updateRetine(retine,colormap,corner,tactile,tactileMap,corner2);
     	ED.repaint();
     }
 	

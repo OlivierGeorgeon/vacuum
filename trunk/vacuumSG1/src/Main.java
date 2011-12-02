@@ -321,38 +321,38 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		{
 			if (m_model.isWall(m_env.m_env.m_clickX,m_env.m_env.m_clickY))
 			{
-				m_model.setWall(m_env.m_env.m_clickX, m_env.m_env.m_clickY, Model.EMPTY);
+				m_model.setBlock(m_env.m_env.m_clickX, m_env.m_env.m_clickY, Model.empty);
 				m_model.traceUserEvent("remove_wall", m_env.m_env.m_clickX, m_env.m_env.m_clickY);
 			}
 			else
 			{
-				m_model.setWall(m_env.m_env.m_clickX, m_env.m_env.m_clickY, Model.WALL);
+				m_model.setBlock(m_env.m_env.m_clickX, m_env.m_env.m_clickY, Model.wall);
 				m_model.traceUserEvent("add_wall", m_env.m_env.m_clickX, m_env.m_env.m_clickY);
 			}
 		}
 		if (c == 2)
 		{
-			if (m_model.isDirty(m_env.m_env.m_clickX,m_env.m_env.m_clickY))
+			if (m_model.isAlga(m_env.m_env.m_clickX,m_env.m_env.m_clickY))
 			{
-				m_model.setDirty(m_env.m_env.m_clickX, m_env.m_env.m_clickY, Model.EMPTY);
+				m_model.setBlock(m_env.m_env.m_clickX, m_env.m_env.m_clickY, Model.empty);
 				m_model.traceUserEvent("remove_water", m_env.m_env.m_clickX, m_env.m_env.m_clickY);
 			}
 			else
 			{
-				m_model.setDirty(m_env.m_env.m_clickX, m_env.m_env.m_clickY, Model.DIRTY);
+				m_model.setBlock(m_env.m_env.m_clickX, m_env.m_env.m_clickY, Model.alga1);
 				m_model.traceUserEvent("add_water", m_env.m_env.m_clickX, m_env.m_env.m_clickY);
 			}
 		}
 		if (c == 3)
 		{
-			if (m_model.isDirty(m_env.m_env.m_clickX,m_env.m_env.m_clickY))
+			if (m_model.isFood(m_env.m_env.m_clickX,m_env.m_env.m_clickY))
 			{
-				m_model.setDirty(m_env.m_env.m_clickX, m_env.m_env.m_clickY, Model.EMPTY);
+				m_model.setBlock(m_env.m_env.m_clickX, m_env.m_env.m_clickY, Model.empty);
 				m_model.traceUserEvent("remove_food", m_env.m_env.m_clickX, m_env.m_env.m_clickY);
 			}
 			else
 			{
-				m_model.setDirty(m_env.m_env.m_clickX, m_env.m_env.m_clickY, Model.FOOD);
+				m_model.setBlock(m_env.m_env.m_clickX, m_env.m_env.m_clickY, Model.fish);
 				m_model.traceUserEvent("add_food", m_env.m_env.m_clickX, m_env.m_env.m_clickY);
 			}
 		}

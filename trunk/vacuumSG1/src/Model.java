@@ -54,12 +54,22 @@ public class Model extends Observable
 	public static final Color ALGA5       = new Color(184,230,  0);
 	public static final Color FISH1       = new Color(150,128,255);
 	
-	//public static final int EMPTY         = 0;
-	public static final int DIRTY         = 1;
-	//public static final int FOOD          = 2;
-	public static final int WALL          = 1; // default wall 
-	public static final int WALL_INFORMATION = 10;
-	public static final int WALL_INFORMATION2 = 11;
+	public static Block empty=new Block(EMPTY, FIELD_COLOR,"empty");
+	public static Block wall =new Block(HARD , WALL1,"wall1");
+	public Block wall2=new Block(HARD , WALL2,"wall2");
+	public Block wall3=new Block(HARD , WALL3,"wall3");
+	public static Block alga1=new Block(SMOOTH,ALGA1,"alga1");
+	public Block alga2=new Block(SMOOTH,ALGA2,"alga2");
+	public Block alga3=new Block(SMOOTH,ALGA3,"alga3");
+	public Block alga4=new Block(SMOOTH,ALGA4,"alga4");
+	public Block alga5=new Block(SMOOTH,ALGA5,"alga5");
+	public static Block fish =new Block(FOOD  ,FISH1,"fish");
+	
+	// trap objects
+	public Block green_fish=new Block(FOOD  ,WALL1,"green_fish");
+	public Block mauve_wall=new Block(HARD  ,FISH1,"mauve_wall");
+	public Block invisible_wall=new Block(HARD,FIELD_COLOR,"invisible");
+
 
 	public static final int ANIM_NO       = 0;
 	public static final int ANIM_BUMP     = 1;
@@ -130,11 +140,9 @@ public class Model extends Observable
 	protected Vector3f mTranslation = new Vector3f(0,0,0);
 	/** The angular rotation speed of Ernest. (in radius - trigonometric - counterclockwise)*/
 	protected Vector3f mRotation = new Vector3f(0,0,0.1f);
-
 	
-	private int[][] m_dirty;
-	private int[][] m_wall;
 	private int[][] m_anim;
+	public Block[][] m_blocks;
 
 	// Maik Friedrich
 	private String m_boardFileName = "";
@@ -176,26 +184,15 @@ public class Model extends Observable
 	 */
 	public void init()
 	{
-		m_dirty = new int[m_w][m_h];
-		m_wall  = new int[m_w][m_h];
 		m_anim  = new int[m_w][m_h];
 		m_halt = true;
+		
+		m_blocks= new Block[m_w][m_h];
 		
 		m_orientation = ORIENTATION_UP;
 		m_orientationAngle = 0;
 		mOrientation.z = (float) Math.PI/2;
 		
-		for (int i = 0; i < m_dirtyCount; i++)
-		{
-			int dx = m_rand.nextInt(m_w);
-			int dy = m_rand.nextInt(m_h);
-			while (m_dirty[dx][dy] == DIRTY)
-			{
-				dx = m_rand.nextInt(m_w);
-				dy = m_rand.nextInt(m_h);
-			}
-			m_dirty[dx][dy] = DIRTY;
-		}
 
 		setChanged();
 		notifyObservers2();
@@ -245,10 +242,9 @@ public class Model extends Observable
 			if (l_h <= 0 || l_w <= 0)
 				throw new IllegalStateException("Invalid width or height!");
 
-			m_dirty = new int[l_w][l_h];
-			m_wall  = new int[l_w][l_h]; 
-			m_anim  = new int[l_w][l_h];
-
+			m_anim  = new int[l_w][l_h];			
+			m_blocks= new Block[m_w][m_h];
+			
 			int y = 0;
 			for (Iterator i = lines.iterator(); i.hasNext(); )
 			{
@@ -261,19 +257,17 @@ public class Model extends Observable
 
 				for (int x = 0; x < l_w; x++)
 				{
-					m_wall[x][y] = EMPTY;
-					// Target
+					m_blocks[x][y]=empty;
+					
+					// mauve fish
 					if (square[x].equals("*"))
 					{
-						m_dirty[x][y] = DIRTY;
 						l_dirtyCount++;
+						
+						
+						m_blocks[x][y]=fish;
 					}
-					// Target type 2
-					if (square[x].equals("+"))
-					{
-						m_dirty[x][y] = 2;
-						l_dirtyCount++;
-					}
+					
 					// Agent up
 					else if (square[x].equalsIgnoreCase("^"))
 					{
@@ -333,33 +327,40 @@ public class Model extends Observable
 						// Agent on target
 						if (square[x].equalsIgnoreCase("x"))
 						{
-							m_dirty[x][y] = DIRTY;
 							l_dirtyCount++;
 							l_x = x;
 							l_y = y;	
 						}
 						// Wall
-						else if (square[x].equalsIgnoreCase("w"))
-						{
-							m_wall[x][y] = WALL;
+						else if (square[x].equalsIgnoreCase("w")
+							 ||  square[x].equalsIgnoreCase("i")
+							 ||  square[x].equalsIgnoreCase("j")){
+							
+							m_blocks[x][y]=wall;
 						}
-						// Information square
-						//else if (square[x].equalsIgnoreCase("i"))
-						//{
-						//	m_wall[x][y] = WALL; 
-						//	m_informationX = x;
-						//	m_informationY = y;
-						//}
-						// Singular wall
-						else
-						{
-							m_wall[x][y] = code + WALL + 1;
+						else{
+							
+							if (square[x].equalsIgnoreCase("g")){
+								m_blocks[x][y]=wall2;
+							}
+							else if (square[x].equalsIgnoreCase("h")){
+									m_blocks[x][y]=wall3;	
+							}
+							else m_blocks[x][y]=empty;
 						}
 					}
 					// Singular dirty square
 					else if (Character.isDigit(square[x].toCharArray()[0]))
 					{
-						m_dirty[x][y] = Integer.parseInt(square[x]) + DIRTY;
+						
+						switch (Integer.parseInt(square[x]) ){
+						case 2: m_blocks[x][y]=alga4; break;
+						case 3: m_blocks[x][y]=alga5; break;
+						case 4: m_blocks[x][y]=alga1; break;
+						case 5: m_blocks[x][y]=alga2; break;
+						case 9: m_blocks[x][y]=alga3; break;
+						default: break;
+						}
 					}
 				}
 				y++;
@@ -393,29 +394,14 @@ public class Model extends Observable
 	public void setEventThread(Runnable t)
 	{ m_eventThread = t; }
 
-	public boolean isDirty()
-	{ 
-		return m_dirty[Math.round(m_x)][Math.round(m_y)] > EMPTY;
+	public boolean isWall(float x, float y){ 
+		return 	(m_blocks[Math.round(x)][Math.round(y)].isWall()); 
 	}
-
-	public boolean isDirty(float x, float y)
-	{ 
-		return m_dirty[Math.round(x)][Math.round(y)] > EMPTY; 
+	public boolean isFood(float x, float y){ 
+		return 	(m_blocks[Math.round(x)][Math.round(y)].isFood()); 
 	}
-
-	public void setDirty(int x, int y, int dirty)
-	{ 
-			m_dirty[x][y] = dirty;
-	}
-
-	public int getDirty(float x, float y)
-	{ 
-		return m_dirty[Math.round(x)][Math.round(y)]; 
-	}
-
-	public boolean isWall(float x, float y)
-	{ 
-		return 	(m_wall[Math.round(x)][Math.round(y)] != EMPTY); 
+	public boolean isAlga(float x, float y){ 
+		return 	(m_blocks[Math.round(x)][Math.round(y)].isAlga()); 
 	}
 	
 	/**
@@ -424,8 +410,7 @@ public class Model extends Observable
 	 */
 	protected boolean affordWalk(Vector3f pos) 
 	{
-		return (m_wall[Math.round(pos.x)][m_h - Math.round(pos.y)] == EMPTY);
-		//return 	!(m_wall[Math.round(pos.x)][m_h - Math.round(pos.y)] != EMPTY); 
+		return (!m_blocks[Math.round(pos.x)][m_h - Math.round(pos.y)].isWall());
 	}
 	/**
 	 * @param pos The position to test in Cartesian coordinates
@@ -433,10 +418,7 @@ public class Model extends Observable
 	 */
 	protected boolean affordTouchSoft(Vector3f pos) 
 	{
-		boolean soft = isDirty(Math.round(pos.x), m_h - Math.round(pos.y));
-		if (getDirty(Math.round(pos.x), m_h - Math.round(pos.y)) == DIRTY)
-			soft = false;
-		return soft;
+		return (m_blocks[Math.round(pos.x)][m_h - Math.round(pos.y)].isAlga());
 	}
 	/**
 	 * @param pos The position to test in Cartesian coordinates.
@@ -444,7 +426,7 @@ public class Model extends Observable
 	 */
 	protected boolean affordEat(Vector3f pos) 
 	{
-		return (getDirty(Math.round(pos.x), m_h - Math.round(pos.y)) == DIRTY);
+		return (m_blocks[Math.round(pos.x)][m_h - Math.round(pos.y)].isFood());
 	}
 	/**
 	 * @param pos The position to test in cartesian coordinates.
@@ -452,19 +434,12 @@ public class Model extends Observable
 	 */
 	public boolean affordSee(Vector3f pos)
 	{
-		boolean see = (m_wall[Math.round(pos.x)][m_h - Math.round(pos.y)] == EMPTY);
-		see = see || isDirty(Math.round(pos.x), m_h - Math.round(pos.y));
-		return 	see; 		
+		return 	(m_blocks[Math.round(pos.x)][m_h - Math.round(pos.y)].isVisible()); 		
 	}
 
-	public void setWall(int x, int y, int wall)
+	public void setBlock(int x, int y, Block block)
 	{ 
-		m_wall[x][y] = wall;
-	}
-
-	public int getWall(float x, float y)
-	{ 
-		return 	m_wall[Math.round(x)][Math.round(y)]; 
+		m_blocks[x][y] = block;
 	}
 
 	public boolean isAgent(int x, int y)
@@ -536,6 +511,7 @@ public class Model extends Observable
 	public int getHeight()
 	{ return m_h; }
 
+	/*
 	public int getCleanSquareCount()
 	{
 		int count = 0;
@@ -548,7 +524,7 @@ public class Model extends Observable
 			}
 		}
 		return count;
-	}
+	}*/
 
 	public boolean getSpeakAloud()
 	{
@@ -576,9 +552,9 @@ public class Model extends Observable
 	 */
 	public boolean suck()
 	{
-		if (isDirty())
+		if (m_blocks[Math.round(m_x)][Math.round(m_y)].isFood())
 		{
-			m_dirty[Math.round(m_x)][Math.round(m_y)] = EMPTY;
+			m_blocks[Math.round(m_x)][Math.round(m_y)] = empty;
 			setChanged();
 			notifyObservers2();
 			
@@ -702,7 +678,7 @@ public class Model extends Observable
 	 * @param x The x coordinate of the square
 	 * @param y The y coordinate of the square
 	 * @return The background color of a square
-	 */
+	 *//*
 	public Color getBackgroundColor(float x, float y)
 	{
 		Color backgroundColor = FIELD_COLOR;
@@ -734,7 +710,7 @@ public class Model extends Observable
 		//setAnim(m_x, m_y, ANIM_NO);
 
 		return backgroundColor;
-	}
+	}*/
 	
 	/**
 	 * Paint a square

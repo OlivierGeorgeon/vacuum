@@ -127,9 +127,9 @@ public class Ernest104Model extends ErnestModel
 			matrix[i][3] = eyeFixation[i].mRight.getBlue();
 			// The second row is the place where Ernest is standing
 			matrix[i][4] = 0;
-			matrix[i][5] = getBackgroundColor(m_x,m_y).getRed();
-			matrix[i][6] = getBackgroundColor(m_x,m_y).getGreen();
-			matrix[i][7] = getBackgroundColor(m_x,m_y).getBlue();
+			matrix[i][5] = m_blocks[Math.round(m_x)][Math.round(m_y)].seeBlock().getRed();
+			matrix[i][6] = m_blocks[Math.round(m_x)][Math.round(m_y)].seeBlock().getGreen();
+			matrix[i][7] = m_blocks[Math.round(m_x)][Math.round(m_y)].seeBlock().getBlue();
 		}
 		
 		// Taste 
@@ -208,14 +208,15 @@ public class Ernest104Model extends ErnestModel
 	private int taste()
 	{
 		// Taste before sucking
-		int taste = getDirty(m_x,m_y); 
+		//int taste = getDirty(m_x,m_y); 
 
 		// Sucking water or food if any
 		// TODO: only suck water when thirsty and food when hungry.
-		if (taste == DIRTY) 	
+		//if (taste == DIRTY)
+		if (isFood(m_x,m_y))
 			suck();
 
-		int stimulation = ((taste == DIRTY) ? Ernest.STIMULATION_GUSTATORY_FISH : Ernest.STIMULATION_GUSTATORY_NOTHING);
+		int stimulation = ((isFood(m_x,m_y)) ? Ernest.STIMULATION_GUSTATORY_FISH : Ernest.STIMULATION_GUSTATORY_NOTHING);
 		return stimulation;
 	}
 	
@@ -279,7 +280,7 @@ public class Ernest104Model extends ErnestModel
 		vlmin=(float) 0.1;
 		vrmin=(float) 10; // when teta<10, Ernest is not turning anymore
 		
-		status3=isDirty(cell_x,cell_y);
+		status3=(isAlga(cell_x,cell_y) || isFood(cell_x,cell_y) );
 		
 		while  ( ((m_v>vlmin || m_If>0) && statusL) ||  (Math.abs(m_theta)>vrmin  || m_Ir!=0) ){
 			
@@ -339,9 +340,9 @@ public class Ernest104Model extends ErnestModel
 	// compute state
 		// for linear movement
 			// current cell
-			if (isDirty(cell_x,cell_y)){
-				if (status3 && !isDirty(cell_x,cell_y)) status3=false;
-				if (!status3 && isDirty(cell_x,cell_y)) status4=false;
+			if (isAlga(cell_x,cell_y) || isFood(cell_x,cell_y)){
+				if (status3 && !isAlga(cell_x,cell_y) && !isFood(cell_x,cell_y) ) status3=false;
+				if (!status3 && (isAlga(cell_x,cell_y) || isFood(cell_x,cell_y))) status4=false;
 			}
 			// top cell
 			
@@ -598,7 +599,7 @@ public class Ernest104Model extends ErnestModel
 		// Draw the body
 		
 		g2d.setStroke(new BasicStroke(2f));		
-		g2d.setColor(getBackgroundColor(Math.round(m_x), Math.round(m_y)));
+		g2d.setColor(m_blocks[Math.round(m_x)][Math.round(m_y)].seeBlock() );
 		g2d.setColor(new Color(255,255,255)) ;
 		g2d.fill(sharkMask);
 

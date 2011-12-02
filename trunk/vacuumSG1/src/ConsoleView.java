@@ -34,7 +34,7 @@ public class ConsoleView implements Observer
 			sb.append("\n");
 			for (int x = 0; x < m_model.getWidth(); x++)
 			{
-				if (m_model.isDirty(x,y))
+				if (m_model.isFood(x,y) || m_model.isAlga(x,y))
 					sb.append("DIRTY ");
 				else
 					sb.append("EMPTY ");

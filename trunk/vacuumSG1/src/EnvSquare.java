@@ -49,7 +49,7 @@ public class EnvSquare extends JPanel
 	 */
 	public void udateBackground()
 	{
-		setBackground(m_model.getBackgroundColor(m_x, m_y));
+		setBackground(m_model.m_blocks[m_x][m_y].seeBlock());
 		//m_model.setAnim(m_x, m_y, Model.ANIM_NO);
 	}
 	
@@ -85,7 +85,7 @@ public class EnvSquare extends JPanel
 		// Masks
 		g2d.setColor(Color.WHITE);
 		Area maskSingularity = new Area(new Rectangle2D.Double(-50, -50, 100, 100));
-		if (m_model.getDirty(m_x, m_y) == m_model.DIRTY )
+		/*if (m_model.getDirty(m_x, m_y) == m_model.DIRTY )
 		{
 			Area fishArea = new Area(fish);
 			fishArea.subtract(new Area(new Ellipse2D.Double( 20,  -10,  8, 8)));
@@ -99,7 +99,7 @@ public class EnvSquare extends JPanel
 			maskSingularity.subtract(new Area(petal3));
 			maskSingularity.subtract(new Area(petal4));			
 			g2d.fill(maskSingularity);
-		}
+		}*/
 		
 		// The night
 		
@@ -115,8 +115,8 @@ public class EnvSquare extends JPanel
 
 		// The information square
 		//if (m_model.isInformation(m_x, m_y))
-		if (m_model.getWall(m_x, m_y) == Model.WALL_INFORMATION )
-			drawInformation(g2d);
+		//if (m_model.getWall(m_x, m_y) == Model.WALL_INFORMATION )
+		//	drawInformation(g2d);
 
 		// The agent
 		if (m_model.isAgent(m_x, m_y))
