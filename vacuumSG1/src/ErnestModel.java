@@ -217,8 +217,8 @@ public class ErnestModel extends Model
 	    		return Pair.create(Ernest.INFINITE, WALL_COLOR);
 	    	
 	    	// Examine the block on the ray. Return wall or uninhibited dirty squares.
-	    	Color bgc = getBackgroundColor(i,j);
-	    	if (isWall(i,j) || isDirty(i,j))
+	    	Color bgc = m_blocks[i][j].seeBlock();
+	    	if (isWall(i,j) || isFood(i,j) || isAlga(i,j))
 	    	{
 		    		int dist = (int)Math.sqrt(((i-x0)*(i-x0) + (j-y0)*(j-y0)) * 100);
 		    		return Pair.create(dist, bgc);

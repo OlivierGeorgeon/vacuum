@@ -116,42 +116,31 @@ public class Environnement extends JPanel implements MouseListener{
 			for (int j=0;j<m_h;j++){
 				
 				// walls
-				if (m_model.isWall(i,j)){
-					g2d.setColor(m_model.getBackgroundColor(i, j) );
+				if (m_model.isWall(i, j)){
+					g2d.setColor(m_model.m_blocks[i][j].seeBlock());
 					g2d.fillRect(i*c_w, j*c_h, c_w+1, c_h+1);
-					//g2d.setColor(Color.black);
-					//g.drawRect(i*c_w, j*c_h, c_w+1, c_h+1);
 				}
 				
 				// fish
-				if (m_model.getDirty(i, j)== m_model.DIRTY ){
+				if (m_model.isFood(i, j)){
+					
 					AffineTransform centerCell = new AffineTransform();
 					centerCell.translate(i*c_w+c_w/2, j*c_h+c_h/2);
 					centerCell.scale((double) c_w / 100, (double) c_h / 100); 
 					g2d.transform(centerCell);
-
-					g2d.setColor(m_model.getBackgroundColor(i, j) );
-					
+					g2d.setColor(m_model.m_blocks[i][j].seeBlock());
 					g2d.fill(m_fish);
 					g2d.setTransform(boardReference);
-
-					
-//					g2d.setColor(m_model.getBackgroundColor(i, j) );
-//					g2d.fillPolygon(transform_x(fish_x,fish_y,0,c_w/2,i*c_w+c_w/2) , 
-//						          transform_y(fish_x,fish_y,0,c_h/2,j*c_h+c_h/2) , 18);
-//					g2d.setColor(Color.white);
-//					g2d.fillOval((int)(i*(w/m_w)+(w/m_w)*0.7), (int)(j*c_h+c_h*0.35), (int)(c_w*0.1), (int)(c_h*0.1));
 				}
 				
 				// leaf
-				if (m_model.getDirty(i, j) > m_model.DIRTY )
-				{
+				if (m_model.isAlga(i, j)){
 					AffineTransform centerCell = new AffineTransform();
 					centerCell.translate(i*c_w+c_w/2, j*c_h+c_h/2);
 					centerCell.scale((double) c_w / 100, (double) c_h / 100); 
 					g2d.transform(centerCell);
 
-					g2d.setColor(m_model.getBackgroundColor(i, j) );
+					g2d.setColor(m_model.m_blocks[i][j].seeBlock());
 					
 					g2d.fill(m_leaf);
 					g2d.setTransform(boardReference);
