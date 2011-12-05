@@ -41,17 +41,19 @@ public class Ernest100Model extends ErnestModel
 	
 	private double m_rotation_speed = Math.PI/Ernest.RESOLUTION_RETINA;
 	
-	private long time1=System.currentTimeMillis();
-	private long time2=System.currentTimeMillis();
+	//private long time1=System.currentTimeMillis();
+	//private long time2=System.currentTimeMillis();
 	
 	public float m_v;                       // linear speed
 	public float m_theta;					// angular speed
 	public float m_If,m_Ir;   				// impulsion counters
 	public int lastAction;
 	
+	public Main mainFrame;
+	
 	//public InternalStatesFrame m_int;
-	public InternalMap m_map;
-	public ObjectMemory m_objMemory;
+	//public InternalMap m_map;
+	//public ObjectMemory m_objMemory;
 	
 	//public PatternMap m_patternMap;
 	//public PatternMappingFrame m_patternFrame;
@@ -65,14 +67,14 @@ public class Ernest100Model extends ErnestModel
 	public Colliculus colliculus;
 	public ColliculusFrame colliculusFrame;
 	
-	public ArrayList<Action> m_actionList;
-	public float distance=0;
-	public float angle=0;
+	//public ArrayList<Action> m_actionList;
+	//public float distance=0;
+	//public float angle=0;
 	//public int objectType=0;
 	
 	private EyeView eye;
 	
-	public Color frontColor;
+	//public Color frontColor;
 	
 	public boolean tempo=true;
 	public boolean continuum = false;   // Use fixed impulsion values. 
@@ -91,19 +93,19 @@ public class Ernest100Model extends ErnestModel
 		setChanged();
 		notifyObservers2();
 		
-		m_actionList=new ArrayList<Action>();
+		//m_actionList=new ArrayList<Action>();
 		
-		m_objMemory=new ObjectMemory();
-		m_map=new InternalMap(m_objMemory);
+		//m_objMemory=new ObjectMemory();
+		//m_map=new InternalMap(m_objMemory);
 		
 		
-		if (!load(m_actionList)){
+		/*if (!load(m_actionList)){
 			
 			m_actionList.clear();
 			m_actionList.add(new Action("forward",10,120,150,m_objMemory));
 			m_actionList.add(new Action("turnLeft",1 ,180,180,m_objMemory));
 			m_actionList.add(new Action("turnRight",1 ,180,180,m_objMemory));
-		}
+		}*/
 
 		if (m_tactile==null){
 			m_tactile=new TactileMap(this);
@@ -119,12 +121,12 @@ public class Ernest100Model extends ErnestModel
 		//m_patternMap=new PatternMap();
 		//m_patternFrame=new PatternMappingFrame(m_patternMap);
 		
-		eye=new EyeView(m_map);
+		eye=new EyeView();
 		
 		colliculus=new Colliculus(m_tactile,m_visual);
 		colliculusFrame=new ColliculusFrame(colliculus);
 		
-		frontColor=new Color(0,0,0);
+		//frontColor=new Color(0,0,0);
 	}
 
 	/**
@@ -190,8 +192,12 @@ public class Ernest100Model extends ErnestModel
 	}
 
 	
-	public void setEnvironnement(EnvironnementFrame env){
+	public void setEnvironnement(Environnement env){
 		m_env=env;
+	}
+	
+	public void setFrame(Main m){
+		mainFrame=m;
 	}
 	
 	/**
@@ -337,9 +343,9 @@ public class Ernest100Model extends ErnestModel
 	protected boolean turnLeft(){
 		if (continuum){
 			rendu(true);
-			angle=m_map.imax;
-			float orientation=(m_actionList.get(1)).selectOutput(angle,frontColor)+1;
-			m_Ir=-orientation;
+			//angle=m_map.imax;
+			//float orientation=(m_actionList.get(1)).selectOutput(angle,frontColor)+1;
+			//m_Ir=-orientation;
 		}
 		else{
 			//float rand= (float) (Math.random()*20-10);
@@ -361,9 +367,9 @@ public class Ernest100Model extends ErnestModel
 		
 		if (continuum){
 			rendu(true);
-			angle=m_map.imax;
-			float orientation=(m_actionList.get(2)).selectOutput(angle,frontColor)+1;
-			m_Ir=+orientation;
+			//angle=m_map.imax;
+			//float orientation=(m_actionList.get(2)).selectOutput(angle,frontColor)+1;
+			//m_Ir=+orientation;
 		}
 		else{
 			//float rand= (float) (Math.random()*20-10);
@@ -385,7 +391,7 @@ public class Ernest100Model extends ErnestModel
 		
 		if (continuum){
 			rendu(true);
-			m_If=(float) ((m_actionList.get(0)).selectOutput(distance,frontColor)+0.1);
+			//m_If=(float) ((m_actionList.get(0)).selectOutput(distance,frontColor)+0.1);
 		}
 		else{
 			//float rand= (float) (Math.random()-0.5);
@@ -412,7 +418,7 @@ public class Ernest100Model extends ErnestModel
 		float step;                  // length of a step
 		float HBradius=(float) 0.4;  // radius of Ernest hitbox 
 		 
-		float maxPoint=m_map.max;
+		//float maxPoint=m_map.max;
 		
 		int cell_x=Math.round(m_x);
 		int cell_y=Math.round(m_y);
@@ -426,8 +432,8 @@ public class Ernest100Model extends ErnestModel
 		float dist=0;
 		float a=0;
 		float orientation=(m_orientation);
-		float previousDistance=distance;
-		Color previousColor=frontColor;
+		//float previousDistance=distance;
+		//Color previousColor=frontColor;
 		
 		int i=40;
 		int j=20;
@@ -583,7 +589,7 @@ public class Ernest100Model extends ErnestModel
 			}
 			if (tempo){
 
-				m_env.repaint();
+				mainFrame.drawGrid();
 				//m_int.repaint();
 				//sleep((int)(1));
 			}
@@ -602,7 +608,7 @@ public class Ernest100Model extends ErnestModel
 			
 			if (lastAction==0 && (!statusL || !status5) ) speed=0; 
 			
-			rendu(false,true,speed);
+			rendu(true,speed);
 		}
 		
 		
@@ -724,16 +730,16 @@ public class Ernest100Model extends ErnestModel
 	
 	
 	protected EyeFixation[] rendu(boolean setdistance){
-		return rendu(setdistance,false,0);
+		return rendu(false,0);
 	}
 	
 	
 	//******************************************
 	////////////////////////////////////////////
 	//******************************************
-	protected EyeFixation[] rendu(boolean setdistance, boolean sensor,float speed){
+	protected EyeFixation[] rendu(boolean sensor,float speed){
 		double[] rv    = new double[360];
-		double[] rv2   = new double[180];
+		double[] rv2   = new double[360];
 		double[] rt    = new double[360];
 		double[] rt2   = new double[360];
 		
@@ -741,12 +747,12 @@ public class Ernest100Model extends ErnestModel
 		double[] zTMap = new double[360];
 		
 		Color[] colorMap =new Color[360];
-		Color[] colorMap2=new Color[180];
+		Color[] colorMap2=new Color[360];
 		int[] tactileMap =new int[360];
 		int[] tactileMap2=new int[360];
 		
 		int[] cornerV = new int[360];
-		int[] cornerV2= new int[180];
+		int[] cornerV2= new int[360];
 		int[] cornerT = new int[360];
 		int[] cornerT2= new int[360];
 		
@@ -1164,10 +1170,10 @@ public class Ernest100Model extends ErnestModel
 		
 		
 		
-		for (int i=0;i<180;i++){
-			rv2[i]= rv[(i+orientationDeg-90+720)%360];
-			colorMap2[i]=colorMap[(i+orientationDeg-90+720)%360];
-			cornerV2[i]=cornerV[(i+orientationDeg-90+720)%360];
+		for (int i=0;i<360;i++){
+			rv2[i]= rv[(i+orientationDeg+540)%360];
+			colorMap2[i]=colorMap[(i+orientationDeg+540)%360];
+			cornerV2[i]=cornerV[(i+orientationDeg+540)%360];
 		}
 		
 		for (int i=0;i<360;i++){
@@ -1178,18 +1184,19 @@ public class Ernest100Model extends ErnestModel
 		
 		for (int i=0;i<Ernest.RESOLUTION_RETINA;i++){
 			retina[Ernest.RESOLUTION_RETINA-i-1]= new EyeFixation();
-			retina[Ernest.RESOLUTION_RETINA-i-1].setColor(colorMap2[(int)(i*180/Ernest.RESOLUTION_RETINA+180/Ernest.RESOLUTION_RETINA/2)]);
-			retina[Ernest.RESOLUTION_RETINA-i-1].setDistance((int) rv2[(int)(i*180/Ernest.RESOLUTION_RETINA+180/Ernest.RESOLUTION_RETINA/2)]);
+			retina[Ernest.RESOLUTION_RETINA-i-1].setColor(colorMap2[(int)(i*180/Ernest.RESOLUTION_RETINA+180/Ernest.RESOLUTION_RETINA/2+90)]);
+			retina[Ernest.RESOLUTION_RETINA-i-1].setDistance((int) rv2[(int)(i*180/Ernest.RESOLUTION_RETINA+180/Ernest.RESOLUTION_RETINA/2+90)]);
 		}
 		
+		/*
 		if (setdistance){ 
-			distance=(float) rv2[90];
-			frontColor=colorMap2[90];
-			m_objMemory.addObject(frontColor);
-		}
+			//distance=(float) rv2[90];
+			//frontColor=colorMap2[90];
+			//m_objMemory.addObject(frontColor);
+		}*/
 		
 		if (sensor){
-			colliculus.update(rv, colorMap, rv2, colorMap2, lastAction, speed);
+			colliculus.update(rv2, colorMap2, rt2, tactileMap2, lastAction, speed);
 			//colliculusFrame.saveImage();
 			//m_env.saveImage();
 		}
@@ -1200,7 +1207,7 @@ public class Ernest100Model extends ErnestModel
 		
 		//m_int.repaint();
 		eye.repaint();
-		m_map.compute(rv2, colorMap2);
+		//m_map.compute(rv2, colorMap2);
 		eye.paint(rv2,colorMap2,cornerV2,rt2,tactileMap2,cornerT2);
 		
 		return retina;
@@ -1751,7 +1758,7 @@ public class Ernest100Model extends ErnestModel
 			file.println();
 			
 			// actions matrix
-			for (int act=0;act<m_actionList.size();act++){
+			/*for (int act=0;act<m_actionList.size();act++){
 				// new action, set name and size
 				int o_width =m_actionList.get(act).width/5;
 				int o_height=m_actionList.get(act).height/5;
@@ -1769,20 +1776,20 @@ public class Ernest100Model extends ErnestModel
 					file.println("confidenceMap "+o);
 					for (int i=0;i<o_width;i++){
 						for (int j=0;j<o_height;j++){
-							file.print(m_actionList.get(act).confidenceMap.get(o)[i][j]+" ");
+							//file.print(m_actionList.get(act).confidenceMap.get(o)[i][j]+" ");
 						}
 						file.println();
 					}
 				}
-			}
-			
+			}*/
+			/*
 			// object list
 			for (int i=0;i<m_objMemory.objectList.size();i++){
 				file.println("object "+m_objMemory.objectList.get(i).getRed()  +" "+
 									   m_objMemory.objectList.get(i).getGreen()+" "+
 									   m_objMemory.objectList.get(i).getBlue() +" "+
 									   m_objMemory.value.get(i));
-			}
+			}*/
 
 			
 			// primitive Schemas
@@ -1871,7 +1878,7 @@ public class Ernest100Model extends ErnestModel
 			    		
 			    		// case new Action
 			    		if (elements[0].equals("Action")){
-			    			if (elements.length == 4){
+			    			/*if (elements.length == 4){
 			    				actList.add(new Action(elements[1],10,Integer.parseInt(elements[2])*5,Integer.parseInt(elements[3])*5,m_objMemory));
 			    				nbAct++;
 			    				nbObj=0;
@@ -1879,12 +1886,12 @@ public class Ernest100Model extends ErnestModel
 			    				indexLine=0;
 			    				h=Integer.parseInt(elements[3]);
 			    			}
-			    			else succes=false;
+			    			else succes=false;*/
 			    		}
 			    		
 			    		// case selectMap
 			    		else if (elements[0].equals("selectMap")){
-			    			if (elements.length == 2 && nbAct>0){
+			    			/*if (elements.length == 2 && nbAct>0){
 			    				if (Integer.parseInt(elements[1])>=nbObj){
 			    					while (Integer.parseInt(elements[1])>=nbObj){
 				    					actList.get(nbAct-1).addObject();
@@ -1895,10 +1902,10 @@ public class Ernest100Model extends ErnestModel
 			    				matrixType=1;
 			    				indexLine=0;
 			    			}
-			    			else succes=false;
+			    			else succes=false;*/
 			    		}
 			    		
-			    		
+			    		/*
 			    		// case confidenceMap
 			    		else if (elements[0].equals("confidenceMap")){
 			    			if (elements.length == 2 && nbAct>0){
@@ -1913,12 +1920,12 @@ public class Ernest100Model extends ErnestModel
 			    				indexLine=0;
 			    			}
 			    			else succes=false;
-			    		}
+			    		}*/
 			    		
 			    		
 			    		// case object
 			    		else if (elements[0].equals("object")){
-			    			if (elements.length == 5){
+			    			/*if (elements.length == 5){
 			    				
 			    				if (!elements[4].equals("null")) m_objMemory.loadObject(new Color(Integer.parseInt(elements[1]) ,
 			    												    							 Integer.parseInt(elements[2]) ,
@@ -1940,7 +1947,7 @@ public class Ernest100Model extends ErnestModel
 			    					}
 					    			
 			    				}
-			    			}
+			    			}*/
 			    			
 			    		}
 			    		
@@ -2026,7 +2033,7 @@ public class Ernest100Model extends ErnestModel
 		}
 
 		if (nbLine<3) succes=false;
-		
+		/*
 		for (int k=0;k<actList.size();k++){
 			for (int i=0;i<m_objMemory.objectList.size();i++){
 				for (int j=0;j<m_objMemory.objectList.size();j++){
@@ -2038,7 +2045,7 @@ public class Ernest100Model extends ErnestModel
 					
 				}
 			}
-		}
+		}*/
 		
 		return succes;
 	}

@@ -25,7 +25,7 @@ public class TactileMap {
 	public ArrayList<float[]> flowVectorY;
 	public ArrayList<float[]> vectorConfidence;
 
-	public Color[] m_tactileObject;
+	public int[] m_tactileObject;
 	public double[] sensorX;                        // position of sensor neurons
 	public double[] sensorY;
 	public double[] valueX;							// position of the detected point
@@ -112,7 +112,7 @@ public class TactileMap {
 		flowVectorX=new ArrayList<float[]>();
 		flowVectorY=new ArrayList<float[]>();
 		vectorConfidence=new ArrayList<float[]>();
-		m_tactileObject=new Color[resolution];
+		m_tactileObject=new int[resolution];
 		m_constraints=new float[resolution*sensorRes][resolution*sensorRes];
 		m_distances=new double[resolution*sensorRes][resolution*sensorRes];
 		m_connectionsLenght=new float[resolution*sensorRes][resolution*sensorRes];
@@ -222,7 +222,7 @@ public class TactileMap {
 	/**
 	 * read sensor values, map sensors and fill the potential map
 	 */
-	public void touchEnvironment(double[] r,Color[] c){
+	public void touchEnvironment(double[] rt,int[] t){
 		
 		//////////////////////////////////////////////////////
 		// save previous values
@@ -243,7 +243,7 @@ public class TactileMap {
 		// set sensors values
 		////////////////////////////////////////////////////////
 		// sensors around ernest
-		senseAround(r,c);
+		senseAround(rt,t);
 		
 		// sensors in front of ernest (to redefine)
 		//senseFront(r,c);
@@ -387,15 +387,13 @@ public class TactileMap {
 					
 					if (value>=0){
 						if (value>0){
-							if (   m_tactileObject[i2].equals(new Color(0,128,  0))
-								|| m_tactileObject[i2].equals(new Color(0,230, 92))
-								|| m_tactileObject[i2].equals(new Color(0,230,161)) ){
+							if (   m_tactileObject[i2]==3){
 								chargeMap1[ix][jy][0]=0;
 								chargeMap1[ix][jy][1]=1;
 								chargeMap1[ix][jy][2]=0;
 								chargeMap1[ix][jy][3]=0;
 							}
-							else if (!m_tactileObject[i2].equals(new Color(150,128,  255)) ){
+							else if (m_tactileObject[i2]==1 ){
 								chargeMap1[ix][jy][0]=0;
 								chargeMap1[ix][jy][1]=0;
 								chargeMap1[ix][jy][2]=1;
@@ -1023,19 +1021,19 @@ public class TactileMap {
 	/**
 	 * read sensors when distance sensor are divided around Ernest
 	 */
-	public void senseAround(double[] r,Color[] c){
+	public void senseAround(double[] rt,int[] t){
 		float distance,distance2;
 		int angle=360/resolution;
 		
 		int E_angle=ernest.m_orientation+540;
 		int index=0;
 		for (int i=0;i<360;i+=angle){
-			distance=(float) r[(i+E_angle)%360];
+			distance=(float) rt[(i)%360];
 			for (int j=0;j<sensorRes;j++){
 				
 				index=i/angle;
 				m_tactileValue[index]=Math.min(16, distance-5);
-				m_tactileObject[index]=c[(i+E_angle)%360];
+				m_tactileObject[index]=t[(i)%360];
 				
 				if (j==0){
 					index=i/angle;
@@ -1074,53 +1072,6 @@ public class TactileMap {
 		}
 	}
 	
-	
-	public void senseFront(double[] r,Color[] c){
-		float distance,distance2;
-		int angle=180/resolution;
-		int E_angle=ernest.m_orientation+630;  // 630 = -90 +720
-		for (int i=0;i<180;i+=angle){
-			distance=(float) r[(i+E_angle)%360];
-			for (int j=0;j<sensorRes;j++){
-				if (j==0){
-					if (distance<=10){
-						//distance2=1;
-						distance2= Math.min(1,1- (distance-5)/5);
-						m_tactilePressure[i/angle]= distance2;
-						m_tactileObject[i/angle]=c[(i+E_angle)%360];
-					}
-					else{
-						m_tactilePressure[i/angle]=0;
-						m_tactileObject[i/angle]=Color.black;
-					}
-				}
-				else if (j==1){
-					if (distance<=12){
-						//distance2=1;
-						distance2=(float) Math.min(1,1- (distance-7)/5);
-						m_tactilePressure[i/angle+resolution]= distance2;
-						m_tactileObject[i/angle+resolution]=c[(i+E_angle)%360];
-					}
-					else{
-						m_tactilePressure[i/angle+resolution]=0;
-						m_tactileObject[i/angle+resolution]=Color.black;
-					}
-				}
-				else{
-					if (distance<=15){
-						//distance2=1;
-						distance2=(float) Math.min(1,1- (distance-10)/5);
-						m_tactilePressure[i/angle+2*resolution]= distance2;
-						m_tactileObject[i/angle+2*resolution]=c[(i+E_angle)%360];
-					}
-					else{
-						m_tactilePressure[i/angle+2*resolution]=0;
-						m_tactileObject[i/angle+2*resolution]=Color.black;
-					}
-				}
-			}
-		}
-	}
 	
 	/**
 	 * normalize position and angle of the global sensor network

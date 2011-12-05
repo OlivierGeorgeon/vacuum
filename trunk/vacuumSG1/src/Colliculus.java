@@ -111,7 +111,7 @@ public class Colliculus {
 	 * @param action  Current action performed by the agent
 	 * @param speed   Value of the action
 	 */
-	public void update(double[] r,Color[] c,double[] rm,Color[] cm,int action,float speed){
+	public void update(double[] rv,Color[] c,double[] rt,int[] t,int action,float speed){
 		
 		// add new coefficient set
 		if (Rotation.size()<action+1){
@@ -122,14 +122,14 @@ public class Colliculus {
 			}
 		}
 		
-		vmap.seeEnvironment(rm, cm);
+		vmap.seeEnvironment(rv, c);
 		//vmap.coefficients(action, speed);
 		//TranslationX=vmap.mTranslationX;
 		//TranslationY=vmap.mTranslationY;
 		//Rotation    =vmap.mRotation;
 		vmap.moveCharges(TranslationX.get(action), TranslationY.get(action), Rotation.get(action), speed);
 		
-		tmap.touchEnvironment(r, c);
+		tmap.touchEnvironment(rt, t);
 		//tmap.coefficients(action, speed);
 		tmap.moveCharges(-TranslationX.get(action), -TranslationY.get(action), -Rotation.get(action), speed);
 

@@ -162,40 +162,22 @@ public class Model extends Observable
 
 	private boolean m_night = false;
 
-	protected EnvironnementFrame m_env;
-
+	protected Environnement m_env;
+	protected Main mainFrame;
 	
 	public Model()
 	{
 		m_mainThread = Thread.currentThread();
 	}
-	public void setEnvironnement(EnvironnementFrame env){
+	public void setEnvironnement(Environnement env){
 		m_env=env;
+	}
+	public void setFrame(Main m){
+		mainFrame=m;
 	}
 	
 	// save the actual ernest
 	public void save(){
-	}
-
-	/**
-	 * Initialize the grid randomly
-	 * @author mcohen
-	 * @author ogeorgeon Initialize no wall
-	 */
-	public void init()
-	{
-		m_anim  = new int[m_w][m_h];
-		m_halt = true;
-		
-		m_blocks= new Block[m_w][m_h];
-		
-		m_orientation = ORIENTATION_UP;
-		m_orientationAngle = 0;
-		mOrientation.z = (float) Math.PI/2;
-		
-
-		setChanged();
-		notifyObservers2();
 	}
 
 	/**

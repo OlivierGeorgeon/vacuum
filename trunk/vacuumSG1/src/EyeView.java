@@ -9,13 +9,13 @@ class EyeView extends JFrame{
 
 	
 	private EyeDisplay ED;
-    public EyeView(InternalMap m){
+    public EyeView(){
         
-        this.setSize(720, 300);
+        this.setSize(720, 600);
         this.setLocationRelativeTo(null);               
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-        ED=new EyeDisplay(m);
+        ED=new EyeDisplay();
         
         this.setVisible(true);           
         this.setContentPane(ED);
