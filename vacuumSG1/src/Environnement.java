@@ -149,13 +149,6 @@ public class Environnement extends JPanel implements MouseListener{
 			}
 		}
 		
-		// draw Ernest
-		//g.setColor(Color.black);
-		//g.fillPolygon(transform_x(ernest_x,ernest_y,(float) m_model.m_orientationAngle,c_w/2,e_x) , 
-		//	          transform_y(ernest_x,ernest_y,(float) m_model.m_orientationAngle,c_h/2,e_y) , 3);
-		//g.setColor(Color.red);
-		//g.drawOval((int)(e_x-0.4*c_w),(int)(e_y-0.4*c_h),(int)(0.8*c_w),(int)(0.8*c_h));
-		
 		// draw informations
 		drawInformation((Graphics2D)g.create());
 		

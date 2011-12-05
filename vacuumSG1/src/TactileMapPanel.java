@@ -114,7 +114,10 @@ public class TactileMapPanel extends JPanel{
 		g.setColor(Color.black);
 		g.drawRect(5, 50, 290, 195);		
 		for (int i=0;i<tmap.resolution*tmap.sensorRes;i++){
-			g.setColor(tmap.m_tactileObject[i%tmap.resolution]);
+			g.setColor(Color.black);
+			if (tmap.m_tactileObject[i%tmap.resolution]==1) g.setColor(Color.gray);
+			if (tmap.m_tactileObject[i%tmap.resolution]==2) g.setColor(Color.lightGray);
+			if (tmap.m_tactileObject[i%tmap.resolution]==3) g.setColor(Color.white);
 			g.fillOval(150+(int)(tmap.sensorX[i]-25*tmap.m_tactilePressure[i]), 150+(int)(tmap.sensorY[i]-25*tmap.m_tactilePressure[i]),
 					   (int)(50*tmap.m_tactilePressure[i]), (int)(50*tmap.m_tactilePressure[i]));
 		}

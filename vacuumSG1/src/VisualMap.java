@@ -172,13 +172,13 @@ public class VisualMap {
 		for (int i=0;i<mapSizeTheta;i++){
 			
 			//int confidence=Math.min(40, Math.abs(i-90)/2+1);
-			int min=(int) r[i]-1;//(int) Math.max(0, r[i]-confidence/2);
-			int max=(int) r[i]+5;//(int) Math.min(mapSizeR, r[i]+confidence/2+1);
+			int min=(int) r[i+90]-1;//(int) Math.max(0, r[i]-confidence/2);
+			int max=(int) r[i+90]+5;//(int) Math.min(mapSizeR, r[i]+confidence/2+1);
 
 			for (int j=0;j<mapSizeR;j++){
 
 				if (j>=min && j<max){
-					colorMap[i][j]=c[i];
+					colorMap[i][j]=c[i+90];
 					confidenceMap[i][j]=5;
 				}
 				else{
