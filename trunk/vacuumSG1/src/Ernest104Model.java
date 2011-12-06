@@ -127,9 +127,9 @@ public class Ernest104Model extends ErnestModel
 			matrix[i][3] = eyeFixation[i].mRight.getBlue();
 			// The second row is the place where Ernest is standing
 			matrix[i][4] = 0;
-			matrix[i][5] = m_blocks[Math.round(m_x)][Math.round(m_y)].seeBlock().getRed();
-			matrix[i][6] = m_blocks[Math.round(m_x)][Math.round(m_y)].seeBlock().getGreen();
-			matrix[i][7] = m_blocks[Math.round(m_x)][Math.round(m_y)].seeBlock().getBlue();
+			matrix[i][5] = m_blocks[Math.round(mPosition.x)][Math.round(mPosition.y)].seeBlock().getRed();
+			matrix[i][6] = m_blocks[Math.round(mPosition.x)][Math.round(mPosition.y)].seeBlock().getGreen();
+			matrix[i][7] = m_blocks[Math.round(mPosition.x)][Math.round(mPosition.y)].seeBlock().getBlue();
 		}
 		
 		// Taste 
@@ -193,8 +193,8 @@ public class Ernest104Model extends ErnestModel
 		if (m_tracer != null)
 		{
 			Object environment = m_tracer.newEvent("environment", "position", m_counter);
-			m_tracer.addSubelement(environment, "x", m_x + "");
-			m_tracer.addSubelement(environment, "y", m_y + "");
+			m_tracer.addSubelement(environment, "x", mPosition.x + "");
+			m_tracer.addSubelement(environment, "y", mPosition.y + "");
 			m_tracer.addSubelement(environment,"orientation", m_orientation + "");
 		}		
 	    return status;
@@ -213,10 +213,10 @@ public class Ernest104Model extends ErnestModel
 		// Sucking water or food if any
 		// TODO: only suck water when thirsty and food when hungry.
 		//if (taste == DIRTY)
-		if (isFood(m_x,m_y))
+		if (isFood(mPosition.x,mPosition.y))
 			suck();
 
-		int stimulation = ((isFood(m_x,m_y)) ? Ernest.STIMULATION_GUSTATORY_FISH : Ernest.STIMULATION_GUSTATORY_NOTHING);
+		int stimulation = ((isFood(mPosition.x,mPosition.y)) ? Ernest.STIMULATION_GUSTATORY_FISH : Ernest.STIMULATION_GUSTATORY_NOTHING);
 		return stimulation;
 	}
 	
@@ -265,8 +265,8 @@ public class Ernest104Model extends ErnestModel
 		float step;                  // length of a step
 		float HBradius=(float) 0.4;  // radius of Ernest hitbox 
 		 
-		int cell_x=Math.round(m_x);
-		int cell_y=Math.round(m_y);
+		int cell_x=Math.round(mPosition.x);
+		int cell_y=Math.round(mPosition.y);
 		
 		boolean status1=true;         // vertical motion
 		boolean status2=true;         // horizontal motion
@@ -313,12 +313,12 @@ public class Ernest104Model extends ErnestModel
 				
 				double dx= step*Math.sin(m_orientationAngle);
 				double dy=-step*Math.cos(m_orientationAngle);
-				cell_x=Math.round(m_x);
-				cell_y=Math.round(m_y);
-				m_x+=dx;
-				m_y+=dy;
-				mPosition.x = m_x;
-				mPosition.y = (float) m_h - m_y;
+				cell_x=Math.round(mPosition.x);
+				cell_y=Math.round(mPosition.y);
+				mPosition.x+=dx;
+				mPosition.y+=dy;
+				//mPosition.x = m_x;
+				//mPosition.y = (float) m_h - m_y;
 			}
 			
 			// for angular movements
@@ -353,79 +353,79 @@ public class Ernest104Model extends ErnestModel
 			
 			//if ( !affordWalk(northPos) && (m_y-HBradius) < ((float)cell_y-1+0.5) ){
 			// top cell
-			if ( (isWall(cell_x,cell_y-1)) && (m_y-HBradius) -((float)cell_y-1+0.5)<0 )
+			if ( (isWall(cell_x,cell_y-1)) && (mPosition.y-HBradius) -((float)cell_y-1+0.5)<0 )
 			{
 				if ((mOrientation.z > (float)Math.PI/4 && mOrientation.z < 3*(float)Math.PI/4) ||
 					(mOrientation.z < - 5*(float)Math.PI/4 && mOrientation.z > -7*(float)Math.PI/4))
 					// It counts as a bump only if the angle is closer to perpendicular plus or minus PI/4
 					status1=false;
-				m_y+= ((float)cell_y-1+0.5) - (m_y-HBradius);
+				mPosition.y+= ((float)cell_y-1+0.5) - (mPosition.y-HBradius);
 			}
 			// right cell
-			if ( (isWall(cell_x+1,cell_y)) && ((float)cell_x+1-0.5) -(m_x+HBradius)<0 ){
+			if ( (isWall(cell_x+1,cell_y)) && ((float)cell_x+1-0.5) -(mPosition.x+HBradius)<0 ){
 				if ((mOrientation.z > - (float)Math.PI/4 && mOrientation.z < (float)Math.PI/4) ||
 					(mOrientation.z > 7 * (float)Math.PI/4))	
 					status2=false;
-				m_x-= (m_x+HBradius) - ((float)cell_x+1-0.5);
+				mPosition.x-= (mPosition.x+HBradius) - ((float)cell_x+1-0.5);
 			}
 			// bottom cell
-			if ( (isWall(cell_x,cell_y+1)) && ((float)cell_y+1-0.5) -(m_y+HBradius)<0 ){
+			if ( (isWall(cell_x,cell_y+1)) && ((float)cell_y+1-0.5) -(mPosition.y+HBradius)<0 ){
 				if ((mOrientation.z < - (float)Math.PI/4 && mOrientation.z > - 3 *(float)Math.PI/4) ||
 					(mOrientation.z > 5*(float)Math.PI/4 && mOrientation.z < 7 *(float)Math.PI/4))
 					status1=false;
-				m_y-= (m_y+HBradius) - ((float)cell_y+1-0.5);
+				mPosition.y-= (mPosition.y+HBradius) - ((float)cell_y+1-0.5);
 			}
 			// left cell
-			if ( (isWall(cell_x-1,cell_y)) && (m_x-HBradius) -((float)cell_x-1+0.5)<0 ){
+			if ( (isWall(cell_x-1,cell_y)) && (mPosition.x-HBradius) -((float)cell_x-1+0.5)<0 ){
 				if ((mOrientation.z > 3*(float)Math.PI/4 && mOrientation.z < 5*(float)Math.PI/4) ||
 						(mOrientation.z < - 3*(float)Math.PI/4))
 					status2=false;
-				m_x+= ((float)cell_x-1+0.5) - (m_x-HBradius);
+				mPosition.x+= ((float)cell_x-1+0.5) - (mPosition.x-HBradius);
 			}
 			// top right
-			d= (m_x-(cell_x+1-0.5))*(m_x-(cell_x+1-0.5))+(m_y-(cell_y-1+0.5))*(m_y-(cell_y-1+0.5));
+			d= (mPosition.x-(cell_x+1-0.5))*(mPosition.x-(cell_x+1-0.5))+(mPosition.y-(cell_y-1+0.5))*(mPosition.y-(cell_y-1+0.5));
 			d=Math.sqrt(d);
 			if (isWall(cell_x+1,cell_y-1) && d-0.4<0){
 				while (d-0.4<0){
-					m_x-=0.01;
-					m_y+=0.01;
-					d= (m_x-(cell_x+1-0.5))*(m_x-(cell_x+1-0.5))+(m_y-(cell_y-1+0.5))*(m_y-(cell_y-1+0.5));
+					mPosition.x-=0.01;
+					mPosition.y+=0.01;
+					d= (mPosition.x-(cell_x+1-0.5))*(mPosition.x-(cell_x+1-0.5))+(mPosition.y-(cell_y-1+0.5))*(mPosition.y-(cell_y-1+0.5));
 					d=Math.sqrt(d);
 				}
 				status5=false;
 			}
 			// bottom right
-			d= (m_x-(cell_x+1-0.5))*(m_x-(cell_x+1-0.5))+(m_y-(cell_y+1-0.5))*(m_y-(cell_y+1-0.5));
+			d= (mPosition.x-(cell_x+1-0.5))*(mPosition.x-(cell_x+1-0.5))+(mPosition.y-(cell_y+1-0.5))*(mPosition.y-(cell_y+1-0.5));
 			d=Math.sqrt(d);
 			if (isWall(cell_x+1,cell_y+1) && d-0.4<0){
 				while (d-0.4<0){
-					m_x-=0.01;
-					m_y-=0.01;
-					d= (m_x-(cell_x+1-0.5))*(m_x-(cell_x+1-0.5))+(m_y-(cell_y-1+0.5))*(m_y-(cell_y-1+0.5));
+					mPosition.x-=0.01;
+					mPosition.y-=0.01;
+					d= (mPosition.x-(cell_x+1-0.5))*(mPosition.x-(cell_x+1-0.5))+(mPosition.y-(cell_y-1+0.5))*(mPosition.y-(cell_y-1+0.5));
 					d=Math.sqrt(d);
 				}
 				status5=false;
 			}
 			// bottom left
-			d= (m_x-(cell_x-1+0.5))*(m_x-(cell_x-1+0.5))+(m_y-(cell_y+1-0.5))*(m_y-(cell_y+1-0.5));
+			d= (mPosition.x-(cell_x-1+0.5))*(mPosition.x-(cell_x-1+0.5))+(mPosition.y-(cell_y+1-0.5))*(mPosition.y-(cell_y+1-0.5));
 			d=Math.sqrt(d);
 			if (isWall(cell_x-1,cell_y+1) && d-0.4<0){
 				while (d-0.4<0){
-					m_x+=0.01;
-					m_y-=0.01;
-					d= (m_x-(cell_x+1-0.5))*(m_x-(cell_x+1-0.5))+(m_y-(cell_y-1+0.5))*(m_y-(cell_y-1+0.5));
+					mPosition.x+=0.01;
+					mPosition.y-=0.01;
+					d= (mPosition.x-(cell_x+1-0.5))*(mPosition.x-(cell_x+1-0.5))+(mPosition.y-(cell_y-1+0.5))*(mPosition.y-(cell_y-1+0.5));
 					d=Math.sqrt(d);
 				}
 				status5=false;
 			}
 			// top left
-			d= (m_x-(cell_x-1+0.5))*(m_x-(cell_x-1+0.5))+(m_y-(cell_y-1+0.5))*(m_y-(cell_y-1+0.5));
+			d= (mPosition.x-(cell_x-1+0.5))*(mPosition.x-(cell_x-1+0.5))+(mPosition.y-(cell_y-1+0.5))*(mPosition.y-(cell_y-1+0.5));
 			d=Math.sqrt(d);
 			if (isWall(cell_x-1,cell_y-1) && d-0.4<0){
 				while (d-0.4<0){
-					m_x+=0.01;
-					m_y+=0.01;
-					d= (m_x-(cell_x+1-0.5))*(m_x-(cell_x+1-0.5))+(m_y-(cell_y-1+0.5))*(m_y-(cell_y-1+0.5));
+					mPosition.x+=0.01;
+					mPosition.y+=0.01;
+					d= (mPosition.x-(cell_x+1-0.5))*(mPosition.x-(cell_x+1-0.5))+(mPosition.y-(cell_y-1+0.5))*(mPosition.y-(cell_y-1+0.5));
 					d=Math.sqrt(d);
 				}
 				status5=false;
@@ -437,34 +437,34 @@ public class Ernest104Model extends ErnestModel
 		}
 		
 		
-	// compute state for angular movement
-		int adjacent_x = Math.round(m_x);
-		int adjacent_y = Math.round(m_y);
+		// compute state for angular movement
+		int adjacent_x = Math.round(mPosition.x);
+		int adjacent_y = Math.round(mPosition.y);
 		
 		// Adjacent square
 		if (m_orientation < ORIENTATION_UP_RIGHT && m_orientation >=ORIENTATION_UP_LEFT)
-			adjacent_y = Math.round(m_y) - 1;
+			adjacent_y = Math.round(mPosition.y) + 1;
 		if (m_orientation >=ORIENTATION_UP && m_orientation<ORIENTATION_RIGHT){
-			adjacent_x = Math.round(m_x) + 1;
-			adjacent_y = Math.round(m_y) - 1;
+			adjacent_x = Math.round(mPosition.x) + 1;
+			adjacent_y = Math.round(mPosition.y) + 1;
 		}
 		if (m_orientation >= ORIENTATION_UP_RIGHT && m_orientation <ORIENTATION_DOWN_RIGHT)
-			adjacent_x = Math.round(m_x) + 1;
+			adjacent_x = Math.round(mPosition.x) + 1;
 		if (m_orientation >= ORIENTATION_RIGHT && m_orientation <ORIENTATION_DOWN){
-			adjacent_x = Math.round(m_x) + 1;
-			adjacent_y = Math.round(m_y) + 1;
+			adjacent_x = Math.round(mPosition.x) + 1;
+			adjacent_y = Math.round(mPosition.y) - 1;
 		}
 		if (m_orientation >= ORIENTATION_DOWN_RIGHT && m_orientation <ORIENTATION_DOWN_LEFT)
-			adjacent_y = Math.round(m_y) + 1;
+			adjacent_y = Math.round(mPosition.y) - 1;
 		if (m_orientation >= ORIENTATION_DOWN && m_orientation <ORIENTATION_LEFT){
-			adjacent_x = Math.round(m_x) - 1;
-			adjacent_y = Math.round(m_y) + 1;
+			adjacent_x = Math.round(mPosition.x) - 1;
+			adjacent_y = Math.round(mPosition.y) - 1;
 		}
 		if (m_orientation >= ORIENTATION_DOWN_LEFT && m_orientation <ORIENTATION_UP_LEFT)
-			adjacent_x = Math.round(m_x) - 1;
+			adjacent_x = Math.round(mPosition.x) - 1;
 		if (m_orientation >= ORIENTATION_LEFT && m_orientation <ORIENTATION_UP){
-			adjacent_x = Math.round(m_x) - 1;
-			adjacent_y = Math.round(m_y) - 1;
+			adjacent_x = Math.round(mPosition.x) - 1;
+			adjacent_y = Math.round(mPosition.y) + 1;
 		}
 		
 		if ((adjacent_x >= 0) && (adjacent_x < m_w) && (adjacent_y >= 0) && (adjacent_y < m_h)){
@@ -599,7 +599,7 @@ public class Ernest104Model extends ErnestModel
 		// Draw the body
 		
 		g2d.setStroke(new BasicStroke(2f));		
-		g2d.setColor(m_blocks[Math.round(m_x)][Math.round(m_y)].seeBlock() );
+		g2d.setColor(m_blocks[Math.round(mPosition.x)][Math.round(mPosition.y)].seeBlock() );
 		g2d.setColor(new Color(255,255,255)) ;
 		g2d.fill(sharkMask);
 

@@ -229,9 +229,9 @@ public class Ernest100Model extends ErnestModel
 			matrix[i][3] = eyeFixation[i].getColor().getBlue();
 			// The second row is the place where Ernest is standing
 			matrix[i][4] = 0;
-			matrix[i][5] = m_blocks[Math.round(m_x)][Math.round(m_y)].seeBlock().getRed();
-			matrix[i][6] = m_blocks[Math.round(m_x)][Math.round(m_y)].seeBlock().getGreen();
-			matrix[i][7] = m_blocks[Math.round(m_x)][Math.round(m_y)].seeBlock().getBlue();
+			matrix[i][5] = m_blocks[Math.round(mPosition.x)][Math.round(mPosition.y)].seeBlock().getRed();
+			matrix[i][6] = m_blocks[Math.round(mPosition.x)][Math.round(mPosition.y)].seeBlock().getGreen();
+			matrix[i][7] = m_blocks[Math.round(mPosition.x)][Math.round(mPosition.y)].seeBlock().getBlue();
 		}
 		
 		// Taste 
@@ -307,8 +307,8 @@ public class Ernest100Model extends ErnestModel
 			if (m_tracer != null)
 			{
 				Object environment = m_tracer.newEvent("environment", "position", m_counter);
-				m_tracer.addSubelement(environment, "x", m_x + "");
-				m_tracer.addSubelement(environment, "y", m_y + "");
+				m_tracer.addSubelement(environment, "x", mPosition.x + "");
+				m_tracer.addSubelement(environment, "y", mPosition.y + "");
 				m_tracer.addSubelement(environment,"orientation", m_orientation + "");
 			}
 		}
@@ -329,10 +329,10 @@ public class Ernest100Model extends ErnestModel
 		// Sucking water or food if any
 		// TODO: only suck water when thirsty and food when hungry.
 		//if (taste == DIRTY)
-		if (isFood(m_x,m_y))
+		if (isFood(mPosition.x,mPosition.y))
 			suck();
 
-		int stimulation = ((isFood(m_x,m_y)) ? Ernest.STIMULATION_GUSTATORY_FISH : Ernest.STIMULATION_GUSTATORY_NOTHING);
+		int stimulation = ((isFood(mPosition.x,mPosition.y)) ? Ernest.STIMULATION_GUSTATORY_FISH : Ernest.STIMULATION_GUSTATORY_NOTHING);
 		return stimulation;
 	}
 	
@@ -412,16 +412,13 @@ public class Ernest100Model extends ErnestModel
 	 * @return result of the interaction
 	 */
 	public boolean impulse(int act){
-		
 		boolean statusL=true;
 		boolean statusR=true;
 		float step;                  // length of a step
 		float HBradius=(float) 0.4;  // radius of Ernest hitbox 
-		 
-		//float maxPoint=m_map.max;
 		
-		int cell_x=Math.round(m_x);
-		int cell_y=Math.round(m_y);
+		int cell_x=Math.round(mPosition.x);
+		int cell_y=Math.round(mPosition.y);
 		
 		boolean status1=true;         // vertical motion
 		boolean status2=true;         // horizontal motion
@@ -432,8 +429,6 @@ public class Ernest100Model extends ErnestModel
 		float dist=0;
 		float a=0;
 		float orientation=(m_orientation);
-		//float previousDistance=distance;
-		//Color previousColor=frontColor;
 		
 		int i=40;
 		int j=20;
@@ -486,14 +481,14 @@ public class Ernest100Model extends ErnestModel
 				else           step=m_v/30;
 				
 				double dx= step*Math.sin(m_orientationAngle);
-				double dy=-step*Math.cos(m_orientationAngle);
-				cell_x=Math.round(m_x);
-				cell_y=Math.round(m_y);
+				double dy= step*Math.cos(m_orientationAngle);
+				cell_x=Math.round(mPosition.x);
+				cell_y=Math.round(mPosition.y);
 				dist+=step;
-				m_x+=dx;
-				m_y+=dy;
-				mPosition.x = m_x;
-				mPosition.y = (float) m_h - m_y;
+				mPosition.x+=dx;
+				mPosition.y+=dy;
+				//mPosition.x = m_x;
+				//mPosition.y = (float) m_h - m_y -1;
 			}
 			
 			// for angular movements
@@ -519,70 +514,70 @@ public class Ernest100Model extends ErnestModel
 				if (status3 && !isAlga(cell_x,cell_y) && !isFood(cell_x,cell_y) ) status3=false;
 				if (!status3 && (isAlga(cell_x,cell_y) || isFood(cell_x,cell_y))) status4=false;
 			}
-			// top cell
-			if ( (isWall(cell_x,cell_y-1)) && (m_y-HBradius) -((float)cell_y-1+0.5)<0 ){
+			// bottom cell
+			if ( (isWall(cell_x,cell_y-1)) && (mPosition.y-HBradius) -((float)cell_y-1+0.5)<0 ){
 				status1=false;
-				m_y+= ((float)cell_y-1+0.5) - (m_y-HBradius);
+				mPosition.y+= ((float)cell_y-1+0.5) - (mPosition.y-HBradius);
 			}
 			// right cell
-			if ( (isWall(cell_x+1,cell_y)) && ((float)cell_x+1-0.5) -(m_x+HBradius)<0 ){
+			if ( (isWall(cell_x+1,cell_y)) && ((float)cell_x+1-0.5) -(mPosition.x+HBradius)<0 ){
 				status2=false;
-				m_x-= (m_x+HBradius) - ((float)cell_x+1-0.5);
+				mPosition.x-= (mPosition.x+HBradius) - ((float)cell_x+1-0.5);
 			}
-			// bottom cell
-			if ( (isWall(cell_x,cell_y+1)) && ((float)cell_y+1-0.5) -(m_y+HBradius)<0 ){
+			// top cell
+			if ( (isWall(cell_x,cell_y+1)) && ((float)cell_y+1-0.5) -(mPosition.y+HBradius)<0 ){
 				status1=false;
-				m_y-= (m_y+HBradius) - ((float)cell_y+1-0.5);
+				mPosition.y-= (mPosition.y+HBradius) - ((float)cell_y+1-0.5);
 			}
 			// left cell
-			if ( (isWall(cell_x-1,cell_y)) && (m_x-HBradius) -((float)cell_x-1+0.5)<0 ){
+			if ( (isWall(cell_x-1,cell_y)) && (mPosition.x-HBradius) -((float)cell_x-1+0.5)<0 ){
 				status2=false;
-				m_x+= ((float)cell_x-1+0.5) - (m_x-HBradius);
+				mPosition.x+= ((float)cell_x-1+0.5) - (mPosition.x-HBradius);
 			}
-			// top right
-			d= (m_x-(cell_x+1-0.5))*(m_x-(cell_x+1-0.5))+(m_y-(cell_y-1+0.5))*(m_y-(cell_y-1+0.5));
+			// bottom right
+			d= (mPosition.x-(cell_x+1-0.5))*(mPosition.x-(cell_x+1-0.5))+(mPosition.y-(cell_y-1+0.5))*(mPosition.y-(cell_y-1+0.5));
 			d=Math.sqrt(d);
 			if (isWall(cell_x+1,cell_y-1) && d-0.4<0){
 				while (d-0.4<0){
-					m_x-=0.01;
-					m_y+=0.01;
-					d= (m_x-(cell_x+1-0.5))*(m_x-(cell_x+1-0.5))+(m_y-(cell_y-1+0.5))*(m_y-(cell_y-1+0.5));
+					mPosition.x-=0.01;
+					mPosition.y+=0.01;
+					d= (mPosition.x-(cell_x+1-0.5))*(mPosition.x-(cell_x+1-0.5))+(mPosition.y-(cell_y-1+0.5))*(mPosition.y-(cell_y-1+0.5));
 					d=Math.sqrt(d);
 				}
 				status5=false;
 			}
-			// bottom right
-			d= (m_x-(cell_x+1-0.5))*(m_x-(cell_x+1-0.5))+(m_y-(cell_y+1-0.5))*(m_y-(cell_y+1-0.5));
+			// top right
+			d= (mPosition.x-(cell_x+1-0.5))*(mPosition.x-(cell_x+1-0.5))+(mPosition.y-(cell_y+1-0.5))*(mPosition.y-(cell_y+1-0.5));
 			d=Math.sqrt(d);
 			if (isWall(cell_x+1,cell_y+1) && d-0.4<0){
 				while (d-0.4<0){
-					m_x-=0.01;
-					m_y-=0.01;
-					d= (m_x-(cell_x+1-0.5))*(m_x-(cell_x+1-0.5))+(m_y-(cell_y-1+0.5))*(m_y-(cell_y-1+0.5));
-					d=Math.sqrt(d);
-				}
-				status5=false;
-			}
-			// bottom left
-			d= (m_x-(cell_x-1+0.5))*(m_x-(cell_x-1+0.5))+(m_y-(cell_y+1-0.5))*(m_y-(cell_y+1-0.5));
-			d=Math.sqrt(d);
-			if (isWall(cell_x-1,cell_y+1) && d-0.4<0){
-				while (d-0.4<0){
-					m_x+=0.01;
-					m_y-=0.01;
-					d= (m_x-(cell_x+1-0.5))*(m_x-(cell_x+1-0.5))+(m_y-(cell_y-1+0.5))*(m_y-(cell_y-1+0.5));
+					mPosition.x-=0.01;
+					mPosition.y-=0.01;
+					d= (mPosition.x-(cell_x+1-0.5))*(mPosition.x-(cell_x+1-0.5))+(mPosition.y-(cell_y-1+0.5))*(mPosition.y-(cell_y-1+0.5));
 					d=Math.sqrt(d);
 				}
 				status5=false;
 			}
 			// top left
-			d= (m_x-(cell_x-1+0.5))*(m_x-(cell_x-1+0.5))+(m_y-(cell_y-1+0.5))*(m_y-(cell_y-1+0.5));
+			d= (mPosition.x-(cell_x-1+0.5))*(mPosition.x-(cell_x-1+0.5))+(mPosition.y-(cell_y+1-0.5))*(mPosition.y-(cell_y+1-0.5));
+			d=Math.sqrt(d);
+			if (isWall(cell_x-1,cell_y+1) && d-0.4<0){
+				while (d-0.4<0){
+					mPosition.x+=0.01;
+					mPosition.y-=0.01;
+					d= (mPosition.x-(cell_x+1-0.5))*(mPosition.x-(cell_x+1-0.5))+(mPosition.y-(cell_y-1+0.5))*(mPosition.y-(cell_y-1+0.5));
+					d=Math.sqrt(d);
+				}
+				status5=false;
+			}
+			// bottom left
+			d= (mPosition.x-(cell_x-1+0.5))*(mPosition.x-(cell_x-1+0.5))+(mPosition.y-(cell_y-1+0.5))*(mPosition.y-(cell_y-1+0.5));
 			d=Math.sqrt(d);
 			if (isWall(cell_x-1,cell_y-1) && d-0.4<0){
 				while (d-0.4<0){
-					m_x+=0.01;
-					m_y+=0.01;
-					d= (m_x-(cell_x+1-0.5))*(m_x-(cell_x+1-0.5))+(m_y-(cell_y-1+0.5))*(m_y-(cell_y-1+0.5));
+					mPosition.x+=0.01;
+					mPosition.y+=0.01;
+					d= (mPosition.x-(cell_x+1-0.5))*(mPosition.x-(cell_x+1-0.5))+(mPosition.y-(cell_y-1+0.5))*(mPosition.y-(cell_y-1+0.5));
 					d=Math.sqrt(d);
 				}
 				status5=false;
@@ -606,40 +601,40 @@ public class Ernest100Model extends ErnestModel
 			if (lastAction==1) speed=-m_theta;
 			if (lastAction==2) speed=m_theta;
 			
-			if (lastAction==0 && (!statusL || !status5) ) speed=0; 
+			if (lastAction==0 && (!statusL && !status5) ) speed=0; 
 			
 			rendu(true,speed);
 		}
 		
 		
 	// compute state for angular movement
-		int adjacent_x = Math.round(m_x);
-		int adjacent_y = Math.round(m_y);
+		int adjacent_x = Math.round(mPosition.x);
+		int adjacent_y = Math.round(mPosition.y);
 		
 		// Adjacent square
 		if (m_orientation < ORIENTATION_UP_RIGHT && m_orientation >=ORIENTATION_UP_LEFT)
-			adjacent_y = Math.round(m_y) - 1;
+			adjacent_y = Math.round(mPosition.y) + 1;
 		if (m_orientation >=ORIENTATION_UP && m_orientation<ORIENTATION_RIGHT){
-			adjacent_x = Math.round(m_x) + 1;
-			adjacent_y = Math.round(m_y) - 1;
+			adjacent_x = Math.round(mPosition.x) + 1;
+			adjacent_y = Math.round(mPosition.y) + 1;
 		}
 		if (m_orientation >= ORIENTATION_UP_RIGHT && m_orientation <ORIENTATION_DOWN_RIGHT)
-			adjacent_x = Math.round(m_x) + 1;
+			adjacent_x = Math.round(mPosition.x) + 1;
 		if (m_orientation >= ORIENTATION_RIGHT && m_orientation <ORIENTATION_DOWN){
-			adjacent_x = Math.round(m_x) + 1;
-			adjacent_y = Math.round(m_y) + 1;
+			adjacent_x = Math.round(mPosition.x) + 1;
+			adjacent_y = Math.round(mPosition.y) - 1;
 		}
 		if (m_orientation >= ORIENTATION_DOWN_RIGHT && m_orientation <ORIENTATION_DOWN_LEFT)
-			adjacent_y = Math.round(m_y) + 1;
+			adjacent_y = Math.round(mPosition.y) - 1;
 		if (m_orientation >= ORIENTATION_DOWN && m_orientation <ORIENTATION_LEFT){
-			adjacent_x = Math.round(m_x) - 1;
-			adjacent_y = Math.round(m_y) + 1;
+			adjacent_x = Math.round(mPosition.x) - 1;
+			adjacent_y = Math.round(mPosition.y) - 1;
 		}
 		if (m_orientation >= ORIENTATION_DOWN_LEFT && m_orientation <ORIENTATION_UP_LEFT)
-			adjacent_x = Math.round(m_x) - 1;
+			adjacent_x = Math.round(mPosition.x) - 1;
 		if (m_orientation >= ORIENTATION_LEFT && m_orientation <ORIENTATION_UP){
-			adjacent_x = Math.round(m_x) - 1;
-			adjacent_y = Math.round(m_y) - 1;
+			adjacent_x = Math.round(mPosition.x) - 1;
+			adjacent_y = Math.round(mPosition.y) + 1;
 		}
 		
 		if ((adjacent_x >= 0) && (adjacent_x < m_w) && (adjacent_y >= 0) && (adjacent_y < m_h)){
@@ -662,65 +657,6 @@ public class Ernest100Model extends ErnestModel
 		setChanged();
 		notifyObservers2();
 		
-		
-		rendu(true);
-		
-	// define reward for linear movement
-		/*int reward=0;
-		
-		if (act==0){
-		// define the "reward" for wall objects
-			if (previousColor.equals(new Color(0,128,  0)) ||
-					previousColor.equals(new Color(0,230, 92)) ||
-					previousColor.equals(new Color(0,230,161)) ){
-				if (!status1 || !status2 || !status5) reward=-100;
-				else                      reward= 100;
-			}
-			else{
-				if (!status4){
-					reward=(int) (100- (Math.max(0, m_v*m_v-0.1)*2) );
-				}
-				else{
-					reward= (int) (100 - (distance*distance*2));
-				}		
-			}
-			if (continuum) m_actionList.get(0).setResults(reward);
-		}
-	// define reward for angular movement
-		else{
-			//reward= 100- Math.abs(m_map.imax-90)*2;
-			reward=(int) (100 - Math.abs( -(angle-90) + a )*4);
-			// point lost
-			if (m_map.max+1<maxPoint) reward=-100;
-			// new point
-			if (m_map.max>maxPoint+1) reward= 100;
-			
-			if (continuum){
-				if (act==1){
-					m_actionList.get(1).setResults(reward);
-				}
-				if (act==2){
-					m_actionList.get(2).setResults(reward);
-				}
-			}
-		}
-		
-		//sleep((int)(70));
-		//m_int.saveImage();
-		
-		//sleep((int)(10));
-		//m_env.saveImage();
-		
-		if (!status4){
-			if (previousColor.equals(new Color(150, 128, 255))) m_objMemory.setValue(previousColor, 100);
-			else                                                m_objMemory.setValue(previousColor,  20);
-			
-			m_v=0;
-		}
-		else if (!status1 || !status2){
-			m_objMemory.setValue(frontColor,-100);
-			m_v=0;
-		}*/
 		
 		rendu(true);
 		
@@ -765,8 +701,8 @@ public class Ernest100Model extends ErnestModel
 		double imin,iplus,jmin,jplus;
 		double imin2,jmin2;
 		
-		int Im_x=Math.round(m_x);
-		int Im_y=Math.round(m_y);
+		int Im_x=Math.round(mPosition.x);
+		int Im_y=Math.round(mPosition.y);
 		
 		for (int i=0;i<360;i++){
 			zVMap[i]=1000;
@@ -786,17 +722,17 @@ public class Ernest100Model extends ErnestModel
 			for (int j=0;j<sight;j++){
 				
 				// cells on the top right side
-				if ( (i>0)&& (Im_x+i<m_w) && (Im_y-j>=0) ){
-					if (isWall(Im_x+i,Im_y-j) || isAlga(Im_x+i,Im_y-j) || isFood(Im_x+i,Im_y-j) ){
-						Color bgc = m_blocks[Im_x+i][Im_y-j].seeBlock();
-						int tactile=m_blocks[Im_x+i][Im_y-j].touchBlock();
+				if ( (i>0)&& (Im_x+i<m_w) && (Im_y+j<m_h) ){
+					if (isWall(Im_x+i,Im_y+j) || isAlga(Im_x+i,Im_y+j) || isFood(Im_x+i,Im_y+j) ){
+						Color bgc = m_blocks[Im_x+i][Im_y+j].seeBlock();
+						int tactile=m_blocks[Im_x+i][Im_y+j].touchBlock();
 						
-						imin =(double)i-0.5 - (m_x-Im_x);
+						imin =(double)i-0.5 - (mPosition.x-Im_x);
 						imin2=imin*imin;
-						iplus=(double)i+0.5 - (m_x-Im_x);
-						jmin =(double)j-0.5 + (m_y-Im_y);
+						iplus=(double)i+0.5 - (mPosition.x-Im_x);
+						jmin =(double)j-0.5 - (mPosition.y-Im_y);
 						jmin2=jmin*jmin;
-						jplus=(double)j+0.5 + (m_y-Im_y);
+						jplus=(double)j+0.5 - (mPosition.y-Im_y);
 						
 						d1=  imin2 + jmin2;
 						d1=Math.sqrt(d1);
@@ -816,7 +752,7 @@ public class Ernest100Model extends ErnestModel
 						
 						for (int k=ai2;k<=ai1;k++){
 							d= d2*10 +   (d1-d2)*10*(k-ai2)/(ai1-ai2);
-							if (m_blocks[Im_x+i][Im_y-j].isVisible()){
+							if (m_blocks[Im_x+i][Im_y+j].isVisible()){
 								if (zVMap[k]>d){
 									rv[k]=d;
 									zVMap[k]= d;
@@ -837,7 +773,7 @@ public class Ernest100Model extends ErnestModel
 						}		
 						for (int k=ai1;k<=ai3;k++){
 							d= d1*10 +   (d3-d1)*10*(k-ai1)/(ai3-ai1);
-							if (m_blocks[Im_x+i][Im_y-j].isVisible()){
+							if (m_blocks[Im_x+i][Im_y+j].isVisible()){
 								if (zVMap[k]>d){
 									rv[k]=d;
 									zVMap[k]= d;
@@ -861,17 +797,17 @@ public class Ernest100Model extends ErnestModel
 				}
 				
 				// cells on the bottom right side
-				if ( (j>0) && (Im_x+i<m_w) && (Im_y+j<m_h) ){
-					if (isWall(Im_x+i,Im_y+j) || isAlga(Im_x+i,Im_y+j) || isFood(Im_x+i,Im_y+j) ){
-						Color bgc = m_blocks[Im_x+i][Im_y+j].seeBlock();
-						int tactile=m_blocks[Im_x+i][Im_y+j].touchBlock();
+				if ( (j>0) && (Im_x+i<m_w) && (Im_y-j>=0) ){
+					if (isWall(Im_x+i,Im_y-j) || isAlga(Im_x+i,Im_y-j) || isFood(Im_x+i,Im_y-j) ){
+						Color bgc = m_blocks[Im_x+i][Im_y-j].seeBlock();
+						int tactile=m_blocks[Im_x+i][Im_y-j].touchBlock();
 						
-						imin =(double)i-0.5 - (m_x-Im_x);
+						imin =(double)i-0.5 - (mPosition.x-Im_x);
 						imin2=imin*imin;
-						iplus=(double)i+0.5 - (m_x-Im_x);
-						jmin =(double)j-0.5 - (m_y-Im_y);
+						iplus=(double)i+0.5 - (mPosition.x-Im_x);
+						jmin =(double)j-0.5 + (mPosition.y-Im_y);
 						jmin2=jmin*jmin;
-						jplus=(double)j+0.5 - (m_y-Im_y);
+						jplus=(double)j+0.5 + (mPosition.y-Im_y);
 						
 						d1=  imin2 + jmin2;
 						d1=Math.sqrt(d1);
@@ -898,7 +834,7 @@ public class Ernest100Model extends ErnestModel
 						
 						for (int k=ai2;k<=ai1;k++){
 							d= ( d2*10 +   (d1-d2)*10*(k-ai2)/(ai1-ai2));
-							if (m_blocks[Im_x+i][Im_y+j].isVisible()){
+							if (m_blocks[Im_x+i][Im_y-j].isVisible()){
 								if (zVMap[k]>d){
 									rv[k]=d;
 									zVMap[k]= d;
@@ -921,7 +857,7 @@ public class Ernest100Model extends ErnestModel
 						}		
 						for (int k=ai1;k<=ai3;k++){
 							d= ( d1*10 +   (d3-d1)*10*(k-ai1)/(ai3-ai1));
-							if (m_blocks[Im_x+i][Im_y+j].isVisible()){
+							if (m_blocks[Im_x+i][Im_y-j].isVisible()){
 								if (zVMap[k]>d){
 									rv[k]=d;
 									zVMap[k]= d;
@@ -945,17 +881,17 @@ public class Ernest100Model extends ErnestModel
 				}
 				
 				// cells on the bottom left side
-				if ( (i>0) && (Im_x-i>=0) && (Im_y+j<m_h) ){
-					if (isWall(Im_x-i,Im_y+j) || isAlga(Im_x-i,Im_y+j) || isFood(Im_x-i,Im_y+j) ){
-						Color bgc = m_blocks[Im_x-i][Im_y+j].seeBlock();
-						int tactile=m_blocks[Im_x-i][Im_y+j].touchBlock();
+				if ( (i>0) && (Im_x-i>=0) && (Im_y-j>=0) ){
+					if (isWall(Im_x-i,Im_y-j) || isAlga(Im_x-i,Im_y-j) || isFood(Im_x-i,Im_y-j) ){
+						Color bgc = m_blocks[Im_x-i][Im_y-j].seeBlock();
+						int tactile=m_blocks[Im_x-i][Im_y-j].touchBlock();
 						
-						imin =(double)i-0.5 + (m_x-Im_x);
+						imin =(double)i-0.5 + (mPosition.x-Im_x);
 						imin2=imin*imin;
-						iplus=(double)i+0.5 + (m_x-Im_x);
-						jmin =(double)j-0.5 - (m_y-Im_y);
+						iplus=(double)i+0.5 + (mPosition.x-Im_x);
+						jmin =(double)j-0.5 + (mPosition.y-Im_y);
 						jmin2=jmin*jmin;
-						jplus=(double)j+0.5 - (m_y-Im_y);
+						jplus=(double)j+0.5 + (mPosition.y-Im_y);
 						
 						d1=  imin2 + jmin2;
 						d1=Math.sqrt(d1);
@@ -974,7 +910,7 @@ public class Ernest100Model extends ErnestModel
 						
 						for (int k=ai2;k<=ai1;k++){
 							d=   d2*10 +   (d1-d2)*10*(k-ai2)/(ai1-ai2);
-							if (m_blocks[Im_x-i][Im_y+j].isVisible()){
+							if (m_blocks[Im_x-i][Im_y-j].isVisible()){
 								if (zVMap[k]>d){
 									rv[k]=d;
 									zVMap[k]=d;
@@ -995,7 +931,7 @@ public class Ernest100Model extends ErnestModel
 						}		
 						for (int k=ai1;k<=ai3;k++){
 							d=  d1*10 +   (d3-d1)*10*(k-ai1)/(ai3-ai1);
-							if (m_blocks[Im_x-i][Im_y+j].isVisible()){
+							if (m_blocks[Im_x-i][Im_y-j].isVisible()){
 								if (zVMap[k]>d){
 									rv[k]=d;
 									zVMap[k]=d;
@@ -1019,15 +955,15 @@ public class Ernest100Model extends ErnestModel
 				}
 				
 				// cells exactly on the top
-				if ( (j>0) && (i==0) && (Im_y-j>=0) ){
-					if (isWall(Im_x-i,Im_y-j) || isAlga(Im_x-i,Im_y-j) || isFood(Im_x-i,Im_y-j) ){
-						Color bgc = m_blocks[Im_x-i][Im_y-j].seeBlock();
-						int tactile=m_blocks[Im_x-i][Im_y-j].touchBlock();
+				if ( (j>0) && (i==0) && (Im_y+j<m_h) ){
+					if (isWall(Im_x-i,Im_y+j) || isAlga(Im_x-i,Im_y+j) || isFood(Im_x-i,Im_y+j) ){
+						Color bgc = m_blocks[Im_x-i][Im_y+j].seeBlock();
+						int tactile=m_blocks[Im_x-i][Im_y+j].touchBlock();
 						
-						imin =(double)i-0.5 + (m_x-Im_x);
+						imin =(double)i-0.5 + (mPosition.x-Im_x);
 						imin2=imin*imin;
-						iplus=(double)i+0.5 + (m_x-Im_x);
-						jmin =(double)j-0.5 + (m_y-Im_y);
+						iplus=(double)i+0.5 + (mPosition.x-Im_x);
+						jmin =(double)j-0.5 - (mPosition.y-Im_y);
 						jmin2=jmin*jmin;
 						
 						d1=  imin2 + jmin2;
@@ -1047,7 +983,7 @@ public class Ernest100Model extends ErnestModel
 				    	int count=0;
 				    	for (int k=ai2;k<360;k++){
 				    		d= d2*10 +   (d1-d2)*10*(k-ai2)/((ai1-ai2+360)%360);
-				    		if (m_blocks[Im_x-i][Im_y-j].isVisible()){
+				    		if (m_blocks[Im_x-i][Im_y+j].isVisible()){
 				    			if (zVMap[k]>d){
 				    				rv[k]=d;
 				    				zVMap[k]= d;
@@ -1067,7 +1003,7 @@ public class Ernest100Model extends ErnestModel
 				    	}
 				    	for (int k=0;k<=ai1;k++){
 				    		d= d2*10 +   (d1-d2)*10*(k+count)/((ai1-ai2+360)%360);
-				    		if (m_blocks[Im_x-i][Im_y-j].isVisible()){
+				    		if (m_blocks[Im_x-i][Im_y+j].isVisible()){
 				    			if (zVMap[k]>d){
 				    				rv[k]=d;
 				    				zVMap[k]= d;
@@ -1088,17 +1024,17 @@ public class Ernest100Model extends ErnestModel
 				}
 				
 				// cells on the top left side
-				if ( (j>0) && (i>0) && (Im_x-i>=0) && (Im_y-j>=0) ){
-					if (isWall(Im_x-i,Im_y-j) || isAlga(Im_x-i,Im_y-j) || isFood(Im_x-i,Im_y-j) ){
-						Color bgc = m_blocks[Im_x-i][Im_y-j].seeBlock();
-						int tactile=m_blocks[Im_x-i][Im_y-j].touchBlock();
+				if ( (j>0) && (i>0) && (Im_x-i>=0) && (Im_y+j<m_h) ){
+					if (isWall(Im_x-i,Im_y+j) || isAlga(Im_x-i,Im_y+j) || isFood(Im_x-i,Im_y+j) ){
+						Color bgc = m_blocks[Im_x-i][Im_y+j].seeBlock();
+						int tactile=m_blocks[Im_x-i][Im_y+j].touchBlock();
 						
-						imin =(double)i-0.5 + (m_x-Im_x);
+						imin =(double)i-0.5 + (mPosition.x-Im_x);
 						imin2=imin*imin;
-						iplus=(double)i+0.5 + (m_x-Im_x);
-						jmin =(double)j-0.5 + (m_y-Im_y);
+						iplus=(double)i+0.5 + (mPosition.x-Im_x);
+						jmin =(double)j-0.5 - (mPosition.y-Im_y);
 						jmin2=jmin*jmin;
-						jplus=(double)j+0.5 + (m_y-Im_y);
+						jplus=(double)j+0.5 - (mPosition.y-Im_y);
 						
 						d1=  imin2 + jmin2;
 						d1=Math.sqrt(d1);
@@ -1120,7 +1056,7 @@ public class Ernest100Model extends ErnestModel
 						
 				    	for (int k=ai2;k<=ai1;k++){
 				    		d= d2*10 +   (d1-d2)*10*(k-ai2)/(ai1-ai2);
-				    		if (m_blocks[Im_x-i][Im_y-j].isVisible()){
+				    		if (m_blocks[Im_x-i][Im_y+j].isVisible()){
 				    			if (zVMap[k]>d){
 				    				rv[k]=d;
 				    				zVMap[k]= d;
@@ -1141,7 +1077,7 @@ public class Ernest100Model extends ErnestModel
 				    	}		
 				    	for (int k=ai1;k<=ai3;k++){
 				    		d= d1*10 +   (d3-d1)*10*(k-ai1)/(ai3-ai1);
-				    		if (m_blocks[Im_x-i][Im_y-j].isVisible()){
+				    		if (m_blocks[Im_x-i][Im_y+j].isVisible()){
 				    			if (zVMap[k]>d-0.01){
 				    				rv[k]=d;
 				    				zVMap[k]=d;
@@ -1262,10 +1198,10 @@ public class Ernest100Model extends ErnestModel
 		// scan the first row
 		for (double angle = t ;  angle <= t + a + .001; angle += step)
 		{
-			int x0 =  Math.round(m_x) + (int) ( 20 * Math.cos(angle) + .5); // round to the closest integer 
-			int y0 =  Math.round(m_y) - (int) ( 20 * Math.sin(angle) + .5); // Y axis is downwards
+			int x0 =  Math.round(mPosition.x) + (int) ( 20 * Math.cos(angle) + .5); // round to the closest integer 
+			int y0 =  Math.round(mPosition.y) - (int) ( 20 * Math.sin(angle) + .5); // Y axis is downwards
 			
-			eyeFixation = rayTrace(Math.round(m_x), Math.round(m_y) , x0, y0);
+			eyeFixation = rayTrace(Math.round(mPosition.x), Math.round(mPosition.y) , x0, y0);
 			
 			// We stop when we find a singularity.
 			if ( eyeFixation.getColor() != WALL_COLOR)
@@ -1577,7 +1513,7 @@ public class Ernest100Model extends ErnestModel
 		// Draw the body
 		
 		g2d.setStroke(new BasicStroke(2f));		
-		g2d.setColor(m_blocks[Math.round(m_x)][Math.round(m_y)].seeBlock() );
+		g2d.setColor(m_blocks[Math.round(mPosition.x)][Math.round(mPosition.y)].seeBlock() );
 		g2d.setColor(new Color(255,255,255)) ;
 		g2d.fill(sharkMask);
 
