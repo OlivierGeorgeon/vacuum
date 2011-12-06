@@ -100,16 +100,12 @@ public class Environnement extends JPanel implements MouseListener{
 		
 		int c_w=w/m_w;
 		int c_h=h/m_h;
-		
-		e_x=(int) (m_model.m_x*c_w+c_w/2);
-		e_y=(int) (m_model.m_y*c_h+c_h/2);
-		
-		
+
 		g2d.setColor(Color.white);
 		g2d.fillRect(0, 0, w, h);
 		
 		// draw agent
-		m_model.paintAgent((Graphics2D)g.create(),(int) (m_model.m_x*c_w+(c_w/2)),(int) (m_model.m_y*c_h+(c_h/2)),(double)c_w/100,(double)c_h/100);
+		m_model.paintAgent((Graphics2D)g.create(),(int) (m_model.mPosition.x*c_w+(c_w/2)),(int) (h-(m_model.mPosition.y+1)*c_h+(c_h/2)),(double)c_w/100,(double)c_h/100);
 		
 		
 		for (int i=0;i<m_w;i++){
@@ -118,14 +114,14 @@ public class Environnement extends JPanel implements MouseListener{
 				// walls
 				if (m_model.isWall(i, j)){
 					g2d.setColor(m_model.m_blocks[i][j].seeBlock());
-					g2d.fillRect(i*c_w, j*c_h, c_w+1, c_h+1);
+					g2d.fillRect(i*c_w, h-(j+1)*c_h, c_w+1, c_h+1);
 				}
 				
 				// fish
 				if (m_model.isFood(i, j)){
 					
 					AffineTransform centerCell = new AffineTransform();
-					centerCell.translate(i*c_w+c_w/2, j*c_h+c_h/2);
+					centerCell.translate(i*c_w+c_w/2, h-(j+1)*c_h+c_h/2);
 					centerCell.scale((double) c_w / 100, (double) c_h / 100); 
 					g2d.transform(centerCell);
 					g2d.setColor(m_model.m_blocks[i][j].seeBlock());
@@ -136,7 +132,7 @@ public class Environnement extends JPanel implements MouseListener{
 				// leaf
 				if (m_model.isAlga(i, j)){
 					AffineTransform centerCell = new AffineTransform();
-					centerCell.translate(i*c_w+c_w/2, j*c_h+c_h/2);
+					centerCell.translate(i*c_w+c_w/2, h-(j+1)*c_h+c_h/2);
 					centerCell.scale((double) c_w / 100, (double) c_h / 100); 
 					g2d.transform(centerCell);
 

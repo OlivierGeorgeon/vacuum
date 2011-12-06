@@ -144,10 +144,10 @@ public class ErnestModel extends Model
 		Pair<Integer, Color> eyeFixation = null;
 		float step = a/2;
 		for (float angle = t; angle <= t + a + .001; angle += step) {
-			float x0 = (float) (m_x + 20 * Math.cos(angle));
-			float y0 = (float) (m_y - 20 * Math.sin(angle)); // Y axis is downwards.
+			float x0 = (float) (mPosition.x + 20 * Math.cos(angle));
+			float y0 = (float) (mPosition.y - 20 * Math.sin(angle)); // Y axis is downwards.
 			//float y0 = (float) (m_y + 20 * Math.sin(angle)); // Y axis is upwards.
-			eyeFixation = rayTrace(m_x, m_y, x0, y0);
+			eyeFixation = rayTrace(mPosition.x,mPosition.y, x0, y0);
 			// We stop when we find a singularity.
 			if (eyeFixation.mRight != WALL_COLOR)
 				break;
@@ -297,8 +297,8 @@ public class ErnestModel extends Model
 	{
 		mTranslation.scale(.9f);
 		mPosition.add(mTranslation);
-		m_x = mPosition.x;
-		m_y = m_h - mPosition.y;
+		//m_x = mPosition.x;
+		//m_y = m_h - mPosition.y;
 		
 		mRotation.scale(.9f);
 		mOrientation.add(mRotation);

@@ -124,8 +124,8 @@ public class Model extends Observable
 	protected int m_counter = 0;
 
 	// A single agent in the environment.
-	protected float m_x;
-	protected float m_y;
+	//protected float m_x;
+	//protected float m_y;
 	public int m_orientation; 
 	public String m_schema = "";
 	
@@ -239,7 +239,7 @@ public class Model extends Observable
 
 				for (int x = 0; x < l_w; x++)
 				{
-					m_blocks[x][y]=empty;
+					m_blocks[x][m_h-y-1]=empty;
 					
 					// mauve fish
 					if (square[x].equals("*"))
@@ -247,7 +247,7 @@ public class Model extends Observable
 						l_dirtyCount++;
 						
 						
-						m_blocks[x][y]=fish;
+						m_blocks[x][m_h-y-1]=fish;
 					}
 					
 					// Agent up
@@ -257,11 +257,12 @@ public class Model extends Observable
 						l_x = x;
 						l_y = y;
 						mPosition.x = x;
-						mPosition.y = m_h - y;
+						mPosition.y = m_h - y-1;
 						mPosition.z = 0;
 						mOrientation.x = 0;
 						mOrientation.y = 0;
 						mOrientation.z = (float) Math.PI/2;
+						System.out.println("************************ "+ mPosition.x+" ; "+mPosition.y);
 					}
 					// Agent right
 					else if (square[x].equalsIgnoreCase(">"))
@@ -270,7 +271,7 @@ public class Model extends Observable
 						l_x = x;
 						l_y = y;	
 						mPosition.x = x;
-						mPosition.y = m_h - y;
+						mPosition.y = m_h - y-1;
 						mPosition.z = 0;
 						mOrientation.x = 0;
 						mOrientation.y = 0;
@@ -283,7 +284,7 @@ public class Model extends Observable
 						l_x = x;
 						l_y = y;	
 						mPosition.x = x;
-						mPosition.y = m_h - y;
+						mPosition.y = m_h - y-1;
 						mPosition.z = 0;
 						mOrientation.x = 0;
 						mOrientation.y = 0;
@@ -296,7 +297,7 @@ public class Model extends Observable
 						l_x = x;
 						l_y = y;	
 						mPosition.x = x;
-						mPosition.y = m_h - y;
+						mPosition.y = m_h - y-1;
 						mPosition.z = 0;
 						mOrientation.x = 0;
 						mOrientation.y = 0;
@@ -318,17 +319,17 @@ public class Model extends Observable
 							 ||  square[x].equalsIgnoreCase("i")
 							 ||  square[x].equalsIgnoreCase("j")){
 							
-							m_blocks[x][y]=wall;
+							m_blocks[x][m_h-y-1]=wall;
 						}
 						else{
 							
 							if (square[x].equalsIgnoreCase("g")){
-								m_blocks[x][y]=wall2;
+								m_blocks[x][m_h-y-1]=wall2;
 							}
 							else if (square[x].equalsIgnoreCase("h")){
-									m_blocks[x][y]=wall3;	
+									m_blocks[x][m_h-y-1]=wall3;	
 							}
-							else m_blocks[x][y]=empty;
+							else m_blocks[x][m_h-y-1]=empty;
 						}
 					}
 					// Singular dirty square
@@ -336,11 +337,11 @@ public class Model extends Observable
 					{
 						
 						switch (Integer.parseInt(square[x]) ){
-						case 2: m_blocks[x][y]=alga4; break;
-						case 3: m_blocks[x][y]=alga5; break;
-						case 4: m_blocks[x][y]=alga1; break;
-						case 5: m_blocks[x][y]=alga2; break;
-						case 9: m_blocks[x][y]=alga3; break;
+						case 2: m_blocks[x][m_h-y-1]=alga4; break;
+						case 3: m_blocks[x][m_h-y-1]=alga5; break;
+						case 4: m_blocks[x][m_h-y-1]=alga1; break;
+						case 5: m_blocks[x][m_h-y-1]=alga2; break;
+						case 9: m_blocks[x][m_h-y-1]=alga3; break;
 						default: break;
 						}
 					}
@@ -355,8 +356,8 @@ public class Model extends Observable
 				throw new 
 					IllegalStateException("Agent location not specified!");
 
-			m_x = l_x;
-			m_y = l_y;
+			//m_x = l_x;
+			//m_y = l_y;
 			m_w = l_w;
 			m_h = l_h;
 
@@ -392,7 +393,7 @@ public class Model extends Observable
 	 */
 	protected boolean affordWalk(Vector3f pos) 
 	{
-		return (!m_blocks[Math.round(pos.x)][m_h - Math.round(pos.y)].isWall());
+		return (!m_blocks[Math.round(pos.x)][Math.round(pos.y)].isWall());
 	}
 	/**
 	 * @param pos The position to test in Cartesian coordinates
@@ -400,7 +401,7 @@ public class Model extends Observable
 	 */
 	protected boolean affordTouchSoft(Vector3f pos) 
 	{
-		return (m_blocks[Math.round(pos.x)][m_h - Math.round(pos.y)].isAlga());
+		return (m_blocks[Math.round(pos.x)][Math.round(pos.y)].isAlga());
 	}
 	/**
 	 * @param pos The position to test in Cartesian coordinates.
@@ -408,7 +409,7 @@ public class Model extends Observable
 	 */
 	protected boolean affordEat(Vector3f pos) 
 	{
-		return (m_blocks[Math.round(pos.x)][m_h - Math.round(pos.y)].isFood());
+		return (m_blocks[Math.round(pos.x)][Math.round(pos.y)].isFood());
 	}
 	/**
 	 * @param pos The position to test in cartesian coordinates.
@@ -416,7 +417,7 @@ public class Model extends Observable
 	 */
 	public boolean affordSee(Vector3f pos)
 	{
-		return 	(m_blocks[Math.round(pos.x)][m_h - Math.round(pos.y)].isVisible()); 		
+		return 	(m_blocks[Math.round(pos.x)][Math.round(pos.y)].isVisible()); 		
 	}
 
 	public void setBlock(int x, int y, Block block)
@@ -426,7 +427,7 @@ public class Model extends Observable
 
 	public boolean isAgent(int x, int y)
 	{
-		return (x == Math.round(m_x)) && (y == Math.round(m_y));
+		return (x == Math.round(mPosition.x)) && (y == Math.round(mPosition.y));
 	}
 	
 	public boolean isInformation(int x, int y)
@@ -482,10 +483,10 @@ public class Model extends Observable
 	{ return m_delay; }
 
 	public float agentX()
-	{ return m_x; }
+	{ return mPosition.x; }
 
 	public float agentY()
-	{ return m_y; }
+	{ return mPosition.y; }
 
 	public int getWidth()
 	{ return m_w; }
@@ -534,9 +535,9 @@ public class Model extends Observable
 	 */
 	public boolean suck()
 	{
-		if (m_blocks[Math.round(m_x)][Math.round(m_y)].isFood())
+		if (m_blocks[Math.round(mPosition.x)][Math.round(mPosition.y)].isFood())
 		{
-			m_blocks[Math.round(m_x)][Math.round(m_y)] = empty;
+			m_blocks[Math.round(mPosition.x)][Math.round(mPosition.y)] = empty;
 			setChanged();
 			notifyObservers2();
 			
@@ -579,8 +580,8 @@ public class Model extends Observable
 		
 		m_w = prefs.getInt(PREF_W,INIT_W);
 		m_h = prefs.getInt(PREF_H,INIT_H);
-		m_x = prefs.getInt(PREF_X,INIT_X);
-		m_y = prefs.getInt(PREF_Y,INIT_Y);
+		//m_x = prefs.getInt(PREF_X,INIT_X);
+		//m_y = prefs.getInt(PREF_Y,INIT_Y);
 		m_dirtyCount = prefs.getInt(PREF_DIRTY,INIT_DIRTY);
 		m_delay = prefs.getInt(PREF_DELAY,INIT_DELAY);
 		m_boardFileName = prefs.get(PREF_BOARDFILE, "");
@@ -598,8 +599,8 @@ public class Model extends Observable
 		
 		prefs.putInt(PREF_W, m_w);
 		prefs.putInt(PREF_H, m_h);
-		prefs.putFloat(PREF_X, m_x);
-		prefs.putFloat(PREF_Y, m_y);
+		//prefs.putFloat(PREF_X, m_x);
+		//prefs.putFloat(PREF_Y, m_y);
 		prefs.putInt(PREF_DIRTY, m_dirtyCount);
 		prefs.putInt(PREF_DELAY, m_delay);
 		prefs.put(PREF_BOARDFILE, m_boardFileName);

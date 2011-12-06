@@ -377,8 +377,8 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 				throw new 
 					IllegalStateException("Agent location not specified!");
 
-			m_model.m_x = l_x;
-			m_model.m_y = l_y;
+			//m_model.m_x = l_x;
+			//m_model.m_y = l_y;
 			m_w = l_w;
 			m_h = l_h;
 
