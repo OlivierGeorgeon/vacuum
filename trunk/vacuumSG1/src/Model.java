@@ -262,7 +262,6 @@ public class Model extends Observable
 						mOrientation.x = 0;
 						mOrientation.y = 0;
 						mOrientation.z = (float) Math.PI/2;
-						System.out.println("************************ "+ mPosition.x+" ; "+mPosition.y);
 					}
 					// Agent right
 					else if (square[x].equalsIgnoreCase(">"))

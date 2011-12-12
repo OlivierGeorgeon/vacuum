@@ -14,7 +14,7 @@ public class ColliculusFrame extends JFrame{
 	
 	public ColliculusFrame(Colliculus c){
 		this.setTitle("Colliculus");
-    	this.setSize(1000, 800);
+    	this.setSize(1200, 800);
     	this.setLocationRelativeTo(null);               
     	this.setVisible(true);
 

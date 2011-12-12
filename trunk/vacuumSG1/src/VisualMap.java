@@ -175,7 +175,7 @@ public class VisualMap {
 			int min=(int) r[i+90]-1;//(int) Math.max(0, r[i]-confidence/2);
 			int max=(int) r[i+90]+5;//(int) Math.min(mapSizeR, r[i]+confidence/2+1);
 
-			for (int j=0;j<mapSizeR;j++){
+			for (int j=10;j<mapSizeR;j++){
 
 				if (j>=min && j<max){
 					colorMap[i][j]=c[i+90];
