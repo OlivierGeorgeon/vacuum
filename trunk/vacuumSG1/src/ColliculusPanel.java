@@ -22,11 +22,12 @@ public class ColliculusPanel extends JPanel{
 		colliculus=c;
 		width=100/(40-10);
 		index=0;
-		bundleTrace=new Color[125][300];
-		bundleTraceRed=new Color[125][300];
-		bundleTraceCyan=new Color[125][300];
-		for (int i=0;i<125;i++){
-			for (int j=0;j<300;j++){
+		bundleTrace=new Color[505][800];
+		bundleTraceRed=new Color[505][800];
+		bundleTraceCyan=new Color[505][800];
+		
+		for (int i=0;i<505;i++){
+			for (int j=0;j<800;j++){
 				bundleTrace[i][j]=Color.black;
 				bundleTraceRed[i][j]=Color.black;
 				bundleTraceCyan[i][j]=Color.black;
@@ -39,7 +40,7 @@ public class ColliculusPanel extends JPanel{
 	public void paintComponent(Graphics g){
 		
 		g.setColor(Color.white);
-		g.fillRect(0, 0, 1000, 800);
+		g.fillRect(0, 0, 685, 800);
 		
 		float x,y;
 
@@ -197,59 +198,65 @@ public class ColliculusPanel extends JPanel{
 		//---------------------------------------------------------------
 		int color=9;
 		int touch=2;
+		int minIndex;
 		// bundle map trace
-		offsetX=900;
-		offsetY=170;
+		/*offsetX=690;
+		offsetY=10;
 		
 		for (int i=0;i<100;i++){
-			for (int j=0;j<50;j++){
-				float proba=colliculus.visualProba[i][j*2][color]*colliculus.tactileProba[i][j*2][3];
-				if (proba>0.1){
-					float red1=proba*(float)colliculus.bundleColor[color+1][touch+1].getRed();
-					float red2=(1-proba)*(float)bundleTrace[25+i-j/2][j+index].getRed();
-					float green1=proba*(float)colliculus.bundleColor[color+1][touch+1].getGreen();
-					float green2=(1-proba)*(float)bundleTrace[25+i-j/2][j+index].getGreen();
-					float blue1=proba*(float)colliculus.bundleColor[color+1][touch+1].getBlue();
-					float blue2=(1-proba)*(float)bundleTrace[25+i-j/2][j+index].getBlue();
+			for (int j=0;j<100;j++){
+				float proba=colliculus.visualProba[i][99-j][color]*colliculus.tactileProba[i][99-j][touch];
 				
-					bundleTrace[25+i-i/2][j+(250-index)]=new Color( (int)(red1+red2),(int)(green1+green2),(int)(blue1+blue2));
+				if (proba>0.1){
+					for (int i2=0;i2<4;i2++){
+						float red1=proba*(float)colliculus.bundleColor[color+1][touch+1].getRed();
+						float red2=(1-proba)*(float)bundleTrace[i*4+i2+j][(799-index)-j].getRed();
+						float green1=proba*(float)colliculus.bundleColor[color+1][touch+1].getGreen();
+						float green2=(1-proba)*(float)bundleTrace[i*4+i2+j][(799-index)-j].getGreen();
+						float blue1=proba*(float)colliculus.bundleColor[color+1][touch+1].getBlue();
+						float blue2=(1-proba)*(float)bundleTrace[i*4+i2+j][(799-index)-j].getBlue();
+					
+						bundleTrace[i*4+i2+j][(799-index)-j]=new Color( (int)(red1+red2),(int)(green1+green2),(int)(blue1+blue2));
+					}
 				}
 				
 				if (  (i==0 || i==50 ||i==99) 
-				    &&(j==0 || j==25 || j==49) ){
-					bundleTrace[25+i-j/2][j+(250-index)]=Color.blue;
+				    &&(j==0 || j==50 || j==99) ){
+					bundleTrace[i*4+j][(799-index)-j]=Color.blue;
 				}
-				if (j==25 && i>=49 && i<=51){
-					bundleTrace[25+i-j/2][j+(250-index)]=Color.cyan;
+				if (j==50 && i==50){
+					bundleTrace[i*4+j][(799-index)-j]=Color.cyan;
 				}
 			}
 		}
-		for (int i=0;i<125;i++){
-			for (int j=0;j<300;j++){
+		
+		minIndex=Math.min(799,810-index);
+		for (int i=0;i<500;i++){
+			for (int j=minIndex;j>699-index;j--){
 				g.setColor(bundleTrace[i][j]);
-				g.fillRect(offsetX-colliculus.tmap.mapSize/2*width + i*width,
-						   offsetY-colliculus.tmap.mapSize/2*width + j*width,
-						   width, width);
+				g.fillRect(offsetX + i,
+						   offsetY + j,
+						   1, 1);
 			}
 		}
 		
 		g.setColor(Color.red);
 		//g.drawRect(offsetX+index*width-colliculus.tmap.mapSize/2*width, offsetY-colliculus.tmap.mapSize/2*width, 50*width, 100*width);
-		g.drawLine(offsetX-colliculus.tmap.mapSize/2*width+ 25*width, offsetY+(250-index)*width-colliculus.tmap.mapSize/2*width,
-				   offsetX-colliculus.tmap.mapSize/2*width+125*width, offsetY+(250-index)*width-colliculus.tmap.mapSize/2*width);
-		g.drawLine(offsetX-colliculus.tmap.mapSize/2*width          , offsetY+(250-index)*width-colliculus.tmap.mapSize/2*width+50*width,
-				   offsetX-colliculus.tmap.mapSize/2*width+100*width, offsetY+(250-index)*width-colliculus.tmap.mapSize/2*width+50*width);
+		g.drawLine(offsetX    , offsetY+(800-index),
+				   offsetX+400, offsetY+(800-index));
+		g.drawLine(offsetX+100, offsetY+(700-index),
+				   offsetX+499, offsetY+(700-index));
 		
-		g.drawLine(offsetX-colliculus.tmap.mapSize/2*width, offsetY+(250-index)*width-colliculus.tmap.mapSize/2*width+50*width,
-				   offsetX-colliculus.tmap.mapSize/2*width+25*width, offsetY+(250-index)*width-colliculus.tmap.mapSize/2*width);
-		g.drawLine(offsetX-colliculus.tmap.mapSize/2*width+100*width, offsetY+(250-index)*width-colliculus.tmap.mapSize/2*width+50*width,
-				   offsetX-colliculus.tmap.mapSize/2*width+125*width, offsetY+(250-index)*width-colliculus.tmap.mapSize/2*width);
+		g.drawLine(offsetX    , offsetY+(800-index),
+				   offsetX+100, offsetY+(700-index));
+		g.drawLine(offsetX+400, offsetY+(800-index),
+				   offsetX+499, offsetY+(700-index));
 		
 		index++;
-		if (index>=250){
+		if (index>=700){
 			index=0;
-			for (int i=0;i<125;i++){
-				for (int j=0;j<300;j++){
+			for (int i=0;i<500;i++){
+				for (int j=0;j<800;j++){
 					bundleTrace[i][j]=Color.black;
 				}
 			}
@@ -258,63 +265,58 @@ public class ColliculusPanel extends JPanel{
 		//***********************************************************************
 		
 		//---------------------------------------------------------------
-		/*// bundle map trace (anaglyph)
-		offsetX=900;
-		offsetY=170;
+		// bundle map trace (anaglyph)
+		/*offsetX=690;
+		offsetY=10;
 		
 		for (int i=0;i<100;i++){
-			for (int j=0;j<50;j++){
-				float proba=colliculus.visualProba[i][j*2][color]*colliculus.tactileProba[i][j*2][touch];
+			for (int j=0;j<100;j++){
+				float proba=colliculus.visualProba[i][99-j][color]*colliculus.tactileProba[i][99-j][touch];
+				
 				if (proba>0.1){
-					float red1=proba*256;
-					float red2=(1-proba)*(float)bundleTraceRed[12+i-j/5][j+(250-index)].getRed();
+					for (int i2=0;i2<4;i2++){
+						float red1=proba*200;
+						float red2=(1-proba)*(float)bundleTraceRed[(int) (i*4+i2+j*0.95)][(799-index)-j].getRed();
 					
-					float green1=proba*256;
-					float green2=(1-proba)*(float)bundleTraceCyan[12+i+j/5][j+(250-index)].getGreen();
-					float blue1=proba*256;
-					float blue2=(1-proba)*(float)bundleTraceCyan[12+i+j/5][j+(250-index)].getBlue();
-					
-					bundleTraceRed[12+i-j/5][j+(250-index)] =new Color( (int)(red1+red2),0,0);
-					bundleTraceCyan[12+i+j/5][j+(250-index)]=new Color( 0,(int)(green1+green2),(int)(blue1+blue2));
+						float green1=proba*200;
+						float green2=(1-proba)*(float)bundleTraceCyan[(int) (i*4+i2+j*1.05)][(799-index)-j].getGreen();
+						float blue1=proba*200;
+						float blue2=(1-proba)*(float)bundleTraceCyan[(int) (i*4+i2+j*1.05)][(799-index)-j].getBlue();
+				
+						bundleTraceRed[(int) (i*4+i2+j*0.95)][(799-index)-j]=new Color( (int)(red1+red2),0,0);
+						bundleTraceCyan[(int) (i*4+i2+j*1.05)][(799-index)-j]=new Color( 0,(int)(green1+green2),(int)(blue1+blue2));
+					}
 				}
 				
 				if (  (i==0 || i==50 ||i==99) 
-				    &&(j==0 || j==25 || j==49) ){
-					bundleTraceRed[12+i-j/5][j+(250-index)]=Color.red;
-					bundleTraceCyan[12+i+j/5][j+(250-index)]=Color.cyan;
+				    &&(j==0 || j==50 || j==99) ){
+					bundleTraceRed[(int) (i*4+j*0.95)][(799-index)-j]=Color.LIGHT_GRAY;
+					bundleTraceCyan[(int) (i*4+j*1.05)][(799-index)-j]=Color.LIGHT_GRAY;
 				}
+
 			}
 		}
-		for (int i=0;i<125;i++){
-			for (int j=0;j<300;j++){
+
+		minIndex=Math.min(799,810-index);
+		for (int i=0;i<505;i++){
+			for (int j=minIndex;j>699-index;j--){
 				g.setColor(new Color(bundleTraceRed[i][j].getRed(),bundleTraceCyan[i][j].getGreen(),bundleTraceCyan[i][j].getBlue()));
-				g.fillRect(offsetX-colliculus.tmap.mapSize/2*width + i*width,
-						   offsetY-colliculus.tmap.mapSize/2*width + j*width,
-						   width, width);
+				g.fillRect(offsetX + i,
+						   offsetY + j,
+						   1, 1);
 			}
 		}
-		
-		g.setColor(Color.red);
-		g.drawLine(offsetX-colliculus.tmap.mapSize/2*width+ 12*width, offsetY+(250-index)*width-colliculus.tmap.mapSize/2*width,
-				   offsetX-colliculus.tmap.mapSize/2*width+  3*width, offsetY+(250-index)*width-colliculus.tmap.mapSize/2*width+50*width);
-		g.drawLine(offsetX-colliculus.tmap.mapSize/2*width+112*width, offsetY+(250-index)*width-colliculus.tmap.mapSize/2*width,
-				   offsetX-colliculus.tmap.mapSize/2*width+103*width, offsetY+(250-index)*width-colliculus.tmap.mapSize/2*width+50*width);
-		
-		g.setColor(Color.cyan);
-		g.drawLine(offsetX-colliculus.tmap.mapSize/2*width+ 12*width, offsetY+(250-index)*width-colliculus.tmap.mapSize/2*width,
-				   offsetX-colliculus.tmap.mapSize/2*width+ 22*width, offsetY+(250-index)*width-colliculus.tmap.mapSize/2*width+50*width);
-		g.drawLine(offsetX-colliculus.tmap.mapSize/2*width+112*width, offsetY+(250-index)*width-colliculus.tmap.mapSize/2*width,
-				   offsetX-colliculus.tmap.mapSize/2*width+122*width, offsetY+(250-index)*width-colliculus.tmap.mapSize/2*width+50*width);
-		
+
 		index++;
-		if (index>=250){
+		if (index>=700){
 			index=0;
-			for (int i=0;i<125;i++){
-				for (int j=0;j<300;j++){
+			for (int i=0;i<505;i++){
+				for (int j=0;j<800;j++){
 					bundleTraceRed[i][j]=Color.black;
 					bundleTraceCyan[i][j]=Color.black;
 				}
 			}
+			g.fillRect(offsetX, offsetY, 505, 800);
 		}
 		/* */
 		//***********************************************************************
