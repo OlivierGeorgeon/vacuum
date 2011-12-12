@@ -312,7 +312,7 @@ public class Ernest104Model extends ErnestModel
 				step=m_v/90;
 				
 				double dx= step*Math.sin(m_orientationAngle);
-				double dy=-step*Math.cos(m_orientationAngle);
+				double dy= step*Math.cos(m_orientationAngle);
 				cell_x=Math.round(mPosition.x);
 				cell_y=Math.round(mPosition.y);
 				mPosition.x+=dx;
@@ -329,7 +329,7 @@ public class Ernest104Model extends ErnestModel
 			mOrientation.z = (float) (Math.PI/2 - m_orientationAngle);
 		
 			if (tempo)
-				m_env.repaint();
+//				m_env.repaint();
 				if (m_theta != 0)
 					sleep((int)(20));
 				if (m_v != 0){
@@ -359,34 +359,54 @@ public class Ernest104Model extends ErnestModel
 					(mOrientation.z < - 5*(float)Math.PI/4 && mOrientation.z > -7*(float)Math.PI/4))
 					// It counts as a bump only if the angle is closer to perpendicular plus or minus PI/4
 					status1=false;
+//<<<<<<< .mine
+//				//m_y+= ((float)cell_y-1+0.5) - (m_y-HBradius);
+//				m_y = cell_y - 0.5f + HBradius;
+//=======
 				mPosition.y+= ((float)cell_y-1+0.5) - (mPosition.y-HBradius);
+//>>>>>>> .r73
 			}
 			// right cell
 			if ( (isWall(cell_x+1,cell_y)) && ((float)cell_x+1-0.5) -(mPosition.x+HBradius)<0 ){
 				if ((mOrientation.z > - (float)Math.PI/4 && mOrientation.z < (float)Math.PI/4) ||
 					(mOrientation.z > 7 * (float)Math.PI/4))	
 					status2=false;
+//<<<<<<< .mine
+//				//m_x-= (m_x+HBradius) - ((float)cell_x+1-0.5);
+//				m_x = cell_x + 0.5f - HBradius;
+//=======
 				mPosition.x-= (mPosition.x+HBradius) - ((float)cell_x+1-0.5);
+//>>>>>>> .r73
 			}
 			// bottom cell
 			if ( (isWall(cell_x,cell_y+1)) && ((float)cell_y+1-0.5) -(mPosition.y+HBradius)<0 ){
 				if ((mOrientation.z < - (float)Math.PI/4 && mOrientation.z > - 3 *(float)Math.PI/4) ||
 					(mOrientation.z > 5*(float)Math.PI/4 && mOrientation.z < 7 *(float)Math.PI/4))
 					status1=false;
+//<<<<<<< .mine
+//				//m_y-= (m_y+HBradius) - ((float)cell_y+1-0.5);
+//				m_y = cell_y + 0.5f - HBradius;
+//=======
 				mPosition.y-= (mPosition.y+HBradius) - ((float)cell_y+1-0.5);
+//>>>>>>> .r73
 			}
 			// left cell
 			if ( (isWall(cell_x-1,cell_y)) && (mPosition.x-HBradius) -((float)cell_x-1+0.5)<0 ){
 				if ((mOrientation.z > 3*(float)Math.PI/4 && mOrientation.z < 5*(float)Math.PI/4) ||
 						(mOrientation.z < - 3*(float)Math.PI/4))
 					status2=false;
+//<<<<<<< .mine
+//				//m_x+= ((float)cell_x-1+0.5) - (m_x-HBradius);
+//				m_x = cell_x - 0.5f + HBradius;
+//=======
 				mPosition.x+= ((float)cell_x-1+0.5) - (mPosition.x-HBradius);
+//>>>>>>> .r73
 			}
 			// top right
 			d= (mPosition.x-(cell_x+1-0.5))*(mPosition.x-(cell_x+1-0.5))+(mPosition.y-(cell_y-1+0.5))*(mPosition.y-(cell_y-1+0.5));
 			d=Math.sqrt(d);
-			if (isWall(cell_x+1,cell_y-1) && d-0.4<0){
-				while (d-0.4<0){
+			if (isWall(cell_x+1,cell_y-1) && d<HBradius){
+				while (d<HBradius){
 					mPosition.x-=0.01;
 					mPosition.y+=0.01;
 					d= (mPosition.x-(cell_x+1-0.5))*(mPosition.x-(cell_x+1-0.5))+(mPosition.y-(cell_y-1+0.5))*(mPosition.y-(cell_y-1+0.5));
@@ -397,8 +417,8 @@ public class Ernest104Model extends ErnestModel
 			// bottom right
 			d= (mPosition.x-(cell_x+1-0.5))*(mPosition.x-(cell_x+1-0.5))+(mPosition.y-(cell_y+1-0.5))*(mPosition.y-(cell_y+1-0.5));
 			d=Math.sqrt(d);
-			if (isWall(cell_x+1,cell_y+1) && d-0.4<0){
-				while (d-0.4<0){
+			if (isWall(cell_x+1,cell_y+1) && d<HBradius){
+				while (d<HBradius){
 					mPosition.x-=0.01;
 					mPosition.y-=0.01;
 					d= (mPosition.x-(cell_x+1-0.5))*(mPosition.x-(cell_x+1-0.5))+(mPosition.y-(cell_y-1+0.5))*(mPosition.y-(cell_y-1+0.5));
@@ -409,8 +429,8 @@ public class Ernest104Model extends ErnestModel
 			// bottom left
 			d= (mPosition.x-(cell_x-1+0.5))*(mPosition.x-(cell_x-1+0.5))+(mPosition.y-(cell_y+1-0.5))*(mPosition.y-(cell_y+1-0.5));
 			d=Math.sqrt(d);
-			if (isWall(cell_x-1,cell_y+1) && d-0.4<0){
-				while (d-0.4<0){
+			if (isWall(cell_x-1,cell_y+1) && d<HBradius){
+				while (d<HBradius){
 					mPosition.x+=0.01;
 					mPosition.y-=0.01;
 					d= (mPosition.x-(cell_x+1-0.5))*(mPosition.x-(cell_x+1-0.5))+(mPosition.y-(cell_y-1+0.5))*(mPosition.y-(cell_y-1+0.5));
@@ -421,8 +441,8 @@ public class Ernest104Model extends ErnestModel
 			// top left
 			d= (mPosition.x-(cell_x-1+0.5))*(mPosition.x-(cell_x-1+0.5))+(mPosition.y-(cell_y-1+0.5))*(mPosition.y-(cell_y-1+0.5));
 			d=Math.sqrt(d);
-			if (isWall(cell_x-1,cell_y-1) && d-0.4<0){
-				while (d-0.4<0){
+			if (isWall(cell_x-1,cell_y-1) && d<HBradius){
+				while (d<HBradius){
 					mPosition.x+=0.01;
 					mPosition.y+=0.01;
 					d= (mPosition.x-(cell_x+1-0.5))*(mPosition.x-(cell_x+1-0.5))+(mPosition.y-(cell_y-1+0.5))*(mPosition.y-(cell_y-1+0.5));
@@ -556,12 +576,6 @@ public class Ernest104Model extends ErnestModel
 			somatoMapColor[0][2] = new Color(somatoMap[6]);
 			somatoMapColor[1][2] = new Color(somatoMap[7]);
 			somatoMapColor[1][1] = new Color(somatoMap[8]);
-
-//			for (int i = 0; i < 3; i++)
-//				for (int j = 0; j < 3; j++)
-//				{
-//					somatoMapColor[i][j] = new Color(somatoMap[i][j]);
-//				}
 		}
 		
 		// The shark body

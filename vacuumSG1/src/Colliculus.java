@@ -3,8 +3,8 @@ import java.util.ArrayList;
 
 import ernest.Ernest;
 
-import spas.ISalience;
-import spas.Salience;
+import spas.IPlace;
+import spas.Place;
 
 
 
@@ -169,9 +169,9 @@ public class Colliculus {
 	 * get the list of salience points around the agent
 	 * @return the list of salience points
 	 */
-	public  ArrayList<ISalience> getSalienceList(){
-		ArrayList<ISalience> list;
-		list=new  ArrayList<ISalience>();
+	public  ArrayList<IPlace> getPlaceList(){
+		ArrayList<IPlace> list;
+		list=new  ArrayList<IPlace>();
 
 		int theta=0,thetaMin=0,thetaMax=0;
 		float span;
@@ -216,7 +216,9 @@ public class Colliculus {
 					else if (val==1) val=Ernest.STIMULATION_TOUCH_WALL;
 					else if (val==2) val=Ernest.STIMULATION_TOUCH_SOFT;
 					else if (val==3) val=Ernest.STIMULATION_TOUCH_FISH;
-					list.add(new Salience(val, Ernest.MODALITY_TACTILE, (float)((theta-90)*Math.PI/180), d, (float)(span*Math.PI/180) ) );
+					//list.add(new Salience(val, Ernest.MODALITY_TACTILE, (float)((theta-90)*Math.PI/180), d, (float)(span*Math.PI/180) ) );
+					// TODO pass a bundle
+					list.add(new Place(null, d, (float)((theta-90)*Math.PI/180), (float)(span*Math.PI/180) ) );
 				}
 			}
 			
@@ -280,11 +282,9 @@ public class Colliculus {
 					else if (val==7) val=15126272;    // 230*65536 + 207*256 +   0
 					else if (val==8) val=59041;       //   0*65536 + 230*256 + 161
 					else if (val==9) val=12117504;    // 184*65536 + 230*256 +   0
-					list.add(new Salience(val, Ernest.MODALITY_VISUAL, (float)((theta-90)*Math.PI/180), d, (float)(span*Math.PI/180) ) );
-				
-					
-					
-					
+					// list.add(new Salience(val, Ernest.MODALITY_VISUAL, (float)((theta-90)*Math.PI/180), d, (float)(span*Math.PI/180) ) );
+					// TODO pass a bundle
+					list.add(new Place(null, d, (float)((theta-90)*Math.PI/180), (float)(span*Math.PI/180) ) );
 				}
 			}
 			
