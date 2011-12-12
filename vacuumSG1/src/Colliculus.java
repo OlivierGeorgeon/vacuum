@@ -20,11 +20,13 @@ public class Colliculus {
 	public ArrayList<Float> TranslationX;
 	public ArrayList<Float> TranslationY;
 	public ArrayList<Float> Rotation;
-	public int[][] tactileStimulis;
-	public int[][] visualStimulis;
+
 	
 	public int[][] bundles;
 	public Color[][] bundleColor;
+	
+	public float[][][] visualProba;
+	public float[][][] tactileProba;
 	
 	public float bundleMapProba[][];
 	public int   bundleMapType[][][];
@@ -38,9 +40,9 @@ public class Colliculus {
 		TranslationX=new ArrayList<Float>();
 		TranslationY=new ArrayList<Float>();
 		Rotation    =new ArrayList<Float>();
-		
-		tactileStimulis=new int[180][100];
-		visualStimulis =new int[180][100];
+
+		visualProba=new float[100][100][10];
+		tactileProba=new float[100][100][4];
 		bundleMapProba=new float[100][100];
 		bundleMapType =new int[100][100][2];
 		for (int i=0;i<100;i++){
@@ -48,6 +50,13 @@ public class Colliculus {
 				bundleMapProba[i][j]=0;
 				bundleMapType[i][j][0]=0;
 				bundleMapType[i][j][1]=0;
+				
+				for (int k=0;k<10;k++){
+					visualProba[i][j][k]=0;
+				}
+				for (int k=0;k<4;k++){
+					tactileProba[i][j][k]=0;
+				}
 			}	
 		}
 		
@@ -329,12 +338,20 @@ public class Colliculus {
 				Sp1=(1 - Math.min(1,Sp1) )/10;
 				Sp2=(1 - Math.min(1,Sp2) )/4;
 				
+				
+				for (int i2=0;i2<10;i2++){
+					visualProba[i][j][i2]=vmap.chargeMap1[i][j][i2]+ Sp1;
+				}
+				for (int j2=0;j2<4;j2++){
+					tactileProba[i][j][j2]=tmap.chargeMap1[i][j][j2]+ Sp2;
+				}
+				
 				for (int i2=0;i2<10;i2++){
 					for (int j2=0;j2<4;j2++){
 						if (bundles[i2][j2]!=0){
 							p1=vmap.chargeMap1[i][j][i2]+ Sp1;
 							p2=tmap.chargeMap1[i][j][j2]+ Sp2;
-							
+
 							if (p1*p2>max){
 								max=p1*p2;
 								bundleMapProba[i][j]=max;

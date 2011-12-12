@@ -695,8 +695,8 @@ public class Ernest100Model extends ErnestModel
 		EyeFixation[] retina= new EyeFixation[Ernest.RESOLUTION_RETINA];
 		
 		double d=0;
-		double d1,d2,d3;
-		double a1,a2,a3;
+		double d1,d2,d3,d4;
+		double a1,a2,a3,a4;
 		
 		double imin,iplus,jmin,jplus;
 		double imin2,jmin2;
