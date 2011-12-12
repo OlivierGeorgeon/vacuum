@@ -261,7 +261,7 @@ public class Ernest100Model extends ErnestModel
 		matrix[2][8] = (isNight() ? 1 : 0);		
 		
 		// The salience list.
-		m_ernest.setSalienceList(colliculus.getSalienceList());
+		m_ernest.setPlaceList(colliculus.getPlaceList());
 
 		String intention = m_ernest.step(matrix);
 		return intention;

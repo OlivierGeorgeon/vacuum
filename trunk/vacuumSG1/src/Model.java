@@ -30,11 +30,11 @@ public class Model extends Observable
 {
 	public static final long serialVersionUID = 1;
 
-	public static final int AGENTUNDEFINED = 0;
-	public static final int JESSFILE       = 1;
-	public static final int SOARFILE       = 2;
-	public static final int HUMANLOGFILE   = 3;
-	public static final int ERNEST         = 4;
+	//public static final int AGENTUNDEFINED = 0;
+	//public static final int JESSFILE       = 1;
+	//public static final int SOARFILE       = 2;
+	//public static final int HUMANLOGFILE   = 3;
+	//public static final int ERNEST         = 4;
 	
 	// tactile properties
 	public static final int EMPTY         = 0;

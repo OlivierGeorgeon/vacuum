@@ -12,10 +12,9 @@ import ernest.Ernest;
 
 import java.io.*;
 
-
 public class Main extends JFrame implements Observer, ActionListener, KeyListener
 {
-	public static final long serialVersionUID = 1;
+	public final long serialVersionUID = 1;
 	
 	public static JFrame MAIN_WIN;
 
@@ -117,6 +116,9 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		{
 			if (args[0].equals("Ernest104")){
 				m_model = new Ernest104Model();
+			}
+			if (args[0].equals("Ernest100")){
+				m_model = new Ernest100Model();
 			}
 		}
 		else{
@@ -598,8 +600,34 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 	 */
 	private void resizeGrid()
 	{
+//<<<<<<< .mine
+//	
+//		if (m_grid == null || 
+//			m_grid.length != m_model.getHeight() ||
+//			m_grid[0].length != m_model.getWidth())
+//		{
+//			m_board.removeAll();
+//			m_board.setBackground(Model.WALL_COLOR);
+//			m_board.setLayout(new GridLayout(m_model.getHeight(),  m_model.getWidth()));
+//			m_grid = new EnvSquare[m_model.getHeight()][m_model.getWidth()];
+//			
+//			for (int y = 0; y < m_model.getHeight(); y++)
+//			{
+//				for (int x = 0; x < m_model.getWidth(); x++)
+//				{
+//                	m_grid[y][x] = new EnvSquare(x, y, m_model);
+//                	m_grid[y][x].setPreferredSize(new Dimension(37,37));
+//                	m_board.add(m_grid[y][x]);
+//				}
+//			}
+//			//m_env=new Environnement(m_model);
+//			//m_env.setPreferredSize(new Dimension(400,400));
+//			//m_board.add(m_env);
+//		}
+//=======
 		m_env.setPreferredSize(new Dimension(40*m_env.m_w,40*m_env.m_h));
 		m_board.add(m_env);
+//>>>>>>> .r73
 	}
 
 	/**
