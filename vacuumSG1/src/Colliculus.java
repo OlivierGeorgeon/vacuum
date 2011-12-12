@@ -103,8 +103,8 @@ public class Colliculus {
          TranslationY.add(0f);
 
          Rotation.add(0f);
-         Rotation.add(-0.00175f);
          Rotation.add(0.00175f);
+         Rotation.add(-0.00175f);
 		 
 	}
 	

@@ -77,7 +77,7 @@ public class ErnestModel extends Model
 	public void closeErnest()
 	{
 		//m_tracer.close();
-		m_orientation = ORIENTATION_UP;
+		mOrientation.z=(float) (Math.PI/2);
 		m_ernest = null;
 	}
 	
@@ -123,7 +123,6 @@ public class ErnestModel extends Model
 	protected Pair<Integer, Color>[] getRetina(double orientationRad) {
 		@SuppressWarnings("unchecked")
 		Pair<Integer, Color>[] retina = new Pair[Ernest.RESOLUTION_RETINA];
-		//double angle = - m_orientationAngle;
 		double angle = orientationRad - Math.PI/2;
 		double angleStep = Math.PI / Ernest.RESOLUTION_RETINA;
 		for (int i = 0; i < Ernest.RESOLUTION_RETINA; i++) {
@@ -145,7 +144,7 @@ public class ErnestModel extends Model
 		float step = a/2;
 		for (float angle = t; angle <= t + a + .001; angle += step) {
 			float x0 = (float) (mPosition.x + 20 * Math.cos(angle));
-			float y0 = (float) (mPosition.y - 20 * Math.sin(angle)); // Y axis is downwards.
+			float y0 = (float) (mPosition.y + 20 * Math.sin(angle)); // Y axis is downwards.
 			//float y0 = (float) (m_y + 20 * Math.sin(angle)); // Y axis is upwards.
 			eyeFixation = rayTrace(mPosition.x,mPosition.y, x0, y0);
 			// We stop when we find a singularity.
@@ -292,7 +291,6 @@ public class ErnestModel extends Model
 		
 		mRotation.scale(.9f);
 		mOrientation.add(mRotation);
-		m_orientationAngle+=mRotation.z;
 	}
 	
 }

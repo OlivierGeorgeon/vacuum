@@ -1025,7 +1025,6 @@ public class TactileMap {
 		float distance,distance2;
 		int angle=360/resolution;
 		
-		int E_angle=ernest.m_orientation+540;
 		int index=0;
 		for (int i=0;i<360;i+=angle){
 			distance=(float) rt[(i)%360];

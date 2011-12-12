@@ -309,7 +309,7 @@ public class Ernest100Model extends ErnestModel
 				Object environment = m_tracer.newEvent("environment", "position", m_counter);
 				m_tracer.addSubelement(environment, "x", mPosition.x + "");
 				m_tracer.addSubelement(environment, "y", mPosition.y + "");
-				m_tracer.addSubelement(environment,"orientation", m_orientation + "");
+				m_tracer.addSubelement(environment,"orientation", mOrientation.z + "");
 			}
 		}
 		
@@ -351,7 +351,7 @@ public class Ernest100Model extends ErnestModel
 			//float rand= (float) (Math.random()*20-10);
 			//m_Ir=-45+rand;
 			
-			m_Ir = -45;
+			m_Ir = 45;
 			m_v = 0;
 		}
 		
@@ -375,7 +375,7 @@ public class Ernest100Model extends ErnestModel
 			//float rand= (float) (Math.random()*20-10);
 			//m_Ir=45+rand;
 			
-			m_Ir = 45;
+			m_Ir = -45;
 			m_v = 0;
 		}
 		
@@ -428,7 +428,7 @@ public class Ernest100Model extends ErnestModel
 		
 		float dist=0;
 		float a=0;
-		float orientation=(m_orientation);
+		float orientation=(float) ((mOrientation.z)*180/Math.PI);
 		
 		int i=40;
 		int j=20;
@@ -480,8 +480,8 @@ public class Ernest100Model extends ErnestModel
 				if (continuum) step=m_v/300;
 				else           step=m_v/30;
 				
-				double dx= step*Math.sin(m_orientationAngle);
-				double dy= step*Math.cos(m_orientationAngle);
+				double dx= step*Math.cos(mOrientation.z);
+				double dy= step*Math.sin(mOrientation.z);
 				cell_x=Math.round(mPosition.x);
 				cell_y=Math.round(mPosition.y);
 				dist+=step;
@@ -497,13 +497,10 @@ public class Ernest100Model extends ErnestModel
 				a+=m_theta/20;
 			}
 			else orientation+=m_theta/10;
-			if (orientation < 0)   orientation +=360;
-			if (orientation >=360) orientation -=360;
-        
-			m_orientation=Math.round(orientation);
-			m_orientationAngle =  m_orientation * Math.PI/2 / ORIENTATION_RIGHT;
+			if (orientation <= -180) orientation +=360;
+			if (orientation >   180) orientation -=360;
 
-			mOrientation.z = (float) (Math.PI/2 - m_orientationAngle);
+			mOrientation.z = (float) (orientation*Math.PI/180);
 			
 			
 			
@@ -612,30 +609,31 @@ public class Ernest100Model extends ErnestModel
 		int adjacent_y = Math.round(mPosition.y);
 		
 		// Adjacent square
-		if (m_orientation < ORIENTATION_UP_RIGHT && m_orientation >=ORIENTATION_UP_LEFT)
-			adjacent_y = Math.round(mPosition.y) + 1;
-		if (m_orientation >=ORIENTATION_UP && m_orientation<ORIENTATION_RIGHT){
-			adjacent_x = Math.round(mPosition.x) + 1;
-			adjacent_y = Math.round(mPosition.y) + 1;
-		}
-		if (m_orientation >= ORIENTATION_UP_RIGHT && m_orientation <ORIENTATION_DOWN_RIGHT)
-			adjacent_x = Math.round(mPosition.x) + 1;
-		if (m_orientation >= ORIENTATION_RIGHT && m_orientation <ORIENTATION_DOWN){
-			adjacent_x = Math.round(mPosition.x) + 1;
-			adjacent_y = Math.round(mPosition.y) - 1;
-		}
-		if (m_orientation >= ORIENTATION_DOWN_RIGHT && m_orientation <ORIENTATION_DOWN_LEFT)
-			adjacent_y = Math.round(mPosition.y) - 1;
-		if (m_orientation >= ORIENTATION_DOWN && m_orientation <ORIENTATION_LEFT){
+		if (mOrientation.z >= 7*Math.PI/8 && mOrientation.z < -7*Math.PI/8)
 			adjacent_x = Math.round(mPosition.x) - 1;
-			adjacent_y = Math.round(mPosition.y) - 1;
-		}
-		if (m_orientation >= ORIENTATION_DOWN_LEFT && m_orientation <ORIENTATION_UP_LEFT)
-			adjacent_x = Math.round(mPosition.x) - 1;
-		if (m_orientation >= ORIENTATION_LEFT && m_orientation <ORIENTATION_UP){
+		if (mOrientation.z <=  7*Math.PI/8 && mOrientation.z > 5*Math.PI/8){
 			adjacent_x = Math.round(mPosition.x) - 1;
 			adjacent_y = Math.round(mPosition.y) + 1;
 		}
+		if (mOrientation.z <=  5*Math.PI/8 && mOrientation.z > 3*Math.PI/8)
+			adjacent_y = Math.round(mPosition.y) + 1;
+		if (mOrientation.z <=  3*Math.PI/8 && mOrientation.z >   Math.PI/8){
+			adjacent_x = Math.round(mPosition.x) + 1;
+			adjacent_y = Math.round(mPosition.y) + 1;
+		}
+		if (mOrientation.z <=    Math.PI/8 && mOrientation.z >  -Math.PI/8)
+			adjacent_x = Math.round(mPosition.x) + 1;
+		if (mOrientation.z <=   -Math.PI/8 && mOrientation.z >-3*Math.PI/8){
+			adjacent_x = Math.round(mPosition.x) + 1;
+			adjacent_y = Math.round(mPosition.y) - 1;
+		}
+		if (mOrientation.z <= -3*Math.PI/8 && mOrientation.z >-5*Math.PI/8)
+			adjacent_y = Math.round(mPosition.y) - 1;
+		if (mOrientation.z <= -5*Math.PI/8 && mOrientation.z >-7*Math.PI/8){
+			adjacent_x = Math.round(mPosition.x) - 1;
+			adjacent_y = Math.round(mPosition.y) - 1;
+		}
+
 		
 		if ((adjacent_x >= 0) && (adjacent_x < m_w) && (adjacent_y >= 0) && (adjacent_y < m_h)){
 			if (isWall(adjacent_x, adjacent_y)){
@@ -715,7 +713,7 @@ public class Ernest100Model extends ErnestModel
 		
 		int sight=20;
 		
-		int orientationDeg= (int)(m_orientationAngle * 180 / Math.PI);
+		int orientationDeg= (int)(mOrientation.z * 180 / Math.PI);
 		
 		
 		for (int i=0;i<sight;i++){
@@ -1107,15 +1105,17 @@ public class Ernest100Model extends ErnestModel
 		
 		
 		for (int i=0;i<360;i++){
-			rv2[i]= rv[(i+orientationDeg+540)%360];
-			colorMap2[i]=colorMap[(i+orientationDeg+540)%360];
-			cornerV2[i]=cornerV[(i+orientationDeg+540)%360];
+			int offset=(i-orientationDeg+630)%360;
+			rv2[i]= rv[offset];
+			colorMap2[i]=colorMap[offset];
+			cornerV2[i]=cornerV[offset];
 		}
 		
 		for (int i=0;i<360;i++){
-			rt2[i]= rt[(i+orientationDeg+540)%360];
-			tactileMap2[i]=tactileMap[(i+orientationDeg+540)%360];
-			cornerT2[i]=cornerT[(i+orientationDeg+540)%360];
+			int offset=(i-orientationDeg+630)%360;
+			rt2[i]= rt[offset];
+			tactileMap2[i]=tactileMap[offset];
+			cornerT2[i]=cornerT[offset];
 		}
 		
 		for (int i=0;i<Ernest.RESOLUTION_RETINA;i++){
@@ -1432,7 +1432,7 @@ public class Ernest100Model extends ErnestModel
 
 		AffineTransform orientation = new AffineTransform();
 		orientation.translate(x,y);
-		orientation.rotate(m_orientationAngle);
+		orientation.rotate(-mOrientation.z+Math.PI/2);
 		orientation.scale(sx,sy);
 		g2d.transform(orientation);
 		//AffineTransform bodyReference = g2d.getTransform();

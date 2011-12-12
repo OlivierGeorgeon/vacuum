@@ -126,11 +126,9 @@ public class Model extends Observable
 	// A single agent in the environment.
 	//protected float m_x;
 	//protected float m_y;
-	public int m_orientation; 
 	public String m_schema = "";
 	
 	/** The angular orientation of Ernest. (in radius, clockwise)*/
-	protected double m_orientationAngle = 0;
 	
 	/** The Cartesian position of Ernest. ((0,0) is bottom-left corner)*/
 	protected Vector3f mPosition = new Vector3f();
@@ -201,9 +199,7 @@ public class Model extends Observable
 		int l_x = -1;
 		int l_y = -1;
 
-		m_orientation = ORIENTATION_UP;
-		m_orientationAngle = 0;
-		//mRotation.z = (float) Math.PI/2;
+		mRotation.z = (float) Math.PI/2;
 		
 		BufferedReader br = null;
 		try
@@ -253,7 +249,6 @@ public class Model extends Observable
 					// Agent up
 					else if (square[x].equalsIgnoreCase("^"))
 					{
-						m_orientation = ORIENTATION_UP;
 						l_x = x;
 						l_y = y;
 						mPosition.x = x;
@@ -266,7 +261,6 @@ public class Model extends Observable
 					// Agent right
 					else if (square[x].equalsIgnoreCase(">"))
 					{
-						m_orientation = ORIENTATION_RIGHT;
 						l_x = x;
 						l_y = y;	
 						mPosition.x = x;
@@ -279,7 +273,6 @@ public class Model extends Observable
 					// Agent down
 					else if (square[x].equalsIgnoreCase("v"))
 					{
-						m_orientation = ORIENTATION_DOWN;
 						l_x = x;
 						l_y = y;	
 						mPosition.x = x;
@@ -292,7 +285,6 @@ public class Model extends Observable
 					// Agent up
 					else if (square[x].equalsIgnoreCase("<"))
 					{
-						m_orientation = ORIENTATION_LEFT;
 						l_x = x;
 						l_y = y;	
 						mPosition.x = x;
@@ -347,9 +339,6 @@ public class Model extends Observable
 				}
 				y++;
 			}
-
-			m_orientationAngle =  (m_orientation ) * Math.PI/2 / ORIENTATION_RIGHT;
-			// mRotation.z = (float) (Math.PI/2 - m_orientationAngle); 
 
 			if (l_x == -1 || l_y == -1)
 				throw new 
@@ -734,13 +723,14 @@ public class Model extends Observable
 	public void paintAgent(Graphics2D g,int x,int y,double sx,double sy)
 	{
 		Image img = m_icon_up.getImage();
-		if (m_orientation == ORIENTATION_RIGHT)
+		img = m_icon_right.getImage();
+		/*if (m_orientation == ORIENTATION_RIGHT)
 			img = m_icon_right.getImage();
 		if (m_orientation == ORIENTATION_DOWN)
 			img = m_icon_down.getImage();
 		if (m_orientation == ORIENTATION_LEFT)
 			img = m_icon_left.getImage();
-
+		 */
 		g.drawImage(img, 1, 1, null); // TODO check the position and size
 	}
 

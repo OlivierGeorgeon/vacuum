@@ -225,8 +225,6 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		int l_x = -1;
 		int l_y = -1;
 
-		//m_model.m_orientation = Model.ORIENTATION_UP;
-		//m_model.m_orientationAngle = 0;
 		//mRotation.z = (float) Math.PI/2;
 		
 		BufferedReader br = null;
@@ -277,7 +275,6 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 					// Agent up
 					else if (square[x].equalsIgnoreCase("^"))
 					{
-						m_model.m_orientation = Model.ORIENTATION_UP;
 						l_x = x;
 						l_y = y;
 						m_model.mPosition.x = x;
@@ -290,7 +287,6 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 					// Agent right
 					else if (square[x].equalsIgnoreCase(">"))
 					{
-						m_model.m_orientation = Model.ORIENTATION_RIGHT;
 						l_x = x;
 						l_y = y;	
 						m_model.mPosition.x = x;
@@ -303,7 +299,6 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 					// Agent down
 					else if (square[x].equalsIgnoreCase("v"))
 					{
-						m_model.m_orientation = Model.ORIENTATION_DOWN;
 						l_x = x;
 						l_y = y;	
 						m_model.mPosition.x = x;
@@ -316,7 +311,6 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 					// Agent up
 					else if (square[x].equalsIgnoreCase("<"))
 					{
-						m_model.m_orientation = Model.ORIENTATION_LEFT;
 						l_x = x;
 						l_y = y;	
 						m_model.mPosition.x = x;
@@ -371,9 +365,6 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 				}
 				y++;
 			}
-
-			m_model.m_orientationAngle =  (m_model.m_orientation ) * Math.PI/2 / Model.ORIENTATION_RIGHT;
-			// mRotation.z = (float) (Math.PI/2 - m_orientationAngle); 
 
 			if (l_x == -1 || l_y == -1)
 				throw new 

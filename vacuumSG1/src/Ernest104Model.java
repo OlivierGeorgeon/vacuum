@@ -195,7 +195,7 @@ public class Ernest104Model extends ErnestModel
 			Object environment = m_tracer.newEvent("environment", "position", m_counter);
 			m_tracer.addSubelement(environment, "x", mPosition.x + "");
 			m_tracer.addSubelement(environment, "y", mPosition.y + "");
-			m_tracer.addSubelement(environment,"orientation", m_orientation + "");
+			m_tracer.addSubelement(environment,"orientation", mOrientation.z + "");
 		}		
 	    return status;
 	}
@@ -274,6 +274,8 @@ public class Ernest104Model extends ErnestModel
 		boolean status4=true;         // reach a dirty cell (=false when reach dirty cell)
 		boolean status5=true;         // touch a corner
 		
+		float orientation=(float) ((mOrientation.z)*180/Math.PI);
+		
 		float vlmin;
 		float vrmin;
 		
@@ -311,8 +313,8 @@ public class Ernest104Model extends ErnestModel
 			if (statusL){
 				step=m_v/90;
 				
-				double dx= step*Math.sin(m_orientationAngle);
-				double dy= step*Math.cos(m_orientationAngle);
+				double dx= step*Math.cos(mOrientation.z);
+				double dy= step*Math.sin(mOrientation.z);
 				cell_x=Math.round(mPosition.x);
 				cell_y=Math.round(mPosition.y);
 				mPosition.x+=dx;
@@ -322,11 +324,11 @@ public class Ernest104Model extends ErnestModel
 			}
 			
 			// for angular movements
-			m_orientation+=m_theta/10;
-			if (m_orientation < 0)   m_orientation +=360;
-			if (m_orientation >=360) m_orientation -=360;
-			m_orientationAngle =  m_orientation * Math.PI/2 / ORIENTATION_RIGHT;
-			mOrientation.z = (float) (Math.PI/2 - m_orientationAngle);
+			orientation+=m_theta/10;
+			if (orientation <= -180) orientation +=360;
+			if (orientation >   180) orientation -=360;
+
+			mOrientation.z = (float) (orientation*Math.PI/180);
 		
 			if (tempo)
 //				m_env.repaint();
@@ -462,29 +464,29 @@ public class Ernest104Model extends ErnestModel
 		int adjacent_y = Math.round(mPosition.y);
 		
 		// Adjacent square
-		if (m_orientation < ORIENTATION_UP_RIGHT && m_orientation >=ORIENTATION_UP_LEFT)
+		if (mOrientation.z >= 7*Math.PI/8 && mOrientation.z < -7*Math.PI/8)
+			adjacent_x = Math.round(mPosition.x) - 1;
+		if (mOrientation.z <=  7*Math.PI/8 && mOrientation.z > 5*Math.PI/8){
+			adjacent_x = Math.round(mPosition.x) - 1;
 			adjacent_y = Math.round(mPosition.y) + 1;
-		if (m_orientation >=ORIENTATION_UP && m_orientation<ORIENTATION_RIGHT){
+		}
+		if (mOrientation.z <=  5*Math.PI/8 && mOrientation.z > 3*Math.PI/8)
+			adjacent_y = Math.round(mPosition.y) + 1;
+		if (mOrientation.z <=  3*Math.PI/8 && mOrientation.z >   Math.PI/8){
 			adjacent_x = Math.round(mPosition.x) + 1;
 			adjacent_y = Math.round(mPosition.y) + 1;
 		}
-		if (m_orientation >= ORIENTATION_UP_RIGHT && m_orientation <ORIENTATION_DOWN_RIGHT)
+		if (mOrientation.z <=    Math.PI/8 && mOrientation.z >  -Math.PI/8)
 			adjacent_x = Math.round(mPosition.x) + 1;
-		if (m_orientation >= ORIENTATION_RIGHT && m_orientation <ORIENTATION_DOWN){
+		if (mOrientation.z <=   -Math.PI/8 && mOrientation.z >-3*Math.PI/8){
 			adjacent_x = Math.round(mPosition.x) + 1;
 			adjacent_y = Math.round(mPosition.y) - 1;
 		}
-		if (m_orientation >= ORIENTATION_DOWN_RIGHT && m_orientation <ORIENTATION_DOWN_LEFT)
+		if (mOrientation.z <= -3*Math.PI/8 && mOrientation.z >-5*Math.PI/8)
 			adjacent_y = Math.round(mPosition.y) - 1;
-		if (m_orientation >= ORIENTATION_DOWN && m_orientation <ORIENTATION_LEFT){
+		if (mOrientation.z <= -5*Math.PI/8 && mOrientation.z >-7*Math.PI/8){
 			adjacent_x = Math.round(mPosition.x) - 1;
 			adjacent_y = Math.round(mPosition.y) - 1;
-		}
-		if (m_orientation >= ORIENTATION_DOWN_LEFT && m_orientation <ORIENTATION_UP_LEFT)
-			adjacent_x = Math.round(mPosition.x) - 1;
-		if (m_orientation >= ORIENTATION_LEFT && m_orientation <ORIENTATION_UP){
-			adjacent_x = Math.round(mPosition.x) - 1;
-			adjacent_y = Math.round(mPosition.y) + 1;
 		}
 		
 		if ((adjacent_x >= 0) && (adjacent_x < m_w) && (adjacent_y >= 0) && (adjacent_y < m_h)){
@@ -534,7 +536,7 @@ public class Ernest104Model extends ErnestModel
 
 		AffineTransform orientation = new AffineTransform();
 		orientation.translate(x,y);
-		orientation.rotate(m_orientationAngle);
+		orientation.rotate(-mOrientation.z+Math.PI/2);
 		orientation.scale(sx,sy);
 		g2d.transform(orientation);
 		//AffineTransform bodyReference = g2d.getTransform();
