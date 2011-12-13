@@ -137,7 +137,7 @@ public class Model extends Observable
 	/** The translation speed of Ernest in cartesian coordinates.*/
 	protected Vector3f mTranslation = new Vector3f(0,0,0);
 	/** The angular rotation speed of Ernest. (in radius - trigonometric - counterclockwise)*/
-	protected Vector3f mRotation = new Vector3f(0,0,0.1f);
+	protected Vector3f mRotation = new Vector3f(0,0,0);
 	
 	private int[][] m_anim;
 	public Block[][] m_blocks;
@@ -199,7 +199,8 @@ public class Model extends Observable
 		int l_x = -1;
 		int l_y = -1;
 
-		mRotation.z = (float) Math.PI/2;
+		//mRotation.z = (float) Math.PI/2;
+		mRotation.z=0;
 		
 		BufferedReader br = null;
 		try

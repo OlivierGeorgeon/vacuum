@@ -35,12 +35,11 @@ public class Ernest104Model extends ErnestModel
 	
 	private double m_rotation_speed = Math.PI/Ernest.RESOLUTION_RETINA;
 	
-	public float m_If,m_Ir;   				// impulsion counters
+	public Vector3f m_Itranslation=new Vector3f(0,0,0);
+	public Vector3f m_Irotation=new Vector3f(0,0,0);
 	public float distance=0;
 	public float angle=0;
 	public boolean tempo=true;
-	public float m_v;                       // linear speed
-	public float m_theta;					// angular speed
 
 	/**
 	 * Initialize the agent in the grid
@@ -226,8 +225,11 @@ public class Ernest104Model extends ErnestModel
 	 */
 	protected boolean turnLeft(){
 
-		m_Ir = -45;
-		m_v = 0;
+		m_Irotation.x=0;
+		m_Irotation.y=0;
+		m_Irotation.z=45;
+		
+		mTranslation.scale(0);
 		return impulse(ACTION_LEFT);
 	}
 	
@@ -237,8 +239,11 @@ public class Ernest104Model extends ErnestModel
 	 */
 	protected boolean turnRight(){
 		
-		m_Ir = 45;
-		m_v = 0;
+		m_Irotation.x=0;
+		m_Irotation.y=0;
+		m_Irotation.z=-45;
+		
+		mTranslation.scale(0);
 		return impulse(ACTION_RIGHT);
 	}
 	
@@ -247,9 +252,10 @@ public class Ernest104Model extends ErnestModel
 	 * @return true if adjacent wall, false if adjacent empty. 
 	 */
 	protected boolean forward(){
-		
-		m_If=1f; //1.5f
-		m_theta = 0;
+
+		m_Itranslation.x=1f; //1.5f
+		m_Itranslation.y=0;
+		mRotation.scale(0);
 		return impulse(ACTION_FORWARD);
 	}
 
@@ -262,7 +268,7 @@ public class Ernest104Model extends ErnestModel
 		
 		boolean statusL=true;
 		boolean statusR=true;
-		float step;                  // length of a step
+		float stepX,stepY;                  // length of a step
 		float HBradius=(float) 0.4;  // radius of Ernest hitbox 
 		 
 		int cell_x=Math.round(mPosition.x);
@@ -274,36 +280,38 @@ public class Ernest104Model extends ErnestModel
 		boolean status4=true;         // reach a dirty cell (=false when reach dirty cell)
 		boolean status5=true;         // touch a corner
 		
-		float orientation=(float) ((mOrientation.z)*180/Math.PI);
+		//float orientation=(float) ((mOrientation.z)*180/Math.PI);
+		float orientation=mOrientation.z;
 		
 		float vlmin;
 		float vrmin;
 		
 		vlmin=(float) 0.1;
-		vrmin=(float) 10; // when teta<10, Ernest is not turning anymore
+		vrmin=(float) 0.002; // when teta<10, Ernest is not turning anymore
 		
 		status3=(isAlga(cell_x,cell_y) || isFood(cell_x,cell_y) );
 		
-		while  ( ((m_v>vlmin || m_If>0) && statusL) ||  (Math.abs(m_theta)>vrmin  || m_Ir!=0) ){
-			
+		while  ( ((mTranslation.length()>vlmin || m_Itranslation.length()>0) && statusL) ||  (mRotation.length()>vrmin  || m_Irotation.length()!=0) ){
+
 			// set linear impulsion
-			if (m_If>0){
-				m_v=m_If;
-				m_If=0;
+			if (m_Itranslation.length()>0){
+				mTranslation.x=m_Itranslation.x;
+				mTranslation.y=m_Itranslation.y;
+				m_Itranslation.scale(0);
 			}
 			else 
-				m_v-= 0.01*m_v;
+				mTranslation.scale(0.99f);
 			
-			if (m_v<=0.1) m_v=0;
+			//if (m_v<=0.1) m_v=0;
 			
 			// set angular impulsion
-			if (m_Ir!=0){
-				m_theta=m_Ir;
-				m_Ir=0;
+			if (m_Irotation.length()!=0){
+				mRotation.z=(float) (m_Irotation.z*Math.PI/180);
+				m_Irotation.scale(0);
 			}
 			else 
-				m_theta-= 0.1*m_theta;
-			
+				mRotation.scale(0.9f);
+
 			//if (Math.abs(m_theta)<=0.1) m_theta=0;
 			
 	// compute new position
@@ -311,10 +319,11 @@ public class Ernest104Model extends ErnestModel
 			// for linear movements
 			double d;
 			if (statusL){
-				step=m_v/90;
+				stepX=mTranslation.x/90;
+				stepY=mTranslation.y/90;
 				
-				double dx= step*Math.cos(mOrientation.z);
-				double dy= step*Math.sin(mOrientation.z);
+				double dx= stepX*Math.cos(mOrientation.z) - stepY*Math.sin(mOrientation.z);
+				double dy= stepX*Math.sin(mOrientation.z) + stepY*Math.cos(mOrientation.z);
 				cell_x=Math.round(mPosition.x);
 				cell_y=Math.round(mPosition.y);
 				mPosition.x+=dx;
@@ -324,18 +333,18 @@ public class Ernest104Model extends ErnestModel
 			}
 			
 			// for angular movements
-			orientation+=m_theta/10;
-			if (orientation <= -180) orientation +=360;
-			if (orientation >   180) orientation -=360;
+			orientation+=mRotation.z/10;
+			if (orientation <= -Math.PI) orientation +=2*Math.PI;
+			if (orientation >   Math.PI) orientation -=2*Math.PI;
 
-			mOrientation.z = (float) (orientation*Math.PI/180);
+			mOrientation.z = orientation;
 		
-			if (tempo)
-//				m_env.repaint();
-				if (m_theta != 0)
-					sleep((int)(20));
-				if (m_v != 0){
-				sleep((int)(1));
+			if (tempo){
+				mainFrame.drawGrid();
+				if (mRotation.z != 0)
+					sleep((int)(1));
+				if (mTranslation.length() != 0)
+					sleep((int)(1));
 			}
 
 			
@@ -512,10 +521,10 @@ public class Ernest104Model extends ErnestModel
 		
 		
 		if (!status4){
-			m_v=0;
+			mTranslation.scale(0);
 		}
 		else if (!status1 || !status2){
-			m_v=0;
+			mTranslation.scale(0);
 		}
 		
 		if (act==0) 

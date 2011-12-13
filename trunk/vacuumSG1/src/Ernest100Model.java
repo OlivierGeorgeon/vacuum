@@ -22,6 +22,8 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import javax.vecmath.Vector3f;
+
 import ernest.*;
 import tracing.*;
 
@@ -44,9 +46,8 @@ public class Ernest100Model extends ErnestModel
 	//private long time1=System.currentTimeMillis();
 	//private long time2=System.currentTimeMillis();
 	
-	public float m_v;                       // linear speed
-	public float m_theta;					// angular speed
-	public float m_If,m_Ir;   				// impulsion counters
+	public Vector3f m_Itranslation=new Vector3f(0,0,0);
+	public Vector3f m_Irotation=new Vector3f(0,0,0);
 	public int lastAction;
 	
 	public Main mainFrame;
@@ -351,8 +352,11 @@ public class Ernest100Model extends ErnestModel
 			//float rand= (float) (Math.random()*20-10);
 			//m_Ir=-45+rand;
 			
-			m_Ir = 45;
-			m_v = 0;
+			m_Irotation.x=0;
+			m_Irotation.y=0;
+			m_Irotation.z=45;
+			
+			mTranslation.scale(0);
 		}
 		
 		lastAction=ACTION_LEFT;
@@ -375,8 +379,11 @@ public class Ernest100Model extends ErnestModel
 			//float rand= (float) (Math.random()*20-10);
 			//m_Ir=45+rand;
 			
-			m_Ir = -45;
-			m_v = 0;
+			m_Irotation.x=0;
+			m_Irotation.y=0;
+			m_Irotation.z=-45;
+			
+			mTranslation.scale(0);
 		}
 		
 		lastAction=ACTION_RIGHT;
@@ -397,8 +404,9 @@ public class Ernest100Model extends ErnestModel
 			//float rand= (float) (Math.random()-0.5);
 			//m_If=1+rand;
 			
-			m_If=1.5f; //1.5f
-			m_theta = 0;
+			m_Itranslation.x=1.5f; //1.5f
+			m_Itranslation.y=0;
+			mRotation.scale(0);
 		}
 		
 		lastAction=ACTION_FORWARD;
@@ -414,7 +422,7 @@ public class Ernest100Model extends ErnestModel
 	public boolean impulse(int act){
 		boolean statusL=true;
 		boolean statusR=true;
-		float step;                  // length of a step
+		float stepX,stepY;                  // length of a step
 		float HBradius=(float) 0.4;  // radius of Ernest hitbox 
 		
 		int cell_x=Math.round(mPosition.x);
@@ -425,10 +433,8 @@ public class Ernest100Model extends ErnestModel
 		boolean status3=true;         // begin on a dirty cell
 		boolean status4=true;         // reach a dirty cell (=false when reach dirty cell)
 		boolean status5=true;         // touch a corner
-		
-		float dist=0;
-		float a=0;
-		float orientation=(float) ((mOrientation.z)*180/Math.PI);
+
+		float orientation=mOrientation.z;
 		
 		int i=40;
 		int j=20;
@@ -438,70 +444,69 @@ public class Ernest100Model extends ErnestModel
 		
 		if (continuum) {
 			vlmin=(float) 0.1;
-			vrmin=(float) 0.1;
+			vrmin=(float) 0.002;
 		}
 		else{
 			vlmin=(float) 0.1;
-			vrmin=(float) 0.1;
+			vrmin=(float) 0.002;
 		}
 		
 		
 		status3=isAlga(cell_x,cell_y) || isFood(cell_x,cell_y);
 		
-		while  ( ((m_v>vlmin || m_If>0) && statusL) ||  (Math.abs(m_theta)>vrmin  || m_Ir!=0) ){
+		while  ( ((mTranslation.length()>vlmin || m_Itranslation.length()>0) && statusL) ||  (mRotation.length()>vrmin  || m_Irotation.length()!=0) ){
 			
 			// set linear impulsion
-			if (m_If>0){
-				m_v=m_If;
-				m_If=0;
+			if (m_Itranslation.length()>0){
+				mTranslation.x=m_Itranslation.x;
+				mTranslation.y=m_Itranslation.y;
+				m_Itranslation.scale(0);
 			}
 			else 
-				if (continuum) m_v-= 0.01*m_v;
-				else m_v-= 0.03*m_v;
+				if (continuum) mTranslation.scale(0.99f);
+				else           mTranslation.scale(0.97f);
 			
-			if (m_v<=0.1) m_v=0;
+			//if (m_v<=0.1) m_v=0;
 			
 			// set angular impulsion
-			if (m_Ir!=0){
-				m_theta=m_Ir;
-				m_Ir=0;
+			if (m_Irotation.length()!=0){
+				mRotation.z=(float) (m_Irotation.z*Math.PI/180);
+				m_Irotation.scale(0);
 			}
 			else 
-				if (continuum) m_theta-= 0.1*m_theta;
-				else m_theta-= 0.1*m_theta;
-			
-			//if (Math.abs(m_theta)<=10) m_theta=0;
+				if (continuum) mRotation.scale(0.9f);
+				else           mRotation.scale(0.9f);
 			
 	// compute new position
 			
 			// for linear movements
 			double d;
 			if (statusL){
-				if (continuum) step=m_v/300;
-				else           step=m_v/30;
+				if (continuum){
+					stepX=mTranslation.x/300;
+					stepY=mTranslation.y/300;
+				}
+				else{
+					stepX=mTranslation.x/30;
+					stepY=mTranslation.y/30;
+				}
 				
-				double dx= step*Math.cos(mOrientation.z);
-				double dy= step*Math.sin(mOrientation.z);
+				double dx= stepX*Math.cos(mOrientation.z) - stepY*Math.sin(mOrientation.z);
+				double dy= stepX*Math.sin(mOrientation.z) + stepY*Math.cos(mOrientation.z);
 				cell_x=Math.round(mPosition.x);
 				cell_y=Math.round(mPosition.y);
-				dist+=step;
 				mPosition.x+=dx;
 				mPosition.y+=dy;
-				//mPosition.x = m_x;
-				//mPosition.y = (float) m_h - m_y -1;
 			}
 			
 			// for angular movements
-			if (continuum){
-				orientation+=m_theta/40;
-				a+=m_theta/20;
-			}
-			else orientation+=m_theta/10;
-			if (orientation <= -180) orientation +=360;
-			if (orientation >   180) orientation -=360;
+			if (continuum)orientation+=mRotation.z/40;
+			else          orientation+=mRotation.z/10;
 
-			mOrientation.z = (float) (orientation*Math.PI/180);
-			
+			if (orientation <= -Math.PI) orientation +=2*Math.PI;
+			if (orientation >   Math.PI) orientation -=2*Math.PI;
+
+			mOrientation.z = orientation;
 			
 			
 	// compute state
@@ -594,9 +599,9 @@ public class Ernest100Model extends ErnestModel
 			
 			float speed=0;
 			
-			if (lastAction==0) speed=m_v;
-			if (lastAction==1) speed=-m_theta;
-			if (lastAction==2) speed=m_theta;
+			if (lastAction==0) speed= mTranslation.length();
+			if (lastAction==1) speed=-mRotation.z;
+			if (lastAction==2) speed= mRotation.z;
 			
 			if (lastAction==0 && (!statusL && !status5) ) speed=0; 
 			
@@ -712,7 +717,6 @@ public class Ernest100Model extends ErnestModel
 		}
 		
 		int sight=20;
-		
 		int orientationDeg= (int)(mOrientation.z * 180 / Math.PI);
 		
 		
