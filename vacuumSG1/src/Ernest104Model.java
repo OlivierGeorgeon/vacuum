@@ -35,11 +35,13 @@ public class Ernest104Model extends ErnestModel
 	
 	private double m_rotation_speed = Math.PI/Ernest.RESOLUTION_RETINA;
 	
-	public Vector3f m_Itranslation=new Vector3f(0,0,0);
-	public Vector3f m_Irotation=new Vector3f(0,0,0);
 	public float distance=0;
 	public float angle=0;
 	public boolean tempo=true;
+	
+	public String intention;
+	public boolean status;
+	public boolean acting;
 
 	/**
 	 * Initialize the agent in the grid
@@ -50,6 +52,9 @@ public class Ernest104Model extends ErnestModel
 		super.init(f);
 		setEyeAngle(Math.PI/4);
 		setOrientationStep(5);
+		
+		status=true;
+		acting=false;
 
 		setChanged();
 		notifyObservers2();					
@@ -104,6 +109,12 @@ public class Ernest104Model extends ErnestModel
 	{
 	}
 
+	
+	public void stepAgent(){
+		intention = stepErnest(status);
+		status = enactSchema(intention);
+	}
+	
 	/**
 	 * Run Ernest one step
 	 */
@@ -225,10 +236,7 @@ public class Ernest104Model extends ErnestModel
 	 */
 	protected boolean turnLeft(){
 
-		m_Irotation.x=0;
-		m_Irotation.y=0;
-		m_Irotation.z=45;
-		
+		mRotation.z=(float) (45*Math.PI/180);
 		mTranslation.scale(0);
 		return impulse(ACTION_LEFT);
 	}
@@ -239,10 +247,7 @@ public class Ernest104Model extends ErnestModel
 	 */
 	protected boolean turnRight(){
 		
-		m_Irotation.x=0;
-		m_Irotation.y=0;
-		m_Irotation.z=-45;
-		
+		mRotation.z=(float) (-45*Math.PI/180);
 		mTranslation.scale(0);
 		return impulse(ACTION_RIGHT);
 	}
@@ -253,9 +258,10 @@ public class Ernest104Model extends ErnestModel
 	 */
 	protected boolean forward(){
 
-		m_Itranslation.x=1f; //1.5f
-		m_Itranslation.y=0;
 		mRotation.scale(0);
+		
+		mTranslation.x=1;
+		mTranslation.y=0;
 		return impulse(ACTION_FORWARD);
 	}
 
@@ -291,28 +297,8 @@ public class Ernest104Model extends ErnestModel
 		
 		status3=(isAlga(cell_x,cell_y) || isFood(cell_x,cell_y) );
 		
-		while  ( ((mTranslation.length()>vlmin || m_Itranslation.length()>0) && statusL) ||  (mRotation.length()>vrmin  || m_Irotation.length()!=0) ){
+		while  ( (mTranslation.length()>vlmin && statusL) ||  (mRotation.length()>vrmin) ){
 
-			// set linear impulsion
-			if (m_Itranslation.length()>0){
-				mTranslation.x=m_Itranslation.x;
-				mTranslation.y=m_Itranslation.y;
-				m_Itranslation.scale(0);
-			}
-			else 
-				mTranslation.scale(0.99f);
-			
-			//if (m_v<=0.1) m_v=0;
-			
-			// set angular impulsion
-			if (m_Irotation.length()!=0){
-				mRotation.z=(float) (m_Irotation.z*Math.PI/180);
-				m_Irotation.scale(0);
-			}
-			else 
-				mRotation.scale(0.9f);
-
-			//if (Math.abs(m_theta)<=0.1) m_theta=0;
 			
 	// compute new position
 			
@@ -347,6 +333,8 @@ public class Ernest104Model extends ErnestModel
 					sleep((int)(1));
 			}
 
+			mTranslation.scale(0.99f);
+			mRotation.scale(0.9f);
 			
 	// compute state
 		// for linear movement
@@ -527,9 +515,10 @@ public class Ernest104Model extends ErnestModel
 			mTranslation.scale(0);
 		}
 		
-		if (act==0) 
-			return status1 && status2; //  && status5; bumping corners is not bumping.
-		else        return statusR;
+		if (act==0) status= status1 && status2; //  && status5; bumping corners is not bumping.
+		else        status= statusR;
+		
+		return status;
 	}
 	
 	

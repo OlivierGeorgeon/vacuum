@@ -27,6 +27,9 @@ public class ErnestModel extends Model
 	public static int ACTION_FORWARD = 0;
 	public static int ACTION_LEFT = 1;
 	public static int ACTION_RIGHT = 2;
+	
+	public String intention;
+	public boolean status;
 
 	/** The angular field of each eye. */
 	private double m_eyeAngle ;
@@ -79,6 +82,11 @@ public class ErnestModel extends Model
 		//m_tracer.close();
 		mOrientation.z=(float) (Math.PI/2);
 		m_ernest = null;
+	}
+	
+	public void stepAgent(){
+		intention = stepErnest(status);
+		status = enactSchema(intention);
 	}
 	
 	/**

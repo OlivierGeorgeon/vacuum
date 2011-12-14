@@ -34,8 +34,9 @@ public class ErnestView implements Runnable//implements IView
 		
 		while (!m_model.isAgentStopped())
 		{
-			String intention = m_model.stepErnest(status);
-			status = m_model.enactSchema(intention);
+			//String intention = m_model.stepErnest(status);
+			//status = m_model.enactSchema(intention);
+			m_model.stepAgent();
 		}
 		m_model.closeErnest();
 	}	
