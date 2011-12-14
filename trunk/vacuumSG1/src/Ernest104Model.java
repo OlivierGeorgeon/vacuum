@@ -39,6 +39,7 @@ public class Ernest104Model extends ErnestModel
 	public float angle=0;
 	public boolean tempo=true;
 	
+	public int lastAction;
 	public String intention;
 	public boolean status;
 	public boolean acting;
@@ -111,8 +112,20 @@ public class Ernest104Model extends ErnestModel
 
 	
 	public void stepAgent(){
-		intention = stepErnest(status);
-		status = enactSchema(intention);
+		float vlmin=0.1f;
+		float vrmin=0.002f;
+		
+		if ( !((mTranslation.length()>vlmin) ||  (mRotation.length()>vrmin)) ){
+			intention = stepErnest(status);
+			enactSchema(intention);
+		}
+
+		status = impulse(lastAction);
+		
+		if ( !((mTranslation.length()>vlmin) ||  (mRotation.length()>vrmin)) ){
+			setChanged();
+			notifyObservers2();	
+		}
 	}
 	
 	/**
@@ -297,7 +310,7 @@ public class Ernest104Model extends ErnestModel
 		
 		status3=(isAlga(cell_x,cell_y) || isFood(cell_x,cell_y) );
 		
-		while  ( (mTranslation.length()>vlmin && statusL) ||  (mRotation.length()>vrmin) ){
+		//while  ( (mTranslation.length()>vlmin && statusL) ||  (mRotation.length()>vrmin) ){
 
 			
 	// compute new position
@@ -344,62 +357,35 @@ public class Ernest104Model extends ErnestModel
 				if (!status3 && (isAlga(cell_x,cell_y) || isFood(cell_x,cell_y))) status4=false;
 			}
 			// top cell
-			
-			//Vector3f northPos = new Vector3f(mPosition);
-			//northPos.add(DIRECTION_NORTH);
-			//Vector3f testPos = new Vector3f();
-			//testPos.scaleAdd(1, mPosition, DIRECTION_NORTH);
-			
-			//if ( !affordWalk(northPos) && (m_y-HBradius) < ((float)cell_y-1+0.5) ){
-			// top cell
 			if ( (isWall(cell_x,cell_y-1)) && (mPosition.y-HBradius) -((float)cell_y-1+0.5)<0 )
 			{
 				if ((mOrientation.z > (float)Math.PI/4 && mOrientation.z < 3*(float)Math.PI/4) ||
 					(mOrientation.z < - 5*(float)Math.PI/4 && mOrientation.z > -7*(float)Math.PI/4))
 					// It counts as a bump only if the angle is closer to perpendicular plus or minus PI/4
 					status1=false;
-//<<<<<<< .mine
-//				//m_y+= ((float)cell_y-1+0.5) - (m_y-HBradius);
-//				m_y = cell_y - 0.5f + HBradius;
-//=======
+
 				mPosition.y+= ((float)cell_y-1+0.5) - (mPosition.y-HBradius);
-//>>>>>>> .r73
 			}
 			// right cell
 			if ( (isWall(cell_x+1,cell_y)) && ((float)cell_x+1-0.5) -(mPosition.x+HBradius)<0 ){
 				if ((mOrientation.z > - (float)Math.PI/4 && mOrientation.z < (float)Math.PI/4) ||
 					(mOrientation.z > 7 * (float)Math.PI/4))	
 					status2=false;
-//<<<<<<< .mine
-//				//m_x-= (m_x+HBradius) - ((float)cell_x+1-0.5);
-//				m_x = cell_x + 0.5f - HBradius;
-//=======
 				mPosition.x-= (mPosition.x+HBradius) - ((float)cell_x+1-0.5);
-//>>>>>>> .r73
 			}
 			// bottom cell
 			if ( (isWall(cell_x,cell_y+1)) && ((float)cell_y+1-0.5) -(mPosition.y+HBradius)<0 ){
 				if ((mOrientation.z < - (float)Math.PI/4 && mOrientation.z > - 3 *(float)Math.PI/4) ||
 					(mOrientation.z > 5*(float)Math.PI/4 && mOrientation.z < 7 *(float)Math.PI/4))
 					status1=false;
-//<<<<<<< .mine
-//				//m_y-= (m_y+HBradius) - ((float)cell_y+1-0.5);
-//				m_y = cell_y + 0.5f - HBradius;
-//=======
 				mPosition.y-= (mPosition.y+HBradius) - ((float)cell_y+1-0.5);
-//>>>>>>> .r73
 			}
 			// left cell
 			if ( (isWall(cell_x-1,cell_y)) && (mPosition.x-HBradius) -((float)cell_x-1+0.5)<0 ){
 				if ((mOrientation.z > 3*(float)Math.PI/4 && mOrientation.z < 5*(float)Math.PI/4) ||
 						(mOrientation.z < - 3*(float)Math.PI/4))
 					status2=false;
-//<<<<<<< .mine
-//				//m_x+= ((float)cell_x-1+0.5) - (m_x-HBradius);
-//				m_x = cell_x - 0.5f + HBradius;
-//=======
 				mPosition.x+= ((float)cell_x-1+0.5) - (mPosition.x-HBradius);
-//>>>>>>> .r73
 			}
 			// top right
 			d= (mPosition.x-(cell_x+1-0.5))*(mPosition.x-(cell_x+1-0.5))+(mPosition.y-(cell_y-1+0.5))*(mPosition.y-(cell_y-1+0.5));
@@ -453,7 +439,7 @@ public class Ernest104Model extends ErnestModel
 //			m_tactileFrame.repaint();
 			
 			statusL = (status1 || status2) && status4;
-		}
+		//}
 		
 		
 		// compute state for angular movement
@@ -498,13 +484,13 @@ public class Ernest104Model extends ErnestModel
 		if ((adjacent_x >= 0) && (adjacent_x < m_w) && (adjacent_y >= 0) && (adjacent_y < m_h))
 			setAnim(adjacent_x, adjacent_y, ANIM_NO);	
 		
-		setChanged();
-		notifyObservers2();			
+		//setChanged();
+		//notifyObservers2();			
 		
 		//if (tempo) sleep(10);
 		
-		setChanged();
-		notifyObservers2();
+		//setChanged();
+		//notifyObservers2();
 		
 		
 		

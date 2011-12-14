@@ -39,7 +39,7 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public Environnement m_env;
+	public EnvironnementPanel m_env;
 	
 	public int indexImage;
 	
@@ -92,7 +92,7 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
     	this.setLocationRelativeTo(null);               
     	this.setVisible(true);
     
-    	m_env = new Environnement(m);
+    	m_env = new EnvironnementPanel(m);
 
     	
     	configureMenu(m);
