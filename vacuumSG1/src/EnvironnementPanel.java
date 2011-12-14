@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.awt.Color;
 import javax.swing.JPanel;
 
-public class Environnement extends JPanel implements MouseListener{
+public class EnvironnementPanel extends JPanel implements MouseListener{
 
 	/**
 	 * 
@@ -43,7 +43,7 @@ public class Environnement extends JPanel implements MouseListener{
 	private GeneralPath m_leaf = new GeneralPath();
 	private GeneralPath m_fish = new GeneralPath();
 		
-	public Environnement(Model model){
+	public EnvironnementPanel(Model model){
 		m_model=model;
 		m_h=m_model.getHeight();
 		m_w=m_model.getWidth();

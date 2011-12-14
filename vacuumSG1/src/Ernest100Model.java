@@ -46,8 +46,6 @@ public class Ernest100Model extends ErnestModel
 	//private long time1=System.currentTimeMillis();
 	//private long time2=System.currentTimeMillis();
 	
-	public Vector3f m_Itranslation=new Vector3f(0,0,0);
-	public Vector3f m_Irotation=new Vector3f(0,0,0);
 	public int lastAction;
 	
 	public Main mainFrame;
@@ -55,13 +53,6 @@ public class Ernest100Model extends ErnestModel
 	public String intention;
 	public boolean status;
 	public boolean acting;
-	
-	//public InternalStatesFrame m_int;
-	//public InternalMap m_map;
-	//public ObjectMemory m_objMemory;
-	
-	//public PatternMap m_patternMap;
-	//public PatternMappingFrame m_patternFrame;
 	
 	public TactileMap m_tactile;
 	public TactileMapFrame m_tactileFrame;
@@ -71,11 +62,6 @@ public class Ernest100Model extends ErnestModel
 	
 	public Colliculus colliculus;
 	public ColliculusFrame colliculusFrame;
-	
-	//public ArrayList<Action> m_actionList;
-	//public float distance=0;
-	//public float angle=0;
-	//public int objectType=0;
 	
 	private EyeView eye;
 	
@@ -193,7 +179,7 @@ public class Ernest100Model extends ErnestModel
 	}
 
 	
-	public void setEnvironnement(Environnement env){
+	public void setEnvironnement(EnvironnementPanel env){
 		m_env=env;
 	}
 	
@@ -209,8 +195,14 @@ public class Ernest100Model extends ErnestModel
 	}
 
 	public void stepAgent(){
-		intention = stepErnest(status);
-		enactSchema(intention);
+		float vlmin=0.1f;
+		float vrmin=0.002f;
+		
+		if ( !((mTranslation.length()>vlmin) ||  (mRotation.length()>vrmin)) ){
+			intention = stepErnest(status);
+			enactSchema(intention);
+		}
+
 		status = impulse(lastAction);
 	}
 	
@@ -348,11 +340,8 @@ public class Ernest100Model extends ErnestModel
 	 * @return true if adjacent wall, false if adjacent empty. 
 	 */
 	protected boolean turnLeft(){
-
-		m_Irotation.x=0;
-		m_Irotation.y=0;
-		m_Irotation.z=45;
-			
+		
+		mRotation.z=(float) (Math.PI/4);
 		mTranslation.scale(0);
 		
 		lastAction=ACTION_LEFT;
@@ -365,10 +354,7 @@ public class Ernest100Model extends ErnestModel
 	 */
 	protected boolean turnRight(){
 
-		m_Irotation.x=0;
-		m_Irotation.y=0;
-		m_Irotation.z=-45;
-			
+		mRotation.z=(float)(-Math.PI/4);
 		mTranslation.scale(0);
 		
 		lastAction=ACTION_RIGHT;
@@ -380,9 +366,9 @@ public class Ernest100Model extends ErnestModel
 	 * @return true if adjacent wall, false if adjacent empty. 
 	 */
 	protected boolean forward(){
-		
-		m_Itranslation.x=1.5f; //1.5f
-		m_Itranslation.y=0;
+
+		mTranslation.x=1.5f;
+		mTranslation.y=0;
 		mRotation.scale(0);
 		
 		lastAction=ACTION_FORWARD;
@@ -412,34 +398,13 @@ public class Ernest100Model extends ErnestModel
 
 		float orientation=mOrientation.z;
 		
-		int i=40;
-		int j=20;
-		
 		float vlmin=0.1f;
 		float vrmin=0.002f;
 		
 		status3=isAlga(cell_x,cell_y) || isFood(cell_x,cell_y);
 		
-		while  ( ((mTranslation.length()>vlmin || m_Itranslation.length()>0) && statusL) ||  (mRotation.length()>vrmin  || m_Irotation.length()!=0) ){
 			
-			// set linear impulsion
-			if (m_Itranslation.length()>0){
-				mTranslation.x=m_Itranslation.x;
-				mTranslation.y=m_Itranslation.y;
-				m_Itranslation.scale(0);
-			}
-			else 
-				mTranslation.scale(0.97f);
 			
-			//if (m_v<=0.1) m_v=0;
-			
-			// set angular impulsion
-			if (m_Irotation.length()!=0){
-				mRotation.z=(float) (m_Irotation.z*Math.PI/180);
-				m_Irotation.scale(0);
-			}
-			else 
-				mRotation.scale(0.9f);
 			
 	// compute new position
 			
@@ -563,7 +528,14 @@ public class Ernest100Model extends ErnestModel
 			if (lastAction==0 && (!statusL && !status5) ) speed=0; 
 			
 			rendu(true,speed);
-		}
+			
+			if (!statusL) mTranslation.scale(0);
+			
+			// set linear impulsion
+			mTranslation.scale(0.97f);
+		
+			// set angular impulsion
+			mRotation.scale(0.9f);
 		
 		
 	// compute state for angular movement
@@ -609,13 +581,13 @@ public class Ernest100Model extends ErnestModel
 		if ((adjacent_x >= 0) && (adjacent_x < m_w) && (adjacent_y >= 0) && (adjacent_y < m_h))
 			setAnim(adjacent_x, adjacent_y, ANIM_NO);	
 		
-		setChanged();
+		//setChanged();
 		//notifyObservers2();			
 		
 		//if (tempo) sleep(10);
 		
-		setChanged();
-		notifyObservers2();
+		//setChanged();
+		//notifyObservers2();
 		
 		
 		rendu(true);

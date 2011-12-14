@@ -38,7 +38,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
     private static ErnestModel m_model;// 			    = new Ernest100Model();
  	//private final StatusModel m_statusModel         = new StatusModel();
     
-    private ArrayList<ErnestModel> modelList;
+    private ArrayList<ErnestModel> m_modelList;
     private int version;
 	
 	private HelpFrames m_Helpframe;
@@ -84,7 +84,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 	public Block invisible_wall=new Block(HARD,FIELD_COLOR,"invisible");
 	
 	
-	private Environnement m_env;
+	private EnvironnementPanel m_env;
 	public Block[][] m_blocks;
 	private int[][] m_anim;
 	
@@ -141,7 +141,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 
 
 		/////////////////
-		m_env=new Environnement(m_model);
+		m_env=new EnvironnementPanel(m_model);
 		m_model.setFrame(this);
 		configureMenu();
 		
@@ -275,50 +275,58 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 					// Agent up
 					else if (square[x].equalsIgnoreCase("^"))
 					{
+						int index=m_modelList.size();
+						
 						l_x = x;
 						l_y = y;
-						m_model.mPosition.x = x;
-						m_model.mPosition.y = m_h - y;
-						m_model.mPosition.z = 0;
-						m_model.mOrientation.x = 0;
-						m_model.mOrientation.y = 0;
-						m_model.mOrientation.z = (float) Math.PI/2;
+						m_modelList.get(index).mPosition.x = x;
+						m_modelList.get(index).mPosition.y = m_h - y;
+						m_modelList.get(index).mPosition.z = 0;
+						m_modelList.get(index).mOrientation.x = 0;
+						m_modelList.get(index).mOrientation.y = 0;
+						m_modelList.get(index).mOrientation.z = (float) Math.PI/2;
 					}
 					// Agent right
 					else if (square[x].equalsIgnoreCase(">"))
 					{
+						int index=m_modelList.size();
+						
 						l_x = x;
-						l_y = y;	
-						m_model.mPosition.x = x;
-						m_model.mPosition.y = m_h - y;
-						m_model.mPosition.z = 0;
-						m_model.mOrientation.x = 0;
-						m_model.mOrientation.y = 0;
-						m_model.mOrientation.z = 0;
+						l_y = y;
+						m_modelList.get(index).mPosition.x = x;
+						m_modelList.get(index).mPosition.y = m_h - y;
+						m_modelList.get(index).mPosition.z = 0;
+						m_modelList.get(index).mOrientation.x = 0;
+						m_modelList.get(index).mOrientation.y = 0;
+						m_modelList.get(index).mOrientation.z = 0;
 					}
 					// Agent down
 					else if (square[x].equalsIgnoreCase("v"))
 					{
+						int index=m_modelList.size();
+						
 						l_x = x;
-						l_y = y;	
-						m_model.mPosition.x = x;
-						m_model.mPosition.y = m_h - y;
-						m_model.mPosition.z = 0;
-						m_model.mOrientation.x = 0;
-						m_model.mOrientation.y = 0;
-						m_model.mOrientation.z = (float) - Math.PI/2;
+						l_y = y;
+						m_modelList.get(index).mPosition.x = x;
+						m_modelList.get(index).mPosition.y = m_h - y;
+						m_modelList.get(index).mPosition.z = 0;
+						m_modelList.get(index).mOrientation.x = 0;
+						m_modelList.get(index).mOrientation.y = 0;
+						m_modelList.get(index).mOrientation.z = (float) - Math.PI/2;
 					}
 					// Agent up
 					else if (square[x].equalsIgnoreCase("<"))
 					{
+						int index=m_modelList.size();
+						
 						l_x = x;
-						l_y = y;	
-						m_model.mPosition.x = x;
-						m_model.mPosition.y = m_h - y;
-						m_model.mPosition.z = 0;
-						m_model.mOrientation.x = 0;
-						m_model.mOrientation.y = 0;
-						m_model.mOrientation.z = (float) Math.PI;
+						l_y = y;
+						m_modelList.get(index).mPosition.x = x;
+						m_modelList.get(index).mPosition.y = m_h - y;
+						m_modelList.get(index).mPosition.z = 0;
+						m_modelList.get(index).mOrientation.x = 0;
+						m_modelList.get(index).mOrientation.y = 0;
+						m_modelList.get(index).mOrientation.z = (float) Math.PI;
 					}
 					else if (Character.isLetter(square[x].toCharArray()[0]))
 					{

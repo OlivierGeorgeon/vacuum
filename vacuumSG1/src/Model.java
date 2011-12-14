@@ -160,14 +160,14 @@ public class Model extends Observable
 
 	private boolean m_night = false;
 
-	protected Environnement m_env;
+	protected EnvironnementPanel m_env;
 	protected Main mainFrame;
 	
 	public Model()
 	{
 		m_mainThread = Thread.currentThread();
 	}
-	public void setEnvironnement(Environnement env){
+	public void setEnvironnement(EnvironnementPanel env){
 		m_env=env;
 	}
 	public void setFrame(Main m){
