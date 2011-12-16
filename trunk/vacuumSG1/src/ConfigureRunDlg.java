@@ -7,11 +7,16 @@ public class ConfigureRunDlg extends Dialog
 {
 	public static final long serialVersionUID = 1;
 	
-    public ConfigureRunDlg(JFrame parent, Model model)
+	 private final JTextField m_steps = new JTextField(50);
+	 private final JTextField m_delay = new JTextField(50);
+
+	 private final Environment m_env;
+	
+    public ConfigureRunDlg(JFrame parent, Environment env)
 	{
         super(parent, "Configure Run");
 		
-		m_model = model;
+		m_env = env;
 
         JPanel center = new JPanel(new GridLayout(2, 2));
         center.add(new Label("Time Steps: "));
@@ -25,7 +30,7 @@ public class ConfigureRunDlg extends Dialog
 
 	public void setVisible(boolean b)
 	{
-		m_delay.setText(""+m_model.getDelay());
+		m_delay.setText(""+m_env.getDelay());
 		super.setVisible(b);
 	}
 
@@ -61,8 +66,8 @@ public class ConfigureRunDlg extends Dialog
 
 			if (bRet)
 			{
-				m_model.setDelay(iDelay);
-				m_model.putPreferences();
+				m_env.setDelay(iDelay);
+				m_env.putPreferences();
 			}
 		}
 		catch (NumberFormatException e)
@@ -82,12 +87,9 @@ public class ConfigureRunDlg extends Dialog
 	 */
     protected void handleDefault()
     {
-    	m_steps.setText("" + m_model.INIT_STEPS);
-    	m_delay.setText("" + m_model.INIT_DELAY);
+    	m_steps.setText("" + m_env.INIT_STEPS);
+    	m_delay.setText("" + m_env.INIT_DELAY);
     }
 
-    private final JTextField m_steps = new JTextField(50);
-    private final JTextField m_delay = new JTextField(50);
-
-	private final Model m_model;
+   
 }

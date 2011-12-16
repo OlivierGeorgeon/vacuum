@@ -25,6 +25,10 @@ public class ColliculusFrame extends JFrame{
     	this.setContentPane(panel);
 	}
 	
+	public void setColliculus(Colliculus c){
+		panel.setColliculus(c);
+	}
+	
 	public void saveImage(){
 		
 		String path="/home/simon/Bureau/Ernest/map/";

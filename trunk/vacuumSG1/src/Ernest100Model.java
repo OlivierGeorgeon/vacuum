@@ -35,6 +35,7 @@ import tracing.*;
  **************************************/
 public class Ernest100Model extends ErnestModel 
 {
+
 	protected static final int ORIENTATION_UP_RIGHT    = 45; 
 	protected static final int ORIENTATION_DOWN_RIGHT  = 135; 
 	protected static final int ORIENTATION_DOWN_LEFT   = 225; 
@@ -69,32 +70,22 @@ public class Ernest100Model extends ErnestModel
 	
 	public boolean tempo=true;
 	
+	public Ernest100Model(int i) {
+		super(i);
+	}
+	
 	/**
 	 * Initialize the agent in the grid
 	 */
-	public void init(String f) throws Exception
+	public void init(int w,int h) throws Exception
 	{
 		// Initialize the model
-		super.init(f);
+		super.init(w,h);
 		setEyeAngle(Math.PI/4);
 		setOrientationStep(45);
 
 		setChanged();
 		notifyObservers2();
-		
-		//m_actionList=new ArrayList<Action>();
-		
-		//m_objMemory=new ObjectMemory();
-		//m_map=new InternalMap(m_objMemory);
-		
-		
-		/*if (!load(m_actionList)){
-			
-			m_actionList.clear();
-			m_actionList.add(new Action("forward",10,120,150,m_objMemory));
-			m_actionList.add(new Action("turnLeft",1 ,180,180,m_objMemory));
-			m_actionList.add(new Action("turnRight",1 ,180,180,m_objMemory));
-		}*/
 
 		if (m_tactile==null){
 			m_tactile=new TactileMap(this);
@@ -102,20 +93,9 @@ public class Ernest100Model extends ErnestModel
 		if (m_visual==null){
 			m_visual=new VisualMap(this);
 		}
-		m_tactileFrame=new TactileMapFrame(m_tactile);
-		m_visualFrame=new VisualMapFrame(m_visual);
-		
-		//m_int=new InternalStatesFrame(m_actionList);
-		
-		//m_patternMap=new PatternMap();
-		//m_patternFrame=new PatternMappingFrame(m_patternMap);
-		
-		eye=new EyeView();
 		
 		colliculus=new Colliculus(m_tactile,m_visual);
-		colliculusFrame=new ColliculusFrame(colliculus);
-		
-		//frontColor=new Color(0,0,0);
+		//colliculusFrame=new ColliculusFrame(colliculus);
 	}
 
 	/**
@@ -179,10 +159,6 @@ public class Ernest100Model extends ErnestModel
 	}
 
 	
-	public void setEnvironnement(EnvironnementPanel env){
-		m_env=env;
-	}
-	
 	public void setFrame(Main m){
 		mainFrame=m;
 	}
@@ -192,6 +168,55 @@ public class Ernest100Model extends ErnestModel
 	 */
 	protected void initAgent()
 	{
+	}
+	
+	public void setDisplay(){
+		
+		//////////////////////
+		int size=m_env.frameList.size();
+		int i=0;
+		boolean found=false; 
+		while (i<size && !found){
+			if (m_env.frameList.get(i).getClass().getName().equals("TactileMapFrame")){
+				found=true;
+				System.out.println("-------- test1");
+			}
+			i++;
+		}
+		
+		if (!found) m_env.frameList.add(new TactileMapFrame(m_tactile)); 
+		else        ((TactileMapFrame) m_env.frameList.get(i-1)).setTactile(m_tactile);
+		
+		////////////////////
+		size=m_env.frameList.size();
+		i=0;
+		found=false; 
+		while (i<size && !found){
+			if (m_env.frameList.get(i).getClass().getName().equals("VisualMapFrame")){
+				found=true;
+				System.out.println("-------- test2");
+			}
+			i++;
+		}
+		
+		if (!found) m_env.frameList.add(new VisualMapFrame(m_visual)); 
+		else        ((VisualMapFrame) m_env.frameList.get(i-1)).setVisual(m_visual);
+		
+		///////////////////
+		size=m_env.frameList.size();
+		i=0;
+		found=false; 
+		while (i<size && !found){
+			if (m_env.frameList.get(i).getClass().getName().equals("ColliculusFrame")){
+				found=true;
+				System.out.println("-------- test3");
+			}
+			i++;
+		}
+		
+		if (!found) m_env.frameList.add(new ColliculusFrame(colliculus)); 
+		else        ((ColliculusFrame) m_env.frameList.get(i-1)).setColliculus(colliculus);
+		
 	}
 
 	public void stepAgent(){
@@ -228,9 +253,9 @@ public class Ernest100Model extends ErnestModel
 			matrix[i][3] = eyeFixation[i].getColor().getBlue();
 			// The second row is the place where Ernest is standing
 			matrix[i][4] = 0;
-			matrix[i][5] = m_blocks[Math.round(mPosition.x)][Math.round(mPosition.y)].seeBlock().getRed();
-			matrix[i][6] = m_blocks[Math.round(mPosition.x)][Math.round(mPosition.y)].seeBlock().getGreen();
-			matrix[i][7] = m_blocks[Math.round(mPosition.x)][Math.round(mPosition.y)].seeBlock().getBlue();
+			matrix[i][5] = m_env.m_blocks[Math.round(mPosition.x)][Math.round(mPosition.y)].seeBlock().getRed();
+			matrix[i][6] = m_env.m_blocks[Math.round(mPosition.x)][Math.round(mPosition.y)].seeBlock().getGreen();
+			matrix[i][7] = m_env.m_blocks[Math.round(mPosition.x)][Math.round(mPosition.y)].seeBlock().getBlue();
 		}
 		
 		// Taste 
@@ -276,7 +301,7 @@ public class Ernest100Model extends ErnestModel
 		
 		// A new interaction cycle is starting
 		m_counter++;
-		System.out.println("Step #" + m_counter + "=======");
+		System.out.println("Agent #"+ident+", Step #" + m_counter + "=======");
 		
 		boolean status = true;
 		
@@ -328,10 +353,10 @@ public class Ernest100Model extends ErnestModel
 		// Sucking water or food if any
 		// TODO: only suck water when thirsty and food when hungry.
 		//if (taste == DIRTY)
-		if (isFood(mPosition.x,mPosition.y))
+		if (m_env.isFood(mPosition.x,mPosition.y))
 			suck();
 
-		int stimulation = ((isFood(mPosition.x,mPosition.y)) ? Ernest.STIMULATION_GUSTATORY_FISH : Ernest.STIMULATION_GUSTATORY_NOTHING);
+		int stimulation = ((m_env.isFood(mPosition.x,mPosition.y)) ? Ernest.STIMULATION_GUSTATORY_FISH : Ernest.STIMULATION_GUSTATORY_NOTHING);
 		return stimulation;
 	}
 	
@@ -401,7 +426,7 @@ public class Ernest100Model extends ErnestModel
 		float vlmin=0.1f;
 		float vrmin=0.002f;
 		
-		status3=isAlga(cell_x,cell_y) || isFood(cell_x,cell_y);
+		status3=m_env.isAlga(cell_x,cell_y) || m_env.isFood(cell_x,cell_y);
 		
 			
 			
@@ -434,34 +459,34 @@ public class Ernest100Model extends ErnestModel
 	// compute state
 		// for linear movement
 			// current cell
-			if (isAlga(cell_x,cell_y) || isFood(cell_x,cell_y)){
-				if (status3 && !isAlga(cell_x,cell_y) && !isFood(cell_x,cell_y) ) status3=false;
-				if (!status3 && (isAlga(cell_x,cell_y) || isFood(cell_x,cell_y))) status4=false;
+			if (m_env.isAlga(cell_x,cell_y) || m_env.isFood(cell_x,cell_y)){
+				if (status3 && !m_env.isAlga(cell_x,cell_y) && !m_env.isFood(cell_x,cell_y) ) status3=false;
+				if (!status3 && (m_env.isAlga(cell_x,cell_y) || m_env.isFood(cell_x,cell_y))) status4=false;
 			}
 			// bottom cell
-			if ( (isWall(cell_x,cell_y-1)) && (mPosition.y-HBradius) -((float)cell_y-0.5)<0 ){
+			if ( (m_env.isWall(cell_x,cell_y-1)) && (mPosition.y-HBradius) -((float)cell_y-0.5)<0 ){
 				status1=false;
 				mPosition.y+= ((float)cell_y-0.5) - (mPosition.y-HBradius);
 			}
 			// right cell
-			if ( (isWall(cell_x+1,cell_y)) && ((float)cell_x+0.5) -(mPosition.x+HBradius)<0 ){
+			if ( (m_env.isWall(cell_x+1,cell_y)) && ((float)cell_x+0.5) -(mPosition.x+HBradius)<0 ){
 				status2=false;
 				mPosition.x-= (mPosition.x+HBradius) - ((float)cell_x+0.5);
 			}
 			// top cell
-			if ( (isWall(cell_x,cell_y+1)) && ((float)cell_y+0.5) -(mPosition.y+HBradius)<0 ){
+			if ( (m_env.isWall(cell_x,cell_y+1)) && ((float)cell_y+0.5) -(mPosition.y+HBradius)<0 ){
 				status1=false;
 				mPosition.y-= (mPosition.y+HBradius) - ((float)cell_y+0.5);
 			}
 			// left cell
-			if ( (isWall(cell_x-1,cell_y)) && (mPosition.x-HBradius) -((float)cell_x-0.5)<0 ){
+			if ( (m_env.isWall(cell_x-1,cell_y)) && (mPosition.x-HBradius) -((float)cell_x-0.5)<0 ){
 				status2=false;
 				mPosition.x+= ((float)cell_x-1+0.5) - (mPosition.x-HBradius);
 			}
 			// bottom right
 			d= (mPosition.x-(cell_x+1-0.5))*(mPosition.x-(cell_x+0.5))+(mPosition.y-(cell_y-0.5))*(mPosition.y-(cell_y-0.5));
 			d=Math.sqrt(d);
-			if (isWall(cell_x+1,cell_y-1) && d-0.4<0){
+			if (m_env.isWall(cell_x+1,cell_y-1) && d-0.4<0){
 				while (d-0.4<0){
 					mPosition.x-=0.01;
 					mPosition.y+=0.01;
@@ -473,7 +498,7 @@ public class Ernest100Model extends ErnestModel
 			// top right
 			d= (mPosition.x-(cell_x+0.5))*(mPosition.x-(cell_x+0.5))+(mPosition.y-(cell_y+0.5))*(mPosition.y-(cell_y+0.5));
 			d=Math.sqrt(d);
-			if (isWall(cell_x+1,cell_y+1) && d-0.4<0){
+			if (m_env.isWall(cell_x+1,cell_y+1) && d-0.4<0){
 				while (d-0.4<0){
 					mPosition.x-=0.01;
 					mPosition.y-=0.01;
@@ -485,7 +510,7 @@ public class Ernest100Model extends ErnestModel
 			// top left
 			d= (mPosition.x-(cell_x-0.5))*(mPosition.x-(cell_x-0.5))+(mPosition.y-(cell_y+0.5))*(mPosition.y-(cell_y+0.5));
 			d=Math.sqrt(d);
-			if (isWall(cell_x-1,cell_y+1) && d-0.4<0){
+			if (m_env.isWall(cell_x-1,cell_y+1) && d-0.4<0){
 				while (d-0.4<0){
 					mPosition.x+=0.01;
 					mPosition.y-=0.01;
@@ -497,7 +522,7 @@ public class Ernest100Model extends ErnestModel
 			// bottom left
 			d= (mPosition.x-(cell_x-0.5))*(mPosition.x-(cell_x-0.5))+(mPosition.y-(cell_y-0.5))*(mPosition.y-(cell_y-0.5));
 			d=Math.sqrt(d);
-			if (isWall(cell_x-1,cell_y-1) && d-0.4<0){
+			if (m_env.isWall(cell_x-1,cell_y-1) && d-0.4<0){
 				while (d-0.4<0){
 					mPosition.x+=0.01;
 					mPosition.y+=0.01;
@@ -513,9 +538,13 @@ public class Ernest100Model extends ErnestModel
 				//sleep((int)(1));
 			}
 			
-			m_tactileFrame.paint();
-			m_visualFrame.paint();
-			colliculusFrame.paint();
+			if (display){
+				
+				for (int i=0;i<m_env.frameList.size();i++){
+					m_env.frameList.get(i).repaint();
+				}
+			}
+			
 			
 			statusL=status1 && status2 && status4;
 			
@@ -570,7 +599,7 @@ public class Ernest100Model extends ErnestModel
 
 		
 		if ((adjacent_x >= 0) && (adjacent_x < m_w) && (adjacent_y >= 0) && (adjacent_y < m_h)){
-			if (isWall(adjacent_x, adjacent_y)){
+			if (m_env.isWall(adjacent_x, adjacent_y)){
 				setAnim(adjacent_x,adjacent_y, ANIM_RUB); 
 				statusR = false;
 			}
@@ -654,9 +683,9 @@ public class Ernest100Model extends ErnestModel
 				
 				// cells on the top right side
 				if ( (i>0)&& (Im_x+i<m_w) && (Im_y+j<m_h) ){
-					if (isWall(Im_x+i,Im_y+j) || isAlga(Im_x+i,Im_y+j) || isFood(Im_x+i,Im_y+j) ){
-						Color bgc = m_blocks[Im_x+i][Im_y+j].seeBlock();
-						int tactile=m_blocks[Im_x+i][Im_y+j].touchBlock();
+					if (m_env.isWall(Im_x+i,Im_y+j) || m_env.isAlga(Im_x+i,Im_y+j) || m_env.isFood(Im_x+i,Im_y+j) ){
+						Color bgc = m_env.m_blocks[Im_x+i][Im_y+j].seeBlock();
+						int tactile=m_env.m_blocks[Im_x+i][Im_y+j].touchBlock();
 						
 						imin =(double)i-0.5 - (mPosition.x-Im_x);
 						imin2=imin*imin;
@@ -683,7 +712,7 @@ public class Ernest100Model extends ErnestModel
 						
 						for (int k=ai2;k<=ai1;k++){
 							d= d2*10 +   (d1-d2)*10*(k-ai2)/(ai1-ai2);
-							if (m_blocks[Im_x+i][Im_y+j].isVisible()){
+							if (m_env.m_blocks[Im_x+i][Im_y+j].isVisible()){
 								if (zVMap[k]>d){
 									rv[k]=d;
 									zVMap[k]= d;
@@ -704,7 +733,7 @@ public class Ernest100Model extends ErnestModel
 						}		
 						for (int k=ai1;k<=ai3;k++){
 							d= d1*10 +   (d3-d1)*10*(k-ai1)/(ai3-ai1);
-							if (m_blocks[Im_x+i][Im_y+j].isVisible()){
+							if (m_env.m_blocks[Im_x+i][Im_y+j].isVisible()){
 								if (zVMap[k]>d){
 									rv[k]=d;
 									zVMap[k]= d;
@@ -726,12 +755,14 @@ public class Ernest100Model extends ErnestModel
 						
 					}
 				}
-				
+
 				// cells on the bottom right side
 				if ( (j>0) && (Im_x+i<m_w) && (Im_y-j>=0) ){
-					if (isWall(Im_x+i,Im_y-j) || isAlga(Im_x+i,Im_y-j) || isFood(Im_x+i,Im_y-j) ){
-						Color bgc = m_blocks[Im_x+i][Im_y-j].seeBlock();
-						int tactile=m_blocks[Im_x+i][Im_y-j].touchBlock();
+					if (m_env.isWall(Im_x+i,Im_y-j) || m_env.isAlga(Im_x+i,Im_y-j) || m_env.isFood(Im_x+i,Im_y-j) ){
+						Color bgc = m_env.m_blocks[Im_x+i][Im_y-j].seeBlock();
+						int tactile=m_env.m_blocks[Im_x+i][Im_y-j].touchBlock();
+						
+						
 						
 						imin =(double)i-0.5 - (mPosition.x-Im_x);
 						imin2=imin*imin;
@@ -765,7 +796,7 @@ public class Ernest100Model extends ErnestModel
 						
 						for (int k=ai2;k<=ai1;k++){
 							d= ( d2*10 +   (d1-d2)*10*(k-ai2)/(ai1-ai2));
-							if (m_blocks[Im_x+i][Im_y-j].isVisible()){
+							if (m_env.m_blocks[Im_x+i][Im_y-j].isVisible()){
 								if (zVMap[k]>d){
 									rv[k]=d;
 									zVMap[k]= d;
@@ -788,7 +819,7 @@ public class Ernest100Model extends ErnestModel
 						}		
 						for (int k=ai1;k<=ai3;k++){
 							d= ( d1*10 +   (d3-d1)*10*(k-ai1)/(ai3-ai1));
-							if (m_blocks[Im_x+i][Im_y-j].isVisible()){
+							if (m_env.m_blocks[Im_x+i][Im_y-j].isVisible()){
 								if (zVMap[k]>d){
 									rv[k]=d;
 									zVMap[k]= d;
@@ -813,9 +844,9 @@ public class Ernest100Model extends ErnestModel
 				
 				// cells on the bottom left side
 				if ( (i>0) && (Im_x-i>=0) && (Im_y-j>=0) ){
-					if (isWall(Im_x-i,Im_y-j) || isAlga(Im_x-i,Im_y-j) || isFood(Im_x-i,Im_y-j) ){
-						Color bgc = m_blocks[Im_x-i][Im_y-j].seeBlock();
-						int tactile=m_blocks[Im_x-i][Im_y-j].touchBlock();
+					if (m_env.isWall(Im_x-i,Im_y-j) || m_env.isAlga(Im_x-i,Im_y-j) || m_env.isFood(Im_x-i,Im_y-j) ){
+						Color bgc = m_env.m_blocks[Im_x-i][Im_y-j].seeBlock();
+						int tactile=m_env.m_blocks[Im_x-i][Im_y-j].touchBlock();
 						
 						imin =(double)i-0.5 + (mPosition.x-Im_x);
 						imin2=imin*imin;
@@ -841,7 +872,7 @@ public class Ernest100Model extends ErnestModel
 						
 						for (int k=ai2;k<=ai1;k++){
 							d=   d2*10 +   (d1-d2)*10*(k-ai2)/(ai1-ai2);
-							if (m_blocks[Im_x-i][Im_y-j].isVisible()){
+							if (m_env.m_blocks[Im_x-i][Im_y-j].isVisible()){
 								if (zVMap[k]>d){
 									rv[k]=d;
 									zVMap[k]=d;
@@ -862,7 +893,7 @@ public class Ernest100Model extends ErnestModel
 						}		
 						for (int k=ai1;k<=ai3;k++){
 							d=  d1*10 +   (d3-d1)*10*(k-ai1)/(ai3-ai1);
-							if (m_blocks[Im_x-i][Im_y-j].isVisible()){
+							if (m_env.m_blocks[Im_x-i][Im_y-j].isVisible()){
 								if (zVMap[k]>d){
 									rv[k]=d;
 									zVMap[k]=d;
@@ -887,9 +918,9 @@ public class Ernest100Model extends ErnestModel
 				
 				// cells exactly on the top
 				if ( (j>0) && (i==0) && (Im_y+j<m_h) ){
-					if (isWall(Im_x-i,Im_y+j) || isAlga(Im_x-i,Im_y+j) || isFood(Im_x-i,Im_y+j) ){
-						Color bgc = m_blocks[Im_x-i][Im_y+j].seeBlock();
-						int tactile=m_blocks[Im_x-i][Im_y+j].touchBlock();
+					if (m_env.isWall(Im_x-i,Im_y+j) || m_env.isAlga(Im_x-i,Im_y+j) || m_env.isFood(Im_x-i,Im_y+j) ){
+						Color bgc = m_env.m_blocks[Im_x-i][Im_y+j].seeBlock();
+						int tactile=m_env.m_blocks[Im_x-i][Im_y+j].touchBlock();
 						
 						imin =(double)i-0.5 + (mPosition.x-Im_x);
 						imin2=imin*imin;
@@ -914,7 +945,7 @@ public class Ernest100Model extends ErnestModel
 				    	int count=0;
 				    	for (int k=ai2;k<360;k++){
 				    		d= d2*10 +   (d1-d2)*10*(k-ai2)/((ai1-ai2+360)%360);
-				    		if (m_blocks[Im_x-i][Im_y+j].isVisible()){
+				    		if (m_env.m_blocks[Im_x-i][Im_y+j].isVisible()){
 				    			if (zVMap[k]>d){
 				    				rv[k]=d;
 				    				zVMap[k]= d;
@@ -934,7 +965,7 @@ public class Ernest100Model extends ErnestModel
 				    	}
 				    	for (int k=0;k<=ai1;k++){
 				    		d= d2*10 +   (d1-d2)*10*(k+count)/((ai1-ai2+360)%360);
-				    		if (m_blocks[Im_x-i][Im_y+j].isVisible()){
+				    		if (m_env.m_blocks[Im_x-i][Im_y+j].isVisible()){
 				    			if (zVMap[k]>d){
 				    				rv[k]=d;
 				    				zVMap[k]= d;
@@ -956,9 +987,9 @@ public class Ernest100Model extends ErnestModel
 				
 				// cells on the top left side
 				if ( (j>0) && (i>0) && (Im_x-i>=0) && (Im_y+j<m_h) ){
-					if (isWall(Im_x-i,Im_y+j) || isAlga(Im_x-i,Im_y+j) || isFood(Im_x-i,Im_y+j) ){
-						Color bgc = m_blocks[Im_x-i][Im_y+j].seeBlock();
-						int tactile=m_blocks[Im_x-i][Im_y+j].touchBlock();
+					if (m_env.isWall(Im_x-i,Im_y+j) || m_env.isAlga(Im_x-i,Im_y+j) || m_env.isFood(Im_x-i,Im_y+j) ){
+						Color bgc = m_env.m_blocks[Im_x-i][Im_y+j].seeBlock();
+						int tactile=m_env.m_blocks[Im_x-i][Im_y+j].touchBlock();
 						
 						imin =(double)i-0.5 + (mPosition.x-Im_x);
 						imin2=imin*imin;
@@ -987,7 +1018,7 @@ public class Ernest100Model extends ErnestModel
 						
 				    	for (int k=ai2;k<=ai1;k++){
 				    		d= d2*10 +   (d1-d2)*10*(k-ai2)/(ai1-ai2);
-				    		if (m_blocks[Im_x-i][Im_y+j].isVisible()){
+				    		if (m_env.m_blocks[Im_x-i][Im_y+j].isVisible()){
 				    			if (zVMap[k]>d){
 				    				rv[k]=d;
 				    				zVMap[k]= d;
@@ -1008,7 +1039,7 @@ public class Ernest100Model extends ErnestModel
 				    	}		
 				    	for (int k=ai1;k<=ai3;k++){
 				    		d= d1*10 +   (d3-d1)*10*(k-ai1)/(ai3-ai1);
-				    		if (m_blocks[Im_x-i][Im_y+j].isVisible()){
+				    		if (m_env.m_blocks[Im_x-i][Im_y+j].isVisible()){
 				    			if (zVMap[k]>d-0.01){
 				    				rv[k]=d;
 				    				zVMap[k]=d;
@@ -1030,7 +1061,6 @@ public class Ernest100Model extends ErnestModel
 						
 					}
 				}
-				
 				
 			}
 		}
@@ -1057,27 +1087,16 @@ public class Ernest100Model extends ErnestModel
 			retina[Ernest.RESOLUTION_RETINA-i-1].setDistance((int) rv2[(int)(i*180/Ernest.RESOLUTION_RETINA+180/Ernest.RESOLUTION_RETINA/2+90)]);
 		}
 		
-		/*
-		if (setdistance){ 
-			//distance=(float) rv2[90];
-			//frontColor=colorMap2[90];
-			//m_objMemory.addObject(frontColor);
-		}*/
-		
 		if (sensor){
 			colliculus.update(rv2, colorMap2, rt2, tactileMap2, lastAction, speed);
 			//colliculusFrame.saveImage();
 			//m_env.saveImage();
 		}
 		
-		//m_patternMap.addPatern(colorMap2,lastAction);
-		//m_patternFrame.update((int)(m_x*10),(int)(m_y*10),m_orientation);
-		//m_patternFrame.paint();
-		
-		//m_int.repaint();
-		eye.repaint();
-		//m_map.compute(rv2, colorMap2);
-		eye.paint(rv2,colorMap2,cornerV2,rt2,tactileMap2,cornerT2);
+		if (display){
+			m_env.m_eye.repaint();
+			m_env.m_eye.paint(rv2,colorMap2,cornerV2,rt2,tactileMap2,cornerT2);
+		}
 		
 		return retina;
 	}
@@ -1194,10 +1213,10 @@ public class Ernest100Model extends ErnestModel
 	    	
 	    	// Examine the square on the ray. Return wall or uninhibited dirty squares.
 
-	    	Color bgc = m_blocks[x][y].seeBlock();
-	    	if (isWall(x,y) || isAlga(x,y) || isFood(x,y))
+	    	Color bgc = m_env.m_blocks[x][y].seeBlock();
+	    	if (m_env.isWall(x,y) || m_env.isAlga(x,y) || m_env.isFood(x,y))
 	    	{
-	    		if (isWall(x,y))
+	    		if (m_env.isWall(x,y))
 	    		{
 	    			//if (isTheWallCorner(x,y))
 	        			eyeFixation.setColor(bgc);
@@ -1445,8 +1464,8 @@ public class Ernest100Model extends ErnestModel
 		
 		// Draw the body
 		
-		g2d.setStroke(new BasicStroke(2f));		
-		g2d.setColor(m_blocks[Math.round(mPosition.x)][Math.round(mPosition.y)].seeBlock() );
+		g2d.setStroke(new BasicStroke(2f));
+		g2d.setColor(m_env.m_blocks[Math.round(mPosition.x)][Math.round(mPosition.y)].seeBlock() );
 		g2d.setColor(new Color(255,255,255)) ;
 		g2d.fill(sharkMask);
 

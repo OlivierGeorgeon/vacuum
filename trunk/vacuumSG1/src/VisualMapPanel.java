@@ -19,6 +19,10 @@ public class VisualMapPanel extends JPanel{
 		width=100/(40-10);//tmap.mapSize;
 	}
 	
+	public void setVisual(VisualMap v){
+		vmap=v;
+	}
+	
 	public void paintComponent(Graphics g){
 		g.setColor(Color.white);
 		g.fillRect(0, 0, 800, 800);

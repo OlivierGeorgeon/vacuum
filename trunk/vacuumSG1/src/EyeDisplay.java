@@ -8,7 +8,7 @@ import javax.swing.JPanel;
  * @author simon
  */
 public class EyeDisplay extends JPanel {
- 
+
 		/**
 	 * 
 	 */
