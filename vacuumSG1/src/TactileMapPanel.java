@@ -24,7 +24,9 @@ public class TactileMapPanel extends JPanel{
 		width1=800/(3*12+1);
 	}
 	
-	
+	public void setTactile(TactileMap t){
+		tmap=t;
+	}
 	
 	public void paintComponent(Graphics g){
 		g.setColor(Color.white);

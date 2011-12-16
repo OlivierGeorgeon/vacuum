@@ -44,13 +44,18 @@ public class Ernest104Model extends ErnestModel
 	public boolean status;
 	public boolean acting;
 
+	
+	public Ernest104Model(int i) {
+		super(i);
+	}
+	
 	/**
 	 * Initialize the agent in the grid
 	 */
-	public void init(String f) throws Exception
+	public void init(int w,int h) throws Exception
 	{
 		// Initialize the model
-		super.init(f);
+		super.init(w,h);
 		setEyeAngle(Math.PI/4);
 		setOrientationStep(5);
 		
@@ -150,9 +155,9 @@ public class Ernest104Model extends ErnestModel
 			matrix[i][3] = eyeFixation[i].mRight.getBlue();
 			// The second row is the place where Ernest is standing
 			matrix[i][4] = 0;
-			matrix[i][5] = m_blocks[Math.round(mPosition.x)][Math.round(mPosition.y)].seeBlock().getRed();
-			matrix[i][6] = m_blocks[Math.round(mPosition.x)][Math.round(mPosition.y)].seeBlock().getGreen();
-			matrix[i][7] = m_blocks[Math.round(mPosition.x)][Math.round(mPosition.y)].seeBlock().getBlue();
+			matrix[i][5] = m_env.m_blocks[Math.round(mPosition.x)][Math.round(mPosition.y)].seeBlock().getRed();
+			matrix[i][6] = m_env.m_blocks[Math.round(mPosition.x)][Math.round(mPosition.y)].seeBlock().getGreen();
+			matrix[i][7] = m_env.m_blocks[Math.round(mPosition.x)][Math.round(mPosition.y)].seeBlock().getBlue();
 		}
 		
 		// Taste 
@@ -194,7 +199,7 @@ public class Ernest104Model extends ErnestModel
 		
 		// A new interaction cycle is starting
 		m_counter++;
-		System.out.println("Step #" + m_counter + "=======");
+		System.out.println("Agent #"+ident+", Step #" + m_counter + "=======");
 		
 		boolean status = true;
 		
@@ -236,10 +241,10 @@ public class Ernest104Model extends ErnestModel
 		// Sucking water or food if any
 		// TODO: only suck water when thirsty and food when hungry.
 		//if (taste == DIRTY)
-		if (isFood(mPosition.x,mPosition.y))
+		if (m_env.isFood(mPosition.x,mPosition.y))
 			suck();
 
-		int stimulation = ((isFood(mPosition.x,mPosition.y)) ? Ernest.STIMULATION_GUSTATORY_FISH : Ernest.STIMULATION_GUSTATORY_NOTHING);
+		int stimulation = ((m_env.isFood(mPosition.x,mPosition.y)) ? Ernest.STIMULATION_GUSTATORY_FISH : Ernest.STIMULATION_GUSTATORY_NOTHING);
 		return stimulation;
 	}
 	
@@ -308,7 +313,7 @@ public class Ernest104Model extends ErnestModel
 		vlmin=(float) 0.1;
 		vrmin=(float) 0.002; // when teta<10, Ernest is not turning anymore
 		
-		status3=(isAlga(cell_x,cell_y) || isFood(cell_x,cell_y) );
+		status3=(m_env.isAlga(cell_x,cell_y) || m_env.isFood(cell_x,cell_y) );
 		
 		//while  ( (mTranslation.length()>vlmin && statusL) ||  (mRotation.length()>vrmin) ){
 
@@ -352,12 +357,12 @@ public class Ernest104Model extends ErnestModel
 	// compute state
 		// for linear movement
 			// current cell
-			if (isAlga(cell_x,cell_y) || isFood(cell_x,cell_y)){
-				if (status3 && !isAlga(cell_x,cell_y) && !isFood(cell_x,cell_y) ) status3=false;
-				if (!status3 && (isAlga(cell_x,cell_y) || isFood(cell_x,cell_y))) status4=false;
+			if (m_env.isAlga(cell_x,cell_y) || m_env.isFood(cell_x,cell_y)){
+				if (status3 && !m_env.isAlga(cell_x,cell_y) && !m_env.isFood(cell_x,cell_y) ) status3=false;
+				if (!status3 && (m_env.isAlga(cell_x,cell_y) || m_env.isFood(cell_x,cell_y))) status4=false;
 			}
 			// top cell
-			if ( (isWall(cell_x,cell_y-1)) && (mPosition.y-HBradius) -((float)cell_y-1+0.5)<0 )
+			if ( (m_env.isWall(cell_x,cell_y-1)) && (mPosition.y-HBradius) -((float)cell_y-1+0.5)<0 )
 			{
 				if ((mOrientation.z > (float)Math.PI/4 && mOrientation.z < 3*(float)Math.PI/4) ||
 					(mOrientation.z < - 5*(float)Math.PI/4 && mOrientation.z > -7*(float)Math.PI/4))
@@ -367,21 +372,21 @@ public class Ernest104Model extends ErnestModel
 				mPosition.y+= ((float)cell_y-1+0.5) - (mPosition.y-HBradius);
 			}
 			// right cell
-			if ( (isWall(cell_x+1,cell_y)) && ((float)cell_x+1-0.5) -(mPosition.x+HBradius)<0 ){
+			if ( (m_env.isWall(cell_x+1,cell_y)) && ((float)cell_x+1-0.5) -(mPosition.x+HBradius)<0 ){
 				if ((mOrientation.z > - (float)Math.PI/4 && mOrientation.z < (float)Math.PI/4) ||
 					(mOrientation.z > 7 * (float)Math.PI/4))	
 					status2=false;
 				mPosition.x-= (mPosition.x+HBradius) - ((float)cell_x+1-0.5);
 			}
 			// bottom cell
-			if ( (isWall(cell_x,cell_y+1)) && ((float)cell_y+1-0.5) -(mPosition.y+HBradius)<0 ){
+			if ( (m_env.isWall(cell_x,cell_y+1)) && ((float)cell_y+1-0.5) -(mPosition.y+HBradius)<0 ){
 				if ((mOrientation.z < - (float)Math.PI/4 && mOrientation.z > - 3 *(float)Math.PI/4) ||
 					(mOrientation.z > 5*(float)Math.PI/4 && mOrientation.z < 7 *(float)Math.PI/4))
 					status1=false;
 				mPosition.y-= (mPosition.y+HBradius) - ((float)cell_y+1-0.5);
 			}
 			// left cell
-			if ( (isWall(cell_x-1,cell_y)) && (mPosition.x-HBradius) -((float)cell_x-1+0.5)<0 ){
+			if ( (m_env.isWall(cell_x-1,cell_y)) && (mPosition.x-HBradius) -((float)cell_x-1+0.5)<0 ){
 				if ((mOrientation.z > 3*(float)Math.PI/4 && mOrientation.z < 5*(float)Math.PI/4) ||
 						(mOrientation.z < - 3*(float)Math.PI/4))
 					status2=false;
@@ -390,7 +395,7 @@ public class Ernest104Model extends ErnestModel
 			// top right
 			d= (mPosition.x-(cell_x+1-0.5))*(mPosition.x-(cell_x+1-0.5))+(mPosition.y-(cell_y-1+0.5))*(mPosition.y-(cell_y-1+0.5));
 			d=Math.sqrt(d);
-			if (isWall(cell_x+1,cell_y-1) && d<HBradius){
+			if (m_env.isWall(cell_x+1,cell_y-1) && d<HBradius){
 				while (d<HBradius){
 					mPosition.x-=0.01;
 					mPosition.y+=0.01;
@@ -402,7 +407,7 @@ public class Ernest104Model extends ErnestModel
 			// bottom right
 			d= (mPosition.x-(cell_x+1-0.5))*(mPosition.x-(cell_x+1-0.5))+(mPosition.y-(cell_y+1-0.5))*(mPosition.y-(cell_y+1-0.5));
 			d=Math.sqrt(d);
-			if (isWall(cell_x+1,cell_y+1) && d<HBradius){
+			if (m_env.isWall(cell_x+1,cell_y+1) && d<HBradius){
 				while (d<HBradius){
 					mPosition.x-=0.01;
 					mPosition.y-=0.01;
@@ -414,7 +419,7 @@ public class Ernest104Model extends ErnestModel
 			// bottom left
 			d= (mPosition.x-(cell_x-1+0.5))*(mPosition.x-(cell_x-1+0.5))+(mPosition.y-(cell_y+1-0.5))*(mPosition.y-(cell_y+1-0.5));
 			d=Math.sqrt(d);
-			if (isWall(cell_x-1,cell_y+1) && d<HBradius){
+			if (m_env.isWall(cell_x-1,cell_y+1) && d<HBradius){
 				while (d<HBradius){
 					mPosition.x+=0.01;
 					mPosition.y-=0.01;
@@ -426,7 +431,7 @@ public class Ernest104Model extends ErnestModel
 			// top left
 			d= (mPosition.x-(cell_x-1+0.5))*(mPosition.x-(cell_x-1+0.5))+(mPosition.y-(cell_y-1+0.5))*(mPosition.y-(cell_y-1+0.5));
 			d=Math.sqrt(d);
-			if (isWall(cell_x-1,cell_y-1) && d<HBradius){
+			if (m_env.isWall(cell_x-1,cell_y-1) && d<HBradius){
 				while (d<HBradius){
 					mPosition.x+=0.01;
 					mPosition.y+=0.01;
@@ -473,7 +478,7 @@ public class Ernest104Model extends ErnestModel
 		}
 		
 		if ((adjacent_x >= 0) && (adjacent_x < m_w) && (adjacent_y >= 0) && (adjacent_y < m_h)){
-			if (isWall(adjacent_x, adjacent_y)){
+			if (m_env.isWall(adjacent_x, adjacent_y)){
 				setAnim(adjacent_x,adjacent_y, ANIM_RUB); 
 				statusR = false;
 			}
@@ -599,7 +604,7 @@ public class Ernest104Model extends ErnestModel
 		// Draw the body
 		
 		g2d.setStroke(new BasicStroke(2f));		
-		g2d.setColor(m_blocks[Math.round(mPosition.x)][Math.round(mPosition.y)].seeBlock() );
+		g2d.setColor(m_env.m_blocks[Math.round(mPosition.x)][Math.round(mPosition.y)].seeBlock() );
 		g2d.setColor(new Color(255,255,255)) ;
 		g2d.fill(sharkMask);
 

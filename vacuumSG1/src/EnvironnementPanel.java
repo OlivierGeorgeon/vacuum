@@ -14,12 +14,16 @@ public class EnvironnementPanel extends JPanel implements MouseListener{
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	public Model m_model;
+	public Environment m_env;
+	public ArrayList<ErnestModel> m_modelList;
 	public int m_h=1;
 	public int m_w=1;
 	public int m_clicked=0;
 	public int m_clickX;
 	public int m_clickY;
+	
+	public float m_FclickX;
+	public float m_FclickY;
 	
 	public int e_x;
 	public int e_y;
@@ -43,10 +47,12 @@ public class EnvironnementPanel extends JPanel implements MouseListener{
 	private GeneralPath m_leaf = new GeneralPath();
 	private GeneralPath m_fish = new GeneralPath();
 		
-	public EnvironnementPanel(Model model){
-		m_model=model;
-		m_h=m_model.getHeight();
-		m_w=m_model.getWidth();
+	public EnvironnementPanel(ArrayList<ErnestModel> modelList, Environment env){
+		m_modelList=modelList;
+		m_env=env;
+		
+		m_h=env.getHeight();
+		m_w=env.getWidth();
 		addMouseListener(this);
 		
 		m_leaf.append(petal1, false);
@@ -105,38 +111,39 @@ public class EnvironnementPanel extends JPanel implements MouseListener{
 		g2d.fillRect(0, 0, w, h);
 		
 		// draw agent
-		m_model.paintAgent((Graphics2D)g.create(),(int) (m_model.mPosition.x*c_w+(c_w/2)),(int) (h-(m_model.mPosition.y+1)*c_h+(c_h/2)),(double)c_w/100,(double)c_h/100);
-		
+		for (int i=0;i<m_modelList.size();i++){
+			m_modelList.get(i).paintAgent((Graphics2D)g.create(),(int) (m_modelList.get(i).mPosition.x*c_w+(c_w/2)),(int) (h-(m_modelList.get(i).mPosition.y+1)*c_h+(c_h/2)),(double)c_w/100,(double)c_h/100);
+		}
 		
 		for (int i=0;i<m_w;i++){
 			for (int j=0;j<m_h;j++){
 				
 				// walls
-				if (m_model.isWall(i, j)){
-					g2d.setColor(m_model.m_blocks[i][j].seeBlock());
+				if (m_env.isWall(i, j)){
+					g2d.setColor(m_env.m_blocks[i][j].seeBlock());
 					g2d.fillRect(i*c_w, h-(j+1)*c_h, c_w+1, c_h+1);
 				}
 				
 				// fish
-				if (m_model.isFood(i, j)){
+				if (m_env.isFood(i, j)){
 					
 					AffineTransform centerCell = new AffineTransform();
 					centerCell.translate(i*c_w+c_w/2, h-(j+1)*c_h+c_h/2);
 					centerCell.scale((double) c_w / 100, (double) c_h / 100); 
 					g2d.transform(centerCell);
-					g2d.setColor(m_model.m_blocks[i][j].seeBlock());
+					g2d.setColor(m_env.m_blocks[i][j].seeBlock());
 					g2d.fill(m_fish);
 					g2d.setTransform(boardReference);
 				}
 				
 				// leaf
-				if (m_model.isAlga(i, j)){
+				if (m_env.isAlga(i, j)){
 					AffineTransform centerCell = new AffineTransform();
 					centerCell.translate(i*c_w+c_w/2, h-(j+1)*c_h+c_h/2);
 					centerCell.scale((double) c_w / 100, (double) c_h / 100); 
 					g2d.transform(centerCell);
 
-					g2d.setColor(m_model.m_blocks[i][j].seeBlock());
+					g2d.setColor(m_env.m_blocks[i][j].seeBlock());
 					
 					g2d.fill(m_leaf);
 					g2d.setTransform(boardReference);
@@ -149,7 +156,7 @@ public class EnvironnementPanel extends JPanel implements MouseListener{
 		drawInformation((Graphics2D)g.create());
 		
 		// draw dream square
-		m_model.paintDream((Graphics2D)g.create(),c_w*(m_w-2)-c_w/2,c_h/2, (double)c_w/100, (double)c_h/100);
+		//m_model.paintDream((Graphics2D)g.create(),c_w*(m_w-2)-c_w/2,c_h/2, (double)c_w/100, (double)c_h/100);
 		//g2d.setColor(Color.black);
 		//g.drawRect(c_w*(m_w-3), 0, c_w, c_h);
 		
@@ -163,6 +170,9 @@ public class EnvironnementPanel extends JPanel implements MouseListener{
 
 		m_clickX= (e.getX() / (int)( (float)w/(float)m_w ));
 		m_clickY= (e.getY() / (int)( (float)h/(float)m_h ));
+		
+		m_FclickX=(float)e.getX() / ((float)w/(float)m_w );
+		m_FclickY=(float)e.getY() / ((float)h/(float)m_h );
 		
 		if (e.getButton() == MouseEvent.BUTTON1)
 			if (e.isShiftDown()) m_clicked = 4;
@@ -220,7 +230,9 @@ public class EnvironnementPanel extends JPanel implements MouseListener{
 		int c_w=w/m_w;
 		int c_h=h/m_h;
 		
-		String counter = m_model.getCounter() + ""; 
+		String counter ="0";
+		
+		if (m_modelList.size()>0) counter=m_modelList.get(0).getCounter() + ""; 
 		
 		Font font = new Font("Dialog", Font.BOLD, 10);
 		g2d.setFont(font);

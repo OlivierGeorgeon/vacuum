@@ -9,12 +9,10 @@ import java.util.ArrayList;
 public class ErnestView implements Runnable//implements IView 
 {
 	private final ArrayList<ErnestModel> m_modelList;
-	private final ErnestModel m_model;
 	
-	public ErnestView(ErnestModel m)
+	public ErnestView(ArrayList<ErnestModel> m)
 	{
-		m_model = m;
-		m_modelList=new ArrayList<ErnestModel>();
+		m_modelList=m;
 	}
 //	public void init() 
 //	{
@@ -28,42 +26,23 @@ public class ErnestView implements Runnable//implements IView
 
 		
 		// Initialize an Ernest agent ===
-		m_model.startAgent();
-		m_model.initErnest();
+		for (int i=0;i<m_modelList.size();i++){
+			m_modelList.get(i).startAgent();
+			m_modelList.get(i).initErnest();
+		}
 	
 		// Run Ernest an infinite loop ===
 	
 	
-		while (!m_model.isAgentStopped()){
-			m_model.stepAgent();
+		while (!m_modelList.get(0).isAgentStopped()){
+			for (int i=0;i<m_modelList.size();i++){
+				m_modelList.get(i).stepAgent();
+			}
 		}
 
-		m_model.closeErnest();
-		
-		//======================================================
-		
-		if (m_modelList.size()>0){
-			// Initialize an Ernest agent ===
-			for (int i=0;i<m_modelList.size();i++){
-				m_modelList.get(i).startAgent();
-				m_modelList.get(i).initErnest();
-			}
-		
-			// Run Ernest an infinite loop ===
-		
-		
-			while (!m_modelList.get(0).isAgentStopped()){
-				for (int i=0;i<m_modelList.size();i++){
-					m_modelList.get(0).stepAgent();
-				}
-			}
-
-			for (int i=0;i<m_modelList.size();i++){
-				m_modelList.get(i).closeErnest();
-			}
+		for (int i=0;i<m_modelList.size();i++){
+			m_modelList.get(i).closeErnest();
 		}
-		else
-			System.out.println("no agent in the environment");
-		//====================================================
+
 	}	
 }

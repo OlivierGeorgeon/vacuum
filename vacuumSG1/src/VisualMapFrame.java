@@ -16,6 +16,9 @@ public class VisualMapFrame extends JFrame{
     	this.setContentPane(panel);
 	}
 	
+	public void setVisual(VisualMap v){
+		panel.setVisual(v);
+	}
 	
 	public void paint(){
     	panel.repaint();

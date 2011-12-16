@@ -10,6 +10,7 @@ import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -85,14 +86,14 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
 	//////////////////////////////////////////
 	
 	
-    public EnvironnementFrame(Model m){
+    public EnvironnementFrame(Model m, ArrayList<ErnestModel> modelList, Environment env){
 	
     	this.setTitle("Ernest");
     	this.setSize(670, 610);
     	this.setLocationRelativeTo(null);               
     	this.setVisible(true);
     
-    	m_env = new EnvironnementPanel(m);
+    	m_env = new EnvironnementPanel(modelList,env);
 
     	
     	configureMenu(m);
@@ -252,7 +253,7 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
 
 
 	public void actionPerformed(ActionEvent e)
-	{
+	{/*
 		//m_env.m_model.setEventThread(Thread.currentThread());
 
 		// Run the agent ******
@@ -279,7 +280,7 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
 			m_env.m_model.setCounter(0);
 			try
 			{ 
-				m_env.m_model.init(m_env.m_model.getBoardFileName()); 
+				//m_env.m_model.init(m_env.m_model.getBoardFileName()); 
 			}
 			catch (Exception ex)
 			{
@@ -364,8 +365,8 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
 				try
 				{
 					File boardFile = m_boardChooser.getSelectedFile();
-					m_env.m_model.setBoardFileName(boardFile.getAbsolutePath());
-					m_env.m_model.init(boardFile.getAbsolutePath()); 
+					m_env.m_env.setBoardFileName(boardFile.getAbsolutePath());
+					//m_env.m_model.init(boardFile.getAbsolutePath()); 
 				}
 				catch (Exception ex)
 				{
@@ -395,12 +396,12 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
     		m_Helpframe = new HelpFrames(this, "About");
 	    }
 		// Save the preferences
-		m_env.m_model.putPreferences();
+		m_env.m_model.putPreferences();*/
 	}
 
 
 	public void update(Observable o, Object arg)
-	{
+	{/*
 		if (m_env.m_model.isAgentStopped())
 		{
  
@@ -427,7 +428,7 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
 		}
 		getContentPane().validate();
 		repaint();
-		m_env.repaint();
+		m_env.repaint();*/
 	}
 	
 	

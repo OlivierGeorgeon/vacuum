@@ -4,7 +4,7 @@ import java.util.*;
 
 public class ConsoleView implements Observer
 {
-	private final Model m_model;
+	private final Environment m_env;
 
 	public static void main(String[] args)
 	{
@@ -15,10 +15,10 @@ public class ConsoleView implements Observer
 		m.suck();*/
 	}
 
-	public ConsoleView(Model m)
+	public ConsoleView(Environment env)
 	{
-		m_model = m;
-		m_model.addObserver(this);
+		m_env = env;
+		m_env.addObserver(this);
 		update(null, null);
 	}
 
@@ -26,15 +26,15 @@ public class ConsoleView implements Observer
 	{
 		StringBuffer sb = new StringBuffer();
 		sb.append("Robot at: "); 
-		sb.append(m_model.agentX());
+		sb.append(m_env.agentX(0));
 			sb.append(", ");
-			sb.append(m_model.agentY());
-		for (int y = 0; y < m_model.getHeight(); y++)
+			sb.append(m_env.agentY(0));
+		for (int y = 0; y < m_env.getHeight(); y++)
 		{
 			sb.append("\n");
-			for (int x = 0; x < m_model.getWidth(); x++)
+			for (int x = 0; x < m_env.getWidth(); x++)
 			{
-				if (m_model.isFood(x,y) || m_model.isAlga(x,y))
+				if (m_env.isFood(x,y) || m_env.isAlga(x,y))
 					sb.append("DIRTY ");
 				else
 					sb.append("EMPTY ");

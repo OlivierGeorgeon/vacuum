@@ -23,7 +23,7 @@ import tracing.*;
  **************************************/
 public class ErnestModel extends Model 
 {
-	
+
 	public static int ACTION_FORWARD = 0;
 	public static int ACTION_LEFT = 1;
 	public static int ACTION_RIGHT = 2;
@@ -70,6 +70,12 @@ public class ErnestModel extends Model
 	final protected Vector3f DIRECTION_WEST = new Vector3f(-1, 0, 0);
 	final protected Vector3f DIRECTION_NORTHWEST = new Vector3f(-1, 1, 0);
 
+	
+
+	public ErnestModel(int i) {
+		super(i);
+	}
+	
 	/**
 	 * Initialize the Ernest agent.
 	 */
@@ -224,8 +230,8 @@ public class ErnestModel extends Model
 	    		return Pair.create(Ernest.INFINITE, WALL_COLOR);
 	    	
 	    	// Examine the block on the ray. Return wall or uninhibited dirty squares.
-	    	Color bgc = m_blocks[i][j].seeBlock();
-	    	if (isWall(i,j) || isFood(i,j) || isAlga(i,j))
+	    	Color bgc = m_env.m_blocks[i][j].seeBlock();
+	    	if (m_env.isWall(i,j) || m_env.isFood(i,j) || m_env.isAlga(i,j))
 	    	{
 		    		int dist = (int)Math.sqrt(((i-x0)*(i-x0) + (j-y0)*(j-y0)) * 100);
 		    		return Pair.create(dist, bgc);

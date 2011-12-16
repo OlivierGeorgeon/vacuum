@@ -35,58 +35,19 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 	
 	private final MyFileFilter m_fileFilter 		= new MyFileFilter();
 
-    private static ErnestModel m_model;// 			    = new Ernest100Model();
- 	//private final StatusModel m_statusModel         = new StatusModel();
+    private static Environment m_environment;
+    public static ArrayList<ErnestModel> m_modelList;
     
-    private ArrayList<ErnestModel> m_modelList;
-    private int version;
+    private static int version;
 	
 	private HelpFrames m_Helpframe;
 	private ErnestView m_ernest;
-	private EnvSquare[][] m_grid = null;
 
 	private JPanel m_board;
 	
 	/////////////////////////////////////////////////////////////////////////////////////////
-	// tactile properties
-	public static final int EMPTY         = 0;
-	public static final int SMOOTH        = 1;
-	public static final int FOOD          = 2;
-	public static final int HARD		  = 3;
 	
-	// visual properties
-	public static final Color FIELD_COLOR = Color.white;
-	public static final Color WALL1       = new Color(  0,128,  0);
-	public static final Color WALL2       = new Color(  0,230, 92);
-	public static final Color WALL3       = new Color(  0,230,161);
-	public static final Color ALGA1       = new Color(115,230,  0);
-	public static final Color ALGA2       = new Color( 46,230,  0);
-	public static final Color ALGA3       = new Color(  0,230,230);
-	public static final Color ALGA4       = new Color(230,207,  0);
-	public static final Color ALGA5       = new Color(184,230,  0);
-	public static final Color FISH1       = new Color(150,128,255);
-	
-	// objects
-	public static Block empty=new Block(EMPTY, FIELD_COLOR,"empty");
-	public static Block wall =new Block(HARD , WALL1,"wall1");
-	public Block wall2=new Block(HARD , WALL2,"wall2");
-	public Block wall3=new Block(HARD , WALL3,"wall3");
-	public static Block alga1=new Block(SMOOTH,ALGA1,"alga1");
-	public Block alga2=new Block(SMOOTH,ALGA2,"alga2");
-	public Block alga3=new Block(SMOOTH,ALGA3,"alga3");
-	public Block alga4=new Block(SMOOTH,ALGA4,"alga4");
-	public Block alga5=new Block(SMOOTH,ALGA5,"alga5");
-	public static Block fish =new Block(FOOD  ,FISH1,"fish");
-	
-	// trap objects
-	public Block green_fish=new Block(FOOD  ,WALL1,"green_fish");
-	public Block mauve_wall=new Block(HARD  ,FISH1,"mauve_wall");
-	public Block invisible_wall=new Block(HARD,FIELD_COLOR,"invisible");
-	
-	
-	private EnvironnementPanel m_env;
-	public Block[][] m_blocks;
-	private int[][] m_anim;
+	private EnvironnementPanel m_envPanel;
 	
 	private boolean m_halt = true;
 	protected int m_w;
@@ -102,31 +63,33 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		new javax.swing.Timer(100, new StatusTimerListener());
 
 	private final ConfigureRunDlg m_configRunDlg = 
-		new ConfigureRunDlg(this, m_model);
-
+		new ConfigureRunDlg(this, m_environment);
+	
 	/**
 	 * Main
 	 * Can specify a model version
 	 * @author ogeorgeon 
 	 * @param strModel
 	 */
-	public static void main(String[] args)
-	{
+	public static void main(String[] args){
+		version=100;
 		if (args.length == 1)
 		{
 			if (args[0].equals("Ernest104")){
-				m_model = new Ernest104Model();
+				version=104;
 			}
-			if (args[0].equals("Ernest100")){
-				m_model = new Ernest100Model();
+			else if (args[0].equals("Ernest100")){
+				version=100;
 			}
+			else version=100;
 		}
-		else{
-			m_model = new Ernest100Model();
-		}
+		
+		m_modelList=new ArrayList<ErnestModel>();
+		m_environment= new Environment(m_modelList,version);
+		
 		new Main();
 	}
-	
+
 	/**
 	 * Main
 	 */
@@ -135,24 +98,19 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		super(TITLE);
 		MAIN_WIN = this;
 		// Retrieve preferences
-		m_model.initPreferences();
+		m_environment.initPreferences();
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		addWindowListener(new CloseHandler());
 
-
 		/////////////////
-		m_env=new EnvironnementPanel(m_model);
-		m_model.setFrame(this);
-		configureMenu();
+		m_envPanel=new EnvironnementPanel(m_modelList,m_environment);
 		
-		
+
 		// Initialize the board
-		try
-		{ 
-			m_model.init(m_model.getBoardFileName()); 
+		try{ 
+			this.init(m_environment.getBoardFileName());
 		}
-		catch (Exception e)
-		{
+		catch (Exception e){
 			JOptionPane.showMessageDialog(this, 
 				"Error intializing the board!\n" + 
 				e.getClass().toString() + ": " + e.getMessage(),
@@ -160,7 +118,10 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 				JOptionPane.ERROR_MESSAGE);
 		}
 
-		m_model.addObserver(this);
+		m_environment.setFrame(this);
+		configureMenu();
+		
+		m_environment.addObserver(this);
 
 		m_stop.setEnabled(false);
 		m_run.setEnabled(false);
@@ -217,118 +178,132 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 	 * @author mcohen
 	 * @author ogeorgeon add wall and internal state panel to the grid
 	 */
-	public void init(String f) throws Exception
-	{
-		int l_w; // = m_w;
-		int l_h; // = m_h;
+	public void init(String f) throws Exception{
+		int l_w;
+		int l_h;
 		int l_dirtyCount = 0;
 		int l_x = -1;
 		int l_y = -1;
-
-		//mRotation.z = (float) Math.PI/2;
 		
 		BufferedReader br = null;
-		try
-		{
+		
+		try{
 			br = new BufferedReader(new FileReader(f));
 			List<String> lines = new ArrayList<String>();
 			String line = "";
-			while ((line = br.readLine()) != null)
-			{ 
+			while ((line = br.readLine()) != null){ 
 				line = line.trim();
 				if (line.length() != 0)
 					lines.add(line); 
 			}
+			
+			m_h = lines.size();
+			m_w = (lines.get(0).toString().length() + 1) / 2;
+			
+			m_environment.init(m_w, m_h);
 
-			l_h = lines.size();
-			l_w = (lines.get(0).toString().length() + 1) / 2;
-
-			if (l_h <= 0 || l_w <= 0)
+			if (m_h <= 0 || m_w <= 0)
 				throw new IllegalStateException("Invalid width or height!");
-
-			m_anim  = new int[l_w][l_h];			
-			m_blocks= new Block[m_w][m_h];
 			
 			int y = 0;
-			for (Iterator i = lines.iterator(); i.hasNext(); )
-			{
+
+			for (Iterator i = lines.iterator(); i.hasNext(); ){
+				
 				line = (String)i.next();
-				if (((line.length() + 1) / 2) != l_w)
+				if (((line.length() + 1) / 2) != m_w)
 					throw new 
 						IllegalStateException("Width must be consistent!");
 
 				String[] square = line.split(" ");
-
-				for (int x = 0; x < l_w; x++)
-				{
-					m_blocks[x][y]=empty;
-					
+				
+				for (int x = 0; x < m_w; x++){
+					m_environment.m_blocks[x][m_h-1-y]=m_environment.empty;
 					// mauve fish
 					if (square[x].equals("*"))
 					{
 						l_dirtyCount++;
 						
 						
-						m_blocks[x][y]=fish;
+						m_environment.m_blocks[x][m_h-1-y]=m_environment.fish;
 					}
-					
 					// Agent up
-					else if (square[x].equalsIgnoreCase("^"))
+					if (square[x].equalsIgnoreCase("^"))
 					{
 						int index=m_modelList.size();
 						
-						l_x = x;
-						l_y = y;
+						if (version==104) m_modelList.add(new Ernest104Model(index));
+						else              m_modelList.add(new Ernest100Model(index));
+						m_modelList.get(index).init(m_w, m_h);
+						m_modelList.get(index).setFrame(this);
+
 						m_modelList.get(index).mPosition.x = x;
-						m_modelList.get(index).mPosition.y = m_h - y;
+						m_modelList.get(index).mPosition.y = m_h-1 - y;
 						m_modelList.get(index).mPosition.z = 0;
 						m_modelList.get(index).mOrientation.x = 0;
 						m_modelList.get(index).mOrientation.y = 0;
 						m_modelList.get(index).mOrientation.z = (float) Math.PI/2;
+						
+						m_modelList.get(index).setEnvironnement(m_environment);
+
 					}
 					// Agent right
-					else if (square[x].equalsIgnoreCase(">"))
+					if (square[x].equalsIgnoreCase(">"))
 					{
 						int index=m_modelList.size();
 						
-						l_x = x;
-						l_y = y;
+						if (version==104) m_modelList.add(new Ernest104Model(index));
+						else              m_modelList.add(new Ernest100Model(index));
+						m_modelList.get(index).init(m_w, m_h);
+						m_modelList.get(index).setFrame(this);
+
 						m_modelList.get(index).mPosition.x = x;
-						m_modelList.get(index).mPosition.y = m_h - y;
+						m_modelList.get(index).mPosition.y = m_h-1 - y;
 						m_modelList.get(index).mPosition.z = 0;
 						m_modelList.get(index).mOrientation.x = 0;
 						m_modelList.get(index).mOrientation.y = 0;
 						m_modelList.get(index).mOrientation.z = 0;
+						
+						m_modelList.get(index).setEnvironnement(m_environment);
 					}
 					// Agent down
-					else if (square[x].equalsIgnoreCase("v"))
+					if (square[x].equalsIgnoreCase("v"))
 					{
 						int index=m_modelList.size();
 						
-						l_x = x;
-						l_y = y;
+						if (version==104) m_modelList.add(new Ernest104Model(index));
+						else              m_modelList.add(new Ernest100Model(index));
+						m_modelList.get(index).init(m_w, m_h);
+						m_modelList.get(index).setFrame(this);
+
 						m_modelList.get(index).mPosition.x = x;
-						m_modelList.get(index).mPosition.y = m_h - y;
+						m_modelList.get(index).mPosition.y = m_h-1 - y;
 						m_modelList.get(index).mPosition.z = 0;
 						m_modelList.get(index).mOrientation.x = 0;
 						m_modelList.get(index).mOrientation.y = 0;
-						m_modelList.get(index).mOrientation.z = (float) - Math.PI/2;
+						m_modelList.get(index).mOrientation.z = (float) -Math.PI/2;
+						
+						m_modelList.get(index).setEnvironnement(m_environment);
 					}
 					// Agent up
-					else if (square[x].equalsIgnoreCase("<"))
+					if (square[x].equalsIgnoreCase("<"))
 					{
 						int index=m_modelList.size();
 						
-						l_x = x;
-						l_y = y;
+						if (version==104) m_modelList.add(new Ernest104Model(index));
+						else              m_modelList.add(new Ernest100Model(index));
+						m_modelList.get(index).init(m_w, m_h);
+						m_modelList.get(index).setFrame(this);
+
 						m_modelList.get(index).mPosition.x = x;
-						m_modelList.get(index).mPosition.y = m_h - y;
+						m_modelList.get(index).mPosition.y = m_h-1 - y;
 						m_modelList.get(index).mPosition.z = 0;
 						m_modelList.get(index).mOrientation.x = 0;
 						m_modelList.get(index).mOrientation.y = 0;
 						m_modelList.get(index).mOrientation.z = (float) Math.PI;
+						
+						m_modelList.get(index).setEnvironnement(m_environment);
 					}
-					else if (Character.isLetter(square[x].toCharArray()[0]))
+					if (Character.isLetter(square[x].toCharArray()[0]))
 					{
 						int code = 'a';
 						code = square[x].toCharArray()[0] - code;
@@ -344,47 +319,44 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 							 ||  square[x].equalsIgnoreCase("i")
 							 ||  square[x].equalsIgnoreCase("j")){
 							
-							m_blocks[x][y]=wall;
+							m_environment.m_blocks[x][m_h-1-y]=m_environment.wall;
 						}
 						else{
 							
 							if (square[x].equalsIgnoreCase("g")){
-								m_blocks[x][y]=wall2;
+								m_environment.m_blocks[x][m_h-1-y]=m_environment.wall2;
 							}
 							else if (square[x].equalsIgnoreCase("h")){
-									m_blocks[x][y]=wall3;	
+								m_environment.m_blocks[x][m_h-1-y]=m_environment.wall3;	
 							}
-							else m_blocks[x][y]=empty;
+							else m_environment.m_blocks[x][m_h-1-y]=m_environment.empty;
 						}
 					}
 					// Singular dirty square
-					else if (Character.isDigit(square[x].toCharArray()[0]))
+					if (Character.isDigit(square[x].toCharArray()[0]))
 					{
 						
 						switch (Integer.parseInt(square[x]) ){
-						case 2: m_blocks[x][y]=alga4; break;
-						case 3: m_blocks[x][y]=alga5; break;
-						case 4: m_blocks[x][y]=alga1; break;
-						case 5: m_blocks[x][y]=alga2; break;
-						case 9: m_blocks[x][y]=alga3; break;
+						case 2: m_environment.m_blocks[x][m_h-1-y]=m_environment.alga4; break;
+						case 3: m_environment.m_blocks[x][m_h-1-y]=m_environment.alga5; break;
+						case 4: m_environment.m_blocks[x][m_h-1-y]=m_environment.alga1; break;
+						case 5: m_environment.m_blocks[x][m_h-1-y]=m_environment.alga2; break;
+						case 9: m_environment.m_blocks[x][m_h-1-y]=m_environment.alga3; break;
 						default: break;
 						}
 					}
 				}
 				y++;
 			}
-
-			if (l_x == -1 || l_y == -1)
+			
+			if (m_modelList.size()<=0)
 				throw new 
-					IllegalStateException("Agent location not specified!");
-
-			//m_model.m_x = l_x;
-			//m_model.m_y = l_y;
-			m_w = l_w;
-			m_h = l_h;
+					IllegalStateException("404 : No Agent found!");
 
 			//setChanged();
 			//notifyObservers2();
+			
+			m_environment.setDisplay(m_modelList.size()-1);
 		}
 		catch (Exception e)
 		{
@@ -393,7 +365,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		finally
 		{
 			try { br.close(); } catch (Exception e) {}
-		}
+		}	
 	}
 	
 	
@@ -404,13 +376,13 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 	 */
 	public void actionPerformed(ActionEvent e)
 	{
-		m_model.setEventThread(Thread.currentThread());
+		m_modelList.get(0).setEventThread(Thread.currentThread());
 
 		// Run the agent ******
 		
 		if (e.getSource() == m_run)
 		{
-			m_model.startAgent();
+			m_modelList.get(0).startAgent();
 			Thread agentThread = null;
 			System.out.println("Run Ernest ") ;
 			agentThread = new Thread(getErnestView());
@@ -422,8 +394,8 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		
 		else if (e.getSource() == m_stop)
 		{
-			m_model.save();
-			m_model.haltAgent();
+			m_modelList.get(0).save();
+			m_modelList.get(0).haltAgent();
 			m_step.setEnabled(true);
 			m_statusBar.setText("Pause");			
 		}
@@ -440,10 +412,10 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 
 		{
 			m_statusBar.setText("Ready");
-			m_model.setCounter(0);
+			m_modelList.get(0).setCounter(0);
 			try
 			{ 
-				m_model.init(m_model.getBoardFileName()); 
+				this.init(m_environment.getBoardFileName()); 
 			}
 			catch (Exception ex)
 			{
@@ -470,8 +442,8 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 				try
 				{
 					File boardFile = m_boardChooser.getSelectedFile();
-					m_model.setBoardFileName(boardFile.getAbsolutePath());
-					m_model.init(boardFile.getAbsolutePath()); 
+					m_environment.setBoardFileName(boardFile.getAbsolutePath());
+					this.init(boardFile.getAbsolutePath()); 
 				}
 				catch (Exception ex)
 				{
@@ -489,7 +461,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		}
 		else if (e.getSource() == m_speakAloud)
 		{
-			m_model.setSpeakAloud(m_speakAloud.isSelected());
+			m_modelList.get(0).setSpeakAloud(m_speakAloud.isSelected());
 		}
 	    else if (e.getSource() == m_KeyboardLayout) 
 	    {
@@ -500,12 +472,12 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
     		m_Helpframe = new HelpFrames(this, "About");
 	    }
 		// Save the preferences
-		m_model.putPreferences();
+		m_modelList.get(0).putPreferences();
 	}
 
 	public void update(Observable o, Object arg)
 	{
-		if (m_model.isAgentStopped())
+		if (m_modelList.get(0).isAgentStopped())
 		{
 			m_file.setEnabled(true);
 			m_options.setEnabled(true);
@@ -516,7 +488,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 			m_reset.setEnabled(true);
 			m_stop.setEnabled(false);
 			//m_step.setEnabled(false);
-			setTitle(TITLE + " - " + m_model.getVersion());
+			setTitle(TITLE + " - " + m_modelList.get(0).getVersion());
 		}
 		else
 		{
@@ -536,7 +508,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		drawGrid();
 		getContentPane().validate();
 		repaint();
-		m_env.repaint();
+		this.repaint();
 	}
 	/**
 	 * Update all the squares in the grid from the model
@@ -546,50 +518,52 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		resizeGrid();
 		
 		// handle mouse events from continuous environment
-		int c= m_env.getClicked();
-		if (c == 1)
-		{
-			if (m_model.isWall(m_env.m_clickX,m_env.m_clickY))
-			{
-				m_model.setBlock(m_env.m_clickX, m_env.m_clickY, Model.empty);
-				m_model.traceUserEvent("remove_wall", m_env.m_clickX, m_env.m_clickY);
+		int c= m_envPanel.getClicked();
+		if (c == 1){
+			int id=m_environment.agentId(m_envPanel.m_FclickX, m_envPanel.m_FclickY);
+			if (id==-1){
+				
+				if (m_environment.isWall(m_envPanel.m_clickX,m_h-1-m_envPanel.m_clickY)){
+					m_environment.setBlock(m_envPanel.m_clickX, m_h-1-m_envPanel.m_clickY, Model.empty);
+					m_environment.traceUserEvent("remove_wall", m_envPanel.m_clickX, m_h-1-m_envPanel.m_clickY);
+				}
+				else{
+					m_environment.setBlock(m_envPanel.m_clickX, m_h-1-m_envPanel.m_clickY, Model.wall);
+					m_environment.traceUserEvent("add_wall", m_envPanel.m_clickX, m_h-1-m_envPanel.m_clickY);
+				}
 			}
-			else
-			{
-				m_model.setBlock(m_env.m_clickX, m_env.m_clickY, Model.wall);
-				m_model.traceUserEvent("add_wall", m_env.m_clickX, m_env.m_clickY);
+			else{
+				m_environment.setDisplay(id);
 			}
 		}
 		if (c == 3)
 		{
-			if (m_model.isAlga(m_env.m_clickX,m_env.m_clickY))
+			if (m_environment.isAlga(m_envPanel.m_clickX,m_h-1-m_envPanel.m_clickY))
 			{
-				m_model.setBlock(m_env.m_clickX, m_env.m_clickY, Model.empty);
-				m_model.traceUserEvent("remove_water", m_env.m_clickX, m_env.m_clickY);
+				m_environment.setBlock(m_envPanel.m_clickX, m_h-1-m_envPanel.m_clickY, Model.empty);
+				m_environment.traceUserEvent("remove_water", m_envPanel.m_clickX, m_h-1-m_envPanel.m_clickY);
 			}
 			else
 			{
-				m_model.setBlock(m_env.m_clickX, m_env.m_clickY, Model.alga1);
-				m_model.traceUserEvent("add_water", m_env.m_clickX, m_env.m_clickY);
+				m_environment.setBlock(m_envPanel.m_clickX, m_h-1-m_envPanel.m_clickY, Model.alga1);
+				m_environment.traceUserEvent("add_water", m_envPanel.m_clickX, m_h-1-m_envPanel.m_clickY);
 			}
 		}
 		if (c == 2)
 		{
-			if (m_model.isFood(m_env.m_clickX,m_env.m_clickY))
+			if (m_environment.isFood(m_envPanel.m_clickX,m_h-1-m_envPanel.m_clickY))
 			{
-				m_model.setBlock(m_env.m_clickX, m_env.m_clickY, Model.empty);
-				m_model.traceUserEvent("remove_food", m_env.m_clickX, m_env.m_clickY);
+				m_environment.setBlock(m_envPanel.m_clickX, m_h-1-m_envPanel.m_clickY, Model.empty);
+				m_environment.traceUserEvent("remove_food", m_envPanel.m_clickX, m_h-1-m_envPanel.m_clickY);
 			}
 			else
 			{
-				m_model.setBlock(m_env.m_clickX, m_env.m_clickY, Model.fish);
-				m_model.traceUserEvent("add_food", m_env.m_clickX, m_env.m_clickY);
+				m_environment.setBlock(m_envPanel.m_clickX, m_h-1-m_envPanel.m_clickY, Model.fish);
+				m_environment.traceUserEvent("add_food", m_envPanel.m_clickX, m_h-1-m_envPanel.m_clickY);
 			}
 		}
-		if (c == 4)
-			m_model.toggleNight();
 		
-		m_env.repaint();
+		m_envPanel.repaint();
 		
 	}
 
@@ -599,34 +573,8 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 	 */
 	private void resizeGrid()
 	{
-//<<<<<<< .mine
-//	
-//		if (m_grid == null || 
-//			m_grid.length != m_model.getHeight() ||
-//			m_grid[0].length != m_model.getWidth())
-//		{
-//			m_board.removeAll();
-//			m_board.setBackground(Model.WALL_COLOR);
-//			m_board.setLayout(new GridLayout(m_model.getHeight(),  m_model.getWidth()));
-//			m_grid = new EnvSquare[m_model.getHeight()][m_model.getWidth()];
-//			
-//			for (int y = 0; y < m_model.getHeight(); y++)
-//			{
-//				for (int x = 0; x < m_model.getWidth(); x++)
-//				{
-//                	m_grid[y][x] = new EnvSquare(x, y, m_model);
-//                	m_grid[y][x].setPreferredSize(new Dimension(37,37));
-//                	m_board.add(m_grid[y][x]);
-//				}
-//			}
-//			//m_env=new Environnement(m_model);
-//			//m_env.setPreferredSize(new Dimension(400,400));
-//			//m_board.add(m_env);
-//		}
-//=======
-		m_env.setPreferredSize(new Dimension(40*m_env.m_w,40*m_env.m_h));
-		m_board.add(m_env);
-//>>>>>>> .r73
+		m_envPanel.setPreferredSize(new Dimension(40*m_envPanel.m_w,40*m_envPanel.m_h));
+		m_board.add(m_envPanel);
 	}
 
 	/**
@@ -658,7 +606,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		m_loadBoard.addActionListener(this);
 		m_configureRun.addActionListener(this);
 
-		m_speakAloud.setSelected(m_model.getSpeakAloud());
+		m_speakAloud.setSelected(m_modelList.get(0).getSpeakAloud());
 		m_speakAloud.addActionListener(this);
 
 		// help menu...
@@ -699,7 +647,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		try
 		{
 			if (m_ernest == null)
-				m_ernest = new ErnestView(m_model);		
+				m_ernest = new ErnestView(m_modelList);		
 		}
 		catch (NoClassDefFoundError e)
 		{
@@ -716,6 +664,17 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 	}
 
 	public void keyPressed(KeyEvent e) {
+		/* char c = e.getKeyChar();
+		 System.out.println(c);
+		 int i=m_environment.identDisplay;
+		 
+		 switch(c){
+		 case '+': m_environment.setDisplay(i+1);
+		 		   break;
+		 case '-': m_environment.setDisplay(i-1);
+		   		   break;
+		 default:  break;
+		 }*/
 	}
 
 	public void keyReleased(KeyEvent e) 

@@ -139,11 +139,9 @@ public class Model extends Observable
 	/** The angular rotation speed of Ernest. (in radius - trigonometric - counterclockwise)*/
 	protected Vector3f mRotation = new Vector3f(0,0,0);
 	
-	private int[][] m_anim;
-	public Block[][] m_blocks;
+	public Environment m_env;
 
 	// Maik Friedrich
-	private String m_boardFileName = "";
 
 	private boolean m_halt = true;
 
@@ -156,22 +154,28 @@ public class Model extends Observable
 	private boolean m_bSpeakAloud     = true;
 	private boolean m_bInternalState  = false;
 	private boolean m_status          = false; 
+	public boolean display;
 	
+	public int ident;
 
 	private boolean m_night = false;
 
-	protected EnvironnementPanel m_env;
 	protected Main mainFrame;
 	
-	public Model()
+	public Model(int i)
 	{
 		m_mainThread = Thread.currentThread();
+		ident=i;
+		display=false;
 	}
-	public void setEnvironnement(EnvironnementPanel env){
+	public void setEnvironnement(Environment env){
 		m_env=env;
 	}
 	public void setFrame(Main m){
 		mainFrame=m;
+	}
+	
+	public void setDisplay(){
 	}
 	
 	// save the actual ernest
@@ -191,190 +195,14 @@ public class Model extends Observable
 	 * @author mcohen
 	 * @author ogeorgeon add wall and internal state panel to the grid
 	 */
-	public void init(String f) throws Exception
-	{
-		int l_w; // = m_w;
-		int l_h; // = m_h;
-		int l_dirtyCount = 0;
-		int l_x = -1;
-		int l_y = -1;
-
-		//mRotation.z = (float) Math.PI/2;
+	public void init(int w,int h) throws Exception{
+		m_w=w;
+		m_h=h;
 		mRotation.z=0;
-		
-		BufferedReader br = null;
-		try
-		{
-			br = new BufferedReader(new FileReader(f));
-			List<String> lines = new ArrayList<String>();
-			String line = "";
-			while ((line = br.readLine()) != null)
-			{ 
-				line = line.trim();
-				if (line.length() != 0)
-					lines.add(line); 
-			}
-
-			l_h = lines.size();
-			l_w = (lines.get(0).toString().length() + 1) / 2;
-
-			if (l_h <= 0 || l_w <= 0)
-				throw new IllegalStateException("Invalid width or height!");
-
-			m_anim  = new int[l_w][l_h];			
-			m_blocks= new Block[m_w][m_h];
-			
-			int y = 0;
-			for (Iterator i = lines.iterator(); i.hasNext(); )
-			{
-				line = (String)i.next();
-				if (((line.length() + 1) / 2) != l_w)
-					throw new 
-						IllegalStateException("Width must be consistent!");
-
-				String[] square = line.split(" ");
-
-				for (int x = 0; x < l_w; x++)
-				{
-					m_blocks[x][m_h-y-1]=empty;
-					
-					// mauve fish
-					if (square[x].equals("*"))
-					{
-						l_dirtyCount++;
-						
-						
-						m_blocks[x][m_h-y-1]=fish;
-					}
-					
-					// Agent up
-					else if (square[x].equalsIgnoreCase("^"))
-					{
-						l_x = x;
-						l_y = y;
-						mPosition.x = x;
-						mPosition.y = m_h - y-1;
-						mPosition.z = 0;
-						mOrientation.x = 0;
-						mOrientation.y = 0;
-						mOrientation.z = (float) Math.PI/2;
-					}
-					// Agent right
-					else if (square[x].equalsIgnoreCase(">"))
-					{
-						l_x = x;
-						l_y = y;	
-						mPosition.x = x;
-						mPosition.y = m_h - y-1;
-						mPosition.z = 0;
-						mOrientation.x = 0;
-						mOrientation.y = 0;
-						mOrientation.z = 0;
-					}
-					// Agent down
-					else if (square[x].equalsIgnoreCase("v"))
-					{
-						l_x = x;
-						l_y = y;	
-						mPosition.x = x;
-						mPosition.y = m_h - y-1;
-						mPosition.z = 0;
-						mOrientation.x = 0;
-						mOrientation.y = 0;
-						mOrientation.z = (float) - Math.PI/2;
-					}
-					// Agent up
-					else if (square[x].equalsIgnoreCase("<"))
-					{
-						l_x = x;
-						l_y = y;	
-						mPosition.x = x;
-						mPosition.y = m_h - y-1;
-						mPosition.z = 0;
-						mOrientation.x = 0;
-						mOrientation.y = 0;
-						mOrientation.z = (float) Math.PI;
-					}
-					else if (Character.isLetter(square[x].toCharArray()[0]))
-					{
-						int code = 'a';
-						code = square[x].toCharArray()[0] - code;
-						// Agent on target
-						if (square[x].equalsIgnoreCase("x"))
-						{
-							l_dirtyCount++;
-							l_x = x;
-							l_y = y;	
-						}
-						// Wall
-						else if (square[x].equalsIgnoreCase("w")
-							 ||  square[x].equalsIgnoreCase("i")
-							 ||  square[x].equalsIgnoreCase("j")){
-							
-							m_blocks[x][m_h-y-1]=wall;
-						}
-						else{
-							
-							if (square[x].equalsIgnoreCase("g")){
-								m_blocks[x][m_h-y-1]=wall2;
-							}
-							else if (square[x].equalsIgnoreCase("h")){
-									m_blocks[x][m_h-y-1]=wall3;	
-							}
-							else m_blocks[x][m_h-y-1]=empty;
-						}
-					}
-					// Singular dirty square
-					else if (Character.isDigit(square[x].toCharArray()[0]))
-					{
-						
-						switch (Integer.parseInt(square[x]) ){
-						case 2: m_blocks[x][m_h-y-1]=alga4; break;
-						case 3: m_blocks[x][m_h-y-1]=alga5; break;
-						case 4: m_blocks[x][m_h-y-1]=alga1; break;
-						case 5: m_blocks[x][m_h-y-1]=alga2; break;
-						case 9: m_blocks[x][m_h-y-1]=alga3; break;
-						default: break;
-						}
-					}
-				}
-				y++;
-			}
-
-			if (l_x == -1 || l_y == -1)
-				throw new 
-					IllegalStateException("Agent location not specified!");
-
-			//m_x = l_x;
-			//m_y = l_y;
-			m_w = l_w;
-			m_h = l_h;
-
-			setChanged();
-			notifyObservers2();
-		}
-		catch (Exception e)
-		{
-			throw e;
-		}
-		finally
-		{
-			try { br.close(); } catch (Exception e) {}
-		}
 	}
 
 	public void setEventThread(Runnable t)
 	{ m_eventThread = t; }
-
-	public boolean isWall(float x, float y){ 
-		return 	(m_blocks[Math.round(x)][Math.round(y)].isWall()); 
-	}
-	public boolean isFood(float x, float y){ 
-		return 	(m_blocks[Math.round(x)][Math.round(y)].isFood()); 
-	}
-	public boolean isAlga(float x, float y){ 
-		return 	(m_blocks[Math.round(x)][Math.round(y)].isAlga()); 
-	}
 	
 	/**
 	 * @param pos The position to test in Cartesian coordinates.
@@ -382,7 +210,7 @@ public class Model extends Observable
 	 */
 	protected boolean affordWalk(Vector3f pos) 
 	{
-		return (!m_blocks[Math.round(pos.x)][Math.round(pos.y)].isWall());
+		return (!m_env.m_blocks[Math.round(pos.x)][Math.round(pos.y)].isWall());
 	}
 	/**
 	 * @param pos The position to test in Cartesian coordinates
@@ -390,7 +218,7 @@ public class Model extends Observable
 	 */
 	protected boolean affordTouchSoft(Vector3f pos) 
 	{
-		return (m_blocks[Math.round(pos.x)][Math.round(pos.y)].isAlga());
+		return (m_env.m_blocks[Math.round(pos.x)][Math.round(pos.y)].isAlga());
 	}
 	/**
 	 * @param pos The position to test in Cartesian coordinates.
@@ -398,7 +226,7 @@ public class Model extends Observable
 	 */
 	protected boolean affordEat(Vector3f pos) 
 	{
-		return (m_blocks[Math.round(pos.x)][Math.round(pos.y)].isFood());
+		return (m_env.m_blocks[Math.round(pos.x)][Math.round(pos.y)].isFood());
 	}
 	/**
 	 * @param pos The position to test in cartesian coordinates.
@@ -406,22 +234,7 @@ public class Model extends Observable
 	 */
 	public boolean affordSee(Vector3f pos)
 	{
-		return 	(m_blocks[Math.round(pos.x)][Math.round(pos.y)].isVisible()); 		
-	}
-
-	public void setBlock(int x, int y, Block block)
-	{ 
-		m_blocks[x][y] = block;
-	}
-
-	public boolean isAgent(int x, int y)
-	{
-		return (x == Math.round(mPosition.x)) && (y == Math.round(mPosition.y));
-	}
-	
-	public boolean isInformation(int x, int y)
-	{ 
-		return (m_informationX == x && m_informationY == y);
+		return 	(m_env.m_blocks[Math.round(pos.x)][Math.round(pos.y)].isVisible()); 		
 	}
 
 	public void setCounter(int counter)
@@ -441,7 +254,7 @@ public class Model extends Observable
 	 */
 	public int getAnim(float x, float y)
 	{ 
-		return m_anim[Math.round(x)][Math.round(y)];
+		return m_env.m_anim[Math.round(x)][Math.round(y)];
 	}
 
 	public void setAnim(float x, float y, int anim)
@@ -449,7 +262,7 @@ public class Model extends Observable
 		if (anim == ANIM_BUMP)
 			speak("Ouch", false , false);
 
-		m_anim[Math.round(x)][Math.round(y)] = anim;
+		m_env.m_anim[Math.round(x)][Math.round(y)] = anim;
 	}
 
 	/**
@@ -524,9 +337,9 @@ public class Model extends Observable
 	 */
 	public boolean suck()
 	{
-		if (m_blocks[Math.round(mPosition.x)][Math.round(mPosition.y)].isFood())
+		if (m_env.m_blocks[Math.round(mPosition.x)][Math.round(mPosition.y)].isFood())
 		{
-			m_blocks[Math.round(mPosition.x)][Math.round(mPosition.y)] = empty;
+			m_env.m_blocks[Math.round(mPosition.x)][Math.round(mPosition.y)] = empty;
 			setChanged();
 			notifyObservers2();
 			
@@ -566,14 +379,10 @@ public class Model extends Observable
 	public void initPreferences()
 	{
 		Preferences prefs = Preferences.userRoot().node("vacuum");
-		
-		m_w = prefs.getInt(PREF_W,INIT_W);
-		m_h = prefs.getInt(PREF_H,INIT_H);
 		//m_x = prefs.getInt(PREF_X,INIT_X);
 		//m_y = prefs.getInt(PREF_Y,INIT_Y);
 		m_dirtyCount = prefs.getInt(PREF_DIRTY,INIT_DIRTY);
 		m_delay = prefs.getInt(PREF_DELAY,INIT_DELAY);
-		m_boardFileName = prefs.get(PREF_BOARDFILE, "");
 		m_bSpeakAloud = prefs.getBoolean(PREF_SPEAKALOUD, true);
 		
 	}
@@ -585,14 +394,10 @@ public class Model extends Observable
 	public void putPreferences()
 	{
 		Preferences prefs = Preferences.userRoot().node("vacuum");
-		
-		prefs.putInt(PREF_W, m_w);
-		prefs.putInt(PREF_H, m_h);
 		//prefs.putFloat(PREF_X, m_x);
 		//prefs.putFloat(PREF_Y, m_y);
 		prefs.putInt(PREF_DIRTY, m_dirtyCount);
 		prefs.putInt(PREF_DELAY, m_delay);
-		prefs.put(PREF_BOARDFILE, m_boardFileName);
 		prefs.putBoolean(PREF_SPEAKALOUD, m_bSpeakAloud);
 	}
 
@@ -626,14 +431,6 @@ public class Model extends Observable
 		{ 
 			notifyObservers(); 
 		}
-	}
-
-	public void setBoardFileName(String file) {
-		m_boardFileName = file;
-	}
-
-	public String getBoardFileName() {
-		return m_boardFileName;
 	}
 
 	/**************************************

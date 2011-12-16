@@ -16,6 +16,9 @@ public class TactileMapFrame extends JFrame{
     	this.setContentPane(panel);
 	}
 	
+	public void setTactile(TactileMap t){
+		panel.setTactile(t);
+	}
 	
 	public void paint(){
     	panel.repaint();

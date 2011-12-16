@@ -35,6 +35,9 @@ public class ColliculusPanel extends JPanel{
 		}
 	}
 	
+	public void setColliculus(Colliculus c){
+		colliculus=c;
+	}
 	
 	
 	public void paintComponent(Graphics g){
