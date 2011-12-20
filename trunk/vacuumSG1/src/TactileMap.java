@@ -33,6 +33,7 @@ public class TactileMap {
 	public double[] valueOldX;
 	public double[] valueOldY;
 	public double attraction,repulsion;
+	int nbStimuli=5;
 	
 	public ErnestModel ernest;
 	
@@ -127,11 +128,11 @@ public class TactileMap {
 		attraction=0.001;
 		
 		
-		chargeMap0=new float[mapSize][mapSize][4];
-		chargeMap1=new float[mapSize][mapSize][4];
-		chargeMapP=new float[mapSizeTheta][mapSizeR][4];
+		chargeMap0=new float[mapSize][mapSize][nbStimuli];
+		chargeMap1=new float[mapSize][mapSize][nbStimuli];
+		chargeMapP=new float[mapSizeTheta][mapSizeR][nbStimuli];
 		maximumMap=new int[mapSizeTheta][mapSizeR];
-		output=new int[mapSizeTheta][4];
+		output=new int[mapSizeTheta][nbStimuli];
 		
 		objectMap=new float[mapSize][mapSize][3];
 		potentialTestMap=new boolean[mapSize][mapSize];
@@ -726,7 +727,7 @@ public class TactileMap {
 			j=0;
 			test=false;
 			while (!test && j<mapSizeR-1){
-				for (int k=1;k<4;k++){
+				for (int k=1;k<nbStimuli;k++){
 					if (    chargeMapP[i][j][k]>=0.99 
 						|| (chargeMapP[i][j][k]>=0.1  && chargeMapP[i][j+1][k]<chargeMapP[i][j][k]) ){
 						test=true;

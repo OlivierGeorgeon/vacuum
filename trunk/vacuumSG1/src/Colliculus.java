@@ -41,8 +41,8 @@ public class Colliculus {
 		TranslationY=new ArrayList<Float>();
 		Rotation    =new ArrayList<Float>();
 
-		visualProba=new float[100][100][10];
-		tactileProba=new float[100][100][4];
+		visualProba=new float[100][100][11];
+		tactileProba=new float[100][100][5];
 		bundleMapProba=new float[100][100];
 		bundleMapType =new int[100][100][2];
 		for (int i=0;i<100;i++){
@@ -51,18 +51,18 @@ public class Colliculus {
 				bundleMapType[i][j][0]=0;
 				bundleMapType[i][j][1]=0;
 				
-				for (int k=0;k<10;k++){
+				for (int k=0;k<11;k++){
 					visualProba[i][j][k]=0;
 				}
-				for (int k=0;k<4;k++){
+				for (int k=0;k<5;k++){
 					tactileProba[i][j][k]=0;
 				}
 			}	
 		}
 		
-		bundles=new int[10][4];
-		bundleColor=new Color[11][5];
-		for (int i=0;i<10;i++){
+		bundles=new int[11][5];
+		bundleColor=new Color[12][6];
+		for (int i=0;i<11;i++){
 			for (int j=0;j<3;j++){
 				bundles[i][j]=0;
 			}	
@@ -73,6 +73,7 @@ public class Colliculus {
 		bundleColor[0][2]=new Color(70,70,70);
 		bundleColor[0][3]=new Color(170,170,170);
 		bundleColor[0][4]=new Color(130,130,130);
+		bundleColor[0][5]=new Color(100,50,50);
 		
 		bundleColor[1][0]=new Color(220,220,250);
 		bundleColor[2][0]=new Color(0,128,0);
@@ -84,9 +85,10 @@ public class Colliculus {
 		bundleColor[8][0]=new Color(230,207,0);
 		bundleColor[9][0]=new Color(0,230,161);
 		bundleColor[10][0]=new Color(184,230,0);
+		bundleColor[11][0]=new Color(100,100,100);
 		
-		for (int i=1;i<11;i++){
-			for (int j=1;j<5;j++){
+		for (int i=1;i<12;i++){
+			for (int j=1;j<6;j++){
 				bundleColor[i][j]= new Color( (bundleColor[i][0].getRed()+bundleColor[0][j].getRed() )/2,
 											  (bundleColor[i][0].getGreen()+bundleColor[0][j].getGreen() )/2,
 											  (bundleColor[i][0].getBlue()+bundleColor[0][j].getBlue() )/2);
@@ -132,7 +134,7 @@ public class Colliculus {
 		}
 		
 		vmap.seeEnvironment(rv, c);
-		//vmap.coefficients(action, speed);
+		vmap.coefficients(action, speed);
 		//TranslationX=vmap.mTranslationX;
 		//TranslationY=vmap.mTranslationY;
 		//Rotation    =vmap.mRotation;
@@ -141,7 +143,7 @@ public class Colliculus {
 		tmap.touchEnvironment(rt, t);
 		//tmap.coefficients(action, speed);
 		tmap.moveCharges(-TranslationX.get(action), -TranslationY.get(action), -Rotation.get(action), speed);
-
+/*
 		computeBundleMap();
 		
 		// generate bundles
@@ -149,7 +151,7 @@ public class Colliculus {
 		for (int i=1;i<99;i++){
 			for (int j=1;j<99;j++){
 				// for each tactile stimuli
-				for (int i2=0;i2<4;i2++){
+				for (int i2=0;i2<5;i2++){
 					if (tmap.chargeMap1[i][j][i2]>0.99
 							&& tmap.chargeMap1[i+1][j][i2]>0.8
 							&& tmap.chargeMap1[i-1][j][i2]>0.8
@@ -157,7 +159,7 @@ public class Colliculus {
 							&& tmap.chargeMap1[i][j-1][i2]>0.8){
 						
 						// for each visual stimuli
-						for (int j2=0;j2<10;j2++){
+						for (int j2=0;j2<11;j2++){
 							if (vmap.chargeMap1[i][j][j2]>0.99
 									&& vmap.chargeMap1[i+1][j][j2]>0.8
 									&& vmap.chargeMap1[i-1][j][j2]>0.8
@@ -171,7 +173,7 @@ public class Colliculus {
 				}
 			}
 		}
-		
+		*/
 	}
 	
 	/**
@@ -225,6 +227,7 @@ public class Colliculus {
 					else if (val==1) val=Ernest.STIMULATION_TOUCH_WALL;
 					else if (val==2) val=Ernest.STIMULATION_TOUCH_SOFT;
 					else if (val==3) val=Ernest.STIMULATION_TOUCH_FISH;
+					else if (val==4) val=Ernest.STIMULATION_GUSTATORY_CUDDLE;
 					//list.add(new Salience(val, Ernest.MODALITY_TACTILE, (float)((theta-90)*Math.PI/180), d, (float)(span*Math.PI/180) ) );
 					// TODO pass a bundle
 					list.add(new Place(null, d, (float)((theta-90)*Math.PI/180), (float)(span*Math.PI/180) ) );
@@ -291,6 +294,7 @@ public class Colliculus {
 					else if (val==7) val=15126272;    // 230*65536 + 207*256 +   0
 					else if (val==8) val=59041;       //   0*65536 + 230*256 + 161
 					else if (val==9) val=12117504;    // 184*65536 + 230*256 +   0
+					else if (val==10)val=6579300;     // 100*65536 + 100*256 + 100
 					// list.add(new Salience(val, Ernest.MODALITY_VISUAL, (float)((theta-90)*Math.PI/180), d, (float)(span*Math.PI/180) ) );
 					// TODO pass a bundle
 					list.add(new Place(null, d, (float)((theta-90)*Math.PI/180), (float)(span*Math.PI/180) ) );
@@ -328,26 +332,26 @@ public class Colliculus {
 				
 				bundleMapProba[i][j]=0;
 				max=0;
-				for (int i2=0;i2<10;i2++){
+				for (int i2=0;i2<11;i2++){
 					Sp1+=vmap.chargeMap1[i][j][i2];
 				}
-				for (int j2=0;j2<4;j2++){
+				for (int j2=0;j2<5;j2++){
 					Sp2+=tmap.chargeMap1[i][j][j2];
 				}
 				
-				Sp1=(1 - Math.min(1,Sp1) )/10;
-				Sp2=(1 - Math.min(1,Sp2) )/4;
+				Sp1=(1 - Math.min(1,Sp1) )/11;
+				Sp2=(1 - Math.min(1,Sp2) )/5;
 				
 				
-				for (int i2=0;i2<10;i2++){
+				for (int i2=0;i2<11;i2++){
 					visualProba[i][j][i2]=vmap.chargeMap1[i][j][i2]+ Sp1;
 				}
-				for (int j2=0;j2<4;j2++){
+				for (int j2=0;j2<5;j2++){
 					tactileProba[i][j][j2]=tmap.chargeMap1[i][j][j2]+ Sp2;
 				}
 				
-				for (int i2=0;i2<10;i2++){
-					for (int j2=0;j2<4;j2++){
+				for (int i2=0;i2<11;i2++){
+					for (int j2=0;j2<5;j2++){
 						if (bundles[i2][j2]!=0){
 							p1=vmap.chargeMap1[i][j][i2]+ Sp1;
 							p2=tmap.chargeMap1[i][j][j2]+ Sp2;

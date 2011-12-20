@@ -105,6 +105,7 @@ public class EyeDisplay extends JPanel {
                 		if (tactileMap[i/2]==1) g.setColor(new Color(150,150,150));
                 		if (tactileMap[i/2]==2) g.setColor(new Color(100,100,100));
                 		if (tactileMap[i/2]==3) g.setColor(new Color(50,50,50));
+                		if (tactileMap[i/2]==4) g.setColor(new Color(100,50,50));
                 		
                 		if (complete || tactile[i/2]<=15){
                 			double d=100/ (Math.max(0.1,tactile[i/2]/10.));
