@@ -177,10 +177,7 @@ public class Ernest100Model extends ErnestModel
 		int i=0;
 		boolean found=false; 
 		while (i<size && !found){
-			if (m_env.frameList.get(i).getClass().getName().equals("TactileMapFrame")){
-				found=true;
-				System.out.println("-------- test1");
-			}
+			if (m_env.frameList.get(i).getClass().getName().equals("TactileMapFrame")) found=true;
 			i++;
 		}
 		
@@ -192,10 +189,7 @@ public class Ernest100Model extends ErnestModel
 		i=0;
 		found=false; 
 		while (i<size && !found){
-			if (m_env.frameList.get(i).getClass().getName().equals("VisualMapFrame")){
-				found=true;
-				System.out.println("-------- test2");
-			}
+			if (m_env.frameList.get(i).getClass().getName().equals("VisualMapFrame")) found=true;
 			i++;
 		}
 		
@@ -207,10 +201,7 @@ public class Ernest100Model extends ErnestModel
 		i=0;
 		found=false; 
 		while (i<size && !found){
-			if (m_env.frameList.get(i).getClass().getName().equals("ColliculusFrame")){
-				found=true;
-				System.out.println("-------- test3");
-			}
+			if (m_env.frameList.get(i).getClass().getName().equals("ColliculusFrame")) found=true;
 			i++;
 		}
 		
@@ -531,6 +522,47 @@ public class Ernest100Model extends ErnestModel
 				}
 				status5=false;
 			}
+			
+			// other agents
+			for (int a=0;a<m_env.m_modelList.size();a++){
+				if (a!=ident){
+					float dx=m_env.m_modelList.get(a).mPosition.x-mPosition.x;
+					float dy=m_env.m_modelList.get(a).mPosition.y-mPosition.y;
+					d= (dx*dx)+(dy*dy);
+					d=Math.sqrt(d);
+					
+					
+					
+					if (d<0.8){
+						
+						float dx2=(float) ( (dx/d) * (0.8-d)/d);
+						float dy2=(float) ( (dy/d) * (0.8-d)/d);
+						
+						//mPosition.x-=dx2/2;
+						//mPosition.y-=dy2/2;
+							
+						m_env.m_modelList.get(a).mPosition.x+=dx2/2;
+						m_env.m_modelList.get(a).mPosition.y+=dy2/2;
+
+						/*
+						double dx2= Math.cos(-mOrientation.z) - Math.sin(-mOrientation.z);
+						double dy2= Math.sin(-mOrientation.z) + Math.cos(-mOrientation.z);
+						
+						System.out.println("----------- "+ident+" ; "+dx2+" , "+dy2);
+						
+						mTranslation.x=(float) (mTranslation.x*(1-dx2));
+						mTranslation.y=(float) (mTranslation.y*(1-dy2));
+						/*
+						dx2= Math.cos(-m_env.m_modelList.get(a).mOrientation.z) - Math.sin(-m_env.m_modelList.get(a).mOrientation.z);
+						dy2= Math.sin(-m_env.m_modelList.get(a).mOrientation.z) + Math.cos(-m_env.m_modelList.get(a).mOrientation.z);
+						
+						m_env.m_modelList.get(a).mTranslation.x=(float) (m_env.m_modelList.get(a).mTranslation.x*(1-dx2));
+						m_env.m_modelList.get(a).mTranslation.y=(float) (m_env.m_modelList.get(a).mTranslation.y*(1-dy2));
+						*/
+					}
+				}
+			}
+			
 			if (tempo){
 
 				mainFrame.drawGrid();
@@ -1061,6 +1093,56 @@ public class Ernest100Model extends ErnestModel
 						
 					}
 				}
+				
+				
+				// agents detection
+				for (int a=0;a<m_env.m_modelList.size();a++){
+					Color bgc = m_env.AGENT;
+					int tactile=m_env.CUDDLE;
+					if (a!=ident){
+						d= (mPosition.x-m_env.m_modelList.get(a).mPosition.x)*(mPosition.x-m_env.m_modelList.get(a).mPosition.x)
+						  +(mPosition.y-m_env.m_modelList.get(a).mPosition.y)*(mPosition.y-m_env.m_modelList.get(a).mPosition.y);
+						d=Math.sqrt(d);
+						
+						int ai1=0;
+						int ai2=0;
+						int ai3=0;
+						int ai4=0;
+						if (mPosition.x-m_env.m_modelList.get(a).mPosition.x<=0){
+							a1=Math.toDegrees( Math.acos( (mPosition.y-m_env.m_modelList.get(a).mPosition.y)/d));
+							ai1=180-(int)a1;
+						}
+						else{
+							a1=Math.toDegrees( Math.acos( (mPosition.y-m_env.m_modelList.get(a).mPosition.y)/d));
+							ai1=(int)a1+180;
+						}
+						
+						a2=Math.atan(0.4/d);
+						a2=Math.toDegrees(a2);
+						
+						ai2= (int)a2;
+						
+						ai3=ai1-ai2+360;
+						ai4=ai1+ai2+360;
+						
+						int ai5=ai4-ai3;
+						
+						for (int k=ai3;k<ai4;k++){
+							if (zVMap[k%360]>d){
+								rv[k%360]=d*10 - 2*Math.sin(Math.PI*(k-ai3)/(ai4-ai3));
+								zVMap[k%360]= d*10- 2*Math.sin(Math.PI*(k-ai3)/(ai4-ai3));
+								colorMap[k%360]=bgc;
+							}
+							
+							if (zTMap[k%360]>d){
+								rt[k%360]=d*10 - 2*Math.sin(Math.PI*(k-ai3)/(ai4-ai3));
+								zTMap[k%360]= d*10- 2*Math.sin(Math.PI*(k-ai3)/(ai4-ai3));
+								tactileMap[k%360]=m_env.CUDDLE;
+							}
+						}
+					}
+				}
+				
 				
 			}
 		}

@@ -118,7 +118,7 @@ public class ColliculusPanel extends JPanel{
 				offsetX=160;
 				offsetY=500;
 				max=0;
-				for (int k=2;k<10;k++){
+				for (int k=2;k<11;k++){
 					if (colliculus.vmap.chargeMap1[i][j][k]>max) max=colliculus.vmap.chargeMap1[i][j][k];
 				}
 				g.setColor(new Color(max,
@@ -197,7 +197,7 @@ public class ColliculusPanel extends JPanel{
 				
 			}
 		}
-		
+		//Error intializing
 		//---------------------------------------------------------------
 		int color=9;
 		int touch=2;
@@ -345,14 +345,14 @@ public class ColliculusPanel extends JPanel{
 		offsetX=350;
 		offsetY=400;
 		g.setColor(Color.black);
-		g.drawRect(offsetX-3, offsetY-3, 330, 25);
-		g.drawRect(offsetX-3, offsetY-3, 25, 150);
-		g.drawRect(offsetX-3, offsetY-3, 330, 150);
+		g.drawRect(offsetX-3, offsetY-3, 360, 25);
+		g.drawRect(offsetX-3, offsetY-3, 25, 180);
+		g.drawRect(offsetX-3, offsetY-3, 360, 180);
 		
-		for (int i=0;i<11;i++){
-			for (int j=0;j<5;j++){
+		for (int i=0;i<12;i++){
+			for (int j=0;j<6;j++){
 				if (i==0 || j==0){
-					if (i<11 && j<5){
+					if (i<12 && j<6){
 						g.setColor(colliculus.bundleColor[i][j]);
 						g.fillRect(offsetX+i*30, offsetY+j*30, 20, 20);
 					}

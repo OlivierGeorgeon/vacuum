@@ -30,11 +30,25 @@ public class VisualMapPanel extends JPanel{
 		int offsetX,offsetY;
 		
 		
-		for (int i=0;i<180;i+=2){
-			for (int j=0;j<100;j+=2){
+		for (int i=0;i<180;i++){
+			for (int j=0;j<100;j++){
 				// draw charge map
 				//g.setColor(new Color(Math.min(1,vmap.potentialMap[i][j]),1-Math.min(1,vmap.potentialMap[i][j]),0));
-				g.setColor(new Color((int)vmap.timerMap[i][j]*20,(10-(int)vmap.timerMap[i][j])*20,0));
+				//g.setColor(new Color((int)vmap.timerMap[i][j]*10,(20-(int)vmap.timerMap[i][j])*10,0));
+				/*
+				if (i!=0 && j!=0 && i%5==0 && j%5==0) g.setColor(Color.blue);
+				else{
+					if (vmap.speedDirection.size()>0){
+						g.setColor(new Color(vmap.speedDirection.get(0)[i][j],1-vmap.speedDirection.get(0)[i][j],0));
+					}
+					else g.setColor(Color.green);
+				}*/
+				
+				//if (vmap.confidenceMap[i][j]>=5) g.setColor(vmap.colorMap[i][j]);
+				//else g.setColor(Color.black);
+				
+				//if (vmap.potentialMap[i][j]==1) g.setColor(Color.red);
+				//else  g.setColor(Color.green);
 				
 				/*
 				switch(vmap.blobMap[i][j]){
@@ -49,7 +63,16 @@ public class VisualMapPanel extends JPanel{
 				
 				//g.setColor(new Color(Math.min(1,vmap.potentialMapReduced2[i][j]),1-Math.min(1,vmap.potentialMapReduced2[i][j]),0));
 				
-				g.fillRect(10+ i*width, 10+ (100-j)*width, width*2*2, width*2*2);
+				//g.fillRect(10+ i*width, 10+ (100-j)*width, width*2*2, width*2*2);
+				
+				if (vmap.speedDirection.size()>0){
+				g.setColor(Color.black);
+				if (i!=0 && j!=0 && i%5==0 && j%5==0){
+					g.drawLine(i*width, j*width,
+							   i*width+(int)(50*vmap.speedDirectionX2.get(0)[i][j]),
+							   j*width+(int)(50*vmap.speedDirectionY2.get(0)[i][j]) );
+				}
+				}
 			}
 		}/* */
 		
@@ -61,7 +84,7 @@ public class VisualMapPanel extends JPanel{
 				g.fillRect(10+ i*width, 10+ (100-j)*width, width, width);
 			}
 		}/* */
-		
+		/*
 		for (int k=0;k<Math.min(3, vmap.flowX1.size());k++){
 			offsetX=50;
 			offsetY=0;
@@ -109,7 +132,7 @@ public class VisualMapPanel extends JPanel{
 				}
 			}/* */
 			
-			
+			/*
 			for (int i=0;i<100;i+=4){
 				for (int j=0;j<100;j+=4){
 					int lenght=200;
@@ -122,8 +145,8 @@ public class VisualMapPanel extends JPanel{
 							   offsetX-vmap.mapSize/2*width + i*width+width+(int)(lenght*vmap.flowX3.get(k)[i][j]),
 							   offsetY-vmap.mapSize/2*width + (100-j)*width+width-(int)(lenght*vmap.flowY3.get(k)[i][j]) );
 				}
-			}/* */
-		}
+			}/*
+		}*/
 		
 
 	}

@@ -25,6 +25,7 @@ public class Environment extends Observable {
 	public static final int SMOOTH        = 1;
 	public static final int FOOD          = 2;
 	public static final int HARD		  = 3;
+	public static final int CUDDLE        = 4;
 	
 	// visual properties
 	public static final Color FIELD_COLOR = Color.white;
@@ -37,6 +38,7 @@ public class Environment extends Observable {
 	public static final Color ALGA4       = new Color(230,207,  0);
 	public static final Color ALGA5       = new Color(184,230,  0);
 	public static final Color FISH1       = new Color(150,128,255);
+	public static final Color AGENT       = new Color(100,100,100);
 	
 	public static Block empty=new Block(EMPTY, FIELD_COLOR,"empty");
 	public static Block wall =new Block(HARD , WALL1,"wall1");

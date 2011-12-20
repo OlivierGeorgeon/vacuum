@@ -188,6 +188,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		BufferedReader br = null;
 		
 		try{
+
 			br = new BufferedReader(new FileReader(f));
 			List<String> lines = new ArrayList<String>();
 			String line = "";
@@ -226,6 +227,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 						
 						m_environment.m_blocks[x][m_h-1-y]=m_environment.fish;
 					}
+					
 					// Agent up
 					if (square[x].equalsIgnoreCase("^"))
 					{
@@ -244,11 +246,9 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 						m_modelList.get(index).mOrientation.z = (float) Math.PI/2;
 						
 						m_modelList.get(index).setEnvironnement(m_environment);
-
 					}
 					// Agent right
-					if (square[x].equalsIgnoreCase(">"))
-					{
+					if (square[x].equalsIgnoreCase(">")){
 						int index=m_modelList.size();
 						
 						if (version==104) m_modelList.add(new Ernest104Model(index));
@@ -265,16 +265,18 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 						
 						m_modelList.get(index).setEnvironnement(m_environment);
 					}
+					
 					// Agent down
-					if (square[x].equalsIgnoreCase("v"))
-					{
-						int index=m_modelList.size();
+					if (square[x].equalsIgnoreCase("v")){
 						
+						int index=m_modelList.size();
 						if (version==104) m_modelList.add(new Ernest104Model(index));
 						else              m_modelList.add(new Ernest100Model(index));
+						System.out.println("test1 "+index);
 						m_modelList.get(index).init(m_w, m_h);
+						System.out.println("test2");
 						m_modelList.get(index).setFrame(this);
-
+						
 						m_modelList.get(index).mPosition.x = x;
 						m_modelList.get(index).mPosition.y = m_h-1 - y;
 						m_modelList.get(index).mPosition.z = 0;
@@ -303,6 +305,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 						
 						m_modelList.get(index).setEnvironnement(m_environment);
 					}
+					
 					if (Character.isLetter(square[x].toCharArray()[0]))
 					{
 						int code = 'a';
@@ -347,6 +350,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 					}
 				}
 				y++;
+				
 			}
 			
 			if (m_modelList.size()<=0)
