@@ -185,7 +185,8 @@ public class Ernest104Model extends ErnestModel
 		
 		matrix[2][8] = (isNight() ? 1 : 0);		
 
-		String intention = m_ernest.step(matrix);
+		//String intention = m_ernest.step(matrix);
+		String intention = Character.toString((char)m_ernest.step(matrix)[0]);
 		return intention;
 	}
 	
