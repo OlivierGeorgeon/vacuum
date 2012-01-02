@@ -28,8 +28,8 @@ public class ErnestModel extends Model
 	public static int ACTION_LEFT = 1;
 	public static int ACTION_RIGHT = 2;
 	
-	public String intention;
-	public boolean status;
+	protected int[] intention;
+	protected boolean status;
 
 	/** The angular field of each eye. */
 	private double m_eyeAngle ;
@@ -50,15 +50,15 @@ public class ErnestModel extends Model
 	final private float DIAG2D_PROJ = INV_SQRT_2;
 
 	// Local directions
-	final private Vector3f DIRECTION_AHEAD = new Vector3f(1, 0, 0);
-	final private Vector3f DIRECTION_BEHIND = new Vector3f(-1, 0, 0);
-	final private Vector3f DIRECTION_LEFT = new Vector3f(0, 1, 0);
-	final private Vector3f DIRECTION_RIGHT = new Vector3f(0, -1, 0);
-	final private Vector3f DIRECTION_AHEAD_LEFT = new Vector3f(DIAG2D_PROJ, DIAG2D_PROJ, 0);
-	final private Vector3f DIRECTION_AHEAD_RIGHT = new Vector3f(DIAG2D_PROJ, -DIAG2D_PROJ, 0);
-	final private Vector3f DIRECTION_BEHIND_LEFT = new Vector3f(-DIAG2D_PROJ, DIAG2D_PROJ, 0);
-	final private Vector3f DIRECTION_BEHIND_RIGHT = new Vector3f(-DIAG2D_PROJ, -DIAG2D_PROJ, 0);	
-	final private float SOMATO_RADIUS = 1.1f;
+	final public Vector3f DIRECTION_AHEAD = new Vector3f(1, 0, 0);
+	final public Vector3f DIRECTION_BEHIND = new Vector3f(-1, 0, 0);
+	final public Vector3f DIRECTION_LEFT = new Vector3f(0, 1, 0);
+	final public Vector3f DIRECTION_RIGHT = new Vector3f(0, -1, 0);
+	final public Vector3f DIRECTION_AHEAD_LEFT = new Vector3f(DIAG2D_PROJ, DIAG2D_PROJ, 0);
+	final public Vector3f DIRECTION_AHEAD_RIGHT = new Vector3f(DIAG2D_PROJ, -DIAG2D_PROJ, 0);
+	final public Vector3f DIRECTION_BEHIND_LEFT = new Vector3f(-DIAG2D_PROJ, DIAG2D_PROJ, 0);
+	final public Vector3f DIRECTION_BEHIND_RIGHT = new Vector3f(-DIAG2D_PROJ, -DIAG2D_PROJ, 0);	
+	final public float SOMATO_RADIUS = 1.1f;
 	
 	// Absolute directions in Cartesian coordinates (0,0) bottom left.
 	final protected Vector3f DIRECTION_NORTH = new Vector3f(0, 1, 0);
@@ -98,7 +98,7 @@ public class ErnestModel extends Model
 	/**
 	 * Run Ernest one step
 	 */
-	public String stepErnest(boolean status)
+	public int[] stepErnest(boolean status)
 	{
 
 		// Sense the environment
@@ -109,10 +109,11 @@ public class ErnestModel extends Model
 		//String intention = m_ernest.step(matrix);
 		String intention = Character.toString((char)m_ernest.step(matrix)[0]);
 
-		return intention;
+		//return intention;
+		return m_ernest.step(matrix);
 	}
 	
-	public boolean enactSchema(String schema)
+	public boolean enactSchema(int[] schema)
 	{
 		return true;
 	}
@@ -307,5 +308,29 @@ public class ErnestModel extends Model
 		mRotation.scale(.9f);
 		mOrientation.add(mRotation);
 	}
+	
+	public Vector3f cellCenter(Vector3f position)
+	{
+		Vector3f cellCenter = new Vector3f(Math.round(position.x), Math.round(position.y), Math.round(position.z));
+		return cellCenter;
+	}
+
+	public void keepDistance(Vector3f position, Vector3f point, float distance)
+	{
+		if (point != null)
+		{
+			Vector3f toPoint = new Vector3f(point);
+			toPoint.sub(position);
+			if (toPoint.length() < distance)
+			{
+				//position.add(toPoint);
+				position.set(point);
+				toPoint.normalize();
+				toPoint.scale(- distance);
+				position.add(toPoint);
+			}
+		}
+	}
+	
 	
 }

@@ -40,7 +40,8 @@ public class Ernest104Model extends ErnestModel
 	public boolean tempo=true;
 	
 	public int lastAction;
-	public String intention;
+	//public String intention;
+	//public int[] intention;
 	public boolean status;
 	public boolean acting;
 
@@ -136,7 +137,7 @@ public class Ernest104Model extends ErnestModel
 	/**
 	 * Run Ernest one step
 	 */
-	public String stepErnest(boolean status)
+	public int[] stepErnest(boolean status)
 	{
 		if (m_tracer != null)
 			m_tracer.startNewEvent(m_counter);
@@ -186,37 +187,39 @@ public class Ernest104Model extends ErnestModel
 		matrix[2][8] = (isNight() ? 1 : 0);		
 
 		//String intention = m_ernest.step(matrix);
-		String intention = Character.toString((char)m_ernest.step(matrix)[0]);
-		return intention;
+		//String intention = Character.toString((char)m_ernest.step(matrix)[0]);
+		//return intention;
+		return m_ernest.step(matrix);
 	}
 	
 	/**
 	 * Enact the primitive schema chosen by Ernest.
 	 * @return binary feedback. 
 	 */
-	public boolean enactSchema(String schema)
+	public boolean enactSchema(int[] schema)
 	{
-		m_schema = schema;
-		
+		//m_schema = schema;
+		m_schema = Character.toString((char)schema[0]);
+
 		// A new interaction cycle is starting
 		m_counter++;
 		System.out.println("Agent #"+ident+", Step #" + m_counter + "=======");
 		
 		boolean status = true;
 		
-		if (schema.equals(""))
+		if (m_schema.equals(""))
 		{
 			setChanged();
 			notifyObservers2();			
 			sleep(200);
 			status = true;
 		}
-		else if (schema.equals("v"))
-			status = turnRight();
-		else if (schema.equals("^"))
-			status = turnLeft();
-		else if (schema.equals(">"))
-			status = forward();
+		else if (m_schema.equals("v"))
+			status = turnRight((int)(Math.PI/4 * 1000));
+		else if (m_schema.equals("^"))
+			status = turnLeft((int)(Math.PI/4 * 1000));
+		else if (m_schema.equals(">"))
+			status = forward(1000);
 
 		// Trace the environmental data
 		if (m_tracer != null)
@@ -238,14 +241,16 @@ public class Ernest104Model extends ErnestModel
 	{
 		// Taste before sucking
 		//int taste = getDirty(m_x,m_y); 
-
+		
+		int stimulation = ((m_env.isFood(mPosition.x,mPosition.y)) ? Ernest.STIMULATION_GUSTATORY_FISH : Ernest.STIMULATION_GUSTATORY_NOTHING);
+		
 		// Sucking water or food if any
 		// TODO: only suck water when thirsty and food when hungry.
 		//if (taste == DIRTY)
+
 		if (m_env.isFood(mPosition.x,mPosition.y))
 			suck();
 
-		int stimulation = ((m_env.isFood(mPosition.x,mPosition.y)) ? Ernest.STIMULATION_GUSTATORY_FISH : Ernest.STIMULATION_GUSTATORY_NOTHING);
 		return stimulation;
 	}
 	
@@ -253,9 +258,10 @@ public class Ernest104Model extends ErnestModel
 	 * Turn left. 
 	 * @return true if adjacent wall, false if adjacent empty. 
 	 */
-	protected boolean turnLeft(){
-
-		mRotation.z=(float) (45*Math.PI/180);
+	protected boolean turnLeft(int impulsion)
+	{
+		//mRotation.z=(float) (Math.PI/4);
+		mRotation.z=(float)impulsion / 1000f;
 		mTranslation.scale(0);
 		return impulse(ACTION_LEFT);
 	}
@@ -264,9 +270,10 @@ public class Ernest104Model extends ErnestModel
 	 * Turn right.
 	 * @return true if adjacent wall, false if adjacent empty. 
 	 */
-	protected boolean turnRight(){
-		
-		mRotation.z=(float) (-45*Math.PI/180);
+	protected boolean turnRight(int impulsion)
+	{
+		//mRotation.z=(float) (- Math.PI/4);
+		mRotation.z=(float) - impulsion / 1000f;
 		mTranslation.scale(0);
 		return impulse(ACTION_RIGHT);
 	}
@@ -275,11 +282,11 @@ public class Ernest104Model extends ErnestModel
 	 * Move forward.
 	 * @return true if adjacent wall, false if adjacent empty. 
 	 */
-	protected boolean forward(){
-
+	protected boolean forward(int impulsion)
+	{
 		mRotation.scale(0);
 		
-		mTranslation.x=1;
+		mTranslation.x= (float)impulsion / 1000f;
 		mTranslation.y=0;
 		return impulse(ACTION_FORWARD);
 	}
@@ -291,7 +298,7 @@ public class Ernest104Model extends ErnestModel
 	 */
 	public boolean impulse(int act){
 		
-		boolean statusL=true;
+		//boolean statusL=true;
 		boolean statusR=true;
 		float stepX,stepY;                  // length of a step
 		float HBradius=(float) 0.4;  // radius of Ernest hitbox 
@@ -323,7 +330,7 @@ public class Ernest104Model extends ErnestModel
 			
 			// for linear movements
 			double d;
-			if (statusL){
+			//if (statusL){
 				stepX=mTranslation.x/90;
 				stepY=mTranslation.y/90;
 				
@@ -335,7 +342,7 @@ public class Ernest104Model extends ErnestModel
 				mPosition.y+=dy;
 				//mPosition.x = m_x;
 				//mPosition.y = (float) m_h - m_y;
-			}
+			//}
 			
 			// for angular movements
 			orientation+=mRotation.z/10;
@@ -356,95 +363,176 @@ public class Ernest104Model extends ErnestModel
 			mRotation.scale(0.9f);
 			
 	// compute state
+			
+			
 		// for linear movement
 			// current cell
 			if (m_env.isAlga(cell_x,cell_y) || m_env.isFood(cell_x,cell_y)){
 				if (status3 && !m_env.isAlga(cell_x,cell_y) && !m_env.isFood(cell_x,cell_y) ) status3=false;
 				if (!status3 && (m_env.isAlga(cell_x,cell_y) || m_env.isFood(cell_x,cell_y))) status4=false;
 			}
-			// top cell
-			if ( (m_env.isWall(cell_x,cell_y-1)) && (mPosition.y-HBradius) -((float)cell_y-1+0.5)<0 )
-			{
-				if ((mOrientation.z > (float)Math.PI/4 && mOrientation.z < 3*(float)Math.PI/4) ||
-					(mOrientation.z < - 5*(float)Math.PI/4 && mOrientation.z > -7*(float)Math.PI/4))
-					// It counts as a bump only if the angle is closer to perpendicular plus or minus PI/4
-					status1=false;
+//			// top cell
+//			if ( (m_env.isWall(cell_x,cell_y-1)) && (mPosition.y-HBradius) -((float)cell_y-1+0.5)<0 )
+//			{
+//				if ((mOrientation.z > (float)Math.PI/4 && mOrientation.z < 3*(float)Math.PI/4) ||
+//					(mOrientation.z < - 5*(float)Math.PI/4 && mOrientation.z > -7*(float)Math.PI/4))
+//					// It counts as a bump only if the angle is closer to perpendicular plus or minus PI/4
+//					status1=false;
+//
+//				mPosition.y+= ((float)cell_y-1+0.5) - (mPosition.y-HBradius);
+//			}
+//			// right cell
+//			if ( (m_env.isWall(cell_x+1,cell_y)) && ((float)cell_x+1-0.5) -(mPosition.x+HBradius)<0 ){
+//				if ((mOrientation.z > - (float)Math.PI/4 && mOrientation.z < (float)Math.PI/4) ||
+//					(mOrientation.z > 7 * (float)Math.PI/4))	
+//					status2=false;
+//				mPosition.x-= (mPosition.x+HBradius) - ((float)cell_x+1-0.5);
+//			}
+//			// bottom cell
+//			if ( (m_env.isWall(cell_x,cell_y+1)) && ((float)cell_y+1-0.5) -(mPosition.y+HBradius)<0 ){
+//				if ((mOrientation.z < - (float)Math.PI/4 && mOrientation.z > - 3 *(float)Math.PI/4) ||
+//					(mOrientation.z > 5*(float)Math.PI/4 && mOrientation.z < 7 *(float)Math.PI/4))
+//					status1=false;
+//				mPosition.y-= (mPosition.y+HBradius) - ((float)cell_y+1-0.5);
+//			}
+//			// left cell
+//			if ( (m_env.isWall(cell_x-1,cell_y)) && (mPosition.x-HBradius) -((float)cell_x-1+0.5)<0 ){
+//				if ((mOrientation.z > 3*(float)Math.PI/4 && mOrientation.z < 5*(float)Math.PI/4) ||
+//						(mOrientation.z < - 3*(float)Math.PI/4))
+//					status2=false;
+//				mPosition.x+= ((float)cell_x-1+0.5) - (mPosition.x-HBradius);
+//			}
+//			// top right
+//			d= (mPosition.x-(cell_x+1-0.5))*(mPosition.x-(cell_x+1-0.5))+(mPosition.y-(cell_y-1+0.5))*(mPosition.y-(cell_y-1+0.5));
+//			d=Math.sqrt(d);
+//			if (m_env.isWall(cell_x+1,cell_y-1) && d<HBradius){
+//				while (d<HBradius){
+//					mPosition.x-=0.01;
+//					mPosition.y+=0.01;
+//					d= (mPosition.x-(cell_x+1-0.5))*(mPosition.x-(cell_x+1-0.5))+(mPosition.y-(cell_y-1+0.5))*(mPosition.y-(cell_y-1+0.5));
+//					d=Math.sqrt(d);
+//				}
+//				status5=false;
+//			}
+//			// bottom right
+//			d= (mPosition.x-(cell_x+1-0.5))*(mPosition.x-(cell_x+1-0.5))+(mPosition.y-(cell_y+1-0.5))*(mPosition.y-(cell_y+1-0.5));
+//			d=Math.sqrt(d);
+//			if (m_env.isWall(cell_x+1,cell_y+1) && d<HBradius){
+//				while (d<HBradius){
+//					mPosition.x-=0.01;
+//					mPosition.y-=0.01;
+//					d= (mPosition.x-(cell_x+1-0.5))*(mPosition.x-(cell_x+1-0.5))+(mPosition.y-(cell_y-1+0.5))*(mPosition.y-(cell_y-1+0.5));
+//					d=Math.sqrt(d);
+//				}
+//				status5=false;
+//			}
+//			// bottom left
+//			d= (mPosition.x-(cell_x-1+0.5))*(mPosition.x-(cell_x-1+0.5))+(mPosition.y-(cell_y+1-0.5))*(mPosition.y-(cell_y+1-0.5));
+//			d=Math.sqrt(d);
+//			if (m_env.isWall(cell_x-1,cell_y+1) && d<HBradius){
+//				while (d<HBradius){
+//					mPosition.x+=0.01;
+//					mPosition.y-=0.01;
+//					d= (mPosition.x-(cell_x+1-0.5))*(mPosition.x-(cell_x+1-0.5))+(mPosition.y-(cell_y-1+0.5))*(mPosition.y-(cell_y-1+0.5));
+//					d=Math.sqrt(d);
+//				}
+//				status5=false;
+//			}
+//			// top left
+//			d= (mPosition.x-(cell_x-1+0.5))*(mPosition.x-(cell_x-1+0.5))+(mPosition.y-(cell_y-1+0.5))*(mPosition.y-(cell_y-1+0.5));
+//			d=Math.sqrt(d);
+//			if (m_env.isWall(cell_x-1,cell_y-1) && d<HBradius){
+//				while (d<HBradius){
+//					mPosition.x+=0.01;
+//					mPosition.y+=0.01;
+//					d= (mPosition.x-(cell_x+1-0.5))*(mPosition.x-(cell_x+1-0.5))+(mPosition.y-(cell_y-1+0.5))*(mPosition.y-(cell_y-1+0.5));
+//					d=Math.sqrt(d);
+//				}
+//				status5=false;
+//			}
+			
+			// Bumping ====
 
-				mPosition.y+= ((float)cell_y-1+0.5) - (mPosition.y-HBradius);
+			
+			if (mOrientation.z < - Math.PI) mOrientation.z += 2 * Math.PI;
+			if (mOrientation.z > Math.PI) mOrientation.z -= 2 * Math.PI;
+			// Stay away from north wall
+			Vector3f point = new Vector3f(DIRECTION_NORTH);
+			point.scaleAdd(HBradius, mPosition);
+			if (!affordWalk(point))
+			{
+				if (mOrientation.z > (float)Math.PI/4 && mOrientation.z < 3*(float)Math.PI/4)
+					// It counts as a bump only if the angle is closer to perpendicular plus or minus PI/4
+					status1 = false;
+				mPosition.y = Math.round(point.y) - 0.5f - HBradius;
 			}
-			// right cell
-			if ( (m_env.isWall(cell_x+1,cell_y)) && ((float)cell_x+1-0.5) -(mPosition.x+HBradius)<0 ){
-				if ((mOrientation.z > - (float)Math.PI/4 && mOrientation.z < (float)Math.PI/4) ||
-					(mOrientation.z > 7 * (float)Math.PI/4))	
-					status2=false;
-				mPosition.x-= (mPosition.x+HBradius) - ((float)cell_x+1-0.5);
+			// Stay away from east wall
+			point = new Vector3f(DIRECTION_EAST);
+			point.scaleAdd(HBradius, mPosition);
+			if (!affordWalk(point))
+			{
+				if (mOrientation.z > - (float)Math.PI/4 && mOrientation.z < (float)Math.PI/4) 
+					status1 = false;
+				mPosition.x = Math.round(point.x) - 0.5f - HBradius;
 			}
-			// bottom cell
-			if ( (m_env.isWall(cell_x,cell_y+1)) && ((float)cell_y+1-0.5) -(mPosition.y+HBradius)<0 ){
-				if ((mOrientation.z < - (float)Math.PI/4 && mOrientation.z > - 3 *(float)Math.PI/4) ||
-					(mOrientation.z > 5*(float)Math.PI/4 && mOrientation.z < 7 *(float)Math.PI/4))
-					status1=false;
-				mPosition.y-= (mPosition.y+HBradius) - ((float)cell_y+1-0.5);
+			// Stay away from south wall
+			point = new Vector3f(DIRECTION_SOUTH);
+			point.scaleAdd(HBradius, mPosition);
+			if (!affordWalk(point))
+			{
+				if (mOrientation.z < - (float)Math.PI/4 && mOrientation.z > - 3 *(float)Math.PI/4)
+					status1 = false;
+				mPosition.y = Math.round(point.y) + 0.5f + HBradius;
 			}
-			// left cell
-			if ( (m_env.isWall(cell_x-1,cell_y)) && (mPosition.x-HBradius) -((float)cell_x-1+0.5)<0 ){
-				if ((mOrientation.z > 3*(float)Math.PI/4 && mOrientation.z < 5*(float)Math.PI/4) ||
-						(mOrientation.z < - 3*(float)Math.PI/4))
-					status2=false;
-				mPosition.x+= ((float)cell_x-1+0.5) - (mPosition.x-HBradius);
+			// Stay away from west wall
+			point = new Vector3f(DIRECTION_WEST);
+			point.scaleAdd(HBradius, mPosition);
+			if (!affordWalk(point))
+			{
+				if (mOrientation.z > 3*(float)Math.PI/4 || mOrientation.z < - 3*(float)Math.PI/4)
+					status1 = false;
+				mPosition.x = Math.round(point.x) + 0.5f + HBradius;
 			}
-			// top right
-			d= (mPosition.x-(cell_x+1-0.5))*(mPosition.x-(cell_x+1-0.5))+(mPosition.y-(cell_y-1+0.5))*(mPosition.y-(cell_y-1+0.5));
-			d=Math.sqrt(d);
-			if (m_env.isWall(cell_x+1,cell_y-1) && d<HBradius){
-				while (d<HBradius){
-					mPosition.x-=0.01;
-					mPosition.y+=0.01;
-					d= (mPosition.x-(cell_x+1-0.5))*(mPosition.x-(cell_x+1-0.5))+(mPosition.y-(cell_y-1+0.5))*(mPosition.y-(cell_y-1+0.5));
-					d=Math.sqrt(d);
-				}
-				status5=false;
-			}
-			// bottom right
-			d= (mPosition.x-(cell_x+1-0.5))*(mPosition.x-(cell_x+1-0.5))+(mPosition.y-(cell_y+1-0.5))*(mPosition.y-(cell_y+1-0.5));
-			d=Math.sqrt(d);
-			if (m_env.isWall(cell_x+1,cell_y+1) && d<HBradius){
-				while (d<HBradius){
-					mPosition.x-=0.01;
-					mPosition.y-=0.01;
-					d= (mPosition.x-(cell_x+1-0.5))*(mPosition.x-(cell_x+1-0.5))+(mPosition.y-(cell_y-1+0.5))*(mPosition.y-(cell_y-1+0.5));
-					d=Math.sqrt(d);
-				}
-				status5=false;
-			}
-			// bottom left
-			d= (mPosition.x-(cell_x-1+0.5))*(mPosition.x-(cell_x-1+0.5))+(mPosition.y-(cell_y+1-0.5))*(mPosition.y-(cell_y+1-0.5));
-			d=Math.sqrt(d);
-			if (m_env.isWall(cell_x-1,cell_y+1) && d<HBradius){
-				while (d<HBradius){
-					mPosition.x+=0.01;
-					mPosition.y-=0.01;
-					d= (mPosition.x-(cell_x+1-0.5))*(mPosition.x-(cell_x+1-0.5))+(mPosition.y-(cell_y-1+0.5))*(mPosition.y-(cell_y-1+0.5));
-					d=Math.sqrt(d);
-				}
-				status5=false;
-			}
-			// top left
-			d= (mPosition.x-(cell_x-1+0.5))*(mPosition.x-(cell_x-1+0.5))+(mPosition.y-(cell_y-1+0.5))*(mPosition.y-(cell_y-1+0.5));
-			d=Math.sqrt(d);
-			if (m_env.isWall(cell_x-1,cell_y-1) && d<HBradius){
-				while (d<HBradius){
-					mPosition.x+=0.01;
-					mPosition.y+=0.01;
-					d= (mPosition.x-(cell_x+1-0.5))*(mPosition.x-(cell_x+1-0.5))+(mPosition.y-(cell_y-1+0.5))*(mPosition.y-(cell_y-1+0.5));
-					d=Math.sqrt(d);
-				}
-				status5=false;
-			}
+			// Stay away from ahead left wall
+			Vector3f localPoint = new Vector3f(DIRECTION_AHEAD_LEFT);
+			localPoint.scale(HBradius);
+			point = localToParentRef(localPoint);
+			if (!affordWalk(point))
+				keepDistance(mPosition, cellCenter(point), HBradius + .5f);
+			
+			// Stay away from Ahead right wall
+			localPoint = new Vector3f(DIRECTION_AHEAD_RIGHT);
+			localPoint.scale(HBradius);
+			point = localToParentRef(localPoint);
+			if (!affordWalk(point))
+				keepDistance(mPosition, cellCenter(point), HBradius + .5f);
+			
+			// Northeast
+			point = new Vector3f(DIRECTION_NORTHEAST);
+			point.scaleAdd(HBradius, mPosition);
+			if (!affordWalk(point))
+				keepDistance(mPosition, cellCenter(point), HBradius + .5f);
+			// Southeast
+			point = new Vector3f(DIRECTION_SOUTHEAST);
+			point.scaleAdd(HBradius, mPosition);
+			if (!affordWalk(point))
+				keepDistance(mPosition, cellCenter(point), HBradius + .5f);
+			// Southwest
+			point = new Vector3f(DIRECTION_SOUTHWEST);
+			point.scaleAdd(HBradius, mPosition);
+			if (!affordWalk(point))
+				keepDistance(mPosition, cellCenter(point), HBradius + .5f);
+			// Northwest
+			point = new Vector3f(DIRECTION_NORTHWEST);
+			point.scaleAdd(HBradius, mPosition);
+			if (!affordWalk(point))
+				keepDistance(mPosition, cellCenter(point), HBradius + .5f);
+
+
 			
 //			m_tactileFrame.repaint();
 			
-			statusL = (status1 || status2) && status4;
+			//statusL = (status1 || status2) && status4;
 		//}
 		
 		
@@ -503,9 +591,9 @@ public class Ernest104Model extends ErnestModel
 		if (!status4){
 			mTranslation.scale(0);
 		}
-		else if (!status1 || !status2){
-			mTranslation.scale(0);
-		}
+//		else if (!status1 || !status2){
+//			mTranslation.scale(0);
+//		}
 		
 		if (act==0) status= status1 && status2; //  && status5; bumping corners is not bumping.
 		else        status= statusR;
