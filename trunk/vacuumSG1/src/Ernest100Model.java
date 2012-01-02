@@ -51,7 +51,7 @@ public class Ernest100Model extends ErnestModel
 	
 	public Main mainFrame;
 	
-	public String intention;
+	//public String intention;
 	public boolean status;
 	public boolean acting;
 	
@@ -225,7 +225,7 @@ public class Ernest100Model extends ErnestModel
 	/**
 	 * Run Ernest one step
 	 */
-	public String stepErnest(boolean status)
+	public int[] stepErnest(boolean status)
 	{
 		if (m_tracer != null)
 			m_tracer.startNewEvent(m_counter);
@@ -280,16 +280,18 @@ public class Ernest100Model extends ErnestModel
 
 		//String intention = m_ernest.step(matrix);
 		String intention = Character.toString((char)m_ernest.step(matrix)[0]);
-		return intention;
+		//return intention;
+		return m_ernest.step(matrix);
 	}
 	
 	/**
 	 * Enact the primitive schema chosen by Ernest.
 	 * @return binary feedback. 
 	 */
-	public boolean enactSchema(String schema)
+	public boolean enactSchema(int[] schema)
 	{
-		m_schema = schema;
+		//m_schema = schema;
+		m_schema = Character.toString((char)schema[0]);
 		
 		// A new interaction cycle is starting
 		m_counter++;
@@ -305,18 +307,18 @@ public class Ernest100Model extends ErnestModel
 		}
 		else
 		{
-			if (schema.equals(""))
+			if (m_schema.equals(""))
 			{
 				setChanged();
 				notifyObservers2();			
 				//if (tempo) sleep(10);
 				status = true;
 			}
-			else if (schema.equals("v"))
+			else if (m_schema.equals("v"))
 				status = turnRight();
-			else if (schema.equals("^"))
+			else if (m_schema.equals("^"))
 				status = turnLeft();
-			else if (schema.equals(">"))
+			else if (m_schema.equals(">"))
 				status = forward();
 	
 			// Trace the environmental data
