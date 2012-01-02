@@ -200,6 +200,7 @@ public class Ernest104Model extends ErnestModel
 	{
 		//m_schema = schema;
 		m_schema = Character.toString((char)schema[0]);
+		int impulsion = schema[1];
 
 		// A new interaction cycle is starting
 		m_counter++;
@@ -215,11 +216,11 @@ public class Ernest104Model extends ErnestModel
 			status = true;
 		}
 		else if (m_schema.equals("v"))
-			status = turnRight((int)(Math.PI/4 * 1000));
+			status = turnRight(impulsion);//(int)(Math.PI/4 * 1000));
 		else if (m_schema.equals("^"))
-			status = turnLeft((int)(Math.PI/4 * 1000));
+			status = turnLeft(impulsion);//(int)(Math.PI/4 * 1000));
 		else if (m_schema.equals(">"))
-			status = forward(1000);
+			status = forward(impulsion);//1000);
 
 		// Trace the environmental data
 		if (m_tracer != null)
@@ -354,7 +355,7 @@ public class Ernest104Model extends ErnestModel
 			if (tempo){
 				mainFrame.drawGrid();
 				if (mRotation.z != 0)
-					sleep((int)(1));
+					sleep((int)(5));
 				if (mTranslation.length() != 0)
 					sleep((int)(1));
 			}
