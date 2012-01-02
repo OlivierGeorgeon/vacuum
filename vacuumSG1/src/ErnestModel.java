@@ -106,7 +106,8 @@ public class ErnestModel extends Model
 		
 		//m_sensorymotorSystem.senseMatrix(matrix);
 		
-		String intention = m_ernest.step(matrix);
+		//String intention = m_ernest.step(matrix);
+		String intention = Character.toString((char)m_ernest.step(matrix)[0]);
 
 		return intention;
 	}
