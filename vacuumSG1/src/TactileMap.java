@@ -7,8 +7,8 @@ import java.util.ArrayList;
  */
 public class TactileMap {
 
-	public float[] m_tactilePressure;               // value of each sensor neurons
-	public float[] m_tactilePressureOld;
+	public int[] m_tactilePressure;               // value of each sensor neurons
+	public int[] m_tactilePressureOld;
 	
 	public float[] m_tactileValue;                  // value of sensors
 	
@@ -20,6 +20,13 @@ public class TactileMap {
 	
 	public double[][] connections;					// average distance between neurons
 	public double[][] connectConfidence;
+	
+	public int [] timerMap;
+	
+	public ArrayList<float[][]> speedDirection;
+	public ArrayList<int[][]> speedDirectionConfidence;
+	public ArrayList<float[]> speedDirectionX;
+	public ArrayList<float[]> speedDirectionY;
 	
 	public ArrayList<float[]> flowVectorX;			// movement vector on each neuron
 	public ArrayList<float[]> flowVectorY;
@@ -106,13 +113,20 @@ public class TactileMap {
 		mapSizeTheta=180;
 		mapSizeR=100;
 		
-		m_tactilePressure=new float[resolution*sensorRes];
 		m_tactileValue=new float[resolution];
-		m_tactilePressureOld=new float[resolution*sensorRes];
+		m_tactilePressure=new int[resolution*sensorRes];
+		m_tactilePressureOld=new int[resolution*sensorRes];
 		m_tactileVariations=new float[resolution*sensorRes];
 		flowVectorX=new ArrayList<float[]>();
 		flowVectorY=new ArrayList<float[]>();
 		vectorConfidence=new ArrayList<float[]>();
+		
+		timerMap=new int[resolution*sensorRes];
+		speedDirection=new ArrayList<float[][]>();
+		speedDirectionConfidence=new ArrayList<int[][]>();
+		speedDirectionX=new ArrayList<float[]>();
+		speedDirectionY=new ArrayList<float[]>();
+		
 		m_tactileObject=new int[resolution];
 		m_constraints=new float[resolution*sensorRes][resolution*sensorRes];
 		m_distances=new double[resolution*sensorRes][resolution*sensorRes];
@@ -321,7 +335,14 @@ public class TactileMap {
 		normalize();
 		 */
 		
-        
+        // set timers
+		for (int i=0;i<resolution*sensorRes;i++){
+			if (timerMap[i]>0) timerMap[i]--;
+			
+			if (m_tactilePressure[i]!=m_tactilePressureOld[i])
+				timerMap[i]=20;
+		}
+		
         
 		// reset maps
 		for (int i=0;i<mapSize;i++){
@@ -460,6 +481,11 @@ public class TactileMap {
 				flowLineX2.add(new float[mapSize][mapSize][flowLength]);
 				flowLineY2.add(new float[mapSize][mapSize][flowLength]);
 				
+				speedDirection.add(new float[resolution*sensorRes][resolution*sensorRes]);
+				speedDirectionConfidence.add(new int[resolution*sensorRes][resolution*sensorRes]);
+				speedDirectionX.add(new float[resolution*sensorRes]);
+				speedDirectionY.add(new float[resolution*sensorRes]);
+				
 				mTranslationX.add((float) 0);
 				mTranslationY.add((float) 0);
 				mRotation.add((float) 0);
@@ -484,10 +510,52 @@ public class TactileMap {
 					flowVectorX.get(act)[i]=0;
 					flowVectorY.get(act)[i]=0;
 					vectorConfidence.get(act)[i]=0;
+					speedDirectionX.get(act)[i]=0;
+					speedDirectionY.get(act)[i]=0;
+					for (int j=0;j<resolution*sensorRes;j++){
+						speedDirection.get(act)[i][j]=0;
+						speedDirectionConfidence.get(act)[i][j]=0;
+					}
 				}
 			}
 		}
 		
+		///////////////////////////////////////////////////////////////
+		// compute speed vector direction
+		///////////////////////////////////////////////////////////////
+		float sumX=0;
+		float sumY=0;
+		for (int i=0;i<resolution*sensorRes;i++){
+			sumX=0;
+			sumY=0;
+			if (timerMap[i]==20){
+				
+				for (int j=0;j<resolution*sensorRes;j++){
+					if (i!=j){
+						if (timerMap[j]>0){
+							speedDirection.get(act)[i][j]= 
+								( speedDirection.get(act)[i][j]*(float)speedDirectionConfidence.get(act)[i][j] + 1 )
+								/ ((float)speedDirectionConfidence.get(act)[i][j] + 1 );
+						}
+						else{
+							speedDirection.get(act)[i][j]= 
+								( speedDirection.get(act)[i][j]*(float)speedDirectionConfidence.get(act)[i][j] )
+								/ ((float)speedDirectionConfidence.get(act)[i][j] + 1 );
+						}
+						speedDirectionConfidence.get(act)[i][j]++;
+						
+						if (sensorX[i]-sensorX[j] !=0) sumX+=(1/(sensorX[i]-sensorX[j]))*speedDirection.get(act)[i][j];
+						if (sensorY[i]-sensorY[j] !=0) sumY+=(1/(sensorY[i]-sensorY[j]))*speedDirection.get(act)[i][j];
+					}
+						
+				}
+				speedDirectionX.get(act)[i]=sumX/(resolution*sensorRes-1);
+				speedDirectionY.get(act)[i]=sumY/(resolution*sensorRes-1);
+			}
+			
+		}
+		
+		/*
 		///////////////////////////////////////////////////////////////
 		// compute neuron flow
 		///////////////////////////////////////////////////////////////
@@ -501,7 +569,7 @@ public class TactileMap {
 					if ( (m_tactileVariations[i]== capacity && m_tactileVariations[j]>0) 
                       || (m_tactileVariations[i]==-capacity && m_tactileVariations[j]<0)
                       /*|| (m_tactileVariations[j]==-capacity && m_tactileVariations[i]<0)
-                      || (m_tactileVariations[j]==-capacity && m_tactileVariations[i]<0)*/){
+                      || (m_tactileVariations[j]==-capacity && m_tactileVariations[i]<0)*//*){
 						
 						d=Math.sqrt( (sensorX[i]-sensorX[j])*(sensorX[i]-sensorX[j])
                                     +(sensorY[i]-sensorY[j])*(sensorY[i]-sensorY[j]) );
@@ -535,7 +603,7 @@ public class TactileMap {
 		// compute average translation and rotation vectors
 		////////////////////////////////////////////////////////////////////////
 		// TODO
-
+		*/
 	}
 	
 	
@@ -1037,10 +1105,10 @@ public class TactileMap {
 				
 				if (j==0){
 					index=i/angle;
-					if (distance<=5){
+					if (distance<=7){
 						distance2=1;
 						//distance2= Math.min(1,1- (distance-5)/5);
-						m_tactilePressure[index]= distance2;
+						m_tactilePressure[index]= t[(i)%360];
 					}
 					else{
 						m_tactilePressure[index]=0;
@@ -1048,10 +1116,10 @@ public class TactileMap {
 				}
 				else if (j==1){
 					index=i/angle+resolution;
-					if (distance<=10){
+					if (distance<=11){
 						distance2=1;
 						//distance2=(float) Math.min(1,1- (distance-7)/5);
-						m_tactilePressure[index]= distance2;
+						m_tactilePressure[index]= t[(i)%360];
 					}
 					else{
 						m_tactilePressure[index]=0;
@@ -1059,10 +1127,10 @@ public class TactileMap {
 				}
 				else{
 					index=i/angle+2*resolution;
-					if (distance<=15){
+					if (distance<=16){
 						distance2=1;
 						//distance2=(float) Math.min(1,1- (distance-10)/5);
-						m_tactilePressure[index]= distance2;
+						m_tactilePressure[index]= t[(i)%360];;
 					}
 					else{
 						m_tactilePressure[index]=0;

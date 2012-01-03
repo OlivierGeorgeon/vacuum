@@ -30,6 +30,10 @@ public class ErnestModel extends Model
 	
 	protected int[] intention;
 	protected boolean status;
+	
+	public boolean isStep=false;
+	public boolean step=false;
+	public boolean run=true;
 
 	/** The angular field of each eye. */
 	private double m_eyeAngle ;

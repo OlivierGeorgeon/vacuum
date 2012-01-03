@@ -66,12 +66,21 @@ public class VisualMapPanel extends JPanel{
 				//g.fillRect(10+ i*width, 10+ (100-j)*width, width*2*2, width*2*2);
 				
 				if (vmap.speedDirection.size()>0){
-				g.setColor(Color.black);
-				if (i!=0 && j!=0 && i%5==0 && j%5==0){
-					g.drawLine(i*width, j*width,
-							   i*width+(int)(50*vmap.speedDirectionX2.get(0)[i][j]),
-							   j*width+(int)(50*vmap.speedDirectionY2.get(0)[i][j]) );
+					g.setColor(Color.black);
+					if (i!=0 && j!=0 && i%5==0 && j%5==0){
+						g.drawLine(i*width, j*width,
+								   i*width+(int)(50*vmap.speedDirectionX2.get(0)[i][j]),
+								   j*width+(int)(50*vmap.speedDirectionY2.get(0)[i][j]) );
+					}
 				}
+				
+				if (vmap.speedDirection.size()>1){
+					g.setColor(Color.black);
+					if (i!=0 && j!=0 && i%5==0 && j%5==0){
+						g.drawLine(i*width, 400+j*width,
+								   i*width+(int)(50*vmap.speedDirectionX2.get(1)[i][j]),
+								   400+j*width+(int)(50*vmap.speedDirectionY2.get(1)[i][j]) );
+					}
 				}
 			}
 		}/* */
