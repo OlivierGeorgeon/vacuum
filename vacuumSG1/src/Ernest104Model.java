@@ -116,26 +116,33 @@ public class Ernest104Model extends ErnestModel
 	{
 	}
 
-	
-	public void stepAgent(){
+	/**
+	 * Update the agent when the environment is refreshed.
+	 * (not necessarily a cognitive step for the agent).
+	 */
+	public void update()
+	{
 		float vlmin=0.1f;
 		float vrmin=0.002f;
 		
-		if ( !((mTranslation.length()>vlmin) ||  (mRotation.length()>vrmin)) ){
+		// Test if it is a new cognitive step.
+		if ( !((mTranslation.length()>vlmin) ||  (mRotation.length()>vrmin)) )
+		{
 			intention = stepErnest(status);
 			enactSchema(intention);
 		}
 
 		status = impulse(lastAction);
 		
-		if ( !((mTranslation.length()>vlmin) ||  (mRotation.length()>vrmin)) ){
+		if ( !((mTranslation.length()>vlmin) ||  (mRotation.length()>vrmin)) )
+		{
 			setChanged();
 			notifyObservers2();	
 		}
 	}
 	
 	/**
-	 * Run Ernest one step
+	 * Execute a cognitive step for Ernest.
 	 */
 	public int[] stepErnest(boolean status)
 	{

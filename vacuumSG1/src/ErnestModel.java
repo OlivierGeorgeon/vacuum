@@ -90,7 +90,11 @@ public class ErnestModel extends Model
 		m_ernest = null;
 	}
 	
-	public void stepAgent(){
+	/**
+	 * Update the agent when the environment is refreshed.
+	 * (not necessarily a cognitive step for the agent).
+	 */
+	public void update(){
 		intention = stepErnest(status);
 		status = enactSchema(intention);
 	}

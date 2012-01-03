@@ -210,7 +210,7 @@ public class Ernest100Model extends ErnestModel
 		
 	}
 
-	public void stepAgent(){
+	public void update(){
 		float vlmin=0.1f;
 		float vrmin=0.002f;
 		

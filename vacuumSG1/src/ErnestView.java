@@ -33,10 +33,9 @@ public class ErnestView implements Runnable//implements IView
 	
 		// Run Ernest an infinite loop ===
 	
-	
 		while (!m_modelList.get(0).isAgentStopped()){
 			for (int i=0;i<m_modelList.size();i++){
-				m_modelList.get(i).stepAgent();
+				m_modelList.get(i).update();
 			}
 		}
 
