@@ -136,6 +136,7 @@ public class Environment extends Observable {
 		identDisplay=0;
 		version=v;
 		frameList=new ArrayList<JFrame>();
+		m_eye=new EyeView();
 	}
 	public void setEnvironnement(EnvironnementPanel env){
 		m_env=env;
@@ -156,8 +157,6 @@ public class Environment extends Observable {
 		m_anim=new int[w][h];
 		m_blocks=new Block[w][h];
 		
-		m_eye=new EyeView();
-		
 	}
 	
 	public void setDisplay(int i){
@@ -169,7 +168,42 @@ public class Environment extends Observable {
 			
 		}
 	}
+	
+	public void setRun(){
+		for (int i=0;i<m_modelList.size();i++){
+			m_modelList.get(i).run=true;
+		}
+	}
+	
+	public void setStop(){
+		for (int i=0;i<m_modelList.size();i++){
+			m_modelList.get(i).run=false;
+		}
+	}
+	
+	public void setStep(){
+		for (int i=0;i<m_modelList.size();i++){
+			m_modelList.get(i).step=true;
+		}
+	}
+	
+	public void setRun(int i){
+		if (m_modelList.size()>i)
+			m_modelList.get(i).run=true;
+	}
+	
+	public void setStop(int i){
+		if (m_modelList.size()>i)
+			m_modelList.get(i).run=false;
+	}
+	
+	public void setStep(int i){
+		if (m_modelList.size()>i)
+			m_modelList.get(i).step=true;
+	}
 
+	
+	
 	public void setEventThread(Runnable t)
 	{ m_eventThread = t; }
 
@@ -390,6 +424,7 @@ public class Environment extends Observable {
 		setChanged();
 		notifyObservers2();
 	}
+	
 	
 	/**
 	 * Initialize the preferences from Registry

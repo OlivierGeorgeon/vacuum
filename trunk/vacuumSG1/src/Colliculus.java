@@ -141,7 +141,7 @@ public class Colliculus {
 		vmap.moveCharges(TranslationX.get(action), TranslationY.get(action), Rotation.get(action), speed);
 		
 		tmap.touchEnvironment(rt, t);
-		//tmap.coefficients(action, speed);
+		tmap.coefficients(action, speed);
 		tmap.moveCharges(-TranslationX.get(action), -TranslationY.get(action), -Rotation.get(action), speed);
 /*
 		computeBundleMap();

@@ -505,20 +505,22 @@ public class VisualMap {
 
 					for (int i2=-2;i2<=2;i2++){
 						for (int j2=-2;j2<=2;j2++){
-							if (i!=0 && j!=0 && timerMap[i+i2][j+j2]>0){
-								speedDirection.get(act)[i+i2][j+j2]= 
-									( speedDirection.get(act)[i+i2][j+j2]*(float)speedDirectionConfidence.get(act)[i+i2][j+j2] + 1 )
-									/ ((float)speedDirectionConfidence.get(act)[i+i2][j+j2] + 1 );
-							}
-							else{
-								speedDirection.get(act)[i+i2][j+j2]= 
-									( speedDirection.get(act)[i+i2][j+j2]*(float)speedDirectionConfidence.get(act)[i+i2][j+j2] )
-									/ ((float)speedDirectionConfidence.get(act)[i+i2][j+j2] + 1 );
-							}
-							speedDirectionConfidence.get(act)[i+i2][j+j2]++;
+							if (i!=0 && j!=0){
+								if (timerMap[i+i2][j+j2]>0){
+									speedDirection.get(act)[i+i2][j+j2]= 
+										( speedDirection.get(act)[i+i2][j+j2]*(float)speedDirectionConfidence.get(act)[i+i2][j+j2] + 1 )
+										/ ((float)speedDirectionConfidence.get(act)[i+i2][j+j2] + 1 );
+								}
+								else{
+									speedDirection.get(act)[i+i2][j+j2]= 
+										( speedDirection.get(act)[i+i2][j+j2]*(float)speedDirectionConfidence.get(act)[i+i2][j+j2] )
+										/ ((float)speedDirectionConfidence.get(act)[i+i2][j+j2] + 1 );
+								}
+								speedDirectionConfidence.get(act)[i+i2][j+j2]++;
 							
-							sumX+=i2*speedDirection.get(act)[i+i2][j+j2];
-							sumY+=j2*speedDirection.get(act)[i+i2][j+j2];
+								sumX+=i2*speedDirection.get(act)[i+i2][j+j2];
+								sumY+=j2*speedDirection.get(act)[i+i2][j+j2];
+							}
 						}
 					}
 					speedDirectionX.get(act)[i][j]=sumX/24;

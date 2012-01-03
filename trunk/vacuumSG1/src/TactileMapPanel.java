@@ -111,10 +111,10 @@ public class TactileMapPanel extends JPanel{
 			} /**/
 		}
 		
-		
+		/*
 		// draw sensor neuron activity in the internal map
 		g.setColor(Color.black);
-		g.drawRect(5, 50, 290, 195);		
+		g.drawRect(5, 30, 290, 230);		
 		for (int i=0;i<tmap.resolution*tmap.sensorRes;i++){
 			g.setColor(Color.black);
 			if (tmap.m_tactileObject[i%tmap.resolution]==1) g.setColor(Color.gray);
@@ -122,43 +122,106 @@ public class TactileMapPanel extends JPanel{
 			if (tmap.m_tactileObject[i%tmap.resolution]==3) g.setColor(Color.white);
 			g.fillOval(150+(int)(tmap.sensorX[i]-25*tmap.m_tactilePressure[i]), 150+(int)(tmap.sensorY[i]-25*tmap.m_tactilePressure[i]),
 					   (int)(50*tmap.m_tactilePressure[i]), (int)(50*tmap.m_tactilePressure[i]));
-		}
+		}*/
 
 		
 		for (int i=0;i<tmap.resolution*tmap.sensorRes;i++){
 			// draw neurons in neuron display
-			if (i==tmap.resolution/2) g.setColor(Color.red);
-			else if (tmap.m_tactileVariations[i]== 20) g.setColor(Color.green);
-			else if (tmap.m_tactileVariations[i]==-20) g.setColor(Color.blue );
-			else g.setColor(Color.black);
+			/*if (i==tmap.resolution/2) g.setColor(Color.red);
+			else if (tmap.m_tactilePressure[i]== 1) g.setColor(Color.green);
+			else if (tmap.m_tactilePressure[i]== 2) g.setColor(Color.blue );
+			else if (tmap.m_tactilePressure[i]== 3) g.setColor(Color.green );
+			else 
+				g.setColor(Color.black);*/
+			
+			g.setColor(new Color((int)tmap.timerMap[i]*5,(40-(int)tmap.timerMap[i])*5,0));
 			
 			// neurons display
-			g.fillOval(150+(int)(tmap.sensorX[i])-2, 150+(int)(tmap.sensorY[i])-2, 4, 4);
+			g.fillOval(150+(int)(tmap.sensorX[i]*6)-2, 150+(int)(tmap.sensorY[i]*6)-2, 4, 4);
 			
 			// connections of first neuron layer
 			g.setColor(Color.black);
-			if (i< tmap.resolution-1) g.drawLine(150+(int)tmap.sensorX[i  ], 150+(int)tmap.sensorY[i  ],
-					                             150+(int)tmap.sensorX[i+1], 150+(int)tmap.sensorY[i+1]);
-			if (i==tmap.resolution-1) g.drawLine(150+(int)tmap.sensorX[i  ], 150+(int)tmap.sensorY[i  ],
-                                                 150+(int)tmap.sensorX[0  ], 150+(int)tmap.sensorY[0  ]);
+			if (i< tmap.resolution-1) g.drawLine(150+(int)(tmap.sensorX[i  ]*6), 150+(int)(tmap.sensorY[i  ]*6),
+					                             150+(int)(tmap.sensorX[i+1]*6), 150+(int)(tmap.sensorY[i+1]*6));
+			if (i==tmap.resolution-1) g.drawLine(150+(int)(tmap.sensorX[i  ]*6), 150+(int)(tmap.sensorY[i  ]*6),
+                                                 150+(int)(tmap.sensorX[0  ]*6), 150+(int)(tmap.sensorY[0  ]*6));
 			
 			// connections of second neuron layer
 			g.setColor(Color.LIGHT_GRAY);
-			if (i>=tmap.resolution && i<2*tmap.resolution-1) g.drawLine(150+(int)tmap.sensorX[i  ], 150+(int)tmap.sensorY[i  ],
-                    													150+(int)tmap.sensorX[i+1], 150+(int)tmap.sensorY[i+1]);
-			if (i==2*tmap.resolution-1) g.drawLine(150+(int)tmap.sensorX[i  ], 150+(int)tmap.sensorY[i  ],
-												   150+(int)tmap.sensorX[tmap.resolution], 150+(int)tmap.sensorY[tmap.resolution]);
+			if (i>=tmap.resolution && i<2*tmap.resolution-1) g.drawLine(150+(int)(tmap.sensorX[i  ]*6), 150+(int)(tmap.sensorY[i  ]*6),
+                    													150+(int)(tmap.sensorX[i+1]*6), 150+(int)(tmap.sensorY[i+1]*6));
+			if (i==2*tmap.resolution-1) g.drawLine(150+(int)(tmap.sensorX[i  ]*6), 150+(int)(tmap.sensorY[i  ]*6),
+												   150+(int)(tmap.sensorX[tmap.resolution]*6), 150+(int)(tmap.sensorY[tmap.resolution]*6));
 			
 			// connections between first and second layer
 			g.setColor(Color.black);
-			if (i<tmap.resolution && tmap.sensorRes>1) g.drawLine(150+(int)tmap.sensorX[i  ], 150+(int)tmap.sensorY[i  ],
-                                                150+(int)tmap.sensorX[i+tmap.resolution], 150+(int)tmap.sensorY[i+tmap.resolution]);
+			if (i<tmap.resolution && tmap.sensorRes>1) g.drawLine(150+(int)(tmap.sensorX[i  ]*6), 150+(int)(tmap.sensorY[i  ]*6),
+                                                150+(int)(tmap.sensorX[i+tmap.resolution]*6), 150+(int)(tmap.sensorY[i+tmap.resolution]*6));
 			
 			// connections between second and third layer
 			if (i>=tmap.resolution && i<2*tmap.resolution && tmap.sensorRes>2){
-				    g.drawLine(150+(int)tmap.sensorX[i], 150+(int)tmap.sensorY[i],
-                    150+(int)tmap.sensorX[i+tmap.resolution], 150+(int)tmap.sensorY[i+tmap.resolution]);
+				    g.drawLine(150+(int)(tmap.sensorX[i]*6), 150+(int)(tmap.sensorY[i]*6),
+                    150+(int)(tmap.sensorX[i+tmap.resolution]*6), 150+(int)(tmap.sensorY[i+tmap.resolution]*6));
 			}
+			
+			
+			// speed direction
+			g.setColor(Color.red);
+			if (tmap.speedDirectionX.size()>0){
+				g.drawLine(450+(int)(tmap.sensorX[i]*6), 150+(int)(tmap.sensorY[i]*6),
+						   450+(int)(tmap.sensorX[i]*6)+ 20*(int)tmap.speedDirectionX.get(0)[i],
+						   150+(int)(tmap.sensorY[i]*6)+ 20*(int)tmap.speedDirectionY.get(0)[i]);
+			}
+			
+			if (tmap.speedDirectionX.size()>1){
+				g.drawLine(150+(int)(tmap.sensorX[i]*6), 450+(int)(tmap.sensorY[i]*6),
+						   150+(int)(tmap.sensorX[i]*6)+ 20*(int)tmap.speedDirectionX.get(1)[i],
+						   450+(int)(tmap.sensorY[i]*6)+ 20*(int)tmap.speedDirectionY.get(1)[i]);
+			}
+			
+			if (tmap.speedDirectionX.size()>2){
+				g.drawLine(450+(int)(tmap.sensorX[i]*6), 450+(int)(tmap.sensorY[i]*6),
+						   450+(int)(tmap.sensorX[i]*6)+ 20*(int)tmap.speedDirectionX.get(2)[i],
+						   450+(int)(tmap.sensorY[i]*6)+ 20*(int)tmap.speedDirectionY.get(2)[i]);
+			}/* */
+			
+			/*
+			// movement relation
+			for (int j=0;j<tmap.resolution*tmap.sensorRes;j++){
+				if (tmap.speedDirectionX.size()>0){
+					g.setColor(new Color(0,0,tmap.speedDirection.get(0)[i][j]));
+					g.fillRect(450+i*5, 10+j*5, 5, 5);
+				}
+			
+				if (tmap.speedDirectionX.size()>1){
+					g.setColor(new Color(0,0,tmap.speedDirection.get(1)[i][j]));
+					g.fillRect(20+i*5, 450+j*5, 5, 5);
+				}
+			
+				if (tmap.speedDirectionX.size()>2){
+					g.setColor(new Color(0,0,tmap.speedDirection.get(1)[i][j]));
+					g.fillRect(450+i*5, 450+j*5, 5, 5);
+				}
+			}/* */
+			
+			/*
+			// relative movement relation
+			for (int j=0;j<i;j++){
+				if (tmap.speedDirectionX.size()>0){
+					g.setColor(new Color(0,0,0.5f+(tmap.speedDirection.get(0)[i][j]-tmap.speedDirection.get(0)[j][i])/2));
+					g.fillRect(450+i*5, 10+j*5, 5, 5);
+				}
+			
+				if (tmap.speedDirectionX.size()>1){
+					g.setColor(new Color(0,0,0.5f+(tmap.speedDirection.get(1)[i][j]-tmap.speedDirection.get(1)[j][i])/2));
+					g.fillRect(20+i*5, 450+j*5, 5, 5);
+				}
+			
+				if (tmap.speedDirectionX.size()>2){
+					g.setColor(new Color(0,0,0.5f+(tmap.speedDirection.get(2)[i][j]-tmap.speedDirection.get(2)[j][i])/2));
+					g.fillRect(450+i*5, 450+j*5, 5, 5);
+				}
+			}/* */
 		}
 		
 		

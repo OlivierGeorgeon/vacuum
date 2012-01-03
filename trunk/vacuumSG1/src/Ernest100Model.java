@@ -219,7 +219,11 @@ public class Ernest100Model extends ErnestModel
 			enactSchema(intention);
 		}
 
+		isStep=true;
+		
 		status = impulse(lastAction);
+		
+		if ( !((mTranslation.length()>vlmin) ||  (mRotation.length()>vrmin)) ) isStep=false;
 	}
 	
 	/**
@@ -593,7 +597,7 @@ public class Ernest100Model extends ErnestModel
 			
 			rendu(true,speed);
 			
-			if (!statusL) mTranslation.scale(0);
+			//if (!statusL) mTranslation.scale(0);
 			
 			// set linear impulsion
 			mTranslation.scale(0.97f);
@@ -656,7 +660,7 @@ public class Ernest100Model extends ErnestModel
 		
 		rendu(true);
 		
-		if (act==0) return status1 && status2 && status5;
+		if (act==0) return status1 && status2; // && status5;
 		else        return statusR;
 	}
 	
@@ -1131,13 +1135,13 @@ public class Ernest100Model extends ErnestModel
 						int ai5=ai4-ai3;
 						
 						for (int k=ai3;k<ai4;k++){
-							if (zVMap[k%360]>d){
+							if (zVMap[k%360]>d*10){
 								rv[k%360]=d*10 - 2*Math.sin(Math.PI*(k-ai3)/(ai4-ai3));
 								zVMap[k%360]= d*10- 2*Math.sin(Math.PI*(k-ai3)/(ai4-ai3));
 								colorMap[k%360]=bgc;
 							}
 							
-							if (zTMap[k%360]>d){
+							if (zTMap[k%360]>d*10){
 								rt[k%360]=d*10 - 2*Math.sin(Math.PI*(k-ai3)/(ai4-ai3));
 								zTMap[k%360]= d*10- 2*Math.sin(Math.PI*(k-ai3)/(ai4-ai3));
 								tactileMap[k%360]=m_env.CUDDLE;

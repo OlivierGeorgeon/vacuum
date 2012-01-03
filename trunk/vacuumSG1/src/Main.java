@@ -45,6 +45,8 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 
 	private JPanel m_board;
 	
+	private boolean stopAll=true;
+	
 	/////////////////////////////////////////////////////////////////////////////////////////
 	
 	private EnvironnementPanel m_envPanel;
@@ -59,6 +61,11 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 	private JButton m_stop = new JButton("Stop");
 	private JButton m_step = new JButton("Step");
 	private JButton m_reset = new JButton("Reset");
+	
+	private JButton m_arun = new JButton("Agent Run");
+	private JButton m_astop = new JButton("Agent Stop");
+	private JButton m_astep = new JButton("Agent Step");
+	
 	private final javax.swing.Timer m_statusTimer =
 		new javax.swing.Timer(100, new StatusTimerListener());
 
@@ -123,14 +130,23 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		
 		m_environment.addObserver(this);
 
-		m_stop.setEnabled(false);
-		m_run.setEnabled(false);
+		m_stop.setEnabled(true);
+		m_run.setEnabled(true);
 		m_reset.setEnabled(true);
 		m_step.setEnabled(false);
+		
+		m_astop.setEnabled(false);
+		m_arun.setEnabled(false);
+		m_astep.setEnabled(false);
+		
 		m_stop.addActionListener(this);
 		m_run.addActionListener(this);
 		m_reset.addActionListener(this);
 		m_step.addActionListener(this);
+		
+		m_astop.addActionListener(this);
+		m_arun.addActionListener(this);
+		m_astep.addActionListener(this);
 
 		m_board = new JPanel(new GridLayout(1, 1));
 
@@ -142,6 +158,10 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 
 		buttonPanel.addKeyListener(this);
 
+		buttonPanel.add(m_arun);
+		buttonPanel.add(m_astop);
+		buttonPanel.add(m_astep);
+		
 		buttonPanel.add(m_reset);
 		buttonPanel.add(m_run);
 		buttonPanel.add(m_stop);
@@ -187,6 +207,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		
 		BufferedReader br = null;
 		
+		m_modelList.clear();
 		try{
 
 			br = new BufferedReader(new FileReader(f));
@@ -272,9 +293,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 						int index=m_modelList.size();
 						if (version==104) m_modelList.add(new Ernest104Model(index));
 						else              m_modelList.add(new Ernest100Model(index));
-						System.out.println("test1 "+index);
 						m_modelList.get(index).init(m_w, m_h);
-						System.out.println("test2");
 						m_modelList.get(index).setFrame(this);
 						
 						m_modelList.get(index).mPosition.x = x;
@@ -355,7 +374,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 			
 			if (m_modelList.size()<=0)
 				throw new 
-					IllegalStateException("404 : No Agent found!");
+					IllegalStateException("error 404 : Agents not found!");
 
 			//setChanged();
 			//notifyObservers2();
@@ -370,6 +389,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		{
 			try { br.close(); } catch (Exception e) {}
 		}	
+
 	}
 	
 	
@@ -382,45 +402,62 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 	{
 		m_modelList.get(0).setEventThread(Thread.currentThread());
 
-		// Run the agent ******
-		
-		if (e.getSource() == m_run)
-		{
-			m_modelList.get(0).startAgent();
+		// Run the simulation ******
+		if (e.getSource() == m_run){
 			Thread agentThread = null;
 			System.out.println("Run Ernest ") ;
 			agentThread = new Thread(getErnestView());
+			m_environment.setRun();
 			agentThread.start();
 			m_statusBar.setText("Playing");
-			m_stop.setEnabled(true);
+			m_step.setEnabled(false);
+			stopAll=false;
 		}
 		
-		// Stop the agent *****
+		// Run selected agent ******
+		else if (e.getSource() == m_arun){
+			System.out.println("Run Ernest "+ m_environment.identDisplay+" ") ;
+			m_modelList.get(m_environment.identDisplay).run=true;
+			stopAll=false;
+		}
 		
-		else if (e.getSource() == m_stop)
-		{
-			m_modelList.get(0).save();
-			m_modelList.get(0).haltAgent();
+		// Stop the simulation *****
+		else if (e.getSource() == m_stop){
+			//m_ernest.stop();
+			m_environment.setStop();
 			m_step.setEnabled(true);
+			stopAll=true;
+			
 			m_statusBar.setText("Pause");			
 		}
 		
-		// Run one step *****
-		
-		else if (e.getSource() == m_step)
-		{
-			m_statusBar.setText("Step");
+		// Stop selected agent ******
+		else if (e.getSource() == m_astop){
+			System.out.println("Stop Ernest "+ m_environment.identDisplay+" ") ;
+			m_modelList.get(m_environment.identDisplay).run=false;
 		}
 		
+		// Run one simulation step *****
+		else if (e.getSource() == m_step){
+			m_statusBar.setText("Step");
+			m_environment.setStep();
+		}
+		
+		// Run one selected agent step *****
+		else if (e.getSource() == m_astep){
+			m_modelList.get(m_environment.identDisplay).step=true;
+		}
+		
+		
 		// Reset the board ******
-		else if (e.getSource() == m_reset)
-
-		{
+		else if (e.getSource() == m_reset){
 			m_statusBar.setText("Ready");
 			m_modelList.get(0).setCounter(0);
 			try
 			{ 
-				this.init(m_environment.getBoardFileName()); 
+				this.init(m_environment.getBoardFileName());
+				m_step.setEnabled(false);
+				this.repaint();
 			}
 			catch (Exception ex)
 			{
@@ -432,6 +469,12 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 			}
 			m_step.setEnabled(false);
 		}
+		
+		// run one agent
+		
+		
+		
+		
 		else if (e.getSource() == m_exit)
 		{
 			System.exit(0);
@@ -478,6 +521,14 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 	    }
 		// Save the preferences
 		m_modelList.get(0).putPreferences();
+		
+		
+		// enable or disable buttons
+		if (!stopAll) m_step.setEnabled(false);
+		m_arun.setEnabled(!m_modelList.get(m_environment.identDisplay).run);
+		m_astop.setEnabled( m_modelList.get(m_environment.identDisplay).run);
+		m_astep.setEnabled(!m_modelList.get(m_environment.identDisplay).run);
+		
 	}
 
 	public void update(Observable o, Object arg)
@@ -489,9 +540,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 			m_help.setEnabled(true);
 			//m_statusModel.pushPermStatus("Pause");
 
-			m_run.setEnabled(true);
 			m_reset.setEnabled(true);
-			m_stop.setEnabled(false);
 			//m_step.setEnabled(false);
 			setTitle(TITLE + " - " + m_modelList.get(0).getVersion());
 		}
@@ -500,11 +549,9 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 			m_file.setEnabled(false);
 			m_options.setEnabled(false);
 			m_help.setEnabled(false);
-			m_run.setEnabled(false);
 			m_reset.setEnabled(false);
 			m_step.setEnabled(false);
 
-			m_stop.setEnabled(true);
 			m_stop.setSelected(true);
 
 			//m_statusModel.pushPermStatus("Playing");
@@ -639,8 +686,10 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 
 	private class CloseHandler extends WindowAdapter
 	{
-		public void windowClosing(WindowEvent e)
-		{ m_statusTimer.stop(); }
+		public void windowClosing(WindowEvent e){
+			m_statusTimer.stop(); 
+			if (m_ernest != null) m_ernest.close();
+		}
 	}
 	
 	/**

@@ -9,6 +9,8 @@ import java.util.ArrayList;
 public class ErnestView implements Runnable//implements IView 
 {
 	private final ArrayList<ErnestModel> m_modelList;
+	private boolean run=false;
+	private boolean work=true;
 	
 	public ErnestView(ArrayList<ErnestModel> m)
 	{
@@ -18,7 +20,20 @@ public class ErnestView implements Runnable//implements IView
 //	{
 //		m_model.haltAgent();
 //	}
+	
+	public void runSimulation(){
+		run=true;
+	}
+	
+	public void stop(){
+		run=false;
+	}
 
+	public void close(){
+		work=false;
+	}
+
+	
 	/**
 	 * Run Ernest.
 	 */
@@ -33,10 +48,25 @@ public class ErnestView implements Runnable//implements IView
 	
 		// Run Ernest an infinite loop ===
 	
-		while (!m_modelList.get(0).isAgentStopped()){
+		while (work){
+			boolean testRun=true;
+			
 			for (int i=0;i<m_modelList.size();i++){
-				m_modelList.get(i).update();
+				if (m_modelList.get(i).run || m_modelList.get(i).step){
+					m_modelList.get(i).update();
+					testRun=false;
+					
+					if (!m_modelList.get(i).isStep) m_modelList.get(i).step=false;
+				}
+				
+				
+
 			}
+			if (testRun)
+				try { Thread.sleep(500);
+				} catch (InterruptedException e) {e.printStackTrace();}
+
+
 		}
 
 		for (int i=0;i<m_modelList.size();i++){
