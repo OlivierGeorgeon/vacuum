@@ -392,6 +392,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 			agentThread = new Thread(getErnestView());
 			agentThread.start();
 			m_statusBar.setText("Playing");
+			m_stop.setEnabled(true);
 		}
 		
 		// Stop the agent *****
