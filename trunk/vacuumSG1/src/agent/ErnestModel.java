@@ -63,7 +63,8 @@ public class ErnestModel extends Model
 	final public Vector3f DIRECTION_AHEAD_RIGHT = new Vector3f(DIAG2D_PROJ, -DIAG2D_PROJ, 0);
 	final public Vector3f DIRECTION_BEHIND_LEFT = new Vector3f(-DIAG2D_PROJ, DIAG2D_PROJ, 0);
 	final public Vector3f DIRECTION_BEHIND_RIGHT = new Vector3f(-DIAG2D_PROJ, -DIAG2D_PROJ, 0);	
-	final public float SOMATO_RADIUS = 1.1f;
+	final public static float SOMATO_RADIUS = 1.1f;
+	final public static float TACTILE_RADIUS = .8f;
 	
 	// Absolute directions in Cartesian coordinates (0,0) bottom left.
 	final protected Vector3f DIRECTION_NORTH = new Vector3f(0, 1, 0);

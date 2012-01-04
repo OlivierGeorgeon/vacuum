@@ -88,12 +88,13 @@ public class Environment extends Observable {
 	private static final String PREF_STEPS = "pref_steps";
 	private static final String PREF_DELAY = "pref_delay";
 	private static final String PREF_RANDOMBOARD = "pref_randomBoard";
-	private static final String PREF_BOARDFILE = "pref_boardFile";
+	public static final String PREF_BOARDFILE = "pref_boardFile";
 	private static final String PREF_PICTUREFILE = "pref_pictureFile";
 	private static final String PREF_SPEAKALOUD = "pref_speakAloud";
 	private static final String PREF_AGENTFILE = "pref_agentFile";
 	private static final String PREF_AGENTTYPE = "pref_agentType";
 	private static final String PREF_AGENTSHORTFILE = "pref_agentShortFile";
+	public static final String DEFAULT_BOARD = "Board16x12.txt";
 		
 	protected int m_w;
 	protected int m_h;
@@ -476,7 +477,7 @@ public class Environment extends Observable {
 		//m_y = prefs.getInt(PREF_Y,INIT_Y);
 		m_dirtyCount = prefs.getInt(PREF_DIRTY,INIT_DIRTY);
 		m_delay = prefs.getInt(PREF_DELAY,INIT_DELAY);
-		m_boardFileName = prefs.get(PREF_BOARDFILE, "");
+		m_boardFileName = prefs.get(PREF_BOARDFILE, DEFAULT_BOARD);
 		m_bSpeakAloud = prefs.getBoolean(PREF_SPEAKALOUD, true);
 		
 	}
