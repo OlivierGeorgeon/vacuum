@@ -162,6 +162,9 @@ public class Model extends Observable
 
 	protected Main mainFrame;
 	
+	/**
+	 * @param i The agent's numerical id. 
+	 */
 	public Model(int i)
 	{
 		m_mainThread = Thread.currentThread();

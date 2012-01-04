@@ -82,7 +82,10 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		version=100;
 		if (args.length == 1)
 		{
-			if (args[0].equals("Ernest104")){
+			if (args[0].equals("Ernest110")){
+				version=110;
+			}
+			else if (args[0].equals("Ernest104")){
 				version=104;
 			}
 			else if (args[0].equals("Ernest100")){
@@ -254,7 +257,8 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 					{
 						int index=m_modelList.size();
 						
-						if (version==104) m_modelList.add(new Ernest104Model(index));
+						if (version==110) m_modelList.add(new Ernest110Model(index));
+						else if (version==104) m_modelList.add(new Ernest104Model(index));
 						else              m_modelList.add(new Ernest100Model(index));
 						m_modelList.get(index).init(m_w, m_h);
 						m_modelList.get(index).setFrame(this);
@@ -272,7 +276,8 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 					if (square[x].equalsIgnoreCase(">")){
 						int index=m_modelList.size();
 						
-						if (version==104) m_modelList.add(new Ernest104Model(index));
+						if (version==110) m_modelList.add(new Ernest110Model(index));
+						else if (version==104) m_modelList.add(new Ernest104Model(index));
 						else              m_modelList.add(new Ernest100Model(index));
 						m_modelList.get(index).init(m_w, m_h);
 						m_modelList.get(index).setFrame(this);
@@ -291,7 +296,8 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 					if (square[x].equalsIgnoreCase("v")){
 						
 						int index=m_modelList.size();
-						if (version==104) m_modelList.add(new Ernest104Model(index));
+						if (version==110) m_modelList.add(new Ernest110Model(index));
+						else if (version==104) m_modelList.add(new Ernest104Model(index));
 						else              m_modelList.add(new Ernest100Model(index));
 						m_modelList.get(index).init(m_w, m_h);
 						m_modelList.get(index).setFrame(this);
@@ -305,12 +311,13 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 						
 						m_modelList.get(index).setEnvironnement(m_environment);
 					}
-					// Agent up
+					// Agent left
 					if (square[x].equalsIgnoreCase("<"))
 					{
 						int index=m_modelList.size();
 						
-						if (version==104) m_modelList.add(new Ernest104Model(index));
+						if (version==110) m_modelList.add(new Ernest110Model(index));
+						else if (version==104) m_modelList.add(new Ernest104Model(index));
 						else              m_modelList.add(new Ernest100Model(index));
 						m_modelList.get(index).init(m_w, m_h);
 						m_modelList.get(index).setFrame(this);
