@@ -254,7 +254,7 @@ public class Ernest110Model extends ErnestModel
 	private boolean anim()
 	{
 		boolean status = true;
-		float HBradius = .4f;  // radius of Ernest hitbox 
+		float HBradius = BOUNDING_RADIUS;  // radius of Ernest hitbox 
 		
 		mPosition.set(localToParentRef(mTranslation));
 		mOrientation.z += mRotation.z;
@@ -335,17 +335,17 @@ public class Ernest110Model extends ErnestModel
 		if (!affordWalk(point))
 			keepDistance(mPosition, cellCenter(point), HBradius + .5f);
 
-//			// Stay away from agent ahead
-//			localPoint = new Vector3f(DIRECTION_AHEAD);
-//			localPoint.scale(HBradius);
-//			point = localToParentRef(localPoint);
-//			if (affordCuddle(point))
-//			{
-//				keepDistance(mPosition, entityCenter(point), 2 * HBradius ); // Allow some overlap
-//				if (!mCuddled)
-//					mTranslation.scale(.5f); // slowing down makes it look more like cuddling.
-//				setCuddled(true);
-//			}
+		// Stay away from agent ahead
+		localPoint = new Vector3f(DIRECTION_AHEAD);
+		localPoint.scale(HBradius);
+		point = localToParentRef(localPoint);
+		if (affordCuddle(point))
+		{
+			keepDistance(mPosition, entityCenter(point), 2 * HBradius ); // Allow some overlap
+			if (!mCuddled)
+				mTranslation.scale(.5f); // slowing down makes it look more like cuddling.
+			setCuddled(true);
+		}
 		
 		// Apply friction to the speed vectors
 		mTranslation.scale(TRANSLATION_FRICTION);
