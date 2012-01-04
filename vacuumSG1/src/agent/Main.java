@@ -465,7 +465,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		// Run one selected agent step *****
 		else if (e.getSource() == m_astep){
 			m_modelList.get(m_environment.identDisplay).step=true;
-			m_environment.setStop();
+			//m_environment.setStop();
 			System.out.println("Agent "+m_environment.identDisplay+" Step") ;
 			m_statusBar.setText("Agent "+m_environment.identDisplay+" Step");
 		}
