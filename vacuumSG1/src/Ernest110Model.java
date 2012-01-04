@@ -351,11 +351,7 @@ public class Ernest110Model extends ErnestModel
 		mTranslation.scale(TRANSLATION_FRICTION);
 		mRotation.scale(ROTATION_FRICTION);
 		
-		if (tempo)
-		{
-			mainFrame.drawGrid();
-			sleep((int)(20));
-		}
+		mainFrame.drawGrid();
 		
 		return status;
 	}
