@@ -170,20 +170,20 @@ public class TactileMapPanel extends JPanel{
 			g.setColor(Color.red);
 			if (tmap.speedDirectionX.size()>0){
 				g.drawLine(450+(int)(tmap.sensorX[i]*6), 150+(int)(tmap.sensorY[i]*6),
-						   450+(int)(tmap.sensorX[i]*6)+ 20*(int)tmap.speedDirectionX.get(0)[i],
-						   150+(int)(tmap.sensorY[i]*6)+ 20*(int)tmap.speedDirectionY.get(0)[i]);
+						   450+(int)(tmap.sensorX[i]*6)+ (int)(200*tmap.speedDirectionX.get(0)[i]),
+						   150+(int)(tmap.sensorY[i]*6)+ (int)(200*tmap.speedDirectionY.get(0)[i]));
 			}
 			
 			if (tmap.speedDirectionX.size()>1){
 				g.drawLine(150+(int)(tmap.sensorX[i]*6), 450+(int)(tmap.sensorY[i]*6),
-						   150+(int)(tmap.sensorX[i]*6)+ 20*(int)tmap.speedDirectionX.get(1)[i],
-						   450+(int)(tmap.sensorY[i]*6)+ 20*(int)tmap.speedDirectionY.get(1)[i]);
+						   150+(int)(tmap.sensorX[i]*6)+ (int)(200*tmap.speedDirectionX.get(1)[i]),
+						   450+(int)(tmap.sensorY[i]*6)+ (int)(200*tmap.speedDirectionY.get(1)[i]));
 			}
 			
 			if (tmap.speedDirectionX.size()>2){
 				g.drawLine(450+(int)(tmap.sensorX[i]*6), 450+(int)(tmap.sensorY[i]*6),
-						   450+(int)(tmap.sensorX[i]*6)+ 20*(int)tmap.speedDirectionX.get(2)[i],
-						   450+(int)(tmap.sensorY[i]*6)+ 20*(int)tmap.speedDirectionY.get(2)[i]);
+						   450+(int)(tmap.sensorX[i]*6)+ (int)(200*tmap.speedDirectionX.get(2)[i]),
+						   450+(int)(tmap.sensorY[i]*6)+ (int)(200*tmap.speedDirectionY.get(2)[i]));
 			}/* */
 			
 			/*

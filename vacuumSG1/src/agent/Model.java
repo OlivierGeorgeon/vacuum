@@ -31,6 +31,8 @@ public class Model extends Observable
 {
 	public static final long serialVersionUID = 1;
 
+	public static final float BOUNDING_RADIUS = .4f; // the agent's physical diameter (for collision)
+	
 	//public static final int AGENTUNDEFINED = 0;
 	//public static final int JESSFILE       = 1;
 	//public static final int SOARFILE       = 2;
@@ -124,12 +126,13 @@ public class Model extends Observable
 	private int m_informationY = 100;
 	protected int m_counter = 0;
 
+	protected boolean mCuddled = false;
+	
 	// A single agent in the environment.
 	//protected float m_x;
 	//protected float m_y;
 	public String m_schema = "";
 	
-	/** The angular orientation of Ernest. (in radius, clockwise)*/
 	
 	/** The Cartesian position of Ernest. ((0,0) is bottom-left corner)*/
 	protected Vector3f mPosition = new Vector3f();
@@ -157,7 +160,8 @@ public class Model extends Observable
 	private boolean m_status          = false; 
 	public boolean display;
 	
-	public int ident;
+	protected String mName;
+	protected int ident;
 
 	private boolean m_night = false;
 
@@ -169,9 +173,33 @@ public class Model extends Observable
 	public Model(int i)
 	{
 		m_mainThread = Thread.currentThread();
-		ident=i;
+		ident = i;
+		mName = "Ernest " + i;
 		display=false;
 	}
+	
+	/**
+	 * @return The agent name.
+	 */
+	public String getName()
+	{
+		return mName;
+	}
+ 	
+	/**
+	 * @param position The position to test.
+	 * @return true if this agent overlaps this position.
+	 */
+	public boolean overlap(Vector3f position)
+	{
+		Vector3f dist = new Vector3f(position);
+		dist.sub(mPosition);
+		if (dist.length() < BOUNDING_RADIUS )
+			return true;
+		else
+			return false;
+	}
+	
 	public void setEnvironnement(Environment env){
 		m_env=env;
 	}
@@ -243,6 +271,43 @@ public class Model extends Observable
 		return 	(m_env.m_blocks[Math.round(pos.x)][Math.round(pos.y)].isVisible()); 		
 	}
 
+	
+    /**
+     * @param pos The position to test in cartesian coordinates.
+     * @return true if this position is an agent. 
+     */
+    protected boolean affordCuddle(Vector3f pos) 
+    {
+            ErnestModel entity = m_env.getEntity(pos, mName);
+        // Only entities and all entities afford cuddle.
+            if (entity == null)
+                    return false;
+            else
+                    return true;
+    }
+    
+    protected void setCuddled(boolean cuddle)
+    {
+            mCuddled = cuddle;
+    }
+    
+    protected Vector3f entityCenter(Vector3f pos) 
+    {
+            ErnestModel entity = m_env.getEntity(pos, mName);
+        // Only entities and all entities afford cuddle.
+            if (entity == null)
+                    return null;
+            else
+                    return entity.getPosition();
+    }
+    
+    public Vector3f getPosition() 
+    {
+            return new Vector3f(mPosition);
+    }
+
+	
+	
 	public void setCounter(int counter)
 	{
 		m_counter = counter;

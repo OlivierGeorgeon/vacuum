@@ -546,8 +546,8 @@ public class TactileMap {
 						}
 						speedDirectionConfidence.get(act)[i][j]++;
 						
-						if (sensorX[i]-sensorX[j] !=0) sumX+=(1/(sensorX[i]-sensorX[j]))*speedDirection.get(act)[i][j];
-						if (sensorY[i]-sensorY[j] !=0) sumY+=(1/(sensorY[i]-sensorY[j]))*speedDirection.get(act)[i][j];
+						sumX+=((sensorX[i]-sensorX[j])/Math.abs(sensorX[i]-sensorX[j]))*speedDirection.get(act)[i][j];
+						sumY+=((sensorY[i]-sensorY[j])/Math.abs(sensorY[i]-sensorY[j]))*speedDirection.get(act)[i][j];
 					}
 						
 				}

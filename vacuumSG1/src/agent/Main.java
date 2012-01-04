@@ -556,7 +556,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 
 	public void update(Observable o, Object arg)
 	{
-		if (m_modelList.get(0).isAgentStopped())
+		/*if (m_modelList.get(0).isAgentStopped())
 		{
 			m_file.setEnabled(true);
 			m_options.setEnabled(true);
@@ -572,7 +572,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 			m_help.setEnabled(false);
 
 			//m_statusModel.pushPermStatus("Playing");
-		}
+		}*/
 
 		drawGrid();
 		getContentPane().validate();
