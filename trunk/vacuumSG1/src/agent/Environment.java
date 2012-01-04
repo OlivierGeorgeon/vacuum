@@ -250,6 +250,41 @@ public class Environment extends Observable {
 	{
 		return 	(m_blocks[Math.round(pos.x)][Math.round(pos.y)].isVisible()); 		
 	}
+	
+	/**
+ 		 * Get the entity at a given location in the scene or null.
+ 		 * (only entities different from the given name)
+ 		 * @param postion The position in the scene.
+ 		 * @param name The given agent's name (so the agent won't detect itself)
+ 		 * @return The entity.
+ 		 */
+	public ErnestModel getEntity(Vector3f position, String name)
+	{
+		if (!inScene(Math.round(position.x), Math.round(position.y), Math.round(position.z)))
+			return null;
+		else
+		{
+			for (ErnestModel entity : m_modelList)
+			{
+				if (entity.overlap(position) && !entity.getName().equals(name))
+					return entity;
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * @param i X coordinate
+	 * @param j Y coordinate
+	 * @param k Z coordinate
+	 * @return true if the given location is within the scene's boundaries.
+	 */
+
+	public boolean inScene(int i, int j, int k) {
+		return (i >= 0 && i < m_w && j >= 0 && j < m_h && k == 0 );
+	}
+	
+	
 
 	public void setBlock(int x, int y, Block block)
 	{ 
