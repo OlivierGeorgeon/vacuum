@@ -136,7 +136,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		m_stop.setEnabled(true);
 		m_run.setEnabled(true);
 		m_reset.setEnabled(true);
-		m_step.setEnabled(false);
+		m_step.setEnabled(true);
 		
 		m_astop.setEnabled(false);
 		m_arun.setEnabled(false);
@@ -396,6 +396,14 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		{
 			try { br.close(); } catch (Exception e) {}
 		}	
+		
+		// start simulation
+		Thread agentThread = null;
+		System.out.println("initialized ") ;
+		m_environment.setStop();
+		agentThread = new Thread(getErnestView());
+		agentThread.start();
+		m_statusBar.setText("initialized");
 
 	}
 	
@@ -411,11 +419,8 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 
 		// Run the simulation ******
 		if (e.getSource() == m_run){
-			Thread agentThread = null;
 			System.out.println("Run Ernest ") ;
-			agentThread = new Thread(getErnestView());
 			m_environment.setRun();
-			agentThread.start();
 			m_statusBar.setText("Playing");
 			m_step.setEnabled(false);
 			stopAll=false;
@@ -430,7 +435,6 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		
 		// Stop the simulation *****
 		else if (e.getSource() == m_stop){
-			//m_ernest.stop();
 			m_environment.setStop();
 			m_step.setEnabled(true);
 			stopAll=true;
@@ -442,17 +446,27 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		else if (e.getSource() == m_astop){
 			System.out.println("Stop Ernest "+ m_environment.identDisplay+" ") ;
 			m_modelList.get(m_environment.identDisplay).run=false;
+			
+			stopAll=true;
+			for (int i=0;i<m_modelList.size();i++){
+				if (m_modelList.get(i).run) stopAll=false;
+			}
 		}
 		
 		// Run one simulation step *****
 		else if (e.getSource() == m_step){
-			m_statusBar.setText("Step");
 			m_environment.setStep();
+			m_environment.setStop();
+			System.out.println("Simulation Step") ;
+			m_statusBar.setText("Simulation Step");
 		}
 		
 		// Run one selected agent step *****
 		else if (e.getSource() == m_astep){
 			m_modelList.get(m_environment.identDisplay).step=true;
+			m_environment.setStop();
+			System.out.println("Agent "+m_environment.identDisplay+" Step") ;
+			m_statusBar.setText("Agent "+m_environment.identDisplay+" Step");
 		}
 		
 		
@@ -460,6 +474,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		else if (e.getSource() == m_reset){
 			m_statusBar.setText("Ready");
 			m_modelList.get(0).setCounter(0);
+			stopAll=true;
 			try
 			{ 
 				this.init(m_environment.getBoardFileName());
@@ -531,7 +546,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		
 		
 		// enable or disable buttons
-		if (!stopAll) m_step.setEnabled(false);
+		m_step.setEnabled(stopAll);
 		m_arun.setEnabled(!m_modelList.get(m_environment.identDisplay).run);
 		m_astop.setEnabled( m_modelList.get(m_environment.identDisplay).run);
 		m_astep.setEnabled(!m_modelList.get(m_environment.identDisplay).run);
@@ -547,8 +562,6 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 			m_help.setEnabled(true);
 			//m_statusModel.pushPermStatus("Pause");
 
-			m_reset.setEnabled(true);
-			//m_step.setEnabled(false);
 			setTitle(TITLE + " - " + m_modelList.get(0).getVersion());
 		}
 		else
@@ -556,10 +569,6 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 			m_file.setEnabled(false);
 			m_options.setEnabled(false);
 			m_help.setEnabled(false);
-			m_reset.setEnabled(false);
-			m_step.setEnabled(false);
-
-			m_stop.setSelected(true);
 
 			//m_statusModel.pushPermStatus("Playing");
 		}
@@ -593,6 +602,10 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 			}
 			else{
 				m_environment.setDisplay(id);
+				m_statusBar.setText("Agent "+m_environment.identDisplay);
+				m_arun.setEnabled(!m_modelList.get(m_environment.identDisplay).run);
+				m_astop.setEnabled( m_modelList.get(m_environment.identDisplay).run);
+				m_astep.setEnabled(!m_modelList.get(m_environment.identDisplay).run);
 			}
 		}
 		if (c == 3)
@@ -708,7 +721,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		try
 		{
 			if (m_ernest == null)
-				m_ernest = new ErnestView(m_modelList);		
+				m_ernest = new ErnestView(m_modelList,this);		
 		}
 		catch (NoClassDefFoundError e)
 		{

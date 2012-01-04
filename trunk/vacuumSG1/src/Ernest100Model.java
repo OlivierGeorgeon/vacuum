@@ -548,9 +548,15 @@ public class Ernest100Model extends ErnestModel
 						//mPosition.x-=dx2/2;
 						//mPosition.y-=dy2/2;
 							
-						m_env.m_modelList.get(a).mPosition.x+=dx2/2;
-						m_env.m_modelList.get(a).mPosition.y+=dy2/2;
-
+						if (m_env.m_modelList.get(a).run || m_env.m_modelList.get(a).step){
+							m_env.m_modelList.get(a).mPosition.x+=dx2/2;
+							m_env.m_modelList.get(a).mPosition.y+=dy2/2;
+						}
+						else{
+							mPosition.x-=dx2/2;
+							mPosition.y-=dy2/2;
+						}
+						
 						/*
 						double dx2= Math.cos(-mOrientation.z) - Math.sin(-mOrientation.z);
 						double dy2= Math.sin(-mOrientation.z) + Math.cos(-mOrientation.z);
@@ -570,12 +576,13 @@ public class Ernest100Model extends ErnestModel
 				}
 			}
 			
+			/*
 			if (tempo){
 
-				mainFrame.drawGrid();
+				//mainFrame.drawGrid();
 				//m_int.repaint();
 				//sleep((int)(1));
-			}
+			}*/
 			
 			if (display){
 				

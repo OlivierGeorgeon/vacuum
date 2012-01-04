@@ -9,12 +9,14 @@ import java.util.ArrayList;
 public class ErnestView implements Runnable//implements IView 
 {
 	private final ArrayList<ErnestModel> m_modelList;
+	private Main mainFrame;
 	private boolean run=false;
 	private boolean work=true;
 	
-	public ErnestView(ArrayList<ErnestModel> m)
+	public ErnestView(ArrayList<ErnestModel> m, Main frame)
 	{
 		m_modelList=m;
+		mainFrame=frame;
 	}
 //	public void init() 
 //	{
@@ -51,6 +53,8 @@ public class ErnestView implements Runnable//implements IView
 		while (work){
 			boolean testRun=true;
 			
+			mainFrame.drawGrid();
+			
 			for (int i=0;i<m_modelList.size();i++){
 				if (m_modelList.get(i).run || m_modelList.get(i).step){
 					m_modelList.get(i).update();
@@ -66,7 +70,7 @@ public class ErnestView implements Runnable//implements IView
 				try { Thread.sleep(500);
 				} catch (InterruptedException e) {e.printStackTrace();}
 
-
+			
 		}
 
 		for (int i=0;i<m_modelList.size();i++){
