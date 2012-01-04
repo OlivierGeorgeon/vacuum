@@ -179,7 +179,7 @@ public class Ernest100Model extends ErnestModel
 		int i=0;
 		boolean found=false; 
 		while (i<size && !found){
-			if (m_env.frameList.get(i).getClass().getName().equals("TactileMapFrame")) found=true;
+			if (m_env.frameList.get(i).getClass().getName().equals("memory.TactileMapFrame")) found=true;
 			i++;
 		}
 		
@@ -191,7 +191,7 @@ public class Ernest100Model extends ErnestModel
 		i=0;
 		found=false; 
 		while (i<size && !found){
-			if (m_env.frameList.get(i).getClass().getName().equals("VisualMapFrame")) found=true;
+			if (m_env.frameList.get(i).getClass().getName().equals("memory.VisualMapFrame")) found=true;
 			i++;
 		}
 		
@@ -203,7 +203,7 @@ public class Ernest100Model extends ErnestModel
 		i=0;
 		found=false; 
 		while (i<size && !found){
-			if (m_env.frameList.get(i).getClass().getName().equals("ColliculusFrame")) found=true;
+			if (m_env.frameList.get(i).getClass().getName().equals("memory.ColliculusFrame")) found=true;
 			i++;
 		}
 		
