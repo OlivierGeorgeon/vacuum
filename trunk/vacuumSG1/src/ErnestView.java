@@ -50,30 +50,31 @@ public class ErnestView implements Runnable//implements IView
 	
 		// Run Ernest an infinite loop ===
 	
-		while (work){
+		while (work)
+		{
 			boolean testRun=true;
 			
 			mainFrame.drawGrid();
 			
-			for (int i=0;i<m_modelList.size();i++){
-				if (m_modelList.get(i).run || m_modelList.get(i).step){
+			for (int i=0;i<m_modelList.size();i++)
+			{
+				if (m_modelList.get(i).run || m_modelList.get(i).step)
+				{
 					m_modelList.get(i).update();
 					testRun=false;
-					
 					if (!m_modelList.get(i).isStep) m_modelList.get(i).step=false;
 				}
-				
-				
-
 			}
 			if (testRun)
 				try { Thread.sleep(500);
 				} catch (InterruptedException e) {e.printStackTrace();}
 
-			
-		}
+			try { Thread.sleep(20);
+			} catch (InterruptedException e) {e.printStackTrace();}
 
-		for (int i=0;i<m_modelList.size();i++){
+		}
+		for (int i=0;i<m_modelList.size();i++)
+		{
 			m_modelList.get(i).closeErnest();
 		}
 
