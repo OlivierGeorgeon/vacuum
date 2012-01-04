@@ -80,7 +80,9 @@ public class Ernest110Model extends ErnestModel
     {
         m_ernest = new Ernest();
         m_sensorymotorSystem = new SpatialSensorimotorSystem();
-        m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","h-yXVWrEwtYclxuPQUlmTOXprcFzol");
+        
+        if (ident == 1)
+        	m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","h-yXVWrEwtYclxuPQUlmTOXprcFzol");
                         
         // Initialize the Ernest === 
         
@@ -214,7 +216,6 @@ public class Ernest110Model extends ErnestModel
                 mTranslation.add(new Vector3f(impulsion / 1000f, 0, 0));
                 //mTranslation.add(new Vector3f(TRANSLATION_IMPULSION, 0, 0));
 
-
         // Trace the environmental data
         if (m_tracer != null)
         {
@@ -233,19 +234,42 @@ public class Ernest110Model extends ErnestModel
      */
     private int taste()
     {
-        // Taste before sucking
-        //int taste = getDirty(m_x,m_y); 
-        
-        int stimulation = ((m_env.isFood(mPosition.x,mPosition.y)) ? Ernest.STIMULATION_GUSTATORY_FISH : Ernest.STIMULATION_GUSTATORY_NOTHING);
-        
-        // Sucking water or food if any
-        // TODO: only suck water when thirsty and food when hungry.
-        //if (taste == DIRTY)
+		int taste = Ernest.STIMULATION_GUSTATORY_NOTHING;
+		Vector3f point = new Vector3f(DIRECTION_AHEAD);
+		point.scale(TACTILE_RADIUS);
 
-        if (m_env.isFood(mPosition.x,mPosition.y))
-                suck();
+		// Sucking water or food if any
+		if (affordEat(mPosition)) 
+		{
+			suck();
+			taste = Ernest.STIMULATION_GUSTATORY_FISH;
+		}
+		// if no food then check for cuddle
+		else if (affordCuddle(localToParentRef(point))) // mCuddled
+		{
+			taste = Ernest.STIMULATION_GUSTATORY_CUDDLE;
+		}
+//		else if (affordCuddle(localToParentRef(DIRECTION_AHEAD_RIGHT)) ||
+//				affordCuddle(localToParentRef(DIRECTION_AHEAD_LEFT)))
+//			SoundManager.cuddle.play();
 
-        return stimulation;
+		return taste;
+
+    	
+    	
+//        // Taste before sucking
+//        //int taste = getDirty(m_x,m_y); 
+//        
+//        int stimulation = ((m_env.isFood(mPosition.x,mPosition.y)) ? Ernest.STIMULATION_GUSTATORY_FISH : Ernest.STIMULATION_GUSTATORY_NOTHING);
+//        
+//        // Sucking water or food if any
+//        // TODO: only suck water when thirsty and food when hungry.
+//        //if (taste == DIRTY)
+//
+//        if (m_env.isFood(mPosition.x,mPosition.y))
+//                suck();
+//
+//        return stimulation;
     }
     
     /**

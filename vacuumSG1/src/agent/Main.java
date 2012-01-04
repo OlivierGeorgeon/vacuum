@@ -4,6 +4,7 @@ package agent;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
+import java.util.prefs.Preferences;
 import java.awt.*;
 import java.awt.event.*; 
 
@@ -120,13 +121,19 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		// Initialize the board
 		try{ 
 			this.init(m_environment.getBoardFileName());
+			//this.init("/Users/Olivier/Documents/workspace/vacuumSG1/Board16x12.txt");
 		}
 		catch (Exception e){
 			JOptionPane.showMessageDialog(this, 
-				"Error intializing the board!\n" + 
-				e.getClass().toString() + ": " + e.getMessage(),
-				"Error!", 
+				e.getMessage() + ".\n" +
+				"Next run will use default board file: ./" + 
+				Environment.DEFAULT_BOARD,
+				"Error initializing the board", 
 				JOptionPane.ERROR_MESSAGE);
+			
+			// Switch back to default board file.
+			Preferences prefs = Preferences.userRoot().node("vacuum");
+			prefs.put(Environment.PREF_BOARDFILE, Environment.DEFAULT_BOARD);
 		}
 
 		m_environment.setFrame(this);
@@ -679,7 +686,8 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		m_loadBoard.addActionListener(this);
 		m_configureRun.addActionListener(this);
 
-		m_speakAloud.setSelected(m_modelList.get(0).getSpeakAloud());
+		if (!m_modelList.isEmpty())
+			m_speakAloud.setSelected(m_modelList.get(0).getSpeakAloud());
 		m_speakAloud.addActionListener(this);
 
 		// help menu...
