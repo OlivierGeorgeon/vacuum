@@ -312,7 +312,7 @@ public class Ernest104Model extends ErnestModel
 		//boolean statusL=true;
 		boolean statusR=true;
 		float stepX,stepY;                  // length of a step
-		float HBradius=(float) 0.4;  // radius of Ernest hitbox 
+		float HBradius = BOUNDING_RADIUS;  // radius of Ernest hitbox 
 		 
 		int cell_x=Math.round(mPosition.x);
 		int cell_y=Math.round(mPosition.y);
@@ -382,85 +382,6 @@ public class Ernest104Model extends ErnestModel
 				if (status3 && !m_env.isAlga(cell_x,cell_y) && !m_env.isFood(cell_x,cell_y) ) status3=false;
 				if (!status3 && (m_env.isAlga(cell_x,cell_y) || m_env.isFood(cell_x,cell_y))) status4=false;
 			}
-//			// top cell
-//			if ( (m_env.isWall(cell_x,cell_y-1)) && (mPosition.y-HBradius) -((float)cell_y-1+0.5)<0 )
-//			{
-//				if ((mOrientation.z > (float)Math.PI/4 && mOrientation.z < 3*(float)Math.PI/4) ||
-//					(mOrientation.z < - 5*(float)Math.PI/4 && mOrientation.z > -7*(float)Math.PI/4))
-//					// It counts as a bump only if the angle is closer to perpendicular plus or minus PI/4
-//					status1=false;
-//
-//				mPosition.y+= ((float)cell_y-1+0.5) - (mPosition.y-HBradius);
-//			}
-//			// right cell
-//			if ( (m_env.isWall(cell_x+1,cell_y)) && ((float)cell_x+1-0.5) -(mPosition.x+HBradius)<0 ){
-//				if ((mOrientation.z > - (float)Math.PI/4 && mOrientation.z < (float)Math.PI/4) ||
-//					(mOrientation.z > 7 * (float)Math.PI/4))	
-//					status2=false;
-//				mPosition.x-= (mPosition.x+HBradius) - ((float)cell_x+1-0.5);
-//			}
-//			// bottom cell
-//			if ( (m_env.isWall(cell_x,cell_y+1)) && ((float)cell_y+1-0.5) -(mPosition.y+HBradius)<0 ){
-//				if ((mOrientation.z < - (float)Math.PI/4 && mOrientation.z > - 3 *(float)Math.PI/4) ||
-//					(mOrientation.z > 5*(float)Math.PI/4 && mOrientation.z < 7 *(float)Math.PI/4))
-//					status1=false;
-//				mPosition.y-= (mPosition.y+HBradius) - ((float)cell_y+1-0.5);
-//			}
-//			// left cell
-//			if ( (m_env.isWall(cell_x-1,cell_y)) && (mPosition.x-HBradius) -((float)cell_x-1+0.5)<0 ){
-//				if ((mOrientation.z > 3*(float)Math.PI/4 && mOrientation.z < 5*(float)Math.PI/4) ||
-//						(mOrientation.z < - 3*(float)Math.PI/4))
-//					status2=false;
-//				mPosition.x+= ((float)cell_x-1+0.5) - (mPosition.x-HBradius);
-//			}
-//			// top right
-//			d= (mPosition.x-(cell_x+1-0.5))*(mPosition.x-(cell_x+1-0.5))+(mPosition.y-(cell_y-1+0.5))*(mPosition.y-(cell_y-1+0.5));
-//			d=Math.sqrt(d);
-//			if (m_env.isWall(cell_x+1,cell_y-1) && d<HBradius){
-//				while (d<HBradius){
-//					mPosition.x-=0.01;
-//					mPosition.y+=0.01;
-//					d= (mPosition.x-(cell_x+1-0.5))*(mPosition.x-(cell_x+1-0.5))+(mPosition.y-(cell_y-1+0.5))*(mPosition.y-(cell_y-1+0.5));
-//					d=Math.sqrt(d);
-//				}
-//				status5=false;
-//			}
-//			// bottom right
-//			d= (mPosition.x-(cell_x+1-0.5))*(mPosition.x-(cell_x+1-0.5))+(mPosition.y-(cell_y+1-0.5))*(mPosition.y-(cell_y+1-0.5));
-//			d=Math.sqrt(d);
-//			if (m_env.isWall(cell_x+1,cell_y+1) && d<HBradius){
-//				while (d<HBradius){
-//					mPosition.x-=0.01;
-//					mPosition.y-=0.01;
-//					d= (mPosition.x-(cell_x+1-0.5))*(mPosition.x-(cell_x+1-0.5))+(mPosition.y-(cell_y-1+0.5))*(mPosition.y-(cell_y-1+0.5));
-//					d=Math.sqrt(d);
-//				}
-//				status5=false;
-//			}
-//			// bottom left
-//			d= (mPosition.x-(cell_x-1+0.5))*(mPosition.x-(cell_x-1+0.5))+(mPosition.y-(cell_y+1-0.5))*(mPosition.y-(cell_y+1-0.5));
-//			d=Math.sqrt(d);
-//			if (m_env.isWall(cell_x-1,cell_y+1) && d<HBradius){
-//				while (d<HBradius){
-//					mPosition.x+=0.01;
-//					mPosition.y-=0.01;
-//					d= (mPosition.x-(cell_x+1-0.5))*(mPosition.x-(cell_x+1-0.5))+(mPosition.y-(cell_y-1+0.5))*(mPosition.y-(cell_y-1+0.5));
-//					d=Math.sqrt(d);
-//				}
-//				status5=false;
-//			}
-//			// top left
-//			d= (mPosition.x-(cell_x-1+0.5))*(mPosition.x-(cell_x-1+0.5))+(mPosition.y-(cell_y-1+0.5))*(mPosition.y-(cell_y-1+0.5));
-//			d=Math.sqrt(d);
-//			if (m_env.isWall(cell_x-1,cell_y-1) && d<HBradius){
-//				while (d<HBradius){
-//					mPosition.x+=0.01;
-//					mPosition.y+=0.01;
-//					d= (mPosition.x-(cell_x+1-0.5))*(mPosition.x-(cell_x+1-0.5))+(mPosition.y-(cell_y-1+0.5))*(mPosition.y-(cell_y-1+0.5));
-//					d=Math.sqrt(d);
-//				}
-//				status5=false;
-//			}
 			
 			// Bumping ====
 
