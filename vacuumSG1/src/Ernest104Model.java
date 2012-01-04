@@ -132,12 +132,15 @@ public class Ernest104Model extends ErnestModel
 			enactSchema(intention);
 		}
 
+		isStep=true;
+		
 		status = impulse(lastAction);
 		
 		if ( !((mTranslation.length()>vlmin) ||  (mRotation.length()>vrmin)) )
 		{
 			setChanged();
 			notifyObservers2();	
+			isStep=false;
 		}
 	}
 	
@@ -360,7 +363,7 @@ public class Ernest104Model extends ErnestModel
 			mOrientation.z = orientation;
 		
 			if (tempo){
-				mainFrame.drawGrid();
+				//mainFrame.drawGrid();
 				if (mRotation.z != 0)
 					sleep((int)(5));
 				if (mTranslation.length() != 0)
