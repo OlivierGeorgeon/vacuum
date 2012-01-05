@@ -129,7 +129,7 @@ public class Ernest104Model extends ErnestModel
 		// Test if it is a new cognitive step.
 		if ( !((mTranslation.length()>vlmin) ||  (mRotation.length()>vrmin)) )
 		{
-			intention = stepErnest(status);
+			int[] intention = stepErnest(status);
 			enactSchema(intention);
 		}
 

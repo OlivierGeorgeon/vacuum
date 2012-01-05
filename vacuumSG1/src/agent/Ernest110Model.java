@@ -41,6 +41,8 @@ public class Ernest110Model extends ErnestModel
     private int lastAction;
     private boolean status;
     
+    private Vector3f mPreviousPosition = new Vector3f(mPosition);
+    
     /**
      * @param i The agent's numerical id. 
      */
@@ -81,6 +83,8 @@ public class Ernest110Model extends ErnestModel
         m_ernest = new Ernest();
         m_sensorymotorSystem = new SpatialSensorimotorSystem();
         
+        // Only trace the first agent.
+        
         if (ident == 1)
         	m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","h-yXVWrEwtYclxuPQUlmTOXprcFzol");
                         
@@ -115,47 +119,50 @@ public class Ernest110Model extends ErnestModel
         float vlmin = .05f; // 0.1f;
         float vrmin = .05f; // 0.002f;
         
-        // Test if it is a new cognitive step.
-        if ( !((mTranslation.length()>vlmin) ||  (mRotation.length()>vrmin)) )
-        {
-                intention = stepErnest(status);
-                enactSchema(intention);
-        }
+        Vector3f speed = new Vector3f(mPosition);
+        speed.sub(mPreviousPosition);
+        int v1 = (int)(speed.length() * 1000);
+        int v2 = (int)(mTranslation.length() * 1000);
+        int t = (int)(mRotation.z * 1000); // TODO take non voluntary rotation into account.
+        
+        mPreviousPosition.set(mPosition);
+
+		int[][] sense = sense(status);
+		sense[2][8] = v1;
+		sense[3][8] = t;
+		sense[4][8] = v2;
+		int[] intention = m_ernest.update(sense);
+		
+		enactSchema(intention);
 
         status = anim();
-        
-        if ( !((mTranslation.length()>vlmin) ||  (mRotation.length()>vrmin)) )
-        {
-                setChanged();
-                notifyObservers2();     
-        }
     }
     
     /**
      * Execute a cognitive step for Ernest.
      */
-    public int[] stepErnest(boolean status)
+    private int[][] sense(boolean status)
     {
         if (m_tracer != null)
                 m_tracer.startNewEvent(m_counter);
 
         // See the environment
         // 12 visual pixels * 8 visual info + 1 miscelaneous + 3 tactile
-        int [][] matrix = new int[Ernest.RESOLUTION_RETINA][8 + 1 + 3];
+        int [][] matrix = new int[Ernest.RESOLUTION_RETINA][8 + 1 + 1];
         Pair<Integer, Color>[] eyeFixation = null;
         eyeFixation = getRetina(mOrientation.z);
         
         for (int i = 0; i < Ernest.RESOLUTION_RETINA; i++)
         {
-                matrix[i][0] = eyeFixation[i].mLeft;
-                matrix[i][1] = eyeFixation[i].mRight.getRed();
-                matrix[i][2] = eyeFixation[i].mRight.getGreen();
-                matrix[i][3] = eyeFixation[i].mRight.getBlue();
-                // The second row is the place where Ernest is standing
-                matrix[i][4] = 0;
-                matrix[i][5] = m_env.m_blocks[Math.round(mPosition.x)][Math.round(mPosition.y)].seeBlock().getRed();
-                matrix[i][6] = m_env.m_blocks[Math.round(mPosition.x)][Math.round(mPosition.y)].seeBlock().getGreen();
-                matrix[i][7] = m_env.m_blocks[Math.round(mPosition.x)][Math.round(mPosition.y)].seeBlock().getBlue();
+            matrix[i][0] = eyeFixation[i].mLeft;
+            matrix[i][1] = eyeFixation[i].mRight.getRed();
+            matrix[i][2] = eyeFixation[i].mRight.getGreen();
+            matrix[i][3] = eyeFixation[i].mRight.getBlue();
+            // The second row is the place where Ernest is standing
+            matrix[i][4] = 0;
+            matrix[i][5] = m_env.m_blocks[Math.round(mPosition.x)][Math.round(mPosition.y)].seeBlock().getRed();
+            matrix[i][6] = m_env.m_blocks[Math.round(mPosition.x)][Math.round(mPosition.y)].seeBlock().getGreen();
+            matrix[i][7] = m_env.m_blocks[Math.round(mPosition.x)][Math.round(mPosition.y)].seeBlock().getBlue();
         }
         
         // Taste 
@@ -175,12 +182,57 @@ public class Ernest110Model extends ErnestModel
         
         int [] somatoMap = somatoMap();
         for (int i = 0; i < 9; i++)
-                        matrix[i][9] = somatoMap[i];
+                matrix[i][9] = somatoMap[i];
         
-        // Circadian (information on day or night)
-        
-        matrix[2][8] = (isNight() ? 1 : 0);             
+        return matrix;
+    }
+    
+    /**
+     * Execute a cognitive step for Ernest.
+     */
+    public int[] stepErnest(boolean status)
+    {
+        if (m_tracer != null)
+                m_tracer.startNewEvent(m_counter);
 
+        // See the environment
+        // 12 visual pixels * 8 visual info + 1 miscelaneous + 3 tactile
+        int [][] matrix = new int[Ernest.RESOLUTION_RETINA][8 + 1 + 1];
+        Pair<Integer, Color>[] eyeFixation = null;
+        eyeFixation = getRetina(mOrientation.z);
+        
+        for (int i = 0; i < Ernest.RESOLUTION_RETINA; i++)
+        {
+            matrix[i][0] = eyeFixation[i].mLeft;
+            matrix[i][1] = eyeFixation[i].mRight.getRed();
+            matrix[i][2] = eyeFixation[i].mRight.getGreen();
+            matrix[i][3] = eyeFixation[i].mRight.getBlue();
+            // The second row is the place where Ernest is standing
+            matrix[i][4] = 0;
+            matrix[i][5] = m_env.m_blocks[Math.round(mPosition.x)][Math.round(mPosition.y)].seeBlock().getRed();
+            matrix[i][6] = m_env.m_blocks[Math.round(mPosition.x)][Math.round(mPosition.y)].seeBlock().getGreen();
+            matrix[i][7] = m_env.m_blocks[Math.round(mPosition.x)][Math.round(mPosition.y)].seeBlock().getBlue();
+        }
+        
+        // Taste 
+        
+        matrix[0][8] = taste();
+        
+        // Kinematic (simulates sensors of body action) 
+        
+        if (m_schema.equals(">"))
+                matrix[1][8] = (status ? Ernest.STIMULATION_KINEMATIC_FORWARD : Ernest.STIMULATION_KINEMATIC_BUMP);
+        else if (m_schema.equals("^"))
+                matrix[1][8] = (status ? Ernest.STIMULATION_KINEMATIC_LEFT_EMPTY : Ernest.STIMULATION_KINEMATIC_LEFT_WALL);
+        else if (m_schema.equals("v"))
+                matrix[1][8] = (status ? Ernest.STIMULATION_KINEMATIC_RIGHT_EMPTY : Ernest.STIMULATION_KINEMATIC_RIGHT_WALL);
+        
+        // Tactile
+        
+        int [] somatoMap = somatoMap();
+        for (int i = 0; i < 9; i++)
+                matrix[i][9] = somatoMap[i];
+        
         return m_ernest.step(matrix);
     }
     
@@ -190,41 +242,35 @@ public class Ernest110Model extends ErnestModel
      */
     public boolean enactSchema(int[] schema)
     {
-        //m_schema = schema;
-        m_schema = Character.toString((char)schema[0]);
-        int impulsion = schema[1];
-
-        // A new interaction cycle is starting
-        m_counter++;
-        System.out.println("Agent #"+ident+", Step #" + m_counter + "=======");
-        
-        boolean status = true;
-        
-        if (m_schema.equals(""))
-        {
-                setChanged();
-                notifyObservers2();                     
-                sleep(200);
-                status = true;
-        }
-        else if (m_schema.equals("v"))
-                mRotation.add(new Vector3f(0, 0, - impulsion / 1000f));
-                //mRotation.add(new Vector3f(0, 0, - ROTATION_IMPULSION));
-        else if (m_schema.equals("^"))
-                mRotation.add(new Vector3f(0, 0, impulsion / 1000f));
-        else if (m_schema.equals(">"))
-                mTranslation.add(new Vector3f(impulsion / 1000f, 0, 0));
-                //mTranslation.add(new Vector3f(TRANSLATION_IMPULSION, 0, 0));
-
-        // Trace the environmental data
-        if (m_tracer != null)
-        {
-                Object environment = m_tracer.newEvent("environment", "position", m_counter);
-                m_tracer.addSubelement(environment, "x", mPosition.x + "");
-                m_tracer.addSubelement(environment, "y", mPosition.y + "");
-                m_tracer.addSubelement(environment,"orientation", mOrientation.z + "");
-        }               
-        return status;
+    	if (schema[0] != 0)
+    	{
+	        //m_schema = schema;
+	        m_schema = Character.toString((char)schema[0]);
+	        int impulsion = schema[1];
+	
+	        // A new interaction cycle is starting
+	        m_counter++;
+	        System.out.println("Agent #"+ident+", Step #" + m_counter + "=======");
+	        
+	        if (schema[0] == 'v')
+	        	mRotation.add(new Vector3f(0, 0, - impulsion / 1000f));
+	            //mRotation.add(new Vector3f(0, 0, - ROTATION_IMPULSION));
+	        else if (schema[0] == '^')
+	        	mRotation.add(new Vector3f(0, 0, impulsion / 1000f));
+	        else if (schema[0] == '>')
+	            mTranslation.add(new Vector3f(impulsion / 1000f, 0, 0));
+	            //mTranslation.add(new Vector3f(TRANSLATION_IMPULSION, 0, 0));
+	
+	        // Trace the environmental data
+	        if (m_tracer != null)
+	        {
+	                Object environment = m_tracer.newEvent("environment", "position", m_counter);
+	                m_tracer.addSubelement(environment, "x", mPosition.x + "");
+	                m_tracer.addSubelement(environment, "y", mPosition.y + "");
+	                m_tracer.addSubelement(environment,"orientation", mOrientation.z + "");
+	        }               
+    	}
+        return true;
     }
 
     /**
@@ -254,22 +300,6 @@ public class Ernest110Model extends ErnestModel
 //			SoundManager.cuddle.play();
 
 		return taste;
-
-    	
-    	
-//        // Taste before sucking
-//        //int taste = getDirty(m_x,m_y); 
-//        
-//        int stimulation = ((m_env.isFood(mPosition.x,mPosition.y)) ? Ernest.STIMULATION_GUSTATORY_FISH : Ernest.STIMULATION_GUSTATORY_NOTHING);
-//        
-//        // Sucking water or food if any
-//        // TODO: only suck water when thirsty and food when hungry.
-//        //if (taste == DIRTY)
-//
-//        if (m_env.isFood(mPosition.x,mPosition.y))
-//                suck();
-//
-//        return stimulation;
     }
     
     /**
@@ -284,8 +314,14 @@ public class Ernest110Model extends ErnestModel
         
         mPosition.set(localToParentRef(mTranslation));
         mOrientation.z += mRotation.z;
-        if (mOrientation.z < - Math.PI) mOrientation.z += 2 * Math.PI;
-        if (mOrientation.z > Math.PI) mOrientation.z -= 2 * Math.PI;
+        if (mOrientation.z < - Math.PI) 
+        {
+        	mOrientation.z += 2 * Math.PI;
+        }
+        if (mOrientation.z > Math.PI) 
+        {
+        	mOrientation.z -= 2 * Math.PI;
+        }
         
         // Bumping ====
 
@@ -294,72 +330,72 @@ public class Ernest110Model extends ErnestModel
         point.scaleAdd(HBradius, mPosition);
         if (!affordWalk(point))
         {
-                if (mOrientation.z > (float)Math.PI/4 && mOrientation.z < 3*(float)Math.PI/4)
-                        // It counts as a bump only if the angle is closer to perpendicular plus or minus PI/4
-                        status = false;
-                mPosition.y = Math.round(point.y) - 0.5f - HBradius;
+            if (mOrientation.z > (float)Math.PI/4 && mOrientation.z < 3*(float)Math.PI/4)
+                // It counts as a bump only if the angle is closer to perpendicular plus or minus PI/4
+                status = false;
+            mPosition.y = Math.round(point.y) - 0.5f - HBradius;
         }
         // Stay away from east wall
         point = new Vector3f(DIRECTION_EAST);
         point.scaleAdd(HBradius, mPosition);
         if (!affordWalk(point))
         {
-                if (mOrientation.z > - (float)Math.PI/4 && mOrientation.z < (float)Math.PI/4) 
-                        status = false;
-                mPosition.x = Math.round(point.x) - 0.5f - HBradius;
+            if (mOrientation.z > - (float)Math.PI/4 && mOrientation.z < (float)Math.PI/4) 
+                status = false;
+            mPosition.x = Math.round(point.x) - 0.5f - HBradius;
         }
         // Stay away from south wall
         point = new Vector3f(DIRECTION_SOUTH);
         point.scaleAdd(HBradius, mPosition);
         if (!affordWalk(point))
         {
-                if (mOrientation.z < - (float)Math.PI/4 && mOrientation.z > - 3 *(float)Math.PI/4)
-                        status = false;
-                mPosition.y = Math.round(point.y) + 0.5f + HBradius;
+            if (mOrientation.z < - (float)Math.PI/4 && mOrientation.z > - 3 *(float)Math.PI/4)
+                status = false;
+            mPosition.y = Math.round(point.y) + 0.5f + HBradius;
         }
         // Stay away from west wall
         point = new Vector3f(DIRECTION_WEST);
         point.scaleAdd(HBradius, mPosition);
         if (!affordWalk(point))
         {
-                if (mOrientation.z > 3*(float)Math.PI/4 || mOrientation.z < - 3*(float)Math.PI/4)
-                        status = false;
-                mPosition.x = Math.round(point.x) + 0.5f + HBradius;
+            if (mOrientation.z > 3*(float)Math.PI/4 || mOrientation.z < - 3*(float)Math.PI/4)
+                status = false;
+            mPosition.x = Math.round(point.x) + 0.5f + HBradius;
         }
         // Stay away from ahead left wall
         Vector3f localPoint = new Vector3f(DIRECTION_AHEAD_LEFT);
         localPoint.scale(HBradius);
         point = localToParentRef(localPoint);
         if (!affordWalk(point))
-                keepDistance(mPosition, cellCenter(point), HBradius + .5f);
-        
+            keepDistance(mPosition, cellCenter(point), HBradius + .5f);
+    
         // Stay away from Ahead right wall
         localPoint = new Vector3f(DIRECTION_AHEAD_RIGHT);
         localPoint.scale(HBradius);
         point = localToParentRef(localPoint);
         if (!affordWalk(point))
-                keepDistance(mPosition, cellCenter(point), HBradius + .5f);
+            keepDistance(mPosition, cellCenter(point), HBradius + .5f);
         
         // Northeast
         point = new Vector3f(DIRECTION_NORTHEAST);
         point.scaleAdd(HBradius, mPosition);
         if (!affordWalk(point))
-                keepDistance(mPosition, cellCenter(point), HBradius + .5f);
+            keepDistance(mPosition, cellCenter(point), HBradius + .5f);
         // Southeast
         point = new Vector3f(DIRECTION_SOUTHEAST);
         point.scaleAdd(HBradius, mPosition);
         if (!affordWalk(point))
-                keepDistance(mPosition, cellCenter(point), HBradius + .5f);
+            keepDistance(mPosition, cellCenter(point), HBradius + .5f);
         // Southwest
         point = new Vector3f(DIRECTION_SOUTHWEST);
         point.scaleAdd(HBradius, mPosition);
         if (!affordWalk(point))
-                keepDistance(mPosition, cellCenter(point), HBradius + .5f);
+            keepDistance(mPosition, cellCenter(point), HBradius + .5f);
         // Northwest
         point = new Vector3f(DIRECTION_NORTHWEST);
         point.scaleAdd(HBradius, mPosition);
         if (!affordWalk(point))
-                keepDistance(mPosition, cellCenter(point), HBradius + .5f);
+            keepDistance(mPosition, cellCenter(point), HBradius + .5f);
 
         // Stay away from agent ahead
         localPoint = new Vector3f(DIRECTION_AHEAD);
@@ -367,10 +403,10 @@ public class Ernest110Model extends ErnestModel
         point = localToParentRef(localPoint);
         if (affordCuddle(point))
         {
-                keepDistance(mPosition, entityCenter(point), 2 * HBradius ); // Allow some overlap
-                if (!mCuddled)
-                        mTranslation.scale(.5f); // slowing down makes it look more like cuddling.
-                setCuddled(true);
+            keepDistance(mPosition, entityCenter(point), 2 * HBradius ); // Allow some overlap
+            if (!mCuddled)
+                mTranslation.scale(.5f); // slowing down makes it look more like cuddling.
+            setCuddled(true);
         }
         
         // Apply friction to the speed vectors
@@ -403,38 +439,38 @@ public class Ernest110Model extends ErnestModel
         Pair<Integer, Color>[] eyeFixation = null;
         Color[] pixelColor = new Color[Ernest.RESOLUTION_RETINA];
         for (int i = 0; i < Ernest.RESOLUTION_RETINA; i++)
-                pixelColor[i] = UNANIMATED_COLOR;
+            pixelColor[i] = UNANIMATED_COLOR;
         
         // body Color
         
         Color[][] somatoMapColor = new Color[3][3];
         for (int i = 0; i < 3; i++)
-                for (int j = 0; j < 3; j++)
-                        somatoMapColor[i][j] = UNANIMATED_COLOR;
+            for (int j = 0; j < 3; j++)
+                somatoMapColor[i][j] = UNANIMATED_COLOR;
         
         // Animate Ernest when he is alive
 
         if (m_ernest != null)
         {
-                // Eye color
-                eyeFixation = getRetina(mOrientation.z);
-                //eyeFixation=rendu(false);
-                for (int i = 0; i < Ernest.RESOLUTION_RETINA; i++)
-                {
-                        pixelColor[i] = eyeFixation[i].mRight;
-                }
-                
-                // Somatomap color
-                int [] somatoMap = somatoMap();
-                somatoMapColor[2][2] = new Color(somatoMap[0]);
-                somatoMapColor[2][1] = new Color(somatoMap[1]);
-                somatoMapColor[2][0] = new Color(somatoMap[2]);
-                somatoMapColor[1][0] = new Color(somatoMap[3]);
-                somatoMapColor[0][0] = new Color(somatoMap[4]);
-                somatoMapColor[0][1] = new Color(somatoMap[5]);
-                somatoMapColor[0][2] = new Color(somatoMap[6]);
-                somatoMapColor[1][2] = new Color(somatoMap[7]);
-                somatoMapColor[1][1] = new Color(somatoMap[8]);
+            // Eye color
+            eyeFixation = getRetina(mOrientation.z);
+            //eyeFixation=rendu(false);
+            for (int i = 0; i < Ernest.RESOLUTION_RETINA; i++)
+            {
+                pixelColor[i] = eyeFixation[i].mRight;
+            }
+            
+            // Somatomap color
+            int [] somatoMap = somatoMap();
+            somatoMapColor[2][2] = new Color(somatoMap[0]);
+            somatoMapColor[2][1] = new Color(somatoMap[1]);
+            somatoMapColor[2][0] = new Color(somatoMap[2]);
+            somatoMapColor[1][0] = new Color(somatoMap[3]);
+            somatoMapColor[0][0] = new Color(somatoMap[4]);
+            somatoMapColor[0][1] = new Color(somatoMap[5]);
+            somatoMapColor[0][2] = new Color(somatoMap[6]);
+            somatoMapColor[1][2] = new Color(somatoMap[7]);
+            somatoMapColor[1][1] = new Color(somatoMap[8]);
         }
         
         // The shark body
@@ -445,7 +481,7 @@ public class Ernest110Model extends ErnestModel
         
         Arc2D.Double pixelIn = new Arc2D.Double(-20, -20, 40, 40,0, 180 / Ernest.RESOLUTION_RETINA + 1, Arc2D.PIE);
         
-        // The somatomap
+        // The tactile matrix
         
         Area[][] somatoMap = new Area[3][3];
         somatoMap[0][0] = new Area(new Rectangle2D.Double(-49, -47, 42, 40));
@@ -493,9 +529,9 @@ public class Ernest110Model extends ErnestModel
         g2d.setTransform(RetinaReference);
         for (int i = 0; i < Ernest.RESOLUTION_RETINA; i++)
         {
-                g2d.setColor(pixelColor[i]);
-                g2d.fill(pixelIn);
-                g2d.transform(transformSegment);
+            g2d.setColor(pixelColor[i]);
+            g2d.fill(pixelIn);
+            g2d.transform(transformSegment);
         }
     }
 
@@ -534,5 +570,4 @@ public class Ernest110Model extends ErnestModel
         
         return shark;
     }
-
 }

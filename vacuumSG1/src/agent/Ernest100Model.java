@@ -217,7 +217,7 @@ public class Ernest100Model extends ErnestModel
 		float vrmin=0.002f;
 		
 		if ( !((mTranslation.length()>vlmin) ||  (mRotation.length()>vrmin)) ){
-			intention = stepErnest(status);
+			int[] intention = stepErnest(status);
 			enactSchema(intention);
 		}
 
