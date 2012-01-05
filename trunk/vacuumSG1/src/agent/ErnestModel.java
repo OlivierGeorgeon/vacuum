@@ -29,7 +29,7 @@ public class ErnestModel extends Model
 	public static int ACTION_LEFT = 1;
 	public static int ACTION_RIGHT = 2;
 	
-	protected int[] intention;
+	//protected int[] intention;
 	protected boolean status;
 	
 	public boolean isStep=false;
@@ -100,8 +100,9 @@ public class ErnestModel extends Model
 	 * Update the agent when the environment is refreshed.
 	 * (not necessarily a cognitive step for the agent).
 	 */
-	public void update(){
-		intention = stepErnest(status);
+	public void update()
+	{
+		int[] intention = stepErnest(status);
 		status = enactSchema(intention);
 	}
 	
