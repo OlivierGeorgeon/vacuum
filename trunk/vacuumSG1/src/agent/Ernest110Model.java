@@ -39,7 +39,10 @@ public class Ernest110Model extends ErnestModel
     
     private boolean tempo=true;
     private int lastAction;
-    private boolean status;
+    
+    private boolean m_bump = false;
+    private boolean m_eat = false;
+    private boolean m_cuddle = false;
     
     private Vector3f mPreviousPosition = new Vector3f(mPosition);
     
@@ -58,10 +61,6 @@ public class Ernest110Model extends ErnestModel
     {
         // Initialize the model
         super.init(w,h);
-//              setEyeAngle(Math.PI/4);
-//              setOrientationStep(5);
-        
-        status=true;
 
         setChanged();
         notifyObservers2();                                     
@@ -116,9 +115,8 @@ public class Ernest110Model extends ErnestModel
      */
     public void update()
     {
-        float vlmin = .05f; // 0.1f;
-        float vrmin = .05f; // 0.002f;
-        
+    	// The movement since the last update
+    	
         Vector3f speed = new Vector3f(mPosition);
         speed.sub(mPreviousPosition);
         int v1 = (int)(speed.length() * 1000);
@@ -127,21 +125,24 @@ public class Ernest110Model extends ErnestModel
         
         mPreviousPosition.set(mPosition);
 
-		int[][] sense = sense(status);
+        // The current perception
+        
+		int[][] sense = sense();
 		sense[2][8] = v1;
 		sense[3][8] = t;
 		sense[4][8] = v2;
+		
 		int[] intention = m_ernest.update(sense);
 		
 		enactSchema(intention);
 
-        status = anim();
+        anim();
     }
     
     /**
      * Execute a cognitive step for Ernest.
      */
-    private int[][] sense(boolean status)
+    private int[][] sense()
     {
         if (m_tracer != null)
                 m_tracer.startNewEvent(m_counter);
@@ -167,16 +168,20 @@ public class Ernest110Model extends ErnestModel
         
         // Taste 
         
-        matrix[0][8] = taste();
+        matrix[0][8] = Ernest.STIMULATION_GUSTATORY_NOTHING;
+        if (m_eat)
+            matrix[0][8] = Ernest.STIMULATION_GUSTATORY_FISH;
+        if (m_cuddle)
+            matrix[0][8] = Ernest.STIMULATION_GUSTATORY_CUDDLE;
         
         // Kinematic (simulates sensors of body action) 
         
         if (m_schema.equals(">"))
-                matrix[1][8] = (status ? Ernest.STIMULATION_KINEMATIC_FORWARD : Ernest.STIMULATION_KINEMATIC_BUMP);
-        else if (m_schema.equals("^"))
-                matrix[1][8] = (status ? Ernest.STIMULATION_KINEMATIC_LEFT_EMPTY : Ernest.STIMULATION_KINEMATIC_LEFT_WALL);
-        else if (m_schema.equals("v"))
-                matrix[1][8] = (status ? Ernest.STIMULATION_KINEMATIC_RIGHT_EMPTY : Ernest.STIMULATION_KINEMATIC_RIGHT_WALL);
+                matrix[1][8] = (!m_bump ? Ernest.STIMULATION_KINEMATIC_FORWARD : Ernest.STIMULATION_KINEMATIC_BUMP);
+//        else if (m_schema.equals("^"))
+//                matrix[1][8] = (!m_bump ? Ernest.STIMULATION_KINEMATIC_LEFT_EMPTY : Ernest.STIMULATION_KINEMATIC_LEFT_WALL);
+//        else if (m_schema.equals("v"))
+//                matrix[1][8] = (!m_bump ? Ernest.STIMULATION_KINEMATIC_RIGHT_EMPTY : Ernest.STIMULATION_KINEMATIC_RIGHT_WALL);
         
         // Tactile
         
@@ -188,62 +193,18 @@ public class Ernest110Model extends ErnestModel
     }
     
     /**
-     * Execute a cognitive step for Ernest.
-     */
-    public int[] stepErnest(boolean status)
-    {
-        if (m_tracer != null)
-                m_tracer.startNewEvent(m_counter);
-
-        // See the environment
-        // 12 visual pixels * 8 visual info + 1 miscelaneous + 3 tactile
-        int [][] matrix = new int[Ernest.RESOLUTION_RETINA][8 + 1 + 1];
-        Pair<Integer, Color>[] eyeFixation = null;
-        eyeFixation = getRetina(mOrientation.z);
-        
-        for (int i = 0; i < Ernest.RESOLUTION_RETINA; i++)
-        {
-            matrix[i][0] = eyeFixation[i].mLeft;
-            matrix[i][1] = eyeFixation[i].mRight.getRed();
-            matrix[i][2] = eyeFixation[i].mRight.getGreen();
-            matrix[i][3] = eyeFixation[i].mRight.getBlue();
-            // The second row is the place where Ernest is standing
-            matrix[i][4] = 0;
-            matrix[i][5] = m_env.m_blocks[Math.round(mPosition.x)][Math.round(mPosition.y)].seeBlock().getRed();
-            matrix[i][6] = m_env.m_blocks[Math.round(mPosition.x)][Math.round(mPosition.y)].seeBlock().getGreen();
-            matrix[i][7] = m_env.m_blocks[Math.round(mPosition.x)][Math.round(mPosition.y)].seeBlock().getBlue();
-        }
-        
-        // Taste 
-        
-        matrix[0][8] = taste();
-        
-        // Kinematic (simulates sensors of body action) 
-        
-        if (m_schema.equals(">"))
-                matrix[1][8] = (status ? Ernest.STIMULATION_KINEMATIC_FORWARD : Ernest.STIMULATION_KINEMATIC_BUMP);
-        else if (m_schema.equals("^"))
-                matrix[1][8] = (status ? Ernest.STIMULATION_KINEMATIC_LEFT_EMPTY : Ernest.STIMULATION_KINEMATIC_LEFT_WALL);
-        else if (m_schema.equals("v"))
-                matrix[1][8] = (status ? Ernest.STIMULATION_KINEMATIC_RIGHT_EMPTY : Ernest.STIMULATION_KINEMATIC_RIGHT_WALL);
-        
-        // Tactile
-        
-        int [] somatoMap = somatoMap();
-        for (int i = 0; i < 9; i++)
-                matrix[i][9] = somatoMap[i];
-        
-        return m_ernest.step(matrix);
-    }
-    
-    /**
      * Enact the primitive schema chosen by Ernest.
      * @return binary feedback. 
      */
-    public boolean enactSchema(int[] schema)
+    private void enactSchema(int[] schema)
     {
     	if (schema[0] != 0)
     	{
+    		
+    		m_bump = false;
+    		m_eat = false;
+    		m_cuddle = false;
+    		
 	        //m_schema = schema;
 	        m_schema = Character.toString((char)schema[0]);
 	        int impulsion = schema[1];
@@ -254,74 +215,37 @@ public class Ernest110Model extends ErnestModel
 	        
 	        if (schema[0] == 'v')
 	        	mRotation.add(new Vector3f(0, 0, - impulsion / 1000f));
-	            //mRotation.add(new Vector3f(0, 0, - ROTATION_IMPULSION));
 	        else if (schema[0] == '^')
 	        	mRotation.add(new Vector3f(0, 0, impulsion / 1000f));
 	        else if (schema[0] == '>')
 	            mTranslation.add(new Vector3f(impulsion / 1000f, 0, 0));
-	            //mTranslation.add(new Vector3f(TRANSLATION_IMPULSION, 0, 0));
 	
 	        // Trace the environmental data
 	        if (m_tracer != null)
 	        {
-	                Object environment = m_tracer.newEvent("environment", "position", m_counter);
-	                m_tracer.addSubelement(environment, "x", mPosition.x + "");
-	                m_tracer.addSubelement(environment, "y", mPosition.y + "");
-	                m_tracer.addSubelement(environment,"orientation", mOrientation.z + "");
+				Object environment = m_tracer.newEvent("environment", "position", m_counter);
+				m_tracer.addSubelement(environment, "x", mPosition.x + "");
+				m_tracer.addSubelement(environment, "y", mPosition.y + "");
+				m_tracer.addSubelement(environment,"orientation", mOrientation.z + "");
 	        }               
     	}
-        return true;
     }
 
-    /**
-     * Taste the square where Ernest is. 
-     * Suck the square if it is food or water. 
-     * @return 0 if nothing, 1 if water, 2 if food. 
-     */
-    private int taste()
-    {
-		int taste = Ernest.STIMULATION_GUSTATORY_NOTHING;
-		Vector3f point = new Vector3f(DIRECTION_AHEAD);
-		point.scale(TACTILE_RADIUS);
-
-		// Sucking water or food if any
-		if (affordEat(mPosition)) 
-		{
-			suck();
-			taste = Ernest.STIMULATION_GUSTATORY_FISH;
-		}
-		// if no food then check for cuddle
-		else if (affordCuddle(localToParentRef(point))) // mCuddled
-		{
-			taste = Ernest.STIMULATION_GUSTATORY_CUDDLE;
-		}
-//		else if (affordCuddle(localToParentRef(DIRECTION_AHEAD_RIGHT)) ||
-//				affordCuddle(localToParentRef(DIRECTION_AHEAD_LEFT)))
-//			SoundManager.cuddle.play();
-
-		return taste;
-    }
-    
     /**
      * Perform an action in the environment 
      * @param act the action to perform
      * @return true if bump, false if not bump. 
      */
-    private boolean anim()
+    private void anim()
     {
         boolean status = true;
         float HBradius = BOUNDING_RADIUS;  // radius of Ernest hitbox 
         
         mPosition.set(localToParentRef(mTranslation));
         mOrientation.z += mRotation.z;
-        if (mOrientation.z < - Math.PI) 
-        {
-        	mOrientation.z += 2 * Math.PI;
-        }
-        if (mOrientation.z > Math.PI) 
-        {
-        	mOrientation.z -= 2 * Math.PI;
-        }
+        
+        if (mOrientation.z < - Math.PI) mOrientation.z += 2 * Math.PI;
+        if (mOrientation.z > Math.PI)   mOrientation.z -= 2 * Math.PI;
         
         // Bumping ====
 
@@ -397,16 +321,23 @@ public class Ernest110Model extends ErnestModel
         if (!affordWalk(point))
             keepDistance(mPosition, cellCenter(point), HBradius + .5f);
 
-        // Stay away from agent ahead
+        // Eat
+		if (affordEat(mPosition)) 
+		{
+			m_eat = true;
+			suck();
+		}
+        
+        // Cuddle the agent ahead
         localPoint = new Vector3f(DIRECTION_AHEAD);
         localPoint.scale(HBradius);
         point = localToParentRef(localPoint);
         if (affordCuddle(point))
         {
-            keepDistance(mPosition, entityCenter(point), 2 * HBradius ); // Allow some overlap
-            if (!mCuddled)
+            keepDistance(mPosition, entityCenter(point), 2 * HBradius );
+            if (!m_cuddle)
                 mTranslation.scale(.5f); // slowing down makes it look more like cuddling.
-            setCuddled(true);
+            m_cuddle = true;
         }
         
         // Apply friction to the speed vectors
@@ -415,7 +346,8 @@ public class Ernest110Model extends ErnestModel
         
         mainFrame.drawGrid();
         
-        return status;
+        if (!status)
+        	m_bump = true;
     }
 
     /**
@@ -424,7 +356,6 @@ public class Ernest110Model extends ErnestModel
      */
     public void paintAgent(Graphics2D g2d,int x,int y,double sx,double sy)
     {
-        
         // The orientation
 
         AffineTransform orientation = new AffineTransform();
@@ -432,7 +363,6 @@ public class Ernest110Model extends ErnestModel
         orientation.rotate(-mOrientation.z+Math.PI/2);
         orientation.scale(sx,sy);
         g2d.transform(orientation);
-        //AffineTransform bodyReference = g2d.getTransform();
 
         // Eye Colors
         

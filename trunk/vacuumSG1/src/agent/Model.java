@@ -126,13 +126,8 @@ public class Model extends Observable
 	private int m_informationY = 100;
 	protected int m_counter = 0;
 
-	protected boolean mCuddled = false;
-	
 	// A single agent in the environment.
-	//protected float m_x;
-	//protected float m_y;
 	public String m_schema = "";
-	
 	
 	/** The Cartesian position of Ernest. ((0,0) is bottom-left corner)*/
 	protected Vector3f mPosition = new Vector3f();
@@ -271,7 +266,6 @@ public class Model extends Observable
 		return 	(m_env.m_blocks[Math.round(pos.x)][Math.round(pos.y)].isVisible()); 		
 	}
 
-	
     /**
      * @param pos The position to test in cartesian coordinates.
      * @return true if this position is an agent. 
@@ -284,11 +278,6 @@ public class Model extends Observable
                     return false;
             else
                     return true;
-    }
-    
-    protected void setCuddled(boolean cuddle)
-    {
-            mCuddled = cuddle;
     }
     
     protected Vector3f entityCenter(Vector3f pos) 
