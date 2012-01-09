@@ -75,9 +75,8 @@ public class ErnestModel extends Model
 	final protected Vector3f DIRECTION_WEST = new Vector3f(-1, 0, 0);
 	final protected Vector3f DIRECTION_NORTHWEST = new Vector3f(-1, 1, 0);
 
-	
-
-	public ErnestModel(int i) {
+	public ErnestModel(int i) 
+	{
 		super(i);
 	}
 	
@@ -157,6 +156,7 @@ public class ErnestModel extends Model
 		}
 		return retina;
 	}
+	
 	/**
 	 * Scan an arc from Ernest's viewpoint, starting from the initial angle position and going through the angular span.
 	 * Stop scanning at the first singularity found.
@@ -181,6 +181,7 @@ public class ErnestModel extends Model
 			return Pair.create(Ernest.INFINITE, WALL_COLOR);
 		return eyeFixation;
 	}
+	
 	/**
 	 * Scan the squares that are on a ray from a viewpoint to a target square
 	 *  http://playtechs.blogspot.com/2007/03/raytracing-on-grid.html 

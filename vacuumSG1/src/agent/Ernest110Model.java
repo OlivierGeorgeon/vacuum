@@ -37,14 +37,14 @@ public class Ernest110Model extends ErnestModel
 
     private static Color UNANIMATED_COLOR = Color.GRAY;
     
-    private boolean tempo=true;
-    private int lastAction;
-    
     private boolean m_bump = false;
     private boolean m_eat = false;
     private boolean m_cuddle = false;
     
     private Vector3f mPreviousPosition = new Vector3f(mPosition);
+    
+    Color[] pixelColor = new Color[Ernest.RESOLUTION_RETINA];
+    Color[][] somatoMapColor = new Color[3][3];
     
     /**
      * @param i The agent's numerical id. 
@@ -61,6 +61,14 @@ public class Ernest110Model extends ErnestModel
     {
         // Initialize the model
         super.init(w,h);
+        
+        // Initialize Ernest's colors 
+        for (int i = 0; i < Ernest.RESOLUTION_RETINA; i++)
+            pixelColor[i] = UNANIMATED_COLOR;
+        
+        for (int i = 0; i < 3; i++)
+            for (int j = 0; j < 3; j++)
+                somatoMapColor[i][j] = UNANIMATED_COLOR;
 
         setChanged();
         notifyObservers2();                                     
@@ -140,14 +148,15 @@ public class Ernest110Model extends ErnestModel
     }
     
     /**
-     * Execute a cognitive step for Ernest.
+     * Sense the environment.
      */
     private int[][] sense()
     {
         if (m_tracer != null)
                 m_tracer.startNewEvent(m_counter);
 
-        // See the environment
+        // See the environment ===
+
         // 12 visual pixels * 8 visual info + 1 miscelaneous + 1 tactile
         int [][] matrix = new int[Ernest.RESOLUTION_RETINA][8 + 1 + 1];
         Pair<Integer, Color>[] eyeFixation = null;
@@ -164,9 +173,12 @@ public class Ernest110Model extends ErnestModel
             matrix[i][5] = m_env.m_blocks[Math.round(mPosition.x)][Math.round(mPosition.y)].seeBlock().getRed();
             matrix[i][6] = m_env.m_blocks[Math.round(mPosition.x)][Math.round(mPosition.y)].seeBlock().getGreen();
             matrix[i][7] = m_env.m_blocks[Math.round(mPosition.x)][Math.round(mPosition.y)].seeBlock().getBlue();
+            
+            // For display
+            pixelColor[i] = eyeFixation[i].mRight;
         }
         
-        // Taste 
+        // Taste ===
         
         matrix[0][8] = Ernest.STIMULATION_GUSTATORY_NOTHING;
         if (m_eat)
@@ -174,7 +186,7 @@ public class Ernest110Model extends ErnestModel
         if (m_cuddle)
             matrix[0][8] = Ernest.STIMULATION_GUSTATORY_CUDDLE;
         
-        // Kinematic (simulates sensors of body action) 
+        // Kinematic (simulates sensors of body action) ===
         
         if (m_schema.equals(">"))
                 matrix[1][8] = (!m_bump ? Ernest.STIMULATION_KINEMATIC_FORWARD : Ernest.STIMULATION_KINEMATIC_BUMP);
@@ -183,18 +195,28 @@ public class Ernest110Model extends ErnestModel
 //        else if (m_schema.equals("v"))
 //                matrix[1][8] = (!m_bump ? Ernest.STIMULATION_KINEMATIC_RIGHT_EMPTY : Ernest.STIMULATION_KINEMATIC_RIGHT_WALL);
         
-        // Tactile
+        // Tactile ===
         
         int [] somatoMap = somatoMap();
         for (int i = 0; i < 9; i++)
-                matrix[i][9] = somatoMap[i];
+        	matrix[i][9] = somatoMap[i];
         
+        // For display
+        somatoMapColor[2][2] = new Color(somatoMap[0]);
+        somatoMapColor[2][1] = new Color(somatoMap[1]);
+        somatoMapColor[2][0] = new Color(somatoMap[2]);
+        somatoMapColor[1][0] = new Color(somatoMap[3]);
+        somatoMapColor[0][0] = new Color(somatoMap[4]);
+        somatoMapColor[0][1] = new Color(somatoMap[5]);
+        somatoMapColor[0][2] = new Color(somatoMap[6]);
+        somatoMapColor[1][2] = new Color(somatoMap[7]);
+        somatoMapColor[1][1] = new Color(somatoMap[8]);
+
         return matrix;
     }
     
     /**
      * Enact the primitive schema chosen by Ernest.
-     * @return binary feedback. 
      */
     private void enactSchema(int[] schema)
     {
@@ -214,11 +236,11 @@ public class Ernest110Model extends ErnestModel
 	        System.out.println("Agent #"+ident+", Step #" + m_counter + "=======");
 	        
 	        if (schema[0] == 'v')
-	        	mRotation.add(new Vector3f(0, 0, - impulsion / 1000f));
+	        	mRotation.add(new Vector3f(0, 0, (float) - impulsion / Ernest.INT_FACTOR));
 	        else if (schema[0] == '^')
-	        	mRotation.add(new Vector3f(0, 0, impulsion / 1000f));
+	        	mRotation.add(new Vector3f(0, 0, (float) impulsion / Ernest.INT_FACTOR));
 	        else if (schema[0] == '>')
-	            mTranslation.add(new Vector3f(impulsion / 1000f, 0, 0));
+	            mTranslation.add(new Vector3f((float) impulsion / Ernest.INT_FACTOR, 0, 0));
 	
 	        // Trace the environmental data
 	        if (m_tracer != null)
@@ -232,9 +254,7 @@ public class Ernest110Model extends ErnestModel
     }
 
     /**
-     * Perform an action in the environment 
-     * @param act the action to perform
-     * @return true if bump, false if not bump. 
+     * Animate the agent in the environment 
      */
     private void anim()
     {
@@ -364,45 +384,6 @@ public class Ernest110Model extends ErnestModel
         orientation.scale(sx,sy);
         g2d.transform(orientation);
 
-        // Eye Colors
-        
-        Pair<Integer, Color>[] eyeFixation = null;
-        Color[] pixelColor = new Color[Ernest.RESOLUTION_RETINA];
-        for (int i = 0; i < Ernest.RESOLUTION_RETINA; i++)
-            pixelColor[i] = UNANIMATED_COLOR;
-        
-        // body Color
-        
-        Color[][] somatoMapColor = new Color[3][3];
-        for (int i = 0; i < 3; i++)
-            for (int j = 0; j < 3; j++)
-                somatoMapColor[i][j] = UNANIMATED_COLOR;
-        
-        // Animate Ernest when he is alive
-
-        if (m_ernest != null)
-        {
-            // Eye color
-            eyeFixation = getRetina(mOrientation.z);
-            //eyeFixation=rendu(false);
-            for (int i = 0; i < Ernest.RESOLUTION_RETINA; i++)
-            {
-                pixelColor[i] = eyeFixation[i].mRight;
-            }
-            
-            // Somatomap color
-            int [] somatoMap = somatoMap();
-            somatoMapColor[2][2] = new Color(somatoMap[0]);
-            somatoMapColor[2][1] = new Color(somatoMap[1]);
-            somatoMapColor[2][0] = new Color(somatoMap[2]);
-            somatoMapColor[1][0] = new Color(somatoMap[3]);
-            somatoMapColor[0][0] = new Color(somatoMap[4]);
-            somatoMapColor[0][1] = new Color(somatoMap[5]);
-            somatoMapColor[0][2] = new Color(somatoMap[6]);
-            somatoMapColor[1][2] = new Color(somatoMap[7]);
-            somatoMapColor[1][1] = new Color(somatoMap[8]);
-        }
-        
         // The shark body
 
         Area shark = shark();

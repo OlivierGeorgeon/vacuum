@@ -1,4 +1,6 @@
 package agent;
+
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -204,8 +206,6 @@ public class Environment extends Observable {
 			m_modelList.get(i).step=true;
 	}
 
-	
-	
 	public void setEventThread(Runnable t)
 	{ m_eventThread = t; }
 
@@ -217,6 +217,23 @@ public class Environment extends Observable {
 	}
 	public boolean isAlga(float x, float y){ 
 		return 	(m_blocks[Math.round(x)][Math.round(y)].isAlga()); 
+	}
+	public boolean isAgent(float x, float y)
+	{
+		for (Model agent : m_modelList)
+		{
+			
+			
+		
+//		// Agent blocks
+//		Iterator<String> iterator = mEntityList.keySet().iterator();
+//	    while (iterator.hasNext()) {
+//	    	IEntity entity = mEntityList.get(iterator.next());
+//	    	if (entity.isInCell(i, j, k) && !entity.getName().equals(name)) 
+//	    		blockID = Block.agent.getBlockID();
+//	    }
+		}
+		return false;
 	}
 	
 	/**
