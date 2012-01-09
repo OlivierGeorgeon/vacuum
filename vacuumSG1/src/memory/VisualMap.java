@@ -17,6 +17,8 @@ public class VisualMap {
 	public float[][] potentialMapOld;
 	public int[][] timerMap;
 	
+	public int lastAction;
+	
 	public ArrayList<float[][]> speedDirection;
 	public ArrayList<int[][]> speedDirectionConfidence;
 	public ArrayList<float[][]> speedDirectionX;
@@ -135,7 +137,6 @@ public class VisualMap {
 			}
 		}
 		
-		
 		for (int i=0;i<mapSize;i++){
 			for (int j=0;j<mapSize;j++){
 				
@@ -176,6 +177,7 @@ public class VisualMap {
 			for (int j=0;j<mapSize;j++){
 				for (int k=0;k<10;k++){
 					chargeMap0[i][j][k]=chargeMap1[i][j][k];
+					chargeMap1[i][j][k]=0;
 				}
 				chargeTestMap[i][j]=false;
 			}
@@ -496,6 +498,19 @@ public class VisualMap {
 			}
 		}
 		
+		
+		if (act!=lastAction){
+			for (int i=0;i<mapSizeTheta;i++){
+				for (int j=0;j<mapSizeR;j++){
+					timerMap[i][j]=0;
+				}
+			}
+			lastAction=act;
+		}
+		
+		
+		/*
+		// direction map
 		float sumX=0;
 		float sumY=0;
 		for (int i=5;i<180;i+=5){
@@ -506,7 +521,7 @@ public class VisualMap {
 
 					for (int i2=-2;i2<=2;i2++){
 						for (int j2=-2;j2<=2;j2++){
-							if (i!=0 && j!=0){
+							if (i2!=0 && j2!=0){
 								if (timerMap[i+i2][j+j2]>0){
 									speedDirection.get(act)[i+i2][j+j2]= 
 										( speedDirection.get(act)[i+i2][j+j2]*(float)speedDirectionConfidence.get(act)[i+i2][j+j2] + 1 )
@@ -545,7 +560,7 @@ public class VisualMap {
 				speedDirectionX2.get(act)[i][j]=sumX/8;
 				speedDirectionY2.get(act)[i][j]=sumY/8;
 			}
-		}
+		}/**/
 		
 		/*
 		// compute flow

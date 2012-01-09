@@ -35,7 +35,7 @@ public class VisualMapPanel extends JPanel{
 			for (int j=0;j<100;j++){
 				// draw charge map
 				//g.setColor(new Color(Math.min(1,vmap.potentialMap[i][j]),1-Math.min(1,vmap.potentialMap[i][j]),0));
-				//g.setColor(new Color((int)vmap.timerMap[i][j]*10,(20-(int)vmap.timerMap[i][j])*10,0));
+				g.setColor(new Color((int)vmap.timerMap[i][j]*10,(20-(int)vmap.timerMap[i][j])*10,0));
 				/*
 				if (i!=0 && j!=0 && i%5==0 && j%5==0) g.setColor(Color.blue);
 				else{
@@ -43,7 +43,7 @@ public class VisualMapPanel extends JPanel{
 						g.setColor(new Color(vmap.speedDirection.get(0)[i][j],1-vmap.speedDirection.get(0)[i][j],0));
 					}
 					else g.setColor(Color.green);
-				}*/
+				} /* */
 				
 				//if (vmap.confidenceMap[i][j]>=5) g.setColor(vmap.colorMap[i][j]);
 				//else g.setColor(Color.black);
@@ -66,6 +66,8 @@ public class VisualMapPanel extends JPanel{
 				
 				//g.fillRect(10+ i*width, 10+ (100-j)*width, width*2*2, width*2*2);
 				
+				
+				/*// direction maps
 				if (vmap.speedDirection.size()>0){
 					g.setColor(Color.black);
 					if (i!=0 && j!=0 && i%5==0 && j%5==0){
@@ -82,7 +84,7 @@ public class VisualMapPanel extends JPanel{
 								   i*width+(int)(50*vmap.speedDirectionX2.get(1)[i][j]),
 								   400+j*width+(int)(50*vmap.speedDirectionY2.get(1)[i][j]) );
 					}
-				}
+				}/**/
 			}
 		}/* */
 		

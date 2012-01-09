@@ -2,6 +2,11 @@ package agent;
 
 import javax.vecmath.Vector3f;
 
+import memory.ColliculusFrame;
+import memory.TactileMapFrame;
+import memory.VisualMapFrame;
+import memory110.SpaceMemoryFrame;
+
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -16,8 +21,10 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
+import java.util.List;
 
 import ernest.*;
+import spas.IPlace;
 import tracing.*;
 import utils.Pair;
 
@@ -40,6 +47,9 @@ public class Ernest110Model extends ErnestModel
     private boolean m_bump = false;
     private boolean m_eat = false;
     private boolean m_cuddle = false;
+    
+    public SpaceMemoryFrame m_SpaceMemory;
+    public List<IPlace> placeList;
     
     private Vector3f mPreviousPosition = new Vector3f(mPosition);
     
@@ -71,7 +81,10 @@ public class Ernest110Model extends ErnestModel
                 somatoMapColor[i][j] = UNANIMATED_COLOR;
 
         setChanged();
-        notifyObservers2();                                     
+        notifyObservers2();  
+        
+        m_SpaceMemory=new SpaceMemoryFrame();
+        placeList=new ArrayList<IPlace>();
     }
 
     /**
@@ -92,8 +105,8 @@ public class Ernest110Model extends ErnestModel
         
         // Only trace the first agent.
         
-        if (ident == 1)
-        	m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","h-yXVWrEwtYclxuPQUlmTOXprcFzol");
+        //if (ident == 1)
+        //	m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","h-yXVWrEwtYclxuPQUlmTOXprcFzol");
                         
         // Initialize the Ernest === 
         
@@ -117,6 +130,32 @@ public class Ernest110Model extends ErnestModel
     {
     }
 
+    
+    
+	public void setDisplay(){
+		
+		//////////////////////
+		int size=m_env.frameList.size();
+		int i=0;
+		boolean found=false; 
+		
+		System.out.println("list1 "+m_env.frameList.size());
+		
+		while (i<size && !found){
+			System.out.println(m_env.frameList.get(i).getClass().getName());
+			if (m_env.frameList.get(i).getClass().getName().equals("memory110.SpaceMemoryFrame")) found=true;
+			i++;
+		}
+		if (!found){
+			m_env.frameList.add(m_SpaceMemory);
+		}
+		else{
+			m_env.frameList.set(i-1, m_SpaceMemory);
+		}
+	}
+    
+    
+    
     /**
      * Update the agent when the environment is refreshed.
      * (not necessarily a cognitive step for the agent).
@@ -143,7 +182,16 @@ public class Ernest110Model extends ErnestModel
 		int[] intention = m_ernest.update(sense);
 		
 		enactSchema(intention);
+		
+		for (int i=0;i<m_env.frameList.size();i++){
+			if (m_env.frameList.get(i).getClass().getName().equals("memory110.SpaceMemoryFrame")){
+				m_SpaceMemory.update( (ArrayList<IPlace>) getPlaceList() );
+				m_SpaceMemory.repaint();
+			}
 
+			
+		}
+		
         anim();
     }
     
