@@ -115,23 +115,23 @@ public class Ernest110Model extends ErnestModel
      */
     public void update()
     {
-    	// The movement since the last update
+
+    	// Sense the environment on each update.
+		int[][] sense = sense();
+    	
+    	// The movement since the last update.
     	
         Vector3f speed = new Vector3f(mPosition);
         speed.sub(mPreviousPosition);
-        int v1 = (int)(speed.length() * 1000);
-        int v2 = (int)(mTranslation.length() * 1000);
-        int t = (int)(mRotation.z * 1000); // TODO take non voluntary rotation into account.
+        sense[2][8] = (int)(speed.x * Ernest.INT_FACTOR);
+        sense[3][8] = (int)(speed.y * Ernest.INT_FACTOR);
+        sense[4][8] = (int)(mRotation.z * Ernest.INT_FACTOR); // TODO take involuntary rotation into account.
+        sense[5][8] = (int)(mTranslation.length() * Ernest.INT_FACTOR);
         
         mPreviousPosition.set(mPosition);
 
-        // The current perception
+        // Update Ernest.
         
-		int[][] sense = sense();
-		sense[2][8] = v1;
-		sense[3][8] = t;
-		sense[4][8] = v2;
-		
 		int[] intention = m_ernest.update(sense);
 		
 		enactSchema(intention);
@@ -148,7 +148,7 @@ public class Ernest110Model extends ErnestModel
                 m_tracer.startNewEvent(m_counter);
 
         // See the environment
-        // 12 visual pixels * 8 visual info + 1 miscelaneous + 3 tactile
+        // 12 visual pixels * 8 visual info + 1 miscelaneous + 1 tactile
         int [][] matrix = new int[Ernest.RESOLUTION_RETINA][8 + 1 + 1];
         Pair<Integer, Color>[] eyeFixation = null;
         eyeFixation = getRetina(mOrientation.z);

@@ -245,7 +245,7 @@ public class ErnestModel extends Model
 	    	Color bgc = m_env.m_blocks[i][j].seeBlock();
 	    	if (m_env.isWall(i,j) || m_env.isFood(i,j) || m_env.isAlga(i,j))
 	    	{
-		    		int dist = (int)Math.sqrt(((i-x0)*(i-x0) + (j-y0)*(j-y0)) * 100);
+		    		int dist = (int)Math.sqrt(((i-x0)*(i-x0) + (j-y0)*(j-y0)) * Ernest.INT_FACTOR);
 		    		return Pair.create(dist, bgc);
     		}
 
