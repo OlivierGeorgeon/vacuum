@@ -85,6 +85,7 @@ public class Model extends Observable
 	//public static final Color WATER_COLOR = new Color(0,0,255); // Color.getHSBColor(1/3f, 1f, 0.5f)
 	public static final Color FOOD_COLOR  = new Color(227, 124, 255); // Color.getHSBColor(1/3f, 1f, 0.5f)
 	public static final Color THIRSTY_HUNGRY_COLOR = new Color(190, 126, 255);
+	public static final Color AGENT_COLOR  = new Color(160, 160, 160); // #A0A0A0
 
 	public static final int INIT_W         = 4;
 	public static final int INIT_H         = 4;
@@ -459,6 +460,14 @@ public class Model extends Observable
 		prefs.putInt(PREF_DIRTY, m_dirtyCount);
 		prefs.putInt(PREF_DELAY, m_delay);
 		prefs.putBoolean(PREF_SPEAKALOUD, m_bSpeakAloud);
+	}
+
+	public boolean isInCell(int i, int j)
+	{
+		if (i == Math.round(mPosition.x) && j == Math.round(mPosition.y))
+			return true;
+		else
+			return false;
 	}
 
 	protected void notifyObservers2()

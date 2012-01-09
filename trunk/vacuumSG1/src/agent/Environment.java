@@ -218,22 +218,13 @@ public class Environment extends Observable {
 	public boolean isAlga(float x, float y){ 
 		return 	(m_blocks[Math.round(x)][Math.round(y)].isAlga()); 
 	}
-	public boolean isAgent(float x, float y)
+	public boolean isAgent(float x, float y, String name)
 	{
-		for (Model agent : m_modelList)
-		{
-			
-			
-		
-//		// Agent blocks
-//		Iterator<String> iterator = mEntityList.keySet().iterator();
-//	    while (iterator.hasNext()) {
-//	    	IEntity entity = mEntityList.get(iterator.next());
-//	    	if (entity.isInCell(i, j, k) && !entity.getName().equals(name)) 
-//	    		blockID = Block.agent.getBlockID();
-//	    }
-		}
-		return false;
+		for (ErnestModel agent : m_modelList)
+			if (agent.isInCell(Math.round(x), Math.round(y)) && !name.equals(agent.getName())) 
+				return true;
+				
+		return false;			
 	}
 	
 	/**
