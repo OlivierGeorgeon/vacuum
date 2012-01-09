@@ -9,12 +9,14 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Arc2D;
 import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Vector3f;
 
 import ernest.*;
 import utils.Pair;
+import spas.IPlace;
 import tracing.*;
 
 /**************************************
@@ -348,5 +350,7 @@ public class ErnestModel extends Model
 		}
 	}
 	
-	
+	public List<IPlace> getPlaceList(){
+		return m_ernest.getPlaceList();
+	}
 }

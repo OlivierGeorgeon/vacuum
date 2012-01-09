@@ -40,7 +40,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
     private static Environment m_environment;
     public static ArrayList<ErnestModel> m_modelList;
     
-    private static int version;
+    public static int version;
 	
 	private HelpFrames m_Helpframe;
 	private ErnestView m_ernest;
