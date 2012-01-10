@@ -14,6 +14,8 @@ import java.util.List;
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Vector3f;
 
+import memory.Colliculus;
+
 import ernest.*;
 import utils.Pair;
 import spas.IPlace;
@@ -76,6 +78,9 @@ public class ErnestModel extends Model
 	final protected Vector3f DIRECTION_SOUTHWEST = new Vector3f(-1, -1, 0);
 	final protected Vector3f DIRECTION_WEST = new Vector3f(-1, 0, 0);
 	final protected Vector3f DIRECTION_NORTHWEST = new Vector3f(-1, 1, 0);
+	
+	public Colliculus colliculus;
+	public int lastAction;
 
 	public ErnestModel(int i) 
 	{
@@ -352,5 +357,716 @@ public class ErnestModel extends Model
 	
 	public List<IPlace> getPlaceList(){
 		return m_ernest.getPlaceList();
+	}
+	
+	
+	//******************************************
+	////////////////////////////////////////////
+	//******************************************
+	protected EyeFixation[] rendu(boolean sensor,float speed){
+		double[] rv    = new double[360];          // visual distance vector (absolute orientation)
+		double[] rv2   = new double[360];          // visual distance vector (agent orientation)
+		double[] rt    = new double[360];          // tactile distance vector (absolute orientation)
+		double[] rt2   = new double[360];          // tactile distance vector (agent orientation)
+		
+		double[] zVMap = new double[360];          // visual  Z-Map
+		double[] zTMap = new double[360];          // tactile Z-Map
+		
+		Color[] colorMap =new Color[360];          // color vector (absolute orientation)
+		Color[] colorMap2=new Color[360];          // color vector (agent orientation)
+		int[] tactileMap =new int[360];            // tactile property vector (absolute orientation)
+		int[] tactileMap2=new int[360];            // tactile property vector (agent orientation)
+		
+		int[] cornerV = new int[360];              // visual corner vector
+		int[] cornerV2= new int[360];
+		int[] cornerT = new int[360];              // tactile corner vector
+		int[] cornerT2= new int[360];
+		
+		EyeFixation[] retina= new EyeFixation[Ernest.RESOLUTION_RETINA];
+		
+		double d=0;
+		double d1,d2,d3,d4;
+		double a1,a2,a3,a4;
+		
+		double imin,iplus,jmin,jplus;
+		double imin2,jmin2;
+		
+		int Im_x=Math.round(mPosition.x);
+		int Im_y=Math.round(mPosition.y);
+		
+		
+		// reset vectors
+		for (int i=0;i<360;i++){
+			zVMap[i]=1000;
+			zTMap[i]=1000;
+			rv[i]=200;
+			rt[i]=200;
+			colorMap[i]=new Color(0,0,0);
+			tactileMap[i]=0;
+		}
+		
+		int sight=20;                                              // maximum distance
+		int orientationDeg= (int)(mOrientation.z * 180 / Math.PI);
+		
+		// the area around the agent is divided into five parts
+		// 4 4 4 4 5 1 1 1 1
+		// 4 4 4 4 5 1 1 1 1
+		// 4 4 4 4 5 1 1 1 1
+		// 3 3 3 3 A 1 1 1 1
+		// 3 3 3 3 2 2 2 2 2
+		// 3 3 3 3 2 2 2 2 2
+		// 3 3 3 3 2 2 2 2 2
+
+		
+		for (int i=0;i<sight;i++){
+			for (int j=0;j<sight;j++){
+				
+				// (1) cells on the top right side
+				if ( (i>0)&& (Im_x+i<m_w) && (Im_y+j<m_h) ){
+					if (!m_env.isEmpty(Im_x+i,Im_y+j) ){
+						// determine color and tactile property of a block
+						Color bgc = m_env.m_blocks[Im_x+i][Im_y+j].seeBlock();
+						int tactile=m_env.m_blocks[Im_x+i][Im_y+j].touchBlock();
+						
+						// determine the position of the three visible points of the block in polar reference
+						imin =(double)i-0.5 - (mPosition.x-Im_x);
+						imin2=imin*imin;
+						iplus=(double)i+0.5 - (mPosition.x-Im_x);
+						jmin =(double)j-0.5 - (mPosition.y-Im_y);
+						jmin2=jmin*jmin;
+						jplus=(double)j+0.5 - (mPosition.y-Im_y);
+						
+						d1=  imin2 + jmin2;
+						d1=Math.sqrt(d1);
+						d2=  imin2 + (jplus*jplus);
+						d2=Math.sqrt(d2);
+						d3=  (iplus*iplus) + jmin2;
+						d3=Math.sqrt(d3);
+						
+						a1=  Math.toDegrees( Math.acos( jmin/d1));
+						a2=  Math.toDegrees( Math.acos( jplus/d2));
+						a3=  Math.toDegrees( Math.acos( jmin/d3));
+						
+						
+				    	int ai1=(int)a1;
+				    	int ai2=(int)a2;
+				    	int ai3=(int)a3;
+						
+				    	// fill the output vectors with the first visible segment
+						for (int k=ai2;k<=ai1;k++){
+							d= d2*10 +   (d1-d2)*10*(k-ai2)/(ai1-ai2);
+							// visual vector if the block is visible
+							if (m_env.m_blocks[Im_x+i][Im_y+j].isVisible()){
+								if (zVMap[k]>d){
+									rv[k]=d;                        // fill Z-Map
+									zVMap[k]= d;
+									colorMap[k]=bgc;
+									cornerV[k]=0;
+									
+									if      (k==ai2){
+										if (Im_y+j+1<m_h){
+											if ( !(m_env.isVisible(Im_x+i,Im_y+j+1))
+										       || (m_env.isVisible(Im_x+i-1,Im_y+j+1)) ){
+											
+												cornerV[k]=1;
+											}
+										}
+									}
+									else if (k==ai1){
+										if (Im_y+j-1>=0){
+											if ( ( m_env.isVisible(Im_x+i-1,Im_y+j) &&  m_env.isVisible(Im_x+i,Im_y+j-1) )
+											   ||(!m_env.isVisible(Im_x+i-1,Im_y+j) && !m_env.isVisible(Im_x+i,Im_y+j-1) ) ){
+											
+												cornerV[k]=2;
+											}
+										}
+									}
+
+								}
+							}
+							// tactile vector
+							if (zTMap[k]>d){
+								rt[k]=d;
+								zTMap[k]= d;
+								tactileMap[k]=tactile;
+								if      (k==ai2) cornerT[k]=1;
+								else if (k==ai1) cornerT[k]=2;
+								else             cornerT[k]=0;
+							}
+						}	
+						// fill the output vectors with the second visible segment
+						for (int k=ai1;k<=ai3;k++){
+							d= d1*10 +   (d3-d1)*10*(k-ai1)/(ai3-ai1);
+							// visual vector if the block is visible
+							if (m_env.m_blocks[Im_x+i][Im_y+j].isVisible()){
+								if (zVMap[k]>d){
+									rv[k]=d;
+									zVMap[k]= d;
+									colorMap[k]=bgc;
+									if      (k==ai1) cornerV[k]=1;
+									else if (k==ai3) cornerV[k]=2;
+									else             cornerV[k]=0;
+									
+									cornerV[k]=0;
+									
+									if      (k==ai1){
+										if (Im_y+j+1<m_h){
+											if ( ( m_env.isVisible(Im_x+i-1,Im_y+j) &&  m_env.isVisible(Im_x+i,Im_y+j-1) )
+											   ||(!m_env.isVisible(Im_x+i-1,Im_y+j) && !m_env.isVisible(Im_x+i,Im_y+j-1) ) ){
+											
+												cornerV[k]=1;
+											}
+										}
+									}
+									else if (k==ai3){
+										if (Im_y+j-1>=0 && Im_x+i+1<m_w){
+											if ( !(m_env.isVisible(Im_x+i+1,Im_y+j))
+											   || (m_env.isVisible(Im_x+i+1,Im_y+j-1)) ){
+											
+												cornerV[k]=2;
+											}
+										}
+									}
+								}
+							}
+							// tactile vector
+							if (zTMap[k]>d){
+								rt[k]=d;
+								zTMap[k]= d;
+								tactileMap[k]=tactile;
+								if      (k==ai1) cornerT[k]=1;
+								else if (k==ai3) cornerT[k]=2;
+								else             cornerT[k]=0;
+							}
+						}
+						
+					}
+				}
+
+				// (2) cells on the bottom right side
+				if ( (j>0) && (Im_x+i<m_w) && (Im_y-j>=0) ){
+					if (!m_env.isEmpty(Im_x+i,Im_y-j) ){
+						Color bgc = m_env.m_blocks[Im_x+i][Im_y-j].seeBlock();
+						int tactile=m_env.m_blocks[Im_x+i][Im_y-j].touchBlock();
+						
+						
+						
+						imin =(double)i-0.5 - (mPosition.x-Im_x);
+						imin2=imin*imin;
+						iplus=(double)i+0.5 - (mPosition.x-Im_x);
+						jmin =(double)j-0.5 + (mPosition.y-Im_y);
+						jmin2=jmin*jmin;
+						jplus=(double)j+0.5 + (mPosition.y-Im_y);
+						
+						d1=  imin2 + jmin2;
+						d1=Math.sqrt(d1);
+						d2=  (iplus*iplus) + jmin2;
+						d2=Math.sqrt(d2);
+						d3=  imin2 + (jplus*jplus);
+						d3=Math.sqrt(d3);
+						
+						a1=  Math.toDegrees( Math.acos( jmin/d1));
+						a2=  Math.toDegrees( Math.acos( jmin/d2));
+						a3=  Math.toDegrees( Math.acos( jplus/d3));
+						
+				    	int ai1,ai2,ai3;
+				    	
+				    	if (i-0.5>=0){
+				    		ai1=180-(int)a1;
+				    		ai3=180-(int)a3;
+				    	}
+				    	else{
+				    		ai1=180+(int)a1;
+				    		ai3=180+(int)a3;
+				    	}
+				    	ai2=180-(int)a2;
+						
+						for (int k=ai2;k<=ai1;k++){
+							d= ( d2*10 +   (d1-d2)*10*(k-ai2)/(ai1-ai2));
+							if (m_env.m_blocks[Im_x+i][Im_y-j].isVisible()){
+								if (zVMap[k]>d){
+									rv[k]=d;
+									zVMap[k]= d;
+									colorMap[k]=bgc;
+									cornerV[k]=0;
+									
+									if      (k==ai2){
+										if (Im_x+i+1<m_w){
+											if ( !(m_env.isVisible(Im_x+i+1,Im_y-j))
+										       || (m_env.isVisible(Im_x+i+1,Im_y-j+1)) ){
+											
+												cornerV[k]=1;
+											}
+										}
+									}
+									else if (k==ai1){
+										if (Im_x+i-1>=0){
+											if ( ( m_env.isVisible(Im_x+i-1,Im_y-j) &&  m_env.isVisible(Im_x+i,Im_y-j+1) )
+											   ||(!m_env.isVisible(Im_x+i-1,Im_y-j) && !m_env.isVisible(Im_x+i,Im_y-j+1) ) ){
+											
+												cornerV[k]=2;
+											}
+										}
+									}
+									
+								}
+							}
+							if (zTMap[k]>d){
+								rt[k]=d;
+								zTMap[k]= d;
+								tactileMap[k]=tactile;
+							
+								if      (k==ai2) cornerT[k]=1;
+								else if (k==ai1) cornerT[k]=2;
+								else             cornerT[k]=0;
+							}
+						}		
+						for (int k=ai1;k<=ai3;k++){
+							d= ( d1*10 +   (d3-d1)*10*(k-ai1)/(ai3-ai1));
+							if (m_env.m_blocks[Im_x+i][Im_y-j].isVisible()){
+								if (zVMap[k]>d){
+									rv[k]=d;
+									zVMap[k]= d;
+									colorMap[k]=bgc;
+									if      (k==ai1) cornerV[k]=1;
+									else if (k==ai3) cornerV[k]=2;
+									else             cornerV[k]=0;
+									
+									cornerV[k]=0;
+									
+									if      (k==ai3){
+										if (Im_y+j-1>=0){
+											if ( !(m_env.isVisible(Im_x+i,Im_y-j-1))
+										       || (m_env.isVisible(Im_x+i-1,Im_y-j-1)) ){
+											
+												cornerV[k]=2;
+											}
+										}
+									}
+									else if (k==ai1){
+										if (Im_y+j-1>=0){
+											if ( ( m_env.isVisible(Im_x+i-1,Im_y-j) &&  m_env.isVisible(Im_x+i,Im_y-j-1) )
+											   ||(!m_env.isVisible(Im_x+i-1,Im_y-j) && !m_env.isVisible(Im_x+i,Im_y-j-1) ) ){
+											
+												cornerV[k]=1;
+											}
+										}
+									}
+								}
+							}
+							if (zTMap[k]>d){
+								rt[k]=d;
+								zTMap[k]= d;
+								tactileMap[k]=tactile;
+							
+								if      (k==ai1) cornerT[k]=1;
+								else if (k==ai3) cornerT[k]=2;
+								else             cornerT[k]=0;
+							}
+						}
+					}
+				}
+				
+				// (3) cells on the bottom left side
+				if ( (i>0) && (Im_x-i>=0) && (Im_y-j>=0) ){
+					if (!m_env.isEmpty(Im_x-i,Im_y-j) ){
+						Color bgc = m_env.m_blocks[Im_x-i][Im_y-j].seeBlock();
+						int tactile=m_env.m_blocks[Im_x-i][Im_y-j].touchBlock();
+						
+						imin =(double)i-0.5 + (mPosition.x-Im_x);
+						imin2=imin*imin;
+						iplus=(double)i+0.5 + (mPosition.x-Im_x);
+						jmin =(double)j-0.5 + (mPosition.y-Im_y);
+						jmin2=jmin*jmin;
+						jplus=(double)j+0.5 + (mPosition.y-Im_y);
+						
+						d1=  imin2 + jmin2;
+						d1=Math.sqrt(d1);
+						d2=  imin2 + (jplus*jplus);
+						d2=Math.sqrt(d2);
+						d3=  (iplus*iplus) + jmin2;
+						d3=Math.sqrt(d3);
+						
+						a1=  Math.toDegrees( Math.acos( jmin/d1));
+						a2=  Math.toDegrees( Math.acos( jplus/d2));
+						a3=  Math.toDegrees( Math.acos( jmin/d3));
+						
+				    	int ai1=180+(int)a1;
+				    	int ai2=180+(int)a2;
+				    	int ai3=180+(int)a3;
+						
+						for (int k=ai2;k<=ai1;k++){
+							d=   d2*10 +   (d1-d2)*10*(k-ai2)/(ai1-ai2);
+							if (m_env.m_blocks[Im_x-i][Im_y-j].isVisible()){
+								if (zVMap[k]>d){
+									rv[k]=d;
+									zVMap[k]=d;
+									colorMap[k]=bgc;
+									cornerV[k]=0;
+									
+									if      (k==ai2){
+										if (Im_x-i-1>=0){
+											if ( !(m_env.isVisible(Im_x-i,Im_y-j-1))
+										       || (m_env.isVisible(Im_x-i+1,Im_y-j-1)) ){
+											
+												cornerV[k]=1;
+											}
+										}
+									}
+									else if (k==ai1){
+										if (Im_y+j+1<m_h){
+											if ( ( m_env.isVisible(Im_x-i,Im_y+j) &&  m_env.isVisible(Im_x-i+1,Im_y-j) )
+											   ||(!m_env.isVisible(Im_x-i,Im_y+j) && !m_env.isVisible(Im_x-i+1,Im_y-j) ) ){
+											
+												cornerV[k]=2;
+											}
+										}
+									}
+								}
+							}
+							if (zTMap[k]>d){
+								rt[k]=d;
+								zTMap[k]=d;
+								tactileMap[k]=tactile;
+								if      (k==ai2) cornerT[k]=1;
+								else if (k==ai1) cornerT[k]=2;
+								else             cornerT[k]=0;
+							}
+						}		
+						for (int k=ai1;k<=ai3;k++){
+							d=  d1*10 +   (d3-d1)*10*(k-ai1)/(ai3-ai1);
+							if (m_env.m_blocks[Im_x-i][Im_y-j].isVisible()){
+								if (zVMap[k]>d){
+									rv[k]=d;
+									zVMap[k]=d;
+									colorMap[k]=bgc;
+									cornerV[k]=0;
+									
+									if      (k==ai3){
+										if (Im_x-i-1>=0){
+											if ( !(m_env.isVisible(Im_x-i-1,Im_y-j))
+										       || (m_env.isVisible(Im_x-i-1,Im_y-j+1)) ){
+											
+												cornerV[k]=2;
+											}
+										}
+									}
+									else if (k==ai1){
+										if (Im_y+j+1<m_h){
+											if ( ( m_env.isVisible(Im_x-i,Im_y+j) &&  m_env.isVisible(Im_x-i+1,Im_y-j) )
+											   ||(!m_env.isVisible(Im_x-i,Im_y+j) && !m_env.isVisible(Im_x-i+1,Im_y-j) ) ){
+											
+												cornerV[k]=1;
+											}
+										}
+									}
+								}
+							}
+							if (zTMap[k]>d){
+								rt[k]=d;
+								zTMap[k]=d;
+								tactileMap[k]=tactile;
+								if      (k==ai1) cornerT[k]=1;
+								else if (k==ai3) cornerT[k]=2;
+								else             cornerT[k]=0;
+							}
+						}
+						
+					}
+				}
+				
+				// (5) cells exactly on the top
+				// In this case, there is only two visible points and one visible segment
+				if ( (j>0) && (i==0) && (Im_y+j<m_h) ){
+					if (!m_env.isEmpty(Im_x-i,Im_y+j) ){
+						Color bgc = m_env.m_blocks[Im_x-i][Im_y+j].seeBlock();
+						int tactile=m_env.m_blocks[Im_x-i][Im_y+j].touchBlock();
+						
+						imin =(double)i-0.5 + (mPosition.x-Im_x);
+						imin2=imin*imin;
+						iplus=(double)i+0.5 + (mPosition.x-Im_x);
+						jmin =(double)j-0.5 - (mPosition.y-Im_y);
+						jmin2=jmin*jmin;
+						
+						d1=  imin2 + jmin2;
+						d1=Math.sqrt(d1);
+						d2=  (iplus*iplus) + jmin2;
+						d2=Math.sqrt(d2);
+						
+						a1=  Math.toDegrees( Math.acos( jmin/d1));
+						a2=  Math.toDegrees( Math.acos( jmin/d2));
+
+						
+						int ai1,ai2;
+						ai1=(int)a1;
+				    	ai2=360-(int)a2;
+				    	if (ai2==360) ai2=359;
+				    	
+				    	int count=0;
+				    	for (int k=ai2;k<360;k++){
+				    		d= d2*10 +   (d1-d2)*10*(k-ai2)/((ai1-ai2+360)%360);
+				    		if (m_env.m_blocks[Im_x-i][Im_y+j].isVisible()){
+				    			if (zVMap[k]>d){
+				    				rv[k]=d;
+				    				zVMap[k]= d;
+				    				colorMap[k]=bgc;
+				    				cornerV[k]=0;
+									
+									if  (k==ai2){
+										if (Im_x-i-1>=0){
+											if ( !(m_env.isVisible(Im_x-i-1,Im_y+j))
+										       || (m_env.isVisible(Im_x-i-1,Im_y+j-1)) ){
+											
+												cornerV[k]=1;
+											}
+										}
+									}
+				    			}
+				    		}
+				    		if (zTMap[k]>d){
+			    				rt[k]=d;
+			    				zTMap[k]= d;
+			    				tactileMap[k]=tactile;
+			    				if      (k==ai2) cornerT[k]=1;
+			    				else             cornerT[k]=0;
+			    			}
+				    		count++;
+				    	}
+				    	for (int k=0;k<=ai1;k++){
+				    		d= d2*10 +   (d1-d2)*10*(k+count)/((ai1-ai2+360)%360);
+				    		if (m_env.m_blocks[Im_x-i][Im_y+j].isVisible()){
+				    			if (zVMap[k]>d){
+				    				rv[k]=d;
+				    				zVMap[k]= d;
+				    				colorMap[k]=bgc;
+				    				cornerV[k]=0;
+									
+									if  (k==ai1){
+										if (Im_x-i+1<m_w){
+											if ( !(m_env.isVisible(Im_x-i+1,Im_y+j))
+										       || (m_env.isVisible(Im_x-i+1,Im_y+j-1)) ){
+											
+												cornerV[k]=1;
+											}
+										}
+									}
+				    			}
+				    		}
+				    		if (zTMap[k]>d){
+			    				rt[k]=d;
+			    				zTMap[k]= d;
+			    				tactileMap[k]=tactile;
+			    				if (k==ai1) cornerT[k]=2;
+			    				else        cornerT[k]=0;	
+			    			}
+				    	}
+					}
+				}
+				
+				// (4) cells on the top left side
+				if ( (j>0) && (i>0) && (Im_x-i>=0) && (Im_y+j<m_h) ){
+					if (!m_env.isEmpty(Im_x-i,Im_y+j) ){
+						Color bgc = m_env.m_blocks[Im_x-i][Im_y+j].seeBlock();
+						int tactile=m_env.m_blocks[Im_x-i][Im_y+j].touchBlock();
+						
+						imin =(double)i-0.5 + (mPosition.x-Im_x);
+						imin2=imin*imin;
+						iplus=(double)i+0.5 + (mPosition.x-Im_x);
+						jmin =(double)j-0.5 - (mPosition.y-Im_y);
+						jmin2=jmin*jmin;
+						jplus=(double)j+0.5 - (mPosition.y-Im_y);
+						
+						d1=  imin2 + jmin2;
+						d1=Math.sqrt(d1);
+						d2=  (iplus*iplus) + jmin2;
+						d2=Math.sqrt(d2);
+						d3=  imin2 + (jplus*jplus);
+						d3=Math.sqrt(d3);
+						
+						a1=  Math.toDegrees( Math.acos( jmin/d1));
+						a2=  Math.toDegrees( Math.acos( jmin/d2));
+						a3=  Math.toDegrees( Math.acos( jplus/d3));
+						
+						int ai1,ai2,ai3;
+						ai1=360-(int)a1;
+						ai3=360-(int)a3;
+						if (ai1==360) ai1=359;
+						if (ai3==360) ai3=359;
+				    	ai2=360-(int)a2;
+						
+				    	for (int k=ai2;k<=ai1;k++){
+				    		d= d2*10 +   (d1-d2)*10*(k-ai2)/(ai1-ai2);
+				    		if (m_env.m_blocks[Im_x-i][Im_y+j].isVisible()){
+				    			if (zVMap[k]>d){
+				    				rv[k]=d;
+				    				zVMap[k]= d;
+				    				colorMap[k]=bgc;
+				    				cornerV[k]=0;
+									
+									if      (k==ai2){
+										if (Im_x-i-1>=0){
+											if ( !(m_env.isVisible(Im_x-i-1,Im_y+j))
+										       || (m_env.isVisible(Im_x-i-1,Im_y+j-1)) ){
+											
+												cornerV[k]=1;
+											}
+										}
+									}
+									else if (k==ai1){
+										if (Im_x-i+1<m_w){
+											if ( ( m_env.isVisible(Im_x-i,Im_y+j-1) &&  m_env.isVisible(Im_x-i+1,Im_y+j) )
+											   ||(!m_env.isVisible(Im_x-i+1,Im_y+j) && !m_env.isVisible(Im_x-i+1,Im_y+j) ) ){
+											
+												cornerV[k]=2;
+											}
+										}
+									}
+				    			}
+				    		}
+				    		if (zTMap[k]>d){
+			    				rt[k]=d;
+			    				zTMap[k]= d;
+			    				tactileMap[k]=tactile;
+			    				if      (k==ai2) cornerT[k]=1;
+			    				else if (k==ai1) cornerT[k]=2;
+			    				else             cornerT[k]=0;
+			    			}
+				    	}		
+				    	for (int k=ai1;k<=ai3;k++){
+				    		d= d1*10 +   (d3-d1)*10*(k-ai1)/(ai3-ai1);
+				    		if (m_env.m_blocks[Im_x-i][Im_y+j].isVisible()){
+				    			if (zVMap[k]>d-0.01){
+				    				rv[k]=d;
+				    				zVMap[k]=d;
+				    				colorMap[k]=bgc;
+				    				cornerV[k]=0;
+									
+									if      (k==ai3){
+										if (Im_y+j+1<m_h){
+											if ( !(m_env.isVisible(Im_x-i,Im_y+j+1))
+										       || (m_env.isVisible(Im_x-i+1,Im_y+j+1)) ){
+											
+												cornerV[k]=2;
+											}
+										}
+									}
+									else if (k==ai1){
+										if (Im_x-i+1<m_w){
+											if ( ( m_env.isVisible(Im_x-i,Im_y+j-1) &&  m_env.isVisible(Im_x-i+1,Im_y+j) )
+											   ||(!m_env.isVisible(Im_x-i,Im_y+j-1) && !m_env.isVisible(Im_x-i+1,Im_y+j) ) ){
+											
+												cornerV[k]=1;
+											}
+										}
+									}
+				    			}
+				    		}
+				    		if (zTMap[k]>d-0.01){
+			    				rt[k]=d;
+			    				zTMap[k]=d;
+			    				tactileMap[k]=tactile;
+			    				if      (k==ai1) cornerT[k]=1;
+			    				else if (k==ai3) cornerT[k]=2;
+			    				else             cornerT[k]=0;
+			    			}
+				    	}
+						
+					}
+				}
+				
+				
+				// agents detection
+				for (int a=0;a<m_env.m_modelList.size();a++){
+					Color bgc = m_env.AGENT;
+					int tactile=m_env.CUDDLE;
+					if (a!=ident){
+						d= (mPosition.x-m_env.m_modelList.get(a).mPosition.x)*(mPosition.x-m_env.m_modelList.get(a).mPosition.x)
+						  +(mPosition.y-m_env.m_modelList.get(a).mPosition.y)*(mPosition.y-m_env.m_modelList.get(a).mPosition.y);
+						d=Math.sqrt(d);
+						
+						int ai1=0;
+						int ai2=0;
+						int ai3=0;
+						int ai4=0;
+						if (mPosition.x-m_env.m_modelList.get(a).mPosition.x<=0){
+							a1=Math.toDegrees( Math.acos( (mPosition.y-m_env.m_modelList.get(a).mPosition.y)/d));
+							ai1=180-(int)a1;
+						}
+						else{
+							a1=Math.toDegrees( Math.acos( (mPosition.y-m_env.m_modelList.get(a).mPosition.y)/d));
+							ai1=(int)a1+180;
+						}
+						
+						a2=Math.atan(0.4/d);
+						a2=Math.toDegrees(a2);
+						
+						ai2= (int)a2;
+						
+						ai3=ai1-ai2+360;
+						ai4=ai1+ai2+360;
+						
+						int ai5=ai4-ai3;
+						
+						for (int k=ai3;k<ai4;k++){
+							if (zVMap[k%360]>d*10){
+								rv[k%360]=d*10 - 2*Math.sin(Math.PI*(k-ai3)/(ai4-ai3));
+								zVMap[k%360]= d*10- 2*Math.sin(Math.PI*(k-ai3)/(ai4-ai3));
+								colorMap[k%360]=bgc;
+							}
+							
+							if (zTMap[k%360]>d*10){
+								rt[k%360]=d*10 - 2*Math.sin(Math.PI*(k-ai3)/(ai4-ai3));
+								zTMap[k%360]= d*10- 2*Math.sin(Math.PI*(k-ai3)/(ai4-ai3));
+								tactileMap[k%360]=m_env.CUDDLE;
+							}
+						}
+						
+						cornerV[ai3%360]=1;
+						cornerV[ai4%360]=2;
+					}
+				}
+				
+				
+			}
+		}
+		
+		
+		// fill the output vectors (agent orientation)
+		for (int i=0;i<360;i++){
+			int offset=(i-orientationDeg+630)%360;
+			rv2[i]= rv[offset];
+			colorMap2[i]=colorMap[offset];
+			cornerV2[i]=cornerV[offset];
+			
+			if (!colorMap[offset].equals(colorMap[(offset-1+360)%360]) ){
+				cornerV2[i]=1;
+			}
+			
+			rt2[i]= rt[offset];
+			tactileMap2[i]=tactileMap[offset];
+			cornerT2[i]=cornerT[offset];
+		}
+		
+		// fill the retina vector
+		for (int i=0;i<Ernest.RESOLUTION_RETINA;i++){
+			retina[Ernest.RESOLUTION_RETINA-i-1]= new EyeFixation();
+			retina[Ernest.RESOLUTION_RETINA-i-1].setColor(colorMap2[(int)(i*180/Ernest.RESOLUTION_RETINA+180/Ernest.RESOLUTION_RETINA/2+90)]);
+			retina[Ernest.RESOLUTION_RETINA-i-1].setDistance((int) rv2[(int)(i*180/Ernest.RESOLUTION_RETINA+180/Ernest.RESOLUTION_RETINA/2+90)]);
+		}
+		
+		// update colliculus
+		if (sensor){
+			colliculus.update(rv2, colorMap2, rt2, tactileMap2, lastAction, speed);
+			//colliculusFrame.saveImage();
+			//m_env.saveImage();
+		}
+		
+		// update display panel
+		if (display){
+			m_env.m_eye.repaint();
+			m_env.m_eye.paint(rv2,colorMap2,cornerV2,rt2,tactileMap2,cornerT2);
+		}
+		
+		return retina;
 	}
 }

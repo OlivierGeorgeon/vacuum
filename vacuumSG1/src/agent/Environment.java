@@ -227,6 +227,14 @@ public class Environment extends Observable {
 		return false;			
 	}
 	
+	public boolean isEmpty(float x, float y){
+		return m_blocks[Math.round(x)][Math.round(y)].isEmpty();
+	}
+	
+	public boolean isVisible(float x, float y){
+		return m_blocks[Math.round(x)][Math.round(y)].isVisible();
+	}
+	
 	/**
 	 * @param pos The position to test in Cartesian coordinates.
 	 * @return true if this position is a wall 

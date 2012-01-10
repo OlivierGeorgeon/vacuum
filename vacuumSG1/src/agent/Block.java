@@ -39,6 +39,10 @@ public class Block {
 		return (touch==Model.SMOOTH);
 	}
 	
+	public boolean isEmpty(){
+		return (touch==Model.EMPTY);
+	}
+	
 	public boolean isWalkthroughable(){
 		return (touch!=Model.HARD);
 	}
