@@ -132,7 +132,6 @@ public class Environment extends Observable {
 	
 	public ArrayList<JFrame> frameList;
 	
-	public EyeView m_eye;
 	
 	public static int SIMULATION_STOP = 0;
 	public static int SIMULATION_RUN  = 1;
@@ -146,7 +145,6 @@ public class Environment extends Observable {
 		identDisplay=0;
 		version=v;
 		frameList=new ArrayList<JFrame>();
-		m_eye=new EyeView();
 		
 
 	}
@@ -263,6 +261,14 @@ public class Environment extends Observable {
 	
 	public boolean isVisible(float x, float y){
 		return m_blocks[Math.round(x)][Math.round(y)].isVisible();
+	}
+	
+	public Color seeBlock(float x, float y){
+		return m_blocks[Math.round(x)][Math.round(y)].seeBlock();
+	}
+	
+	public int touchBlock(float x, float y){
+		return m_blocks[Math.round(x)][Math.round(y)].touchBlock();
 	}
 	
 	/**

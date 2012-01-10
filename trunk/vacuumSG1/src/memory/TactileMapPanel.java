@@ -334,9 +334,10 @@ public class TactileMapPanel extends JPanel{
 			}
 		}*/
 		
-		
+		/*
 		// draw sensor change sequence
 		for (int i=0;i<tmap.resolution*tmap.sensorRes;i++){
+			
 			if (tmap.timerMap[i]==20){
 				sensorSequence[i][index]=new Color( 1f,1f,0);
 			}
@@ -360,6 +361,24 @@ public class TactileMapPanel extends JPanel{
 			g.drawLine(300, index+1, 550, index+1);
 		}/**/
 
+		/*
+		// draw previous state
+		for (int i=0;i<tmap.resolution*tmap.sensorRes;i++){
+			
+			for (int j=0;j<tmap.resolution*tmap.sensorRes;j++){
+				
+				for (int k=0;k<3;k++){
+					for (int l=0;l<50;l++){
+						g.setColor(new Color( Math.max(0, tmap.previousState[i][j][k*50+l]), Math.max(0, -tmap.previousState[i][j][k*50+l]),0));
+						g.fillRect(300+k*20 + (k*50+l)*2, 2+(i*tmap.resolution*tmap.sensorRes+j)+i*2, 2, 1);
+					}
+				}
+				
+			}
+		}/**/
+		
+		
+		
 		index++;
 		if (index>=800) index=0;
 	}

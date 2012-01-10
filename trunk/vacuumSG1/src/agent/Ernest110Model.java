@@ -56,6 +56,9 @@ public class Ernest110Model extends ErnestModel
     Color[] pixelColor = new Color[Ernest.RESOLUTION_RETINA];
     Color[][] somatoMapColor = new Color[3][3];
     
+    
+    private InternalView m_eye;
+    
     /**
      * @param i The agent's numerical id. 
      */
@@ -85,6 +88,8 @@ public class Ernest110Model extends ErnestModel
         
         m_SpaceMemory=new SpaceMemoryFrame();
         placeList=new ArrayList<IPlace>();
+        
+        m_eye=new InternalView();
     }
 
     /**
@@ -152,6 +157,19 @@ public class Ernest110Model extends ErnestModel
 		else{
 			m_env.frameList.set(i-1, m_SpaceMemory);
 		}
+		
+		///////////////////
+		size=m_env.frameList.size();
+		i=0;
+		found=false; 
+		while (i<size && !found){
+			if (m_env.frameList.get(i).getClass().getName().equals("agent.EyeView")) found=true;
+			i++;
+		}
+		
+		if (!found) m_env.frameList.add(new EyeView(m_eye)); 
+		else        ((EyeView) m_env.frameList.get(i-1)).setEye(m_eye);
+		
 	}
     
     
@@ -194,6 +212,7 @@ public class Ernest110Model extends ErnestModel
 			}
 		}
 		
+		rendu();
         anim();
     }
     

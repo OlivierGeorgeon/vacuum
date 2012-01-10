@@ -10,17 +10,20 @@ class EyeView extends JFrame{
 
 	
 	private EyeDisplay ED;
-    public EyeView(){
+    public EyeView(InternalView m_eye){
         
         this.setSize(720, 600);
         this.setLocationRelativeTo(null);               
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
-        ED=new EyeDisplay();
+        ED=new EyeDisplay(m_eye);
         
         this.setVisible(true);           
         this.setContentPane(ED);
 
+    }
+    
+    public void setEye(InternalView eye){
+    	ED.setEye(eye);
     }
     
     public void paint(double[] retine,Color[] colormap,int[] corner,

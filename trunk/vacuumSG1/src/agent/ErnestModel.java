@@ -365,9 +365,17 @@ public class ErnestModel extends Model
 	}
 	
 	
+	
+	
 	//******************************************
 	////////////////////////////////////////////
 	//******************************************
+	
+	protected EyeFixation[] rendu(){
+		return rendu(false,0);
+	}
+	
+	
 	protected EyeFixation[] rendu(boolean sensor,float speed){
 		double[] rv    = new double[360];          // visual distance vector (absolute orientation)
 		double[] rv2   = new double[360];          // visual distance vector (agent orientation)
@@ -411,7 +419,7 @@ public class ErnestModel extends Model
 		}
 		
 		int sight=20;                                              // maximum distance
-		int orientationDeg= (int)(mOrientation.z * 180 / Math.PI);
+		
 		
 		// the area around the agent is divided into five parts
 		// 4 4 4 4 5 1 1 1 1
@@ -430,8 +438,8 @@ public class ErnestModel extends Model
 				if ( (i>0)&& (Im_x+i<m_w) && (Im_y+j<m_h) ){
 					if (!m_env.isEmpty(Im_x+i,Im_y+j) ){
 						// determine color and tactile property of a block
-						Color bgc = m_env.m_blocks[Im_x+i][Im_y+j].seeBlock();
-						int tactile=m_env.m_blocks[Im_x+i][Im_y+j].touchBlock();
+						Color bgc = m_env.seeBlock(Im_x+i,Im_y+j);
+						int tactile=m_env.touchBlock(Im_x+i,Im_y+j);
 						
 						// determine the position of the three visible points of the block in polar reference
 						imin =(double)i-0.5 - (mPosition.x-Im_x);
@@ -461,7 +469,7 @@ public class ErnestModel extends Model
 						for (int k=ai2;k<=ai1;k++){
 							d= d2*10 +   (d1-d2)*10*(k-ai2)/(ai1-ai2);
 							// visual vector if the block is visible
-							if (m_env.m_blocks[Im_x+i][Im_y+j].isVisible()){
+							if (m_env.isVisible(Im_x+i,Im_y+j)){
 								if (zVMap[k]>d){
 									rv[k]=d;                        // fill Z-Map
 									zVMap[k]= d;
@@ -503,7 +511,7 @@ public class ErnestModel extends Model
 						for (int k=ai1;k<=ai3;k++){
 							d= d1*10 +   (d3-d1)*10*(k-ai1)/(ai3-ai1);
 							// visual vector if the block is visible
-							if (m_env.m_blocks[Im_x+i][Im_y+j].isVisible()){
+							if (m_env.isVisible(Im_x+i,Im_y+j)){
 								if (zVMap[k]>d){
 									rv[k]=d;
 									zVMap[k]= d;
@@ -551,8 +559,8 @@ public class ErnestModel extends Model
 				// (2) cells on the bottom right side
 				if ( (j>0) && (Im_x+i<m_w) && (Im_y-j>=0) ){
 					if (!m_env.isEmpty(Im_x+i,Im_y-j) ){
-						Color bgc = m_env.m_blocks[Im_x+i][Im_y-j].seeBlock();
-						int tactile=m_env.m_blocks[Im_x+i][Im_y-j].touchBlock();
+						Color bgc = m_env.seeBlock(Im_x+i,Im_y-j);
+						int tactile=m_env.touchBlock(Im_x+i,Im_y-j);
 						
 						
 						
@@ -588,7 +596,7 @@ public class ErnestModel extends Model
 						
 						for (int k=ai2;k<=ai1;k++){
 							d= ( d2*10 +   (d1-d2)*10*(k-ai2)/(ai1-ai2));
-							if (m_env.m_blocks[Im_x+i][Im_y-j].isVisible()){
+							if (m_env.isVisible(Im_x+i,Im_y-j)){
 								if (zVMap[k]>d){
 									rv[k]=d;
 									zVMap[k]= d;
@@ -628,7 +636,7 @@ public class ErnestModel extends Model
 						}		
 						for (int k=ai1;k<=ai3;k++){
 							d= ( d1*10 +   (d3-d1)*10*(k-ai1)/(ai3-ai1));
-							if (m_env.m_blocks[Im_x+i][Im_y-j].isVisible()){
+							if (m_env.isVisible(Im_x+i,Im_y-j)){
 								if (zVMap[k]>d){
 									rv[k]=d;
 									zVMap[k]= d;
@@ -675,8 +683,8 @@ public class ErnestModel extends Model
 				// (3) cells on the bottom left side
 				if ( (i>0) && (Im_x-i>=0) && (Im_y-j>=0) ){
 					if (!m_env.isEmpty(Im_x-i,Im_y-j) ){
-						Color bgc = m_env.m_blocks[Im_x-i][Im_y-j].seeBlock();
-						int tactile=m_env.m_blocks[Im_x-i][Im_y-j].touchBlock();
+						Color bgc = m_env.seeBlock(Im_x-i,Im_y-j);
+						int tactile=m_env.touchBlock(Im_x-i,Im_y-j);
 						
 						imin =(double)i-0.5 + (mPosition.x-Im_x);
 						imin2=imin*imin;
@@ -702,7 +710,7 @@ public class ErnestModel extends Model
 						
 						for (int k=ai2;k<=ai1;k++){
 							d=   d2*10 +   (d1-d2)*10*(k-ai2)/(ai1-ai2);
-							if (m_env.m_blocks[Im_x-i][Im_y-j].isVisible()){
+							if (m_env.isVisible(Im_x-i,Im_y-j)){
 								if (zVMap[k]>d){
 									rv[k]=d;
 									zVMap[k]=d;
@@ -740,7 +748,7 @@ public class ErnestModel extends Model
 						}		
 						for (int k=ai1;k<=ai3;k++){
 							d=  d1*10 +   (d3-d1)*10*(k-ai1)/(ai3-ai1);
-							if (m_env.m_blocks[Im_x-i][Im_y-j].isVisible()){
+							if (m_env.isVisible(Im_x-i,Im_y-j)){
 								if (zVMap[k]>d){
 									rv[k]=d;
 									zVMap[k]=d;
@@ -784,8 +792,8 @@ public class ErnestModel extends Model
 				// In this case, there is only two visible points and one visible segment
 				if ( (j>0) && (i==0) && (Im_y+j<m_h) ){
 					if (!m_env.isEmpty(Im_x-i,Im_y+j) ){
-						Color bgc = m_env.m_blocks[Im_x-i][Im_y+j].seeBlock();
-						int tactile=m_env.m_blocks[Im_x-i][Im_y+j].touchBlock();
+						Color bgc = m_env.seeBlock(Im_x-i,Im_y+j);
+						int tactile=m_env.touchBlock(Im_x-i,Im_y+j);
 						
 						imin =(double)i-0.5 + (mPosition.x-Im_x);
 						imin2=imin*imin;
@@ -810,7 +818,7 @@ public class ErnestModel extends Model
 				    	int count=0;
 				    	for (int k=ai2;k<360;k++){
 				    		d= d2*10 +   (d1-d2)*10*(k-ai2)/((ai1-ai2+360)%360);
-				    		if (m_env.m_blocks[Im_x-i][Im_y+j].isVisible()){
+				    		if (m_env.isVisible(Im_x-i,Im_y+j)){
 				    			if (zVMap[k]>d){
 				    				rv[k]=d;
 				    				zVMap[k]= d;
@@ -839,7 +847,7 @@ public class ErnestModel extends Model
 				    	}
 				    	for (int k=0;k<=ai1;k++){
 				    		d= d2*10 +   (d1-d2)*10*(k+count)/((ai1-ai2+360)%360);
-				    		if (m_env.m_blocks[Im_x-i][Im_y+j].isVisible()){
+				    		if (m_env.isVisible(Im_x-i,Im_y+j)){
 				    			if (zVMap[k]>d){
 				    				rv[k]=d;
 				    				zVMap[k]= d;
@@ -871,8 +879,8 @@ public class ErnestModel extends Model
 				// (4) cells on the top left side
 				if ( (j>0) && (i>0) && (Im_x-i>=0) && (Im_y+j<m_h) ){
 					if (!m_env.isEmpty(Im_x-i,Im_y+j) ){
-						Color bgc = m_env.m_blocks[Im_x-i][Im_y+j].seeBlock();
-						int tactile=m_env.m_blocks[Im_x-i][Im_y+j].touchBlock();
+						Color bgc = m_env.seeBlock(Im_x-i,Im_y+j);
+						int tactile=m_env.touchBlock(Im_x-i,Im_y+j);
 						
 						imin =(double)i-0.5 + (mPosition.x-Im_x);
 						imin2=imin*imin;
@@ -901,7 +909,7 @@ public class ErnestModel extends Model
 						
 				    	for (int k=ai2;k<=ai1;k++){
 				    		d= d2*10 +   (d1-d2)*10*(k-ai2)/(ai1-ai2);
-				    		if (m_env.m_blocks[Im_x-i][Im_y+j].isVisible()){
+				    		if (m_env.isVisible(Im_x-i,Im_y+j)){
 				    			if (zVMap[k]>d){
 				    				rv[k]=d;
 				    				zVMap[k]= d;
@@ -939,7 +947,7 @@ public class ErnestModel extends Model
 				    	}		
 				    	for (int k=ai1;k<=ai3;k++){
 				    		d= d1*10 +   (d3-d1)*10*(k-ai1)/(ai3-ai1);
-				    		if (m_env.m_blocks[Im_x-i][Im_y+j].isVisible()){
+				    		if (m_env.isVisible(Im_x-i,Im_y+j)){
 				    			if (zVMap[k]>d-0.01){
 				    				rv[k]=d;
 				    				zVMap[k]=d;
@@ -1037,6 +1045,7 @@ public class ErnestModel extends Model
 		
 		
 		// fill the output vectors (agent orientation)
+		int orientationDeg= (int)(mOrientation.z * 180 / Math.PI);
 		for (int i=0;i<360;i++){
 			int offset=(i-orientationDeg+630)%360;
 			rv2[i]= rv[offset];
@@ -1068,8 +1077,14 @@ public class ErnestModel extends Model
 		
 		// update display panel
 		if (display){
-			m_env.m_eye.repaint();
-			m_env.m_eye.paint(rv2,colorMap2,cornerV2,rt2,tactileMap2,cornerT2);
+			int size=m_env.frameList.size();
+			for (int i=0;i<size;i++){
+				if (m_env.frameList.get(i).getClass().getName().equals("agent.EyeView")){
+					m_env.frameList.get(i).repaint();
+					((EyeView)(m_env.frameList.get(i))).paint(rv2,colorMap2,cornerV2,rt2,tactileMap2,cornerT2);
+				}
+			}
+			
 		}
 		
 		return retina;
