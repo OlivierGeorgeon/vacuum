@@ -125,37 +125,11 @@ public class Ernest100Model extends ErnestModel
 		m_ernest.setTracer(m_tracer);
 		m_ernest.setSensorymotorSystem(m_sensorymotorSystem);
 		
-
-
-		// Ernest's inborn primitive interactions
-		
-			//m_ernest.addInteraction(">", " ",   20); // Move
-			//m_ernest.addInteraction(">", "w", -100); // Bump 
-			
-			//m_ernest.addInteraction("^", " ",  -10); // Left toward empty
-			//m_ernest.addInteraction("^", "w",  -20); // Left toward wall
-	
-			//m_ernest.addInteraction("v", " ",  -10); // Right toward empty
-			//m_ernest.addInteraction("v", "w",  -20); // Right toward wall
-			//m_sensorymotorSystem.addPrimitiveAct("^", true,   -50); // Left toward empty
-			//m_sensorymotorSystem.addPrimitiveAct("^", false,  -70); // Left toward wall
-
-			//m_sensorymotorSystem.addPrimitiveAct("v", true,   -50); // Right toward empty
-			//m_sensorymotorSystem.addPrimitiveAct("v", false,  -70); // Right toward wall
-
 		m_ernest.addInteraction(">", " ",   20); // Move
-			
 		m_ernest.addInteraction("^", " ",  -10); // Left toward empty
-	
 		m_ernest.addInteraction("v", " ",  -10); // Right toward empty
-
-//			m_sensorymotorSystem.addPrimitiveAct(">", true,   100); // Move
-//			m_sensorymotorSystem.addPrimitiveAct(">", false, -100); // Bump 
-//			m_sensorymotorSystem.addPrimitiveAct("^", true,   -10); // Left toward empty
-//			m_sensorymotorSystem.addPrimitiveAct("^", false,  -20); // Left toward wall
-//
-//			m_sensorymotorSystem.addPrimitiveAct("v", true,   -10); // Right toward empty
-//			m_sensorymotorSystem.addPrimitiveAct("v", false,  -20); // Right toward wall
+		
+        cognitiveMode = AGENT_RUN;
 
 		System.out.println("Ernest initialized") ;
 	}
@@ -216,16 +190,16 @@ public class Ernest100Model extends ErnestModel
 		float vlmin=0.1f;
 		float vrmin=0.002f;
 		
-		if ( !((mTranslation.length()>vlmin) ||  (mRotation.length()>vrmin)) ){
+		if ( (!((mTranslation.length()>vlmin) ||  (mRotation.length()>vrmin))) && cognitiveMode > 0 )
+		{
 			int[] intention = stepErnest(status);
 			enactSchema(intention);
 		}
 
-		isStep=true;
+		if (cognitiveMode == AGENT_STEP)
+			cognitiveMode = AGENT_STOP;
 		
 		status = impulse(lastAction);
-		
-		if ( !((mTranslation.length()>vlmin) ||  (mRotation.length()>vrmin)) ) isStep=false;
 	}
 	
 	/**
@@ -550,14 +524,15 @@ public class Ernest100Model extends ErnestModel
 						//mPosition.x-=dx2/2;
 						//mPosition.y-=dy2/2;
 							
-						if (m_env.m_modelList.get(a).run || m_env.m_modelList.get(a).step){
+//						if (m_env.m_modelList.get(a).run || m_env.m_modelList.get(a).step)
+						{
 							m_env.m_modelList.get(a).mPosition.x+=dx2/2;
 							m_env.m_modelList.get(a).mPosition.y+=dy2/2;
 						}
-						else{
-							mPosition.x-=dx2/2;
-							mPosition.y-=dy2/2;
-						}
+//						else{
+//							mPosition.x-=dx2/2;
+//							mPosition.y-=dy2/2;
+//						}
 						
 						/*
 						double dx2= Math.cos(-mOrientation.z) - Math.sin(-mOrientation.z);

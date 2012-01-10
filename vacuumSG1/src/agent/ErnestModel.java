@@ -35,9 +35,14 @@ public class ErnestModel extends Model
 	
 	//protected boolean status;
 	
-	public boolean isStep=false;
-	public boolean step=false;
-	public boolean run=true;
+	public static int AGENT_STOP = 0;
+	public static int AGENT_RUN = 1;
+	public static int AGENT_STEP = 2;
+	
+	//public boolean isStep=false;
+	//public boolean step=false;
+	//public boolean run=true;
+	public int cognitiveMode = AGENT_STOP;
 
 	/** The angular field of each eye. */
 	private double m_eyeAngle ;

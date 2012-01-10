@@ -134,6 +134,12 @@ public class Environment extends Observable {
 	
 	public EyeView m_eye;
 	
+	public static int SIMULATION_STOP = 0;
+	public static int SIMULATION_RUN  = 1;
+	public static int SIMULATION_STEP = 2;
+	
+	public int simulationMode = SIMULATION_STOP;
+	
 	public Environment(ArrayList<ErnestModel> list,int v){
 		m_modelList=list;
 		m_mainThread = Thread.currentThread();
@@ -141,6 +147,8 @@ public class Environment extends Observable {
 		version=v;
 		frameList=new ArrayList<JFrame>();
 		m_eye=new EyeView();
+		
+
 	}
 	public void setEnvironnement(EnvironnementPanel env){
 		m_env=env;
@@ -155,12 +163,28 @@ public class Environment extends Observable {
 	 * @author ogeorgeon add wall and internal state panel to the grid
 	 */
 	public void init(int w,int h) throws Exception{
-		int l_dirtyCount = 0;
 		m_w=w;
 		m_h=h;
 		m_anim=new int[w][h];
 		m_blocks=new Block[w][h];
 		
+	}
+	
+	public void initAgents()
+	{
+		for (int i=0;i<m_modelList.size();i++)
+			m_modelList.get(i).initErnest();
+	}
+	
+	public void update()
+	{
+		if (simulationMode > SIMULATION_STOP)
+		{
+			for (int i=0; i < m_modelList.size(); i++)
+				m_modelList.get(i).update();
+		}
+		if (simulationMode == SIMULATION_STEP)
+			simulationMode = SIMULATION_STOP;
 	}
 	
 	public void setDisplay(int i){
@@ -173,38 +197,44 @@ public class Environment extends Observable {
 		}
 	}
 	
-	public void setRun(){
-		for (int i=0;i<m_modelList.size();i++){
-			m_modelList.get(i).run=true;
-		}
+	public void setRun()
+	{
+		simulationMode = SIMULATION_RUN;
+//		for (int i=0;i<m_modelList.size();i++){
+//			m_modelList.get(i).run=true;
+//		}
 	}
 	
-	public void setStop(){
-		for (int i=0;i<m_modelList.size();i++){
-			m_modelList.get(i).run=false;
-		}
+	public void setStop()
+	{
+		simulationMode = SIMULATION_STOP;
+//		for (int i=0;i<m_modelList.size();i++){
+//			m_modelList.get(i).run=false;
+//		}
 	}
 	
-	public void setStep(){
-		for (int i=0;i<m_modelList.size();i++){
-			m_modelList.get(i).step=true;
-		}
+	public void setStep()
+	{
+		simulationMode = SIMULATION_STEP;
+//		for (int i=0;i<m_modelList.size();i++){
+//			m_modelList.get(i).step=true;
+//		}
 	}
 	
-	public void setRun(int i){
-		if (m_modelList.size()>i)
-			m_modelList.get(i).run=true;
-	}
-	
-	public void setStop(int i){
-		if (m_modelList.size()>i)
-			m_modelList.get(i).run=false;
-	}
-	
-	public void setStep(int i){
-		if (m_modelList.size()>i)
-			m_modelList.get(i).step=true;
-	}
+//	public void setRun(int i){
+//		if (m_modelList.size()>i)
+//			m_modelList.get(i).run=true;
+//	}
+//	
+//	public void setStop(int i){
+//		if (m_modelList.size()>i)
+//			m_modelList.get(i).run=false;
+//	}
+//	
+//	public void setStep(int i){
+//		if (m_modelList.size()>i)
+//			m_modelList.get(i).step=true;
+//	}
 
 	public void setEventThread(Runnable t)
 	{ m_eventThread = t; }

@@ -107,6 +107,8 @@ public class Ernest104Model extends ErnestModel
 		m_ernest.addInteraction("v", " ",  -10); // Right toward empty
 		//m_ernest.addInteraction("v", "w",  -20); // Right toward wall
 		
+        cognitiveMode = AGENT_RUN;        
+		
 		System.out.println("Ernest initialized") ;
 	}
 	
@@ -133,7 +135,7 @@ public class Ernest104Model extends ErnestModel
 			enactSchema(intention);
 		}
 
-		isStep=true;
+		//isStep=true;
 		
 		status = impulse(lastAction);
 		
@@ -141,7 +143,7 @@ public class Ernest104Model extends ErnestModel
 		{
 			setChanged();
 			notifyObservers2();	
-			isStep=false;
+			//isStep=false;
 		}
 	}
 	
