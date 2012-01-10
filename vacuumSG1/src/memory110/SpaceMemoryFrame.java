@@ -17,7 +17,7 @@ public class SpaceMemoryFrame extends JFrame{
 	
 	public SpaceMemoryFrame(){
 		this.setTitle("space memory");
-    	this.setSize(800, 800);
+    	this.setSize(500, 500);
     	this.setLocationRelativeTo(null);               
     	this.setVisible(true);
 
