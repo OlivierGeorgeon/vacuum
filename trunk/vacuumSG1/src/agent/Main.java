@@ -20,7 +20,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 	
 	public static JFrame MAIN_WIN;
 
-	private static final String TITLE = "Vacuum-SG";
+	private static String WindowTitle = "Vacuum-SG V";
 
 	private final JMenu m_file 						= new JMenu("File");
 	private final JMenu m_options 					= new JMenu("Options");
@@ -47,8 +47,6 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 
 	private JPanel m_board;
 	
-	private boolean stopAll=true;
-	
 	/////////////////////////////////////////////////////////////////////////////////////////
 	
 	private EnvironnementPanel m_envPanel;
@@ -59,14 +57,14 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 	
 	
 	private final JLabel m_statusBar = new JLabel();
-	private JButton m_run = new JButton("Run");
-	private JButton m_stop = new JButton("Stop");
+	private JButton m_run = new JButton("Play");
+	private JButton m_stop = new JButton("Pause");
 	private JButton m_step = new JButton("Step");
 	private JButton m_reset = new JButton("Reset");
 	
-	private JButton m_arun = new JButton("Agent Run");
-	private JButton m_astop = new JButton("Agent Stop");
-	private JButton m_astep = new JButton("Agent Step");
+	private JButton m_arun = new JButton("Play agent");
+	private JButton m_astop = new JButton("Pause Agent");
+	private JButton m_astep = new JButton("Step Agent");
 	
 	private final javax.swing.Timer m_statusTimer =
 		new javax.swing.Timer(100, new StatusTimerListener());
@@ -95,6 +93,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 			}
 			else version=100;
 		}
+		WindowTitle = WindowTitle + version;
 		
 		m_modelList=new ArrayList<ErnestModel>();
 		m_environment= new Environment(m_modelList,version);
@@ -107,7 +106,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 	 */
 	public Main()
 	{
-		super(TITLE);
+		super(WindowTitle);
 		MAIN_WIN = this;
 		// Retrieve preferences
 		m_environment.initPreferences();
@@ -146,8 +145,8 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		m_reset.setEnabled(true);
 		m_step.setEnabled(true);
 		
-		m_astop.setEnabled(false);
 		m_arun.setEnabled(false);
+		m_astop.setEnabled(true);
 		m_astep.setEnabled(false);
 		
 		m_stop.addActionListener(this);
@@ -406,6 +405,10 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		}	
 		
 		// start simulation
+//		for (int i=0;i<m_modelList.size();i++){
+//		m_modelList.get(i).startAgent();
+//		m_modelList.get(i).initErnest();
+//	}
 		Thread agentThread = null;
 		System.out.println("initialized ") ;
 		m_environment.setStop();
@@ -415,9 +418,6 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 
 	}
 	
-	
-	
-	
 	/**
 	 * Performs actions
 	 */
@@ -425,64 +425,61 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 	{
 		m_modelList.get(0).setEventThread(Thread.currentThread());
 
-		// Run the simulation ******
-		if (e.getSource() == m_run){
+		// Play the simulation ******
+		if (e.getSource() == m_run)
+		{
 			System.out.println("Run Ernest ") ;
 			m_environment.setRun();
 			m_statusBar.setText("Playing");
+			m_run.setEnabled(false);
+			m_stop.setEnabled(true);
 			m_step.setEnabled(false);
-			stopAll=false;
 		}
 		
-		// Run selected agent ******
-		else if (e.getSource() == m_arun){
-			System.out.println("Run Ernest "+ m_environment.identDisplay+" ") ;
-			m_modelList.get(m_environment.identDisplay).run=true;
-			stopAll=false;
-		}
-		
-		// Stop the simulation *****
-		else if (e.getSource() == m_stop){
+		// Pause the simulation *****
+		else if (e.getSource() == m_stop)
+		{
 			m_environment.setStop();
+			m_run.setEnabled(true);
+			m_stop.setEnabled(false);
 			m_step.setEnabled(true);
-			stopAll=true;
-			
 			m_statusBar.setText("Pause");			
 		}
 		
-		// Stop selected agent ******
-		else if (e.getSource() == m_astop){
-			System.out.println("Stop Ernest "+ m_environment.identDisplay+" ") ;
-			m_modelList.get(m_environment.identDisplay).run=false;
-			
-			stopAll=true;
-			for (int i=0;i<m_modelList.size();i++){
-				if (m_modelList.get(i).run) stopAll=false;
-			}
-		}
-		
-		// Run one simulation step *****
-		else if (e.getSource() == m_step){
+		// Step the simulation *****
+		else if (e.getSource() == m_step)
+		{
 			m_environment.setStep();
-			m_environment.setStop();
 			System.out.println("Simulation Step") ;
 			m_statusBar.setText("Simulation Step");
 		}
 		
-		// Run one selected agent step *****
-		else if (e.getSource() == m_astep){
-			m_modelList.get(m_environment.identDisplay).step=true;
-			//m_environment.setStop();
+		// Play the selected agent ******
+		else if (e.getSource() == m_arun)
+		{
+			System.out.println("Run Ernest "+ m_environment.identDisplay+" ") ;
+			m_modelList.get(m_environment.identDisplay).cognitiveMode = ErnestModel.AGENT_RUN;
+		}
+		
+		// Pause the selected agent ******
+		else if (e.getSource() == m_astop)
+		{
+			System.out.println("Stop Ernest "+ m_environment.identDisplay+" ") ;
+			m_modelList.get(m_environment.identDisplay).cognitiveMode = ErnestModel.AGENT_STOP;
+		}
+		
+		// Step the selected agent *****
+		else if (e.getSource() == m_astep)
+		{
+			m_modelList.get(m_environment.identDisplay).cognitiveMode = ErnestModel.AGENT_STEP;
 			System.out.println("Agent "+m_environment.identDisplay+" Step") ;
 			m_statusBar.setText("Agent "+m_environment.identDisplay+" Step");
 		}
-		
 		
 		// Reset the board ******
 		else if (e.getSource() == m_reset){
 			m_statusBar.setText("Ready");
 			m_modelList.get(0).setCounter(0);
-			stopAll=true;
 			try
 			{ 
 				this.init(m_environment.getBoardFileName());
@@ -497,18 +494,17 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 					"Error!", 
 					JOptionPane.ERROR_MESSAGE);
 			}
+			m_run.setEnabled(true);
+			m_stop.setEnabled(false);
 			m_step.setEnabled(false);
 		}
 		
-		// run one agent
-		
-		
-		
-		
+		// Quit
 		else if (e.getSource() == m_exit)
 		{
 			System.exit(0);
 		}
+		
 		// Load Board
 		else if (e.getSource() == m_loadBoard)
 		{
@@ -551,14 +547,10 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 	    }
 		// Save the preferences
 		m_modelList.get(0).putPreferences();
-		
-		
-		// enable or disable buttons
-		m_step.setEnabled(stopAll);
-		m_arun.setEnabled(!m_modelList.get(m_environment.identDisplay).run);
-		m_astop.setEnabled( m_modelList.get(m_environment.identDisplay).run);
-		m_astep.setEnabled(!m_modelList.get(m_environment.identDisplay).run);
-		
+
+		m_arun.setEnabled(m_modelList.get(m_environment.identDisplay).cognitiveMode != ErnestModel.AGENT_RUN);
+		m_astop.setEnabled(m_modelList.get(m_environment.identDisplay).cognitiveMode == ErnestModel.AGENT_RUN);
+		m_astep.setEnabled(m_modelList.get(m_environment.identDisplay).cognitiveMode != ErnestModel.AGENT_RUN);
 	}
 
 	public void update(Observable o, Object arg)
@@ -608,12 +600,13 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 					m_environment.traceUserEvent("add_wall", m_envPanel.m_clickX, m_h-1-m_envPanel.m_clickY);
 				}
 			}
-			else{
+			else
+			{
 				m_environment.setDisplay(id);
 				m_statusBar.setText("Agent "+m_environment.identDisplay);
-				m_arun.setEnabled(!m_modelList.get(m_environment.identDisplay).run);
-				m_astop.setEnabled( m_modelList.get(m_environment.identDisplay).run);
-				m_astep.setEnabled(!m_modelList.get(m_environment.identDisplay).run);
+				m_arun.setEnabled(m_modelList.get(m_environment.identDisplay).cognitiveMode != ErnestModel.AGENT_RUN);
+				m_astop.setEnabled(m_modelList.get(m_environment.identDisplay).cognitiveMode == ErnestModel.AGENT_RUN);
+				m_astep.setEnabled(m_modelList.get(m_environment.identDisplay).cognitiveMode == ErnestModel.AGENT_STOP);
 			}
 		}
 		if (c == 3)
@@ -730,7 +723,8 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		try
 		{
 			if (m_ernest == null)
-				m_ernest = new ErnestView(m_modelList,this);		
+				//m_ernest = new ErnestView(m_modelList,this, m_environment);		
+				m_ernest = new ErnestView(m_environment,this);		
 		}
 		catch (NoClassDefFoundError e)
 		{

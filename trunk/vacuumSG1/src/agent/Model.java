@@ -141,10 +141,6 @@ public class Model extends Observable
 	
 	public Environment m_env;
 
-	// Maik Friedrich
-
-	private boolean m_halt = true;
-
 	private static final Random m_rand = new Random();
 
 	private final Runnable m_thread = new NotifyThread();
@@ -339,8 +335,8 @@ public class Model extends Observable
 	public int getDirtyCount()
 	{ return m_dirtyCount; }
 
-	public boolean isAgentStopped()
-	{ return m_halt; }
+//	public boolean isAgentStopped()
+//	{ return m_halt; }
 
 	public int getDelay()
 	{ return m_delay; }
@@ -410,20 +406,6 @@ public class Model extends Observable
 			return true;
 		}
 		return false;
-	}
-
-	public void haltAgent()
-	{ 
-		m_halt = true; 
-		setChanged();
-		notifyObservers2();
-	}
-
-	public void startAgent()
-	{ 
-		m_halt = false; 
-		setChanged();
-		notifyObservers2();
 	}
 
 	public void setDelay(int delay)

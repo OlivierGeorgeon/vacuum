@@ -120,6 +120,8 @@ public class Ernest110Model extends ErnestModel
         m_ernest.addInteraction("^", " ",  -10); // Left toward empty
         m_ernest.addInteraction("v", " ",  -10); // Right toward empty
         
+        cognitiveMode = AGENT_RUN;
+        
         System.out.println("Ernest initialized") ;
     }
     
@@ -129,8 +131,6 @@ public class Ernest110Model extends ErnestModel
     protected void initAgent()
     {
     }
-
-    
     
 	public void setDisplay(){
 		
@@ -174,13 +174,17 @@ public class Ernest110Model extends ErnestModel
         sense[3][8] = (int)(speed.y * Ernest.INT_FACTOR);
         sense[4][8] = (int)(mRotation.z * Ernest.INT_FACTOR); // TODO take involuntary rotation into account.
         sense[5][8] = (int)(mTranslation.length() * Ernest.INT_FACTOR);
+        sense[6][8] = cognitiveMode;
         
         mPreviousPosition.set(mPosition);
-
+        
         // Update Ernest.
         
 		int[] intention = m_ernest.update(sense);
 		
+        if (intention[0] != 0 && cognitiveMode == AGENT_STEP)
+        	cognitiveMode = AGENT_STOP;
+
 		enactSchema(intention);
 		
 		for (int i=0;i<m_env.frameList.size();i++){
@@ -188,8 +192,6 @@ public class Ernest110Model extends ErnestModel
 				m_SpaceMemory.update( (ArrayList<IPlace>) getPlaceList() );
 				m_SpaceMemory.repaint();
 			}
-
-			
 		}
 		
         anim();
