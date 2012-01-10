@@ -13,7 +13,10 @@ import spas.IPlace;
 
 
 
-public class SpaceMemoryPanel extends JPanel{
+public class SpaceMemoryPanel extends JPanel
+{
+	final static int SCALE = 50; 
+	final static int RADIUS = 5;
 	
 	private static final long serialVersionUID = 1L;
 	public int index;
@@ -39,61 +42,33 @@ public class SpaceMemoryPanel extends JPanel{
 		
 		Graphics2D g2d = (Graphics2D)g;
 		
-
 		g2d.setColor(Color.white);
-		g2d.fillRect(0, 0, 800, 800);
+		g2d.fillRect(0, 0, 2 * RADIUS * SCALE, 2 * RADIUS * SCALE);
 		
 		// display agent
 		g2d.setColor(Color.gray);
-		g2d.fillOval(350, 350, 100, 100);
+		g2d.fillOval(RADIUS * SCALE - SCALE/2 , RADIUS * SCALE - SCALE/2, SCALE, SCALE);
 		
 		int size=placeList.size();
 		
-		double x,y;
-		int rgb=0;
-		int red,green,blue;
 		double d;
 		double angle;
 		double span;
 		
-		//g.drawArc(100, 100, 100, 100, 0, 90);
-		//g.drawArc(100, 100, 100, 100, 180, 90);
 		g2d.setStroke(new BasicStroke(10.0f));
 		
 		for (int i=0;i<size;i++){
 			
-			x=placeList.get(i).getPosition().x*100;
-			y=placeList.get(i).getPosition().y*100;
+			d = placeList.get(i).getPosition().length() * SCALE;
 			
-			rgb=placeList.get(i).getBundle().getValue();
-			red=(int)(rgb/65536);
-			green=(int)((rgb-red*65536)/256);
-			blue=(int)(rgb-red*65536-green*256);
-			
-			d=Math.sqrt(x*x+y*y);
-			
-			if (x>0) angle=Math.atan(y/x);
-			else{
-				if (x<0) angle=Math.atan(y/x)+Math.PI;
-				else{
-					if (y>=0) angle=  Math.PI/2;
-					else      angle=3*Math.PI/2;
-				}
-			}
+			angle = (float)Math.atan2((double)placeList.get(i).getPosition().y, placeList.get(i).getPosition().x);
 			
 			angle=angle*180/Math.PI;
 			span=placeList.get(i).getSpan()*180/Math.PI;
 			
-			
-			g2d.setColor(new Color(red,green,blue));
-			
-			
-			//g.fillOval(400+(int)x,400-(int)y, 10, 10);
-			
-			g2d.drawArc(400-(int)d, 400-(int)d, 2*(int)d, 2*(int)d, (int)(angle-span/2), (int)span);
+			g2d.setColor(new Color(placeList.get(i).getBundle().getValue()));			
+			g2d.drawArc(RADIUS * SCALE-(int)d, RADIUS * SCALE -(int)d, 2*(int)d, 2*(int)d, (int)(angle-span/2), (int)span);
 			
 		}
 	}
-	
-	
 }

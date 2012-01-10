@@ -1,5 +1,6 @@
 package agent;
 
+import javax.vecmath.Matrix3f;
 import javax.vecmath.Vector3f;
 
 import memory.ColliculusFrame;
@@ -186,10 +187,17 @@ public class Ernest110Model extends ErnestModel
     	
     	// The movement since the last update.
     	
-        Vector3f speed = new Vector3f(mPosition);
-        speed.sub(mPreviousPosition);
-        sense[2][8] = (int)(speed.x * Ernest.INT_FACTOR);
-        sense[3][8] = (int)(speed.y * Ernest.INT_FACTOR);
+        Vector3f move = new Vector3f(mPosition);
+        move.sub(mPreviousPosition);
+        
+        // The movement relative to Ernest
+		Matrix3f rot = new Matrix3f();
+		rot.rotZ(- mOrientation.z);
+		//Vector3f oldPosition = move;
+		rot.transform(move, move); // (rot * move) is placed into move
+    
+        sense[2][8] = (int)(move.x * Ernest.INT_FACTOR);
+        sense[3][8] = (int)(move.y * Ernest.INT_FACTOR);
         sense[4][8] = (int)(mRotation.z * Ernest.INT_FACTOR); // TODO take involuntary rotation into account.
         sense[5][8] = (int)(mTranslation.length() * Ernest.INT_FACTOR);
         sense[6][8] = cognitiveMode;
