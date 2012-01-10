@@ -79,7 +79,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 	 * @param strModel
 	 */
 	public static void main(String[] args){
-		version=100;
+		version=110;
 		if (args.length == 1)
 		{
 			if (args[0].equals("Ernest110")){

@@ -58,16 +58,9 @@ public class Ernest100Model extends ErnestModel
 	public boolean acting;
 	
 	public TactileMap m_tactile;
-	public TactileMapFrame m_tactileFrame;
-	
 	public VisualMap m_visual;
-	public VisualMapFrame m_visualFrame;
-	
-	
-	public ColliculusFrame colliculusFrame;
-	
-	private EyeView eye;
-	
+
+	private InternalView m_eye;
 	//public Color frontColor;
 	
 	public boolean tempo=true;
@@ -97,7 +90,7 @@ public class Ernest100Model extends ErnestModel
 		}
 		
 		colliculus=new Colliculus(m_tactile,m_visual);
-		//colliculusFrame=new ColliculusFrame(colliculus);
+		m_eye=new InternalView();
 	}
 
 	/**
@@ -184,6 +177,19 @@ public class Ernest100Model extends ErnestModel
 		if (!found) m_env.frameList.add(new ColliculusFrame(colliculus)); 
 		else        ((ColliculusFrame) m_env.frameList.get(i-1)).setColliculus(colliculus);
 		
+		
+		///////////////////
+		size=m_env.frameList.size();
+		i=0;
+		found=false; 
+		while (i<size && !found){
+			if (m_env.frameList.get(i).getClass().getName().equals("agent.EyeView")) found=true;
+			i++;
+		}
+		
+		if (!found) m_env.frameList.add(new EyeView(m_eye)); 
+		else        ((EyeView) m_env.frameList.get(i-1)).setEye(m_eye);
+		
 	}
 
 	public void update(){
@@ -214,7 +220,7 @@ public class Ernest100Model extends ErnestModel
 		int [][] matrix = new int[Ernest.RESOLUTION_RETINA][8 + 1 + 3];
 		EyeFixation[] eyeFixation = null;
 		//eyeFixation = retina(Math.PI/2 - m_orientationAngle);
-		eyeFixation = rendu(false);
+		eyeFixation = rendu();
 		
 		for (int i = 0; i < Ernest.RESOLUTION_RETINA; i++)
 		{
@@ -642,17 +648,11 @@ public class Ernest100Model extends ErnestModel
 		//notifyObservers2();
 		
 		
-		rendu(true);
+		rendu();
 		
 		if (act==0) return status1 && status2; // && status5;
 		else        return statusR;
 	}
-	
-	
-	protected EyeFixation[] rendu(boolean setdistance){
-		return rendu(false,0);
-	}
-	
 	
 	
 	/**
@@ -673,7 +673,7 @@ public class Ernest100Model extends ErnestModel
 		}
 		//time1=System.currentTimeMillis();
 		//System.out.print("step : "+(time1-time2)+" millisecondes");
-		rendu(false);
+		rendu();
 		//time2=System.currentTimeMillis();
 		//System.out.println(" ; rendu : "+(time2-time1)+" millisecondes");
 		//time2=time1;
@@ -960,7 +960,7 @@ public class Ernest100Model extends ErnestModel
 		{
 			// Eye color
 			//eyeFixation = retina(Math.PI/2 - m_orientationAngle);
-			eyeFixation=rendu(false);
+			eyeFixation=rendu();
 			for (int i = 0; i < Ernest.RESOLUTION_RETINA; i++)
 			{
 				pixelColor[i][0] = eyeFixation[i].getColor();

@@ -27,12 +27,14 @@ public class EyeDisplay extends JPanel {
 		
 		int left,right;
 		
+		public InternalView eye;
+		
 		//InternalMap map;
 		//int max;
 		
 		//double[] attract=new double[180];
 		
-        public EyeDisplay(){
+        public EyeDisplay(InternalView m_eye){
         	/*for (int i=0;i<180;i++){
         		attract[i]=0;
         	}*/
@@ -45,6 +47,11 @@ public class EyeDisplay extends JPanel {
     			left=180;
     			right=540;
     		}
+    		eye=m_eye;
+        }
+        
+        public void setEye(InternalView e){
+        	eye=e;
         }
         
         /**
