@@ -111,7 +111,7 @@ public class Ernest110Model extends ErnestModel
         
         // Only trace the first agent.
         
-        //if (ident == 1)
+        //if (ident == 0)
         //	m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","h-yXVWrEwtYclxuPQUlmTOXprcFzol");
                         
         // Initialize the Ernest === 
@@ -127,6 +127,8 @@ public class Ernest110Model extends ErnestModel
         m_ernest.addInteraction("v", " ",  -10); // Right toward empty
         
         cognitiveMode = AGENT_RUN;
+        mTranslation = new Vector3f();
+        mRotation  = new Vector3f();
         
         System.out.println("Ernest initialized") ;
     }
@@ -160,16 +162,16 @@ public class Ernest110Model extends ErnestModel
 		}
 		
 		///////////////////
-		size=m_env.frameList.size();
-		i=0;
-		found=false; 
-		while (i<size && !found){
-			if (m_env.frameList.get(i).getClass().getName().equals("agent.EyeView")) found=true;
-			i++;
-		}
-		
-		if (!found) m_env.frameList.add(new EyeView(m_eye)); 
-		else        ((EyeView) m_env.frameList.get(i-1)).setEye(m_eye);
+//		size=m_env.frameList.size();
+//		i=0;
+//		found=false; 
+//		while (i<size && !found){
+//			if (m_env.frameList.get(i).getClass().getName().equals("agent.EyeView")) found=true;
+//			i++;
+//		}
+//		
+//		if (!found) m_env.frameList.add(new EyeView(m_eye)); 
+//		else        ((EyeView) m_env.frameList.get(i-1)).setEye(m_eye);
 		
 	}
     

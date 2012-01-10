@@ -16,8 +16,9 @@ public class SpaceMemoryFrame extends JFrame{
 	private SpaceMemoryPanel panel;
 	
 	public SpaceMemoryFrame(){
-		this.setTitle("space memory");
-    	this.setSize(500, 500);
+		this.setTitle("Local Space Memory");
+		int side = 2 * SpaceMemoryPanel.RADIUS * SpaceMemoryPanel.SCALE;
+    	this.setSize(side, side);
     	this.setLocationRelativeTo(null);               
     	this.setVisible(true);
 
