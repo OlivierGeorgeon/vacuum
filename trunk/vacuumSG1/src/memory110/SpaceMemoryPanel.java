@@ -1,5 +1,6 @@
 package memory110;
 
+import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -15,8 +16,8 @@ import spas.IPlace;
 
 public class SpaceMemoryPanel extends JPanel
 {
-	final static int SCALE = 50; 
-	final static int RADIUS = 5;
+	public final static int SCALE = 50; 
+	public final static int RADIUS = 5;
 	
 	private static final long serialVersionUID = 1L;
 	public int index;
@@ -49,7 +50,11 @@ public class SpaceMemoryPanel extends JPanel
 		g2d.setColor(Color.gray);
 		g2d.fillOval(RADIUS * SCALE - SCALE/2 , RADIUS * SCALE - SCALE/2, SCALE, SCALE);
 		
-		int size=placeList.size();
+		// Transparency
+//		float alpha = 0.8f;
+//		int type = AlphaComposite.SRC_OVER; 
+//		AlphaComposite composite = AlphaComposite.getInstance(type, alpha);
+//		g2d.setComposite(composite);
 		
 		double d;
 		double angle;
@@ -57,18 +62,17 @@ public class SpaceMemoryPanel extends JPanel
 		
 		g2d.setStroke(new BasicStroke(10.0f));
 		
-		for (int i=0;i<size;i++){
+		for (IPlace place : placeList)
+		{
+			d = place.getPosition().length() * SCALE;
 			
-			d = placeList.get(i).getPosition().length() * SCALE;
-			
-			angle = (float)Math.atan2((double)placeList.get(i).getPosition().y, placeList.get(i).getPosition().x);
-			
+			angle = (float)Math.atan2((double)place.getPosition().y, place.getPosition().x);			
 			angle=angle*180/Math.PI;
-			span=placeList.get(i).getSpan()*180/Math.PI;
 			
-			g2d.setColor(new Color(placeList.get(i).getBundle().getValue()));			
+			span=place.getSpan()*180/Math.PI;
+			
+			g2d.setColor(new Color(place.getBundle().getValue()));			
 			g2d.drawArc(RADIUS * SCALE-(int)d, RADIUS * SCALE -(int)d, 2*(int)d, 2*(int)d, (int)(angle-span/2), (int)span);
-			
 		}
 	}
 }
