@@ -48,6 +48,8 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 
 	private JPanel m_board;
 	
+	private Thread agentThread = null;
+	
 	/////////////////////////////////////////////////////////////////////////////////////////
 	
 	private EnvironnementPanel m_envPanel;
@@ -419,7 +421,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 //			m_modelList.get(i).initErnest();
 //		}
 		
-		Thread agentThread = null;
+		
 		System.out.println("initialized ") ;
 		m_environment.setStop();
 		m_simulationEngine = new ErnestView(m_environment,this);

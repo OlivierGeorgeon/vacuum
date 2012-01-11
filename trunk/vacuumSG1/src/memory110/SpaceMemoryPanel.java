@@ -35,9 +35,10 @@ public class SpaceMemoryPanel extends JPanel
 	
 	public SpaceMemory spaceMemory;
 	
-	public SpaceMemoryPanel(){
+	public SpaceMemoryPanel(SpaceMemory spaceMemory2){
 		index=0;
 		placeList=new ArrayList<IPlace>();
+		spaceMemory=spaceMemory2;
 	}
 	
 	public void setMemory(SpaceMemory mem){
@@ -80,7 +81,7 @@ public class SpaceMemoryPanel extends JPanel
 		
 		g2d.setStroke(new BasicStroke(10.0f));
 		
-		for (IPlace place : placeList)
+		for (IPlace place : spaceMemory.placeList)
 		{
 			d = place.getPosition().length() * SCALE;
 			
@@ -92,5 +93,6 @@ public class SpaceMemoryPanel extends JPanel
 			g2d.setColor(new Color(place.getBundle().getValue()));			
 			g2d.drawArc(RADIUS * SCALE-(int)d, RADIUS * SCALE -(int)d, 2*(int)d, 2*(int)d, (int)(angle-span/2), (int)span);
 		}
+		
 	}
 }
