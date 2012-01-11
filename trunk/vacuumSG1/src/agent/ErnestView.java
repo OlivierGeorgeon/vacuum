@@ -7,12 +7,12 @@ import java.util.ArrayList;
 public class ErnestView implements Runnable 
 {
 	private Main mainFrame;	
-	private Environment m_env;
+	private Environment m_environment;
 	
 	public ErnestView(Environment environment, Main frame)
 	{
 		mainFrame=frame;
-		m_env = environment;
+		m_environment = environment;
 	}
 
 	/**
@@ -21,17 +21,17 @@ public class ErnestView implements Runnable
 	public void run()
 	{
 		// Initialize the agents ===
-		m_env.initAgents();
+		m_environment.initAgents();
 	
 		// Run the simulation in an infinite loop ===
 	
-		while (m_env.getMode() < Environment.SIMULATION_TERMINATE)
+		while (m_environment.getMode() < Environment.SIMULATION_TERMINATE)
 		{
 			boolean testRun=false;
 			
 			mainFrame.drawGrid();
 			
-			m_env.update();
+			m_environment.update();
 
 			if (testRun)
 				try { Thread.sleep(500);
@@ -43,6 +43,6 @@ public class ErnestView implements Runnable
 			}
 		}
 		
-		m_env.setStop();		
+		m_environment.setStop();		
 	}	
 }

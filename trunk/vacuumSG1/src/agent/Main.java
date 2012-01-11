@@ -423,7 +423,11 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		
 		
 		System.out.println("initialized ") ;
-		m_environment.setStop();
+		//m_environment.setStop();
+
+		//if (agentThread != null) agentThread.interrupt();
+		
+		//m_environment.initAgents();
 		m_simulationEngine = new ErnestView(m_environment,this);
 		//agentThread = new Thread(getErnestView());
 		agentThread = new Thread(m_simulationEngine);
@@ -731,24 +735,24 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 	 * Loads the Ernest execution class  
 	 * @author ogeorgeon 
 	 */
-//	private ErnestView getErnestView()
-//	{
-//		try
-//		{
-//			if (m_ernest == null)
-//				//m_ernest = new ErnestView(m_modelList,this, m_environment);		
-//				m_ernest = new ErnestView(m_environment,this);		
-//		}
-//		catch (NoClassDefFoundError e)
-//		{
-//			JOptionPane.showMessageDialog(this, 
-//					"Error loading the Ernest engine!\n" + 
-//					"Please restart the environment with ernest.jar included in the classpath.", 
-//					"Error!", 
-//					JOptionPane.ERROR_MESSAGE);
-//		}
-//		return m_ernest;
-//	}
+	private ErnestView getErnestView()
+	{
+		try
+		{
+			if (m_simulationEngine == null)
+				//m_ernest = new ErnestView(m_modelList,this, m_environment);		
+				m_simulationEngine = new ErnestView(m_environment,this);		
+		}
+		catch (NoClassDefFoundError e)
+		{
+			JOptionPane.showMessageDialog(this, 
+					"Error loading the Ernest engine!\n" + 
+					"Please restart the environment with ernest.jar included in the classpath.", 
+					"Error!", 
+					JOptionPane.ERROR_MESSAGE);
+		}
+		return m_simulationEngine;
+	}
 
 	public void keyTyped(KeyEvent e) {
 	}
