@@ -45,10 +45,6 @@ public class Ernest110Model extends ErnestModel
 
     private static Color UNANIMATED_COLOR = Color.GRAY;
     
-    private boolean m_bump = false;
-    private boolean m_eat = false;
-    private boolean m_cuddle = false;
-    
     public SpaceMemoryFrame m_SpaceMemory;
     public List<IPlace> placeList;
     
@@ -217,6 +213,8 @@ public class Ernest110Model extends ErnestModel
         	cognitiveMode = AGENT_STOP;
 
 		enactSchema(intention);
+		
+		// Refresh the local space memory window
 		
 		for (int i=0;i<m_env.frameList.size();i++){
 			if (m_env.frameList.get(i).getClass().getName().equals("memory110.SpaceMemoryFrame")){
@@ -468,7 +466,7 @@ public class Ernest110Model extends ErnestModel
 
         // The shark body
 
-        Area shark = shark();
+        Area shark = shape();
         
         // Retina pixel
         
@@ -531,7 +529,7 @@ public class Ernest110Model extends ErnestModel
     /**
      * @return The shark area.
      */
-    private Area shark()
+    public static Area shape()
     {
         GeneralPath body = new GeneralPath();
         body.append(new CubicCurve2D.Double(0,-40, -30,-40, -5, 45, 0, 45), false);
