@@ -101,8 +101,8 @@ public class Ernest110Model extends ErnestModel
         
         // Only trace the first agent.
         
-        //if (ident == 0)
-        //	m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","h-yXVWrEwtYclxuPQUlmTOXprcFzol");
+//        if (ident == 0)
+//        	m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","h-yXVWrEwtYclxuPQUlmTOXprcFzol");
                         
         // Initialize the Ernest === 
         
