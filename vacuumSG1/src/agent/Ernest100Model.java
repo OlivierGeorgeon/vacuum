@@ -60,7 +60,6 @@ public class Ernest100Model extends ErnestModel
 	public TactileMap m_tactile;
 	public VisualMap m_visual;
 
-	private InternalView m_eye;
 	//public Color frontColor;
 	
 	public boolean tempo=true;
@@ -90,7 +89,6 @@ public class Ernest100Model extends ErnestModel
 		}
 		
 		colliculus=new Colliculus(m_tactile,m_visual);
-		m_eye=new InternalView();
 	}
 
 	/**
@@ -415,17 +413,15 @@ public class Ernest100Model extends ErnestModel
 			
 			// for linear movements
 			double d;
-			if (statusL){
-				stepX=mTranslation.x/30;
-				stepY=mTranslation.y/30;
+			stepX=mTranslation.x/30;
+			stepY=mTranslation.y/30;
 				
-				double dx= stepX*Math.cos(mOrientation.z) - stepY*Math.sin(mOrientation.z);
-				double dy= stepX*Math.sin(mOrientation.z) + stepY*Math.cos(mOrientation.z);
-				cell_x=Math.round(mPosition.x);
-				cell_y=Math.round(mPosition.y);
-				mPosition.x+=dx;
-				mPosition.y+=dy;
-			}
+			double dx= stepX*Math.cos(mOrientation.z) - stepY*Math.sin(mOrientation.z);
+			double dy= stepX*Math.sin(mOrientation.z) + stepY*Math.cos(mOrientation.z);
+			cell_x=Math.round(mPosition.x);
+			cell_y=Math.round(mPosition.y);
+			mPosition.x+=dx;
+			mPosition.y+=dy;
 			
 			// for angular movements
 			orientation+=mRotation.z/10;
@@ -515,8 +511,8 @@ public class Ernest100Model extends ErnestModel
 			// other agents
 			for (int a=0;a<m_env.m_modelList.size();a++){
 				if (a!=ident){
-					float dx=m_env.m_modelList.get(a).mPosition.x-mPosition.x;
-					float dy=m_env.m_modelList.get(a).mPosition.y-mPosition.y;
+					dx=m_env.m_modelList.get(a).mPosition.x-mPosition.x;
+					dy=m_env.m_modelList.get(a).mPosition.y-mPosition.y;
 					d= (dx*dx)+(dy*dy);
 					d=Math.sqrt(d);
 					
@@ -559,13 +555,15 @@ public class Ernest100Model extends ErnestModel
 				}
 			}
 			
-			/*
-			if (tempo){
-
-				//mainFrame.drawGrid();
-				//m_int.repaint();
-				//sleep((int)(1));
-			}*/
+			// compute absolute movements
+			mSpeedT=new Vector3f(mPosition);
+			mSpeedT.sub(mPreviousPosition);
+			
+			mSpeedR=new Vector3f(mOrientation);
+			mSpeedR.sub(mPreviousOrientation);
+			
+			mPreviousPosition.set(mPosition);
+			mPreviousOrientation.set(mOrientation);
 			
 			if (display){
 				

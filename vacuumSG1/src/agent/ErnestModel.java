@@ -85,11 +85,25 @@ public class ErnestModel extends Model
 	final protected Vector3f DIRECTION_NORTHWEST = new Vector3f(-1, 1, 0);
 	
 	public Colliculus colliculus;
+	public InternalView m_eye;
 	public int lastAction;
-
+	
+	public Vector3f mPreviousPosition = new Vector3f(mPosition);
+	public Vector3f mPreviousOrientation = new Vector3f(mOrientation);
+	
+	public Vector3f mSpeedT;    // translation and rotation speed in absolute reference
+	public Vector3f mSpeedR;    // translation and rotation speed in absolute reference
+	
+	public Vector3f mEgoSpeedT;    // translation and rotation speed in absolute reference
+	
 	public ErnestModel(int i) 
 	{
 		super(i);
+		m_eye=new InternalView();
+		mSpeedT=new Vector3f(0f,0f,0f);
+		mSpeedR=new Vector3f(0f,0f,0f);
+		
+		mEgoSpeedT=new Vector3f(0f,0f,0f);
 	}
 	
 	/**
@@ -97,6 +111,7 @@ public class ErnestModel extends Model
 	 */
 	public void initErnest()
 	{
+		
 	}
 	
 	public void closeErnest()
@@ -394,6 +409,8 @@ public class ErnestModel extends Model
 		int[] cornerV2= new int[360];
 		int[] cornerT = new int[360];              // tactile corner vector
 		int[] cornerT2= new int[360];
+		
+		ArrayList<Vector3f> cornersPoints=new ArrayList<Vector3f>();
 		
 		EyeFixation[] retina= new EyeFixation[Ernest.RESOLUTION_RETINA];
 		
@@ -1061,6 +1078,15 @@ public class ErnestModel extends Model
 			cornerT2[i]=cornerT[offset];
 		}
 		
+		// determine points of interest
+		for (int i=0;i<360;i++){
+			if (cornerV2[i]>0){
+				cornersPoints.add(new Vector3f( (float)(rv2[i]*Math.cos((i+90)*Math.PI/180)) ,
+						                        (float)(rv2[i]*Math.sin((i+90)*Math.PI/180)) ,
+						                        i ) );
+			}
+		}
+		
 		// fill the retina vector
 		for (int i=0;i<Ernest.RESOLUTION_RETINA;i++){
 			retina[Ernest.RESOLUTION_RETINA-i-1]= new EyeFixation();
@@ -1075,13 +1101,19 @@ public class ErnestModel extends Model
 			//m_env.saveImage();
 		}
 		
+		// update eye display
+		Matrix3f rot = new Matrix3f();
+		rot.rotZ(- mOrientation.z + (float)Math.PI/2);
+		rot.transform(mSpeedT, mEgoSpeedT);
+		
+		m_eye.updateRetine(rv2,colorMap2,cornerV2,rt2,tactileMap2,cornerT2,cornersPoints,mEgoSpeedT,mSpeedR);
+		
 		// update display panel
 		if (display){
 			int size=m_env.frameList.size();
 			for (int i=0;i<size;i++){
 				if (m_env.frameList.get(i).getClass().getName().equals("agent.EyeView")){
 					m_env.frameList.get(i).repaint();
-					((EyeView)(m_env.frameList.get(i))).paint(rv2,colorMap2,cornerV2,rt2,tactileMap2,cornerT2);
 				}
 			}
 			
