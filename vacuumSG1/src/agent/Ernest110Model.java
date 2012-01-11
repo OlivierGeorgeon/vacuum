@@ -6,6 +6,7 @@ import javax.vecmath.Vector3f;
 import memory.ColliculusFrame;
 import memory.TactileMapFrame;
 import memory.VisualMapFrame;
+import memory110.SpaceMemory;
 import memory110.SpaceMemoryFrame;
 
 import java.awt.AlphaComposite;
@@ -45,7 +46,7 @@ public class Ernest110Model extends ErnestModel
 
     private static Color UNANIMATED_COLOR = Color.GRAY;
     
-    public SpaceMemoryFrame m_SpaceMemory;
+    public SpaceMemory m_SpaceMemory;
     public List<IPlace> placeList;
     
     Color[] pixelColor = new Color[Ernest.RESOLUTION_RETINA];
@@ -78,7 +79,7 @@ public class Ernest110Model extends ErnestModel
         setChanged();
         notifyObservers2();  
         
-        m_SpaceMemory=new SpaceMemoryFrame();
+        m_SpaceMemory=new SpaceMemory();
         placeList=new ArrayList<IPlace>();
     }
 
@@ -131,37 +132,40 @@ public class Ernest110Model extends ErnestModel
     
 	public void setDisplay(){
 		
+		boolean dispSpaceMemory=true;
+		boolean dispEyeView=true;
+		
+		int size;
+		int i;
+		boolean found;
+		
 		//////////////////////
-		int size=m_env.frameList.size();
-		int i=0;
-		boolean found=false; 
-		
-		System.out.println("list1 "+m_env.frameList.size());
-		
-		while (i<size && !found){
-			System.out.println(m_env.frameList.get(i).getClass().getName());
-			if (m_env.frameList.get(i).getClass().getName().equals("memory110.SpaceMemoryFrame")) found=true;
-			i++;
-		}
-		if (!found){
-			m_env.frameList.add(m_SpaceMemory);
-		}
-		else{
-			m_env.frameList.set(i-1, m_SpaceMemory);
+		if (dispSpaceMemory){
+			size=m_env.frameList.size();
+			i=0;
+			found=false; 
+			while (i<size && !found){
+				System.out.println(m_env.frameList.get(i).getClass().getName());
+				if (m_env.frameList.get(i).getClass().getName().equals("memory110.SpaceMemoryFrame")) found=true;
+				i++;
+			}
+			if (!found) m_env.frameList.add(new SpaceMemoryFrame(m_SpaceMemory));
+			else        ((SpaceMemoryFrame)m_env.frameList.get(i-1)).setMemory(m_SpaceMemory);
 		}
 		
 		///////////////////
-		size=m_env.frameList.size();
-		i=0;
-		found=false; 
-		while (i<size && !found){
-			if (m_env.frameList.get(i).getClass().getName().equals("agent.EyeView")) found=true;
-			i++;
+		if (dispEyeView){
+			size=m_env.frameList.size();
+			i=0;
+			found=false; 
+			while (i<size && !found){
+				if (m_env.frameList.get(i).getClass().getName().equals("agent.EyeView")) found=true;
+				i++;
+			}
+		
+			if (!found) m_env.frameList.add(new EyeView(m_eye)); 
+			else        ((EyeView) m_env.frameList.get(i-1)).setEye(m_eye);
 		}
-		
-		if (!found) m_env.frameList.add(new EyeView(m_eye)); 
-		else        ((EyeView) m_env.frameList.get(i-1)).setEye(m_eye);
-		
 	}
     
     
@@ -215,12 +219,9 @@ public class Ernest110Model extends ErnestModel
 		enactSchema(intention);
 		
 		// Refresh the local space memory window
-		
+		m_SpaceMemory.update( (ArrayList<IPlace>) getPlaceList() );
 		for (int i=0;i<m_env.frameList.size();i++){
-			if (m_env.frameList.get(i).getClass().getName().equals("memory110.SpaceMemoryFrame")){
-				m_SpaceMemory.update( (ArrayList<IPlace>) getPlaceList() );
-				m_SpaceMemory.repaint();
-			}
+			m_env.frameList.get(i).repaint();
 		}
 		
 		rendu();

@@ -139,55 +139,66 @@ public class Ernest100Model extends ErnestModel
 	
 	public void setDisplay(){
 		
-		//////////////////////
-		int size=m_env.frameList.size();
-		int i=0;
-		boolean found=false; 
-		while (i<size && !found){
-			if (m_env.frameList.get(i).getClass().getName().equals("memory.TactileMapFrame")) found=true;
-			i++;
-		}
+		boolean distpTactile=true;
+		boolean dispVisual=true;
+		boolean dispColliculus=true;
+		boolean dispEyeView=true;
 		
-		if (!found) m_env.frameList.add(new TactileMapFrame(m_tactile)); 
-		else        ((TactileMapFrame) m_env.frameList.get(i-1)).setTactile(m_tactile);
+		int size;
+		int i;
+		boolean found;
+		
+		//////////////////////
+		if (distpTactile){
+			size=m_env.frameList.size();
+			i=0;
+			found=false; 
+			while (i<size && !found){
+				if (m_env.frameList.get(i).getClass().getName().equals("memory.TactileMapFrame")) found=true;
+				i++;
+			}
+			if (!found) m_env.frameList.add(new TactileMapFrame(m_tactile)); 
+			else        ((TactileMapFrame) m_env.frameList.get(i-1)).setTactile(m_tactile);
+		}
 		
 		////////////////////
-		size=m_env.frameList.size();
-		i=0;
-		found=false; 
-		while (i<size && !found){
-			if (m_env.frameList.get(i).getClass().getName().equals("memory.VisualMapFrame")) found=true;
-			i++;
+		if (dispVisual){
+			size=m_env.frameList.size();
+			i=0;
+			found=false; 
+			while (i<size && !found){
+				if (m_env.frameList.get(i).getClass().getName().equals("memory.VisualMapFrame")) found=true;
+				i++;
+			}
+			if (!found) m_env.frameList.add(new VisualMapFrame(m_visual)); 
+			else        ((VisualMapFrame) m_env.frameList.get(i-1)).setVisual(m_visual);
 		}
-		
-		if (!found) m_env.frameList.add(new VisualMapFrame(m_visual)); 
-		else        ((VisualMapFrame) m_env.frameList.get(i-1)).setVisual(m_visual);
 		
 		///////////////////
-		size=m_env.frameList.size();
-		i=0;
-		found=false; 
-		while (i<size && !found){
-			if (m_env.frameList.get(i).getClass().getName().equals("memory.ColliculusFrame")) found=true;
-			i++;
+		if (dispColliculus){
+			size=m_env.frameList.size();
+			i=0;
+			found=false; 
+			while (i<size && !found){
+				if (m_env.frameList.get(i).getClass().getName().equals("memory.ColliculusFrame")) found=true;
+				i++;
+			}
+			if (!found) m_env.frameList.add(new ColliculusFrame(colliculus)); 
+			else        ((ColliculusFrame) m_env.frameList.get(i-1)).setColliculus(colliculus);
 		}
-		
-		if (!found) m_env.frameList.add(new ColliculusFrame(colliculus)); 
-		else        ((ColliculusFrame) m_env.frameList.get(i-1)).setColliculus(colliculus);
-		
 		
 		///////////////////
-		size=m_env.frameList.size();
-		i=0;
-		found=false; 
-		while (i<size && !found){
-			if (m_env.frameList.get(i).getClass().getName().equals("agent.EyeView")) found=true;
-			i++;
+		if (dispEyeView){
+			size=m_env.frameList.size();
+			i=0;
+			found=false; 
+			while (i<size && !found){
+				if (m_env.frameList.get(i).getClass().getName().equals("agent.EyeView")) found=true;
+				i++;
+			}	
+			if (!found) m_env.frameList.add(new EyeView(m_eye)); 
+			else        ((EyeView) m_env.frameList.get(i-1)).setEye(m_eye);
 		}
-		
-		if (!found) m_env.frameList.add(new EyeView(m_eye)); 
-		else        ((EyeView) m_env.frameList.get(i-1)).setEye(m_eye);
-		
 	}
 
 	public void update(){

@@ -1103,17 +1103,6 @@ public class ErnestModel extends Model
 		
 		m_eye.updateRetine(rv2,colorMap2,cornerV2,rt2,tactileMap2,cornerT2,cornersPoints,mEgoSpeedT,mSpeedR);
 		
-		// update display panel
-		if (display){
-			int size=m_env.frameList.size();
-			for (int i=0;i<size;i++){
-				if (m_env.frameList.get(i).getClass().getName().equals("agent.EyeView")){
-					m_env.frameList.get(i).repaint();
-				}
-			}
-			
-		}
-		
 		return retina;
 	}
 }
