@@ -1193,7 +1193,7 @@ public class TactileMap {
 				
 				if (j==0){
 					index=i/angle;
-					if (distance<=7){
+					if (distance<=6){
 						distance2=1;
 						//distance2= Math.min(1,1- (distance-5)/5);
 						m_tactilePressure[index]= t[(i)%360];
@@ -1204,7 +1204,7 @@ public class TactileMap {
 				}
 				else if (j==1){
 					index=i/angle+resolution;
-					if (distance<=11){
+					if (distance<=10){
 						distance2=1;
 						//distance2=(float) Math.min(1,1- (distance-7)/5);
 						m_tactilePressure[index]= t[(i)%360];
@@ -1215,7 +1215,7 @@ public class TactileMap {
 				}
 				else{
 					index=i/angle+2*resolution;
-					if (distance<=16){
+					if (distance<=15){
 						distance2=1;
 						//distance2=(float) Math.min(1,1- (distance-10)/5);
 						m_tactilePressure[index]= t[(i)%360];;

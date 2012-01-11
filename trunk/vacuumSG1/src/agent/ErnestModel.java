@@ -1064,7 +1064,8 @@ public class ErnestModel extends Model
 			colorMap2[i]=colorMap[offset];
 			cornerV2[i]=cornerV[offset];
 			
-			if (!colorMap[offset].equals(colorMap[(offset-1+360)%360]) ){
+			if (!colorMap[offset].equals(colorMap[(offset-1+360)%360])
+			   && rv[offset]<rv[(offset-1+360)%360]+10){
 				cornerV2[i]=1;
 			}
 			
@@ -1073,14 +1074,49 @@ public class ErnestModel extends Model
 			cornerT2[i]=cornerT[offset];
 		}
 		
+		
+		
 		// determine points of interest
+		ArrayList<Integer> pointType=new ArrayList<Integer>();
 		for (int i=0;i<360;i++){
 			if (cornerV2[i]>0){
 				cornersPoints.add(new Vector3f( (float)(rv2[i]*Math.cos((i+90)*Math.PI/180)) ,
 						                        (float)(rv2[i]*Math.sin((i+90)*Math.PI/180)) ,
 						                        i ) );
+			
+				if (rv2[i]<=rv2[(i-1+360)%360]+10 && rv2[i]<=rv2[(i+1+360)%360]+10){
+					pointType.add(0);
+				}
+				else{
+					if (rv2[i]<=rv2[(i-1+360)%360]+10) pointType.add(1);
+					else                               pointType.add(2);
+				}	
+			}
+			else{
+				
+				if ( (cornerV2[(i-1+360)%360]>0 && rv2[i]>rv2[(i-1+360)%360]+10)
+				   ||(cornerV2[(i+1+360)%360]>0 && rv2[i]>rv2[(i+1+360)%360]+10) ){
+					
+					cornersPoints.add(new Vector3f( (float)(rv2[i]*Math.cos((i+90)*Math.PI/180)) ,
+	                        (float)(rv2[i]*Math.sin((i+90)*Math.PI/180)) ,
+	                        i ) );
+					
+					if (rv2[i]<=rv2[(i-1+360)%360]+10) pointType.add(1);
+					else                               pointType.add(2);
+				}
+				else{
+					cornersPoints.add(new Vector3f( (float)(rv2[i]*Math.cos((i+90)*Math.PI/180)) ,
+                        (float)(rv2[i]*Math.sin((i+90)*Math.PI/180)) ,
+                        i ) );
+				
+					pointType.add(10);
+				}
 			}
 		}
+		
+		
+		
+		
 		
 		// fill the retina vector
 		for (int i=0;i<Ernest.RESOLUTION_RETINA;i++){
@@ -1089,6 +1125,8 @@ public class ErnestModel extends Model
 			retina[Ernest.RESOLUTION_RETINA-i-1].setDistance((int) rv2[(int)(i*180/Ernest.RESOLUTION_RETINA+180/Ernest.RESOLUTION_RETINA/2+90)]);
 		}
 		
+		
+		
 		// update colliculus
 		if (sensor){
 			colliculus.update(rv2, colorMap2, rt2, tactileMap2, lastAction, speed);
@@ -1096,12 +1134,30 @@ public class ErnestModel extends Model
 			//m_env.saveImage();
 		}
 		
+		// compute appearing and disappearing points
+		for (int i=0;i<cornersPoints.size();i++){
+			if (pointType.get(i)==1 || pointType.get(i)==2){
+				
+				float angle=mEgoSpeedT.x*cornersPoints.get(i).y-mEgoSpeedT.y*cornersPoints.get(i).x;
+				
+				if (angle>0){
+					if (pointType.get(i)==1) pointType.set(i, 3);
+					else pointType.set(i, 4);
+				}
+				if (angle<0){
+					if (pointType.get(i)==1) pointType.set(i, 4);
+					else pointType.set(i, 3);
+				}
+				
+			}
+		}
+		
 		// update eye display
 		Matrix3f rot = new Matrix3f();
 		rot.rotZ(- mOrientation.z + (float)Math.PI/2);
 		rot.transform(mSpeedT, mEgoSpeedT);
 		
-		m_eye.updateRetine(rv2,colorMap2,cornerV2,rt2,tactileMap2,cornerT2,cornersPoints,mEgoSpeedT,mSpeedR);
+		m_eye.updateRetine(rv2,colorMap2,cornerV2,rt2,tactileMap2,cornerT2,cornersPoints,pointType,mEgoSpeedT,mSpeedR);
 		
 		return retina;
 	}

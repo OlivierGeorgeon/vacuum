@@ -140,7 +140,7 @@ public class Ernest100Model extends ErnestModel
 	public void setDisplay(){
 		
 		boolean distpTactile=true;
-		boolean dispVisual=true;
+		boolean dispVisual=false;
 		boolean dispColliculus=true;
 		boolean dispEyeView=true;
 		
