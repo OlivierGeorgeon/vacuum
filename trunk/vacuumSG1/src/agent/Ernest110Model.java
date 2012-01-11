@@ -52,13 +52,8 @@ public class Ernest110Model extends ErnestModel
     public SpaceMemoryFrame m_SpaceMemory;
     public List<IPlace> placeList;
     
-    private Vector3f mPreviousPosition = new Vector3f(mPosition);
-    
     Color[] pixelColor = new Color[Ernest.RESOLUTION_RETINA];
     Color[][] somatoMapColor = new Color[3][3];
-    
-    
-    private InternalView m_eye;
     
     /**
      * @param i The agent's numerical id. 
@@ -89,8 +84,6 @@ public class Ernest110Model extends ErnestModel
         
         m_SpaceMemory=new SpaceMemoryFrame();
         placeList=new ArrayList<IPlace>();
-        
-        m_eye=new InternalView();
     }
 
     /**
@@ -162,16 +155,16 @@ public class Ernest110Model extends ErnestModel
 		}
 		
 		///////////////////
-//		size=m_env.frameList.size();
-//		i=0;
-//		found=false; 
-//		while (i<size && !found){
-//			if (m_env.frameList.get(i).getClass().getName().equals("agent.EyeView")) found=true;
-//			i++;
-//		}
-//		
-//		if (!found) m_env.frameList.add(new EyeView(m_eye)); 
-//		else        ((EyeView) m_env.frameList.get(i-1)).setEye(m_eye);
+		size=m_env.frameList.size();
+		i=0;
+		found=false; 
+		while (i<size && !found){
+			if (m_env.frameList.get(i).getClass().getName().equals("agent.EyeView")) found=true;
+			i++;
+		}
+		
+		if (!found) m_env.frameList.add(new EyeView(m_eye)); 
+		else        ((EyeView) m_env.frameList.get(i-1)).setEye(m_eye);
 		
 	}
     
@@ -204,7 +197,17 @@ public class Ernest110Model extends ErnestModel
         sense[5][8] = (int)(mTranslation.length() * Ernest.INT_FACTOR);
         sense[6][8] = cognitiveMode;
         
-        mPreviousPosition.set(mPosition);
+        
+        
+     // compute absolute movements
+		mSpeedT=new Vector3f(mPosition);
+		mSpeedT.sub(mPreviousPosition);
+		
+		mSpeedR=new Vector3f(mOrientation);
+		mSpeedR.sub(mPreviousOrientation);
+		
+		mPreviousPosition.set(mPosition);
+		mPreviousOrientation.set(mOrientation);
         
         // Update Ernest.
         

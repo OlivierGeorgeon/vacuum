@@ -2,8 +2,10 @@ package agent;
 
 
 import java.awt.Color;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
+import javax.vecmath.Vector3f;
 
 
 class EyeView extends JFrame{
@@ -26,9 +28,7 @@ class EyeView extends JFrame{
     	ED.setEye(eye);
     }
     
-    public void paint(double[] retine,Color[] colormap,int[] corner,
-    		          double[] tactile,int[] tactileMap,int[] corner2){
-    	ED.updateRetine(retine,colormap,corner,tactile,tactileMap,corner2);
+    public void paint(){
     	ED.repaint();
     }
 	
