@@ -136,6 +136,7 @@ public class Environment extends Observable {
 	public static int SIMULATION_STOP = 0;
 	public static int SIMULATION_RUN  = 1;
 	public static int SIMULATION_STEP = 2;
+	public static int SIMULATION_TERMINATE = 3;
 	
 	public int simulationMode = SIMULATION_STOP;
 	
@@ -174,6 +175,12 @@ public class Environment extends Observable {
 			m_modelList.get(i).initErnest();
 	}
 	
+//	public void closeAgents()
+//	{
+//		for (int i=0;i<m_modelList.size();i++)
+//			m_modelList.get(i).closeErnest();
+//	}
+//	
 	public void update()
 	{
 		if (simulationMode > SIMULATION_STOP)
@@ -198,25 +205,26 @@ public class Environment extends Observable {
 	public void setRun()
 	{
 		simulationMode = SIMULATION_RUN;
-//		for (int i=0;i<m_modelList.size();i++){
-//			m_modelList.get(i).run=true;
-//		}
 	}
 	
 	public void setStop()
 	{
 		simulationMode = SIMULATION_STOP;
-//		for (int i=0;i<m_modelList.size();i++){
-//			m_modelList.get(i).run=false;
-//		}
 	}
 	
 	public void setStep()
 	{
 		simulationMode = SIMULATION_STEP;
-//		for (int i=0;i<m_modelList.size();i++){
-//			m_modelList.get(i).step=true;
-//		}
+	}
+	
+	public void setTerminate()
+	{
+		simulationMode = SIMULATION_TERMINATE;
+	}
+	
+	public int getMode()
+	{
+		return simulationMode;
 	}
 	
 //	public void setRun(int i){

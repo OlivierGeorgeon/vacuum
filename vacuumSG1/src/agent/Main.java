@@ -9,6 +9,7 @@ import java.awt.*;
 import java.awt.event.*; 
 
 import javax.swing.*;
+import javax.vecmath.Vector3f;
 
 import ernest.Ernest;
 
@@ -43,7 +44,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
     public static int version;
 	
 	private HelpFrames m_Helpframe;
-	private ErnestView m_ernest;
+	private ErnestView m_simulationEngine; // To run in a separate thread.
 
 	private JPanel m_board;
 	
@@ -120,7 +121,6 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		// Initialize the board
 		try{ 
 			this.init(m_environment.getBoardFileName());
-			//this.init("/Users/Olivier/Documents/workspace/vacuumSG1/Board16x12.txt");
 		}
 		catch (Exception e){
 			JOptionPane.showMessageDialog(this, 
@@ -200,9 +200,6 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 	}
 	
 	
-	
-	
-	
 	/**
 	 * Initialize the grid from a board file
 	 * @author mcohen
@@ -259,8 +256,9 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 						m_environment.m_blocks[x][m_h-1-y]=m_environment.fish;
 					}
 					
-					// Agent up
-					if (square[x].equalsIgnoreCase("^"))
+					// Agent
+					if (square[x].equalsIgnoreCase("^") || square[x].equalsIgnoreCase(">") ||
+						square[x].equalsIgnoreCase("v") || square[x].equalsIgnoreCase("<"))
 					{
 						int index=m_modelList.size();
 						
@@ -273,71 +271,82 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 						m_modelList.get(index).mPosition.x = x;
 						m_modelList.get(index).mPosition.y = m_h-1 - y;
 						m_modelList.get(index).mPosition.z = 0;
+						//m_modelList.get(index).mPreviousPosition.set(m_modelList.get(index).mPosition); 
 						m_modelList.get(index).mOrientation.x = 0;
 						m_modelList.get(index).mOrientation.y = 0;
-						m_modelList.get(index).mOrientation.z = (float) Math.PI/2;
+						m_modelList.get(index).mTranslation.set(new Vector3f());
+						m_modelList.get(index).mRotation.set(new Vector3f());
+						
+						if (square[x].equalsIgnoreCase("^"))
+							m_modelList.get(index).mOrientation.z = (float) Math.PI/2;
+						else if (square[x].equalsIgnoreCase(">"))
+							m_modelList.get(index).mOrientation.z = 0;
+						else if (square[x].equalsIgnoreCase("v"))
+							m_modelList.get(index).mOrientation.z = (float) -Math.PI/2;
+						else if (square[x].equalsIgnoreCase("<"))
+							m_modelList.get(index).mOrientation.z = (float) Math.PI;
 						
 						m_modelList.get(index).setEnvironnement(m_environment);
 					}
-					// Agent right
-					if (square[x].equalsIgnoreCase(">")){
-						int index=m_modelList.size();
-						
-						if (version==110) m_modelList.add(new Ernest110Model(index));
-						else if (version==104) m_modelList.add(new Ernest104Model(index));
-						else              m_modelList.add(new Ernest100Model(index));
-						m_modelList.get(index).init(m_w, m_h);
-						m_modelList.get(index).setFrame(this);
-
-						m_modelList.get(index).mPosition.x = x;
-						m_modelList.get(index).mPosition.y = m_h-1 - y;
-						m_modelList.get(index).mPosition.z = 0;
-						m_modelList.get(index).mOrientation.x = 0;
-						m_modelList.get(index).mOrientation.y = 0;
-						m_modelList.get(index).mOrientation.z = 0;
-						
-						m_modelList.get(index).setEnvironnement(m_environment);
-					}
-					
-					// Agent down
-					if (square[x].equalsIgnoreCase("v")){
-						
-						int index=m_modelList.size();
-						if (version==110) m_modelList.add(new Ernest110Model(index));
-						else if (version==104) m_modelList.add(new Ernest104Model(index));
-						else              m_modelList.add(new Ernest100Model(index));
-						m_modelList.get(index).init(m_w, m_h);
-						m_modelList.get(index).setFrame(this);
-						
-						m_modelList.get(index).mPosition.x = x;
-						m_modelList.get(index).mPosition.y = m_h-1 - y;
-						m_modelList.get(index).mPosition.z = 0;
-						m_modelList.get(index).mOrientation.x = 0;
-						m_modelList.get(index).mOrientation.y = 0;
-						m_modelList.get(index).mOrientation.z = (float) -Math.PI/2;
-						
-						m_modelList.get(index).setEnvironnement(m_environment);
-					}
-					// Agent left
-					if (square[x].equalsIgnoreCase("<"))
-					{
-						int index=m_modelList.size();
-						
-						if (version==110) m_modelList.add(new Ernest110Model(index));
-						else if (version==104) m_modelList.add(new Ernest104Model(index));
-						else              m_modelList.add(new Ernest100Model(index));
-						m_modelList.get(index).init(m_w, m_h);
-						m_modelList.get(index).setFrame(this);
-
-						m_modelList.get(index).mPosition.x = x;
-						m_modelList.get(index).mPosition.y = m_h-1 - y;
-						m_modelList.get(index).mPosition.z = 0;
-						m_modelList.get(index).mOrientation.x = 0;
-						m_modelList.get(index).mOrientation.y = 0;
-						m_modelList.get(index).mOrientation.z = (float) Math.PI;
-						
-						m_modelList.get(index).setEnvironnement(m_environment);
-					}
+//					// Agent right
+//					if (square[x].equalsIgnoreCase(">")){
+//						int index=m_modelList.size();
+//						
+//						if (version==110) m_modelList.add(new Ernest110Model(index));
+//						else if (version==104) m_modelList.add(new Ernest104Model(index));
+//						else              m_modelList.add(new Ernest100Model(index));
+//						m_modelList.get(index).init(m_w, m_h);
+//						m_modelList.get(index).setFrame(this);
+//
+//						m_modelList.get(index).mPosition.x = x;
+//						m_modelList.get(index).mPosition.y = m_h-1 - y;
+//						m_modelList.get(index).mPosition.z = 0;
+//						m_modelList.get(index).mOrientation.x = 0;
+//						m_modelList.get(index).mOrientation.y = 0;
+//						m_modelList.get(index).mOrientation.z = 0;
+//						
+//						m_modelList.get(index).setEnvironnement(m_environment);
+//					}
+//					
+//					// Agent down
+//					if (square[x].equalsIgnoreCase("v")){
+//						
+//						int index=m_modelList.size();
+//						if (version==110) m_modelList.add(new Ernest110Model(index));
+//						else if (version==104) m_modelList.add(new Ernest104Model(index));
+//						else              m_modelList.add(new Ernest100Model(index));
+//						m_modelList.get(index).init(m_w, m_h);
+//						m_modelList.get(index).setFrame(this);
+//						
+//						m_modelList.get(index).mPosition.x = x;
+//						m_modelList.get(index).mPosition.y = m_h-1 - y;
+//						m_modelList.get(index).mPosition.z = 0;
+//						m_modelList.get(index).mOrientation.x = 0;
+//						m_modelList.get(index).mOrientation.y = 0;
+//						m_modelList.get(index).mOrientation.z = (float) -Math.PI/2;
+//						
+//						m_modelList.get(index).setEnvironnement(m_environment);
+//					}
+//					// Agent left
+//					if (square[x].equalsIgnoreCase("<"))
+//					{
+//						int index=m_modelList.size();
+//						
+//						if (version==110) m_modelList.add(new Ernest110Model(index));
+//						else if (version==104) m_modelList.add(new Ernest104Model(index));
+//						else              m_modelList.add(new Ernest100Model(index));
+//						m_modelList.get(index).init(m_w, m_h);
+//						m_modelList.get(index).setFrame(this);
+//
+//						m_modelList.get(index).mPosition.x = x;
+//						m_modelList.get(index).mPosition.y = m_h-1 - y;
+//						m_modelList.get(index).mPosition.z = 0;
+//						m_modelList.get(index).mOrientation.x = 0;
+//						m_modelList.get(index).mOrientation.y = 0;
+//						m_modelList.get(index).mOrientation.z = (float) Math.PI;
+//						
+//						m_modelList.get(index).setEnvironnement(m_environment);
+//					}
 					
 					if (Character.isLetter(square[x].toCharArray()[0]))
 					{
@@ -405,14 +414,17 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		}	
 		
 		// start simulation
-//		for (int i=0;i<m_modelList.size();i++){
-//		m_modelList.get(i).startAgent();
-//		m_modelList.get(i).initErnest();
-//	}
+//		for (int i=0;i<m_modelList.size();i++)
+//		{
+//			m_modelList.get(i).initErnest();
+//		}
+		
 		Thread agentThread = null;
 		System.out.println("initialized ") ;
 		m_environment.setStop();
-		agentThread = new Thread(getErnestView());
+		m_simulationEngine = new ErnestView(m_environment,this);
+		//agentThread = new Thread(getErnestView());
+		agentThread = new Thread(m_simulationEngine);
 		agentThread.start();
 		m_statusBar.setText("initialized");
 
@@ -479,11 +491,10 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		// Reset the board ******
 		else if (e.getSource() == m_reset){
 			m_statusBar.setText("Ready");
-			m_modelList.get(0).setCounter(0);
+			m_environment.setTerminate();
 			try
 			{ 
 				this.init(m_environment.getBoardFileName());
-				m_step.setEnabled(false);
 				this.repaint();
 			}
 			catch (Exception ex)
@@ -710,7 +721,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 	{
 		public void windowClosing(WindowEvent e){
 			m_statusTimer.stop(); 
-			if (m_ernest != null) m_ernest.close();
+			//if (m_ernest != null) m_ernest.close();
 		}
 	}
 	
@@ -718,24 +729,24 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 	 * Loads the Ernest execution class  
 	 * @author ogeorgeon 
 	 */
-	private ErnestView getErnestView()
-	{
-		try
-		{
-			if (m_ernest == null)
-				//m_ernest = new ErnestView(m_modelList,this, m_environment);		
-				m_ernest = new ErnestView(m_environment,this);		
-		}
-		catch (NoClassDefFoundError e)
-		{
-			JOptionPane.showMessageDialog(this, 
-					"Error loading the Ernest engine!\n" + 
-					"Please restart the environment with ernest.jar included in the classpath.", 
-					"Error!", 
-					JOptionPane.ERROR_MESSAGE);
-		}
-		return m_ernest;
-	}
+//	private ErnestView getErnestView()
+//	{
+//		try
+//		{
+//			if (m_ernest == null)
+//				//m_ernest = new ErnestView(m_modelList,this, m_environment);		
+//				m_ernest = new ErnestView(m_environment,this);		
+//		}
+//		catch (NoClassDefFoundError e)
+//		{
+//			JOptionPane.showMessageDialog(this, 
+//					"Error loading the Ernest engine!\n" + 
+//					"Please restart the environment with ernest.jar included in the classpath.", 
+//					"Error!", 
+//					JOptionPane.ERROR_MESSAGE);
+//		}
+//		return m_ernest;
+//	}
 
 	public void keyTyped(KeyEvent e) {
 	}

@@ -33,12 +33,6 @@ public class Model extends Observable
 
 	public static final float BOUNDING_RADIUS = .4f; // the agent's physical diameter (for collision)
 	
-	//public static final int AGENTUNDEFINED = 0;
-	//public static final int JESSFILE       = 1;
-	//public static final int SOARFILE       = 2;
-	//public static final int HUMANLOGFILE   = 3;
-	//public static final int ERNEST         = 4;
-	
 	// tactile properties
 	public static final int EMPTY         = 0;
 	public static final int SMOOTH        = 1;
@@ -135,10 +129,12 @@ public class Model extends Observable
 	/** The angular orientation of Ernest. (in radius - trigonometric - counterclockwise)*/
 	protected Vector3f mOrientation = new Vector3f();
 	/** The translation speed of Ernest in cartesian coordinates.*/
-	protected Vector3f mTranslation = new Vector3f(0,0,0);
+	protected Vector3f mTranslation = new Vector3f();
 	/** The angular rotation speed of Ernest. (in radius - trigonometric - counterclockwise)*/
-	protected Vector3f mRotation = new Vector3f(0,0,0);
-	
+	protected Vector3f mRotation = new Vector3f();
+
+    protected Vector3f mPreviousPosition = new Vector3f();
+
 	public Environment m_env;
 
 	private static final Random m_rand = new Random();
@@ -149,7 +145,6 @@ public class Model extends Observable
 	
 	private boolean m_bSpeakAloud     = true;
 	private boolean m_bInternalState  = false;
-	private boolean m_status          = false; 
 	public boolean display;
 	
 	protected String mName;
@@ -159,6 +154,10 @@ public class Model extends Observable
 
 	protected Main mainFrame;
 	
+	protected boolean m_bump = false;
+	protected boolean m_eat = false;
+	protected boolean m_cuddle = false;
+    	
 	/**
 	 * @param i The agent's numerical id. 
 	 */
@@ -322,21 +321,8 @@ public class Model extends Observable
 		m_env.m_anim[Math.round(x)][Math.round(y)] = anim;
 	}
 
-	/**
-	 * getStatus
-	 * Returns the status value of a schema enaction for an Ernest model
-	 * @author ogeorgeon 
-	 */
-	public boolean getStatus()
-	{
-		return m_status;
-	}
-
 	public int getDirtyCount()
 	{ return m_dirtyCount; }
-
-//	public boolean isAgentStopped()
-//	{ return m_halt; }
 
 	public int getDelay()
 	{ return m_delay; }
@@ -352,21 +338,6 @@ public class Model extends Observable
 
 	public int getHeight()
 	{ return m_h; }
-
-	/*
-	public int getCleanSquareCount()
-	{
-		int count = 0;
-		for (int y = 0; y < m_h; y++)
-		{
-			for (int x = 0; x < m_w; x++)
-			{
-				if (m_dirty[x][y] != DIRTY)
-					count++;
-			}
-		}
-		return count;
-	}*/
 
 	public boolean getSpeakAloud()
 	{

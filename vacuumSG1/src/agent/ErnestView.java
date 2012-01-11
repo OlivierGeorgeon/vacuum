@@ -6,9 +6,7 @@ import java.util.ArrayList;
  */
 public class ErnestView implements Runnable 
 {
-	private Main mainFrame;
-	private boolean work=true;
-	
+	private Main mainFrame;	
 	private Environment m_env;
 	
 	public ErnestView(Environment environment, Main frame)
@@ -17,11 +15,6 @@ public class ErnestView implements Runnable
 		m_env = environment;
 	}
 
-	public void close()
-	{
-		work=false;
-	}
-	
 	/**
 	 * Run the simulation.
 	 */
@@ -32,7 +25,7 @@ public class ErnestView implements Runnable
 	
 		// Run the simulation in an infinite loop ===
 	
-		while (work)
+		while (m_env.getMode() < Environment.SIMULATION_TERMINATE)
 		{
 			boolean testRun=false;
 			
@@ -49,5 +42,7 @@ public class ErnestView implements Runnable
 				} catch (InterruptedException e) {e.printStackTrace();}
 			}
 		}
+		
+		m_env.setStop();		
 	}	
 }

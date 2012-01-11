@@ -5,10 +5,19 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Arc2D;
+import java.awt.geom.Area;
+import java.awt.geom.CubicCurve2D;
+import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JPanel;
+
+import agent.Ernest110Model;
+
+import ernest.Ernest;
 
 import spas.IPlace;
 
@@ -46,11 +55,20 @@ public class SpaceMemoryPanel extends JPanel
 		g2d.setColor(Color.white);
 		g2d.fillRect(0, 0, 2 * RADIUS * SCALE, 2 * RADIUS * SCALE);
 		
-		// display agent
+        AffineTransform ref = g2d.getTransform();
+        AffineTransform orientation = new AffineTransform();
+        orientation.translate(RADIUS * SCALE,RADIUS * SCALE);
+        orientation.rotate(Math.PI/2);
+        orientation.scale(.5f,.5f);
+        g2d.transform(orientation);
+
+        // display agent
 		g2d.setColor(Color.gray);
-		g2d.fillOval(RADIUS * SCALE - SCALE/2 , RADIUS * SCALE - SCALE/2, SCALE, SCALE);
+        g2d.fill(Ernest110Model.shape());
 		
-		// Transparency
+        g2d.setTransform(ref);
+
+        // Transparency
 //		float alpha = 0.8f;
 //		int type = AlphaComposite.SRC_OVER; 
 //		AlphaComposite composite = AlphaComposite.getInstance(type, alpha);
