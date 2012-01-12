@@ -141,15 +141,24 @@ public class EyeDisplay extends JPanel {
         	}*/
         	
         	Vector3f localSpeed=new Vector3f();
-        	
         	g.setColor(Color.red);
         	g.fillOval(300,300,5,5);
         	int size=eye.cornerPoints.size();
         	
+        	
+        	/*
+        	g.setColor(Color.black);
+        	g.drawLine(200, 200, 700, 200);
+        	g.drawLine(  0, 400, 500, 400);
+        	
+        	g.drawLine(200, 200,   0, 400);
+        	g.drawLine(700, 200, 500, 400);
+
         	for (int i=0;i<size;i++){
         		if (eye.pointType.get(i)==10){
     				g.setColor(Color.green);
-    				g.fillOval(300+(int)(eye.cornerPoints.get(i).x*4),300-(int)(eye.cornerPoints.get(i).y*4),5,5);
+    				g.fillOval(300+(int)(eye.cornerPoints.get(i).x*2+eye.cornerPoints.get(i).y),
+    						   300-(int)(eye.cornerPoints.get(i).y  ),5,5);
     			}
         	}
         	
@@ -157,7 +166,8 @@ public class EyeDisplay extends JPanel {
         		
         		if (eye.pointType.get(i)==0){
         			g.setColor(Color.blue);
-        			g.fillOval(300+(int)(eye.cornerPoints.get(i).x*4),300-(int)(eye.cornerPoints.get(i).y*4),5,5);
+        			g.fillOval(300+(int)(eye.cornerPoints.get(i).x*2+eye.cornerPoints.get(i).y),
+        					   300-(int)(eye.cornerPoints.get(i).y  ),5,5);
         			
         			g.setColor(Color.red);
         			
@@ -173,29 +183,93 @@ public class EyeDisplay extends JPanel {
         		
         		
         		
-        			g.drawLine(300+(int)(eye.cornerPoints.get(i).x*4+2),
-        					300-(int)(eye.cornerPoints.get(i).y*4-2),
-        					300+(int)(eye.cornerPoints.get(i).x*4 + localSpeed.x*400+2),
-        					300-(int)(eye.cornerPoints.get(i).y*4 + localSpeed.y*400-2));
+        			g.drawLine(300+(int)(eye.cornerPoints.get(i).x*2+eye.cornerPoints.get(i).y+2),
+        					   300-(int)(eye.cornerPoints.get(i).y                            -2),
+        					   300+(int)(eye.cornerPoints.get(i).x*2+eye.cornerPoints.get(i).y+ localSpeed.x*200+2),
+        					   300-(int)(eye.cornerPoints.get(i).y                            + localSpeed.y*200-2));
         		}
         		else{
         			
         			if (eye.pointType.get(i)==1 || eye.pointType.get(i)==2){
         				g.setColor(Color.red);
-        				g.fillOval(300+(int)(eye.cornerPoints.get(i).x*4),300-(int)(eye.cornerPoints.get(i).y*4),5,5);
+        				g.fillOval(300+(int)(eye.cornerPoints.get(i).x*2+eye.cornerPoints.get(i).y),
+        						   300-(int)(eye.cornerPoints.get(i).y  ),5,5);
         			}
         			
         			if (eye.pointType.get(i)==3){
         				g.setColor(Color.yellow);
-        				g.fillOval(300+(int)(eye.cornerPoints.get(i).x*4),300-(int)(eye.cornerPoints.get(i).y*4),5,5);
+        				g.fillOval(300+(int)(eye.cornerPoints.get(i).x*2+eye.cornerPoints.get(i).y),
+        						   300-(int)(eye.cornerPoints.get(i).y  ),5,5);
         			}
         			
         			if (eye.pointType.get(i)==4){
         				g.setColor(Color.cyan);
-        				g.fillOval(300+(int)(eye.cornerPoints.get(i).x*4),300-(int)(eye.cornerPoints.get(i).y*4),5,5);
+        				g.fillOval(300+(int)(eye.cornerPoints.get(i).x*2+eye.cornerPoints.get(i).y),
+        						   300-(int)(eye.cornerPoints.get(i).y  ),5,5);
         			}
         		}
         	} /**/
+
+        	
+        	
+             
+             for (int i=0;i<size;i++){
+                     if (eye.pointType.get(i)==10){
+                             g.setColor(Color.green);
+                             g.fillOval(300+(int)(eye.cornerPoints.get(i).x*4),300-(int)(eye.cornerPoints.get(i).y*4),5,5);
+                     }
+             }
+             
+             for (int i=0;i<size;i++){
+                     
+                     if (eye.pointType.get(i)==0){
+                             g.setColor(Color.blue);
+                             g.fillOval(300+(int)(eye.cornerPoints.get(i).x*4),300-(int)(eye.cornerPoints.get(i).y*4),5,5);
+                             
+                             g.setColor(Color.red);
+                             
+                             localSpeed.scale(0);
+                             localSpeed.y=(float) (eye.retine[(int)eye.cornerPoints.get(i).z]/10)*eye.speedR.z;
+                             
+                             Matrix3f rot = new Matrix3f();
+                             rot.rotZ((float) ( -(eye.cornerPoints.get(i).z*Math.PI/180)));
+                             rot.transform(localSpeed, localSpeed);
+                             
+                     
+                             localSpeed.sub(eye.speedT);
+                     
+                     
+                     
+                             g.drawLine(300+(int)(eye.cornerPoints.get(i).x*4+2),
+                                             300-(int)(eye.cornerPoints.get(i).y*4-2),
+                                             300+(int)(eye.cornerPoints.get(i).x*4 + localSpeed.x*400+2),
+                                             300-(int)(eye.cornerPoints.get(i).y*4 + localSpeed.y*400-2));
+                     }
+                     else{
+                             
+                             if (eye.pointType.get(i)==1 || eye.pointType.get(i)==2){
+                                     g.setColor(Color.red);
+                                     g.fillOval(300+(int)(eye.cornerPoints.get(i).x*4),300-(int)(eye.cornerPoints.get(i).y*4),5,5);
+                             }
+                             
+                             if (eye.pointType.get(i)==3){
+                                     g.setColor(Color.yellow);
+                                     g.fillOval(300+(int)(eye.cornerPoints.get(i).x*4),300-(int)(eye.cornerPoints.get(i).y*4),5,5);
+                             }
+                             
+                             if (eye.pointType.get(i)==4){
+                                     g.setColor(Color.cyan);
+                                     g.fillOval(300+(int)(eye.cornerPoints.get(i).x*4),300-(int)(eye.cornerPoints.get(i).y*4),5,5);
+                             }
+                     }
+             } /**/
+             
+             for (int i=0;i<eye.segments.size();i++){
+            	 g.setColor(eye.segmentColor.get(i));
+            	 g.drawLine(300+(int)(eye.segments.get(i)[0].x*4), 300-(int)(eye.segments.get(i)[0].y*4),
+            			    300+(int)(eye.segments.get(i)[1].x*4), 300-(int)(eye.segments.get(i)[1].y*4));
+             }
+
         	  
         }   
         
