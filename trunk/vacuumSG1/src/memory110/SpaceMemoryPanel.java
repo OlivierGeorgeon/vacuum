@@ -76,6 +76,7 @@ public class SpaceMemoryPanel extends JPanel
 //		g2d.setComposite(composite);
 		
 		double d;
+		double rad;
 		double angle;
 		double span;
 		
@@ -85,14 +86,19 @@ public class SpaceMemoryPanel extends JPanel
 		{
 			d = place.getPosition().length() * SCALE;
 			
-			angle = (float)Math.atan2((double)place.getPosition().y, place.getPosition().x);			
-			angle=angle*180/Math.PI;
+			rad = (float)Math.atan2((double)place.getPosition().y, place.getPosition().x);			
+			angle = rad*180/Math.PI;
 			
 			span=place.getSpan()*180/Math.PI;
 			
 			g2d.setColor(new Color(place.getBundle().getValue()));			
-			g2d.drawArc(RADIUS * SCALE-(int)d, RADIUS * SCALE -(int)d, 2*(int)d, 2*(int)d, (int)(angle-span/2), (int)span);
+			g2d.drawArc(RADIUS * SCALE - (int)d, RADIUS * SCALE - (int)d, 2*(int)d, 2*(int)d, (int)(angle-span/2), (int)span);
+			
+			if (place.getFocus())
+			{
+				g2d.setColor(Color.RED);			
+				g2d.fillOval(RADIUS * SCALE + (int) (d * Math.cos(rad)) - 10, RADIUS * SCALE  - (int) (d * Math.sin(rad)) - 10, 20, 20);
+			}
 		}
-		
 	}
 }
