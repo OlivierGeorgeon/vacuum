@@ -1080,8 +1080,8 @@ public class ErnestModel extends Model
 		ArrayList<Integer> pointType=new ArrayList<Integer>();
 		for (int i=0;i<360;i++){
 			if (cornerV2[i]>0){
-				cornersPoints.add(new Vector3f( (float)(rv2[i]*Math.cos((i+90)*Math.PI/180)) ,
-						                        (float)(rv2[i]*Math.sin((i+90)*Math.PI/180)) ,
+				cornersPoints.add(new Vector3f( (float)(rv2[i]*Math.cos((-i+180)*Math.PI/180)) ,
+						                        (float)(rv2[i]*Math.sin((-i+180)*Math.PI/180)) ,
 						                        i ) );
 			
 				if (rv2[i]<=rv2[(i-1+360)%360]+10 && rv2[i]<=rv2[(i+1+360)%360]+10){
@@ -1097,16 +1097,16 @@ public class ErnestModel extends Model
 				if ( (cornerV2[(i-1+360)%360]>0 && rv2[i]>rv2[(i-1+360)%360]+10)
 				   ||(cornerV2[(i+1+360)%360]>0 && rv2[i]>rv2[(i+1+360)%360]+10) ){
 					
-					cornersPoints.add(new Vector3f( (float)(rv2[i]*Math.cos((i+90)*Math.PI/180)) ,
-	                        (float)(rv2[i]*Math.sin((i+90)*Math.PI/180)) ,
+					cornersPoints.add(new Vector3f( (float)(rv2[i]*Math.cos((-i+180)*Math.PI/180)) ,
+	                        (float)(rv2[i]*Math.sin((-i+180)*Math.PI/180)) ,
 	                        i ) );
 					
 					if (rv2[i]<=rv2[(i-1+360)%360]+10) pointType.add(1);
 					else                               pointType.add(2);
 				}
 				else{
-					cornersPoints.add(new Vector3f( (float)(rv2[i]*Math.cos((i+90)*Math.PI/180)) ,
-                        (float)(rv2[i]*Math.sin((i+90)*Math.PI/180)) ,
+					cornersPoints.add(new Vector3f( (float)(rv2[i]*Math.cos((-i+180)*Math.PI/180)) ,
+                        (float)(rv2[i]*Math.sin((-i+180)*Math.PI/180)) ,
                         i ) );
 				
 					pointType.add(10);
@@ -1154,7 +1154,7 @@ public class ErnestModel extends Model
 		
 		// update eye display
 		Matrix3f rot = new Matrix3f();
-		rot.rotZ(- mOrientation.z + (float)Math.PI/2);
+		rot.rotZ( -mOrientation.z);
 		rot.transform(mSpeedT, mEgoSpeedT);
 		
 		m_eye.updateRetine(rv2,colorMap2,cornerV2,rt2,tactileMap2,cornerT2,cornersPoints,pointType,mEgoSpeedT,mSpeedR);
