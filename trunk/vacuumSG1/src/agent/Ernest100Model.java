@@ -50,7 +50,7 @@ public class Ernest100Model extends ErnestModel
 	//private long time2=System.currentTimeMillis();
 	
 	
-	
+	public Colliculus colliculus;
 	public Main mainFrame;
 	
 	//public String intention;
@@ -663,6 +663,11 @@ public class Ernest100Model extends ErnestModel
 		else        return statusR;
 	}
 	
+	
+	
+	public void updateColliculus(double[] rv2, Color[] colorMap2, double[] rt2, int[] tactileMap2, int lastAction2, float speed){
+		colliculus.update(rv2, colorMap2, rt2, tactileMap2, lastAction, speed);
+	}
 	
 	/**
 	 * Generates a retina image from Ernest's view point.

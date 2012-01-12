@@ -79,7 +79,6 @@ public class ErnestModel extends Model
 	final protected Vector3f DIRECTION_WEST = new Vector3f(-1, 0, 0);
 	final protected Vector3f DIRECTION_NORTHWEST = new Vector3f(-1, 1, 0);
 	
-	public Colliculus colliculus;
 	public InternalView m_eye;
 	public int lastAction;
 	
@@ -381,6 +380,10 @@ public class ErnestModel extends Model
 	////////////////////////////////////////////
 	//******************************************
 	
+	public void updateColliculus(double[] rv2, Color[] colorMap2, double[] rt2, int[] tactileMap2, int lastAction2, float speed){
+		
+	}
+	
 	protected EyeFixation[] rendu(){
 		return rendu(false,0);
 	}
@@ -405,7 +408,11 @@ public class ErnestModel extends Model
 		int[] cornerT = new int[360];              // tactile corner vector
 		int[] cornerT2= new int[360];
 		
+		Color[][] visualImage=new Color[360][200];
+		
 		ArrayList<Vector3f> cornersPoints=new ArrayList<Vector3f>();
+		ArrayList<Vector3f[]> segments=new ArrayList<Vector3f[]>();
+		ArrayList<Color> segmentColor=new ArrayList<Color>();
 		
 		EyeFixation[] retina= new EyeFixation[Ernest.RESOLUTION_RETINA];
 		
@@ -479,7 +486,12 @@ public class ErnestModel extends Model
 						
 				    	// fill the output vectors with the first visible segment
 						for (int k=ai2;k<=ai1;k++){
+							
+							//d=10* imin/Math.cos((double)(90-k)*Math.PI/180);
+							
 							d= d2*10 +   (d1-d2)*10*(k-ai2)/(ai1-ai2);
+							
+							
 							// visual vector if the block is visible
 							if (m_env.isVisible(Im_x+i,Im_y+j)){
 								if (zVMap[k]>d){
@@ -519,9 +531,13 @@ public class ErnestModel extends Model
 								else             cornerT[k]=0;
 							}
 						}	
-						// fill the output vectors with the second visible segment
+						// fill the output vectors with the second visible segment (if visible)
+						if (imin>0){
 						for (int k=ai1;k<=ai3;k++){
-							d= d1*10 +   (d3-d1)*10*(k-ai1)/(ai3-ai1);
+							
+							d=10* jmin/Math.cos((k)*Math.PI/180);
+							
+							//d= d1*10 +   (d3-d1)*10*(k-ai1)/(ai3-ai1);
 							// visual vector if the block is visible
 							if (m_env.isVisible(Im_x+i,Im_y+j)){
 								if (zVMap[k]>d){
@@ -564,7 +580,7 @@ public class ErnestModel extends Model
 								else             cornerT[k]=0;
 							}
 						}
-						
+						}
 					}
 				}
 
@@ -1074,6 +1090,32 @@ public class ErnestModel extends Model
 			cornerT2[i]=cornerT[offset];
 		}
 		
+		/*
+		int j=0;
+		double x,y;
+		for (int i=0;i<360;i++){
+			j=(int) rv2[(359-i+180)%360];
+			double angle =mOrientation.z + (double)i*Math.PI/180;
+			boolean found=false;
+			while (j<200 && !found){
+				x= mPosition.x + ((double)j/20)*Math.cos(angle);
+				y= mPosition.y + ((double)j/20)*Math.sin(angle);
+				if (Math.round(x)>=0 && Math.round(y)>=0 && Math.round(x)<m_w && Math.round(y)<m_h){
+					visualImage[i][j]= m_env.seeBlock(Math.round(x),Math.round(y));
+					if (!m_env.seeBlock(Math.round(x),Math.round(y)).equals(Model.FIELD_COLOR)){
+						found=true;
+						rv2[(359-i+180)%360]=(double)j/2;
+						rt2[(359-i+180)%360]=(double)j/2;
+					}
+				}
+				else
+					found=true;
+				
+				
+				j++;
+				
+			}
+		}*/
 		
 		
 		// determine points of interest
@@ -1104,16 +1146,26 @@ public class ErnestModel extends Model
 					if (rv2[i]<=rv2[(i-1+360)%360]+10) pointType.add(1);
 					else                               pointType.add(2);
 				}
-				else{
+				/*else{
 					cornersPoints.add(new Vector3f( (float)(rv2[i]*Math.cos((-i+180)*Math.PI/180)) ,
                         (float)(rv2[i]*Math.sin((-i+180)*Math.PI/180)) ,
                         i ) );
 				
 					pointType.add(10);
-				}
+				}*/
 			}
 		}
 		
+		for (int i=1;i<cornersPoints.size();i++){
+			segments.add(new Vector3f[2]);
+			segments.get(i-1)[0]=cornersPoints.get(i-1);
+			segments.get(i-1)[1]=cornersPoints.get(i  );
+			segmentColor.add(colorMap2[(int)cornersPoints.get(i).z-1]);
+		}
+		segments.add(new Vector3f[2]);
+		segments.get(segments.size()-1)[0]=cornersPoints.get(0);
+		segments.get(segments.size()-1)[1]=cornersPoints.get(cornersPoints.size()-1);
+		segmentColor.add(colorMap2[(int)cornersPoints.get(cornersPoints.size()-1).z-1]);
 		
 		
 		
@@ -1125,11 +1177,13 @@ public class ErnestModel extends Model
 			retina[Ernest.RESOLUTION_RETINA-i-1].setDistance((int) rv2[(int)(i*180/Ernest.RESOLUTION_RETINA+180/Ernest.RESOLUTION_RETINA/2+90)]);
 		}
 		
-		
+
 		
 		// update colliculus
 		if (sensor){
-			colliculus.update(rv2, colorMap2, rt2, tactileMap2, lastAction, speed);
+			
+			updateColliculus(rv2, colorMap2, rt2, tactileMap2, lastAction, speed);
+			//colliculus.update(rv2, colorMap2, rt2, tactileMap2, lastAction, speed);
 			//colliculusFrame.saveImage();
 			//m_env.saveImage();
 		}
@@ -1157,7 +1211,7 @@ public class ErnestModel extends Model
 		rot.rotZ( -mOrientation.z);
 		rot.transform(mSpeedT, mEgoSpeedT);
 		
-		m_eye.updateRetine(rv2,colorMap2,cornerV2,rt2,tactileMap2,cornerT2,cornersPoints,pointType,mEgoSpeedT,mSpeedR);
+		m_eye.updateRetine(rv2,colorMap2,cornerV2,rt2,tactileMap2,cornerT2,cornersPoints,pointType,segments,segmentColor,mEgoSpeedT,mSpeedR);
 		
 		return retina;
 	}
