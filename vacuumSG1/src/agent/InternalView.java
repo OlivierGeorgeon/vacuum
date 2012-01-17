@@ -20,9 +20,6 @@ public class InternalView {
 	ArrayList<Point> cornerPoints;
 	ArrayList<Segment> segments;
 	
-	public Vector3f speedT;
-	public Vector3f speedR;
-	
 	int left,right;
 	
 	public InternalView(){
@@ -37,13 +34,11 @@ public class InternalView {
     	segments=new ArrayList<Segment>();
     	
     	cornerPoints=new ArrayList<Point>();
-    	
-    	speedT=new Vector3f(0,0,0);
-    	speedR=new Vector3f(0,0,0);
+
 	}
 	
 	public void updateRetine(double[] r,Color[] cm,int[] cor,double[] rt,int[] cmt,int[] cort,
-			                 ArrayList<Point> cornerList, ArrayList<Segment> segmentList, Vector3f st,Vector3f sr){
+			                 ArrayList<Point> cornerList, ArrayList<Segment> segmentList){
     	retine=r;
     	colorMap=cm;
     	corner=cor;
@@ -53,9 +48,6 @@ public class InternalView {
     	corner2=cort;
     	
     	cornerPoints=cornerList;
-    	
-    	speedT=st;
-    	speedR=sr;
     	
     	segments=segmentList;
     }

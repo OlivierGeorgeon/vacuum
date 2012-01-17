@@ -2,6 +2,7 @@ package memory110;
 
 import java.awt.Color;
 
+import javax.vecmath.Matrix3f;
 import javax.vecmath.Vector3f;
 
 public class Point {
@@ -15,11 +16,32 @@ public class Point {
 	
 	public int type;
 	
+	public Vector3f speed;
+	
 	public Point(float x, float y, int i, int t){
 		angle=i;
 		type=t;
 		position=new Vector3f(x,y,0);
 		distance=Math.sqrt(x*x+y*y);
+		
+		speed=new Vector3f();
+	}
+	
+	/**
+	 * create point according to the distance
+	 * @param d  distance from the agent
+	 * @param i  angle of the point (in degree)
+	 * @param t
+	 */
+	public Point(double d, int i,int t){
+		angle=i;
+		type=t;
+		distance=d;
+		
+		position=new Vector3f((float)(d*Math.cos((double) (-i+90)*Math.PI/180)),
+				              (float)(d*Math.sin((double) (-i+90)*Math.PI/180)),
+				              0);
+		speed=new Vector3f();
 	}
 	
 	public void setColors(Color l,Color r){
@@ -35,6 +57,9 @@ public class Point {
 		rightColor=r;
 	}
 	
+	/**
+	 * change the reference orientation
+	 */
 	public void rotate(double rad, int deg){
 		angle=(angle+deg+360)%360;
 		
@@ -44,6 +69,36 @@ public class Point {
 		
 		position.x=(float) x;
 		position.y=(float) y;
+		
+		x=(float) (speed.x*Math.cos(rad) -speed.y*Math.sin(rad));
+		y=(float) (speed.x*Math.sin(rad) +speed.y*Math.cos(rad));
+		
+		speed.x=(float) x;
+		speed.y=(float) y;
 	}
 	
+	public void setSpeed(Vector3f s){
+		speed=s;
+	}
+	
+	public void addSpeed(Vector3f s){
+		speed.add(s);
+	}
+	
+	public void subSpeed(Vector3f s){
+		speed.sub(s);
+	}
+	
+	public void addRotation(Vector3f r){
+		Vector3f localSpeed=new Vector3f();
+		
+		localSpeed.scale(0);
+        localSpeed.y=(float) distance * r.z;
+        
+        Matrix3f rot = new Matrix3f();
+        rot.rotZ((float) ( -(angle*Math.PI/180)));
+        rot.transform(localSpeed, localSpeed);
+
+        speed.add(localSpeed);
+	}
 }
