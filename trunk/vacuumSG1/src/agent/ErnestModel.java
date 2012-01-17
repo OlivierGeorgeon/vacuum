@@ -15,6 +15,8 @@ import javax.vecmath.Matrix3f;
 import javax.vecmath.Vector3f;
 
 import memory.Colliculus;
+import memory110.Point;
+import memory110.Segment;
 
 import ernest.*;
 import utils.Pair;
@@ -410,9 +412,8 @@ public class ErnestModel extends Model
 		
 		Color[][] visualImage=new Color[360][200];
 		
-		ArrayList<Vector3f> cornersPoints=new ArrayList<Vector3f>();
-		ArrayList<Vector3f[]> segments=new ArrayList<Vector3f[]>();
-		ArrayList<Color> segmentColor=new ArrayList<Color>();
+		ArrayList<Point> cornersPoints=new ArrayList<Point>();
+		ArrayList<Segment> segments=new ArrayList<Segment>();
 		
 		EyeFixation[] retina= new EyeFixation[Ernest.RESOLUTION_RETINA];
 		
@@ -498,26 +499,6 @@ public class ErnestModel extends Model
 									rv[k]=d;                        // fill Z-Map
 									zVMap[k]= d;
 									colorMap[k]=bgc;
-									cornerV[k]=0;
-									
-									if      (k==ai2){
-										if (Im_y+j+1<m_h){
-											if ( !(m_env.isVisible(Im_x+i,Im_y+j+1))
-										       || (m_env.isVisible(Im_x+i-1,Im_y+j+1)) ){
-											
-												cornerV[k]=1;
-											}
-										}
-									}
-									else if (k==ai1){
-										if (Im_y+j-1>=0){
-											if ( ( m_env.isVisible(Im_x+i-1,Im_y+j) &&  m_env.isVisible(Im_x+i,Im_y+j-1) )
-											   ||(!m_env.isVisible(Im_x+i-1,Im_y+j) && !m_env.isVisible(Im_x+i,Im_y+j-1) ) ){
-											
-												cornerV[k]=2;
-											}
-										}
-									}
 
 								}
 							}
@@ -535,39 +516,16 @@ public class ErnestModel extends Model
 						if (imin>0){
 						for (int k=ai1;k<=ai3;k++){
 							
-							d=10* jmin/Math.cos((k)*Math.PI/180);
+							//d=10* jmin/Math.cos((k)*Math.PI/180);
 							
-							//d= d1*10 +   (d3-d1)*10*(k-ai1)/(ai3-ai1);
+							d= d1*10 +   (d3-d1)*10*(k-ai1)/(ai3-ai1);
 							// visual vector if the block is visible
 							if (m_env.isVisible(Im_x+i,Im_y+j)){
 								if (zVMap[k]>d){
 									rv[k]=d;
 									zVMap[k]= d;
 									colorMap[k]=bgc;
-									if      (k==ai1) cornerV[k]=1;
-									else if (k==ai3) cornerV[k]=2;
-									else             cornerV[k]=0;
-									
-									cornerV[k]=0;
-									
-									if      (k==ai1){
-										if (Im_y+j+1<m_h){
-											if ( ( m_env.isVisible(Im_x+i-1,Im_y+j) &&  m_env.isVisible(Im_x+i,Im_y+j-1) )
-											   ||(!m_env.isVisible(Im_x+i-1,Im_y+j) && !m_env.isVisible(Im_x+i,Im_y+j-1) ) ){
-											
-												cornerV[k]=1;
-											}
-										}
-									}
-									else if (k==ai3){
-										if (Im_y+j-1>=0 && Im_x+i+1<m_w){
-											if ( !(m_env.isVisible(Im_x+i+1,Im_y+j))
-											   || (m_env.isVisible(Im_x+i+1,Im_y+j-1)) ){
-											
-												cornerV[k]=2;
-											}
-										}
-									}
+
 								}
 							}
 							// tactile vector
@@ -580,6 +538,35 @@ public class ErnestModel extends Model
 								else             cornerT[k]=0;
 							}
 						}
+						}
+						
+						
+						// corners
+						// 1
+						if ( (!m_env.isVisible(Im_x+i-1,Im_y+j) && !m_env.isVisible(Im_x+i,Im_y+j-1) )
+						   ||( m_env.isVisible(Im_x+i-1,Im_y+j) &&  m_env.isVisible(Im_x+i,Im_y+j-1) )
+						   ||( m_env.isVisible(Im_x+i-1,Im_y+j) && !m_env.seeBlock(Im_x+i-1, Im_y+j).equals(m_env.seeBlock(Im_x+i, Im_y+j)))
+						   ||( m_env.isVisible(Im_x+i,Im_y+j-1) && !m_env.seeBlock(Im_x+i, Im_y+j-1).equals(m_env.seeBlock(Im_x+i, Im_y+j))) ){
+									
+								cornersPoints.add(new Point( (float)imin*10 , (float)jmin*10, ai1,0) );
+						}
+						
+						// 2
+						if (Im_y+j+1<m_h && (!m_env.isVisible(Im_x+i-1,Im_y+j)))
+						if ( (!m_env.isVisible(Im_x+i-1,Im_y+j) && !m_env.isVisible(Im_x+i,Im_y+j+1))
+						   ||( m_env.isVisible(Im_x+i-1,Im_y+j+1) )
+						   ||( m_env.isVisible(Im_x+i,Im_y+j+1) && !m_env.seeBlock(Im_x+i, Im_y+j+1).equals(m_env.seeBlock(Im_x+i, Im_y+j))) ){
+							
+							cornersPoints.add(new Point( (float)imin*10 , (float)jplus*10, ai2,0) );
+						}
+						
+						// 3
+						if (Im_x+i+1<m_h && !m_env.isVisible(Im_x+i,Im_y+j-1))
+						if ( (!m_env.isVisible(Im_x+i+1,Im_y+j) && !m_env.isVisible(Im_x+i+1,Im_y+j))
+						   ||( m_env.isVisible(Im_x+i+1,Im_y+j-1) )
+						   ||( m_env.isVisible(Im_x+i+1,Im_y+j) && !m_env.seeBlock(Im_x+i+1, Im_y+j).equals(m_env.seeBlock(Im_x+i, Im_y+j))) ){
+							
+							cornersPoints.add(new Point( (float)iplus*10 , (float)jmin*10, ai3,0) );
 						}
 					}
 				}
@@ -629,26 +616,6 @@ public class ErnestModel extends Model
 									rv[k]=d;
 									zVMap[k]= d;
 									colorMap[k]=bgc;
-									cornerV[k]=0;
-									
-									if      (k==ai2){
-										if (Im_x+i+1<m_w){
-											if ( !(m_env.isVisible(Im_x+i+1,Im_y-j))
-										       || (m_env.isVisible(Im_x+i+1,Im_y-j+1)) ){
-											
-												cornerV[k]=1;
-											}
-										}
-									}
-									else if (k==ai1){
-										if (Im_x+i-1>=0){
-											if ( ( m_env.isVisible(Im_x+i-1,Im_y-j) &&  m_env.isVisible(Im_x+i,Im_y-j+1) )
-											   ||(!m_env.isVisible(Im_x+i-1,Im_y-j) && !m_env.isVisible(Im_x+i,Im_y-j+1) ) ){
-											
-												cornerV[k]=2;
-											}
-										}
-									}
 									
 								}
 							}
@@ -669,30 +636,7 @@ public class ErnestModel extends Model
 									rv[k]=d;
 									zVMap[k]= d;
 									colorMap[k]=bgc;
-									if      (k==ai1) cornerV[k]=1;
-									else if (k==ai3) cornerV[k]=2;
-									else             cornerV[k]=0;
-									
-									cornerV[k]=0;
-									
-									if      (k==ai3){
-										if (Im_y+j-1>=0){
-											if ( !(m_env.isVisible(Im_x+i,Im_y-j-1))
-										       || (m_env.isVisible(Im_x+i-1,Im_y-j-1)) ){
-											
-												cornerV[k]=2;
-											}
-										}
-									}
-									else if (k==ai1){
-										if (Im_y+j-1>=0){
-											if ( ( m_env.isVisible(Im_x+i-1,Im_y-j) &&  m_env.isVisible(Im_x+i,Im_y-j-1) )
-											   ||(!m_env.isVisible(Im_x+i-1,Im_y-j) && !m_env.isVisible(Im_x+i,Im_y-j-1) ) ){
-											
-												cornerV[k]=1;
-											}
-										}
-									}
+
 								}
 							}
 							if (zTMap[k]>d){
@@ -705,8 +649,38 @@ public class ErnestModel extends Model
 								else             cornerT[k]=0;
 							}
 						}
+						
+						// corners
+						// 1
+						if ( (!m_env.isVisible(Im_x+i,Im_y-j+1) && !m_env.isVisible(Im_x+i-1,Im_y-j) )
+						   ||( m_env.isVisible(Im_x+i,Im_y-j+1) &&  m_env.isVisible(Im_x+i-1,Im_y-j) )
+						   ||( m_env.isVisible(Im_x+i,Im_y-j+1) && !m_env.seeBlock(Im_x+i, Im_y-j+1).equals(m_env.seeBlock(Im_x+i, Im_y-j)))
+						   ||( m_env.isVisible(Im_x+i-1,Im_y-j) && !m_env.seeBlock(Im_x+i-1, Im_y-j).equals(m_env.seeBlock(Im_x+i, Im_y-j))) ){
+									
+								cornersPoints.add(new Point( (float)imin*10 , -(float)jmin*10, ai1,0) );
+						}
+						
+						
+						// 2
+						if (Im_x+i+1<m_w && !m_env.isVisible(Im_x+i,Im_y-j+1))
+						if ( (!m_env.isVisible(Im_x+i+1,Im_y-j+1) && !m_env.isVisible(Im_x+i+1,Im_y-j))
+						   ||( m_env.isVisible(Im_x+i+1,Im_y-j+1) )
+						   ||( m_env.isVisible(Im_x+i+1,Im_y-j) && !m_env.seeBlock(Im_x+i+1, Im_y-j).equals(m_env.seeBlock(Im_x+i, Im_y-j))) ){
+							
+							cornersPoints.add(new Point( (float)iplus*10 , -(float)jmin*10, ai2,0) );
+						}
+						
+						// 3
+						if (Im_x+i+1<m_h && !m_env.isVisible(Im_x+i-1,Im_y-j))
+						if ( (!m_env.isVisible(Im_x+i-1,Im_y-j-1) && !m_env.isVisible(Im_x+i,Im_y-j-1))
+						   ||( m_env.isVisible(Im_x+i-1,Im_y-j-1) )
+						   ||( m_env.isVisible(Im_x+i,Im_y-j-1) && !m_env.seeBlock(Im_x+i, Im_y-j-1).equals(m_env.seeBlock(Im_x+i, Im_y-j))) ){
+							
+							cornersPoints.add(new Point( (float)imin*10 , -(float)jplus*10, ai3,0) );
+						}
 					}
 				}
+				
 				
 				// (3) cells on the bottom left side
 				if ( (i>0) && (Im_x-i>=0) && (Im_y-j>=0) ){
@@ -743,26 +717,6 @@ public class ErnestModel extends Model
 									rv[k]=d;
 									zVMap[k]=d;
 									colorMap[k]=bgc;
-									cornerV[k]=0;
-									
-									if      (k==ai2){
-										if (Im_x-i-1>=0){
-											if ( !(m_env.isVisible(Im_x-i,Im_y-j-1))
-										       || (m_env.isVisible(Im_x-i+1,Im_y-j-1)) ){
-											
-												cornerV[k]=1;
-											}
-										}
-									}
-									else if (k==ai1){
-										if (Im_y+j+1<m_h){
-											if ( ( m_env.isVisible(Im_x-i,Im_y+j) &&  m_env.isVisible(Im_x-i+1,Im_y-j) )
-											   ||(!m_env.isVisible(Im_x-i,Im_y+j) && !m_env.isVisible(Im_x-i+1,Im_y-j) ) ){
-											
-												cornerV[k]=2;
-											}
-										}
-									}
 								}
 							}
 							if (zTMap[k]>d){
@@ -781,26 +735,7 @@ public class ErnestModel extends Model
 									rv[k]=d;
 									zVMap[k]=d;
 									colorMap[k]=bgc;
-									cornerV[k]=0;
-									
-									if      (k==ai3){
-										if (Im_x-i-1>=0){
-											if ( !(m_env.isVisible(Im_x-i-1,Im_y-j))
-										       || (m_env.isVisible(Im_x-i-1,Im_y-j+1)) ){
-											
-												cornerV[k]=2;
-											}
-										}
-									}
-									else if (k==ai1){
-										if (Im_y+j+1<m_h){
-											if ( ( m_env.isVisible(Im_x-i,Im_y+j) &&  m_env.isVisible(Im_x-i+1,Im_y-j) )
-											   ||(!m_env.isVisible(Im_x-i,Im_y+j) && !m_env.isVisible(Im_x-i+1,Im_y-j) ) ){
-											
-												cornerV[k]=1;
-											}
-										}
-									}
+
 								}
 							}
 							if (zTMap[k]>d){
@@ -811,6 +746,35 @@ public class ErnestModel extends Model
 								else if (k==ai3) cornerT[k]=2;
 								else             cornerT[k]=0;
 							}
+						}
+						
+						// corners
+						// 1
+						if ( (!m_env.isVisible(Im_x-i,Im_y-j+1) && !m_env.isVisible(Im_x-i+1,Im_y-j) )
+						   ||( m_env.isVisible(Im_x-i,Im_y-j+1) &&  m_env.isVisible(Im_x-i+1,Im_y-j) )
+						   ||( m_env.isVisible(Im_x-i,Im_y-j+1) && !m_env.seeBlock(Im_x-i, Im_y-j+1).equals(m_env.seeBlock(Im_x-i, Im_y-j)))
+						   ||( m_env.isVisible(Im_x-i+1,Im_y-j) && !m_env.seeBlock(Im_x-i+1, Im_y-j).equals(m_env.seeBlock(Im_x-i, Im_y-j))) ){
+									
+								cornersPoints.add(new Point( -(float)imin*10 , -(float)jmin*10, ai1,0) );
+						}
+						
+						// 2
+						if (Im_y-j-1>=0 && !m_env.isVisible(Im_x-i+1,Im_y-j))
+						if ( (!m_env.isVisible(Im_x-i,Im_y-j-1) && !m_env.isVisible(Im_x-i+1,Im_y-j-1))
+						   ||( m_env.isVisible(Im_x-i+1,Im_y-j-1) )
+						   ||( m_env.isVisible(Im_x-i,Im_y-j-1) && !m_env.seeBlock(Im_x-i, Im_y-j-1).equals(m_env.seeBlock(Im_x-i, Im_y-j))) ){
+							
+							cornersPoints.add(new Point( -(float)imin*10 , -(float)jplus*10, ai2,0) );
+						}
+						
+						
+						// 3
+						if (Im_x-i-1>=0 && !m_env.isVisible(Im_x-i,Im_y-j+1))
+						if ( (!m_env.isVisible(Im_x-i,Im_y-j+1) && !m_env.isVisible(Im_x-i-1,Im_y-j))
+						   ||( m_env.isVisible(Im_x-i-1,Im_y-j+1) )
+						   ||( m_env.isVisible(Im_x-i-1,Im_y-j) && !m_env.seeBlock(Im_x-i-1, Im_y-j).equals(m_env.seeBlock(Im_x-i, Im_y-j))) ){
+							
+							cornersPoints.add(new Point( -(float)iplus*10 , -(float)jmin*10, ai3,0) );
 						}
 						
 					}
@@ -851,17 +815,6 @@ public class ErnestModel extends Model
 				    				rv[k]=d;
 				    				zVMap[k]= d;
 				    				colorMap[k]=bgc;
-				    				cornerV[k]=0;
-									
-									if  (k==ai2){
-										if (Im_x-i-1>=0){
-											if ( !(m_env.isVisible(Im_x-i-1,Im_y+j))
-										       || (m_env.isVisible(Im_x-i-1,Im_y+j-1)) ){
-											
-												cornerV[k]=1;
-											}
-										}
-									}
 				    			}
 				    		}
 				    		if (zTMap[k]>d){
@@ -880,17 +833,6 @@ public class ErnestModel extends Model
 				    				rv[k]=d;
 				    				zVMap[k]= d;
 				    				colorMap[k]=bgc;
-				    				cornerV[k]=0;
-									
-									if  (k==ai1){
-										if (Im_x-i+1<m_w){
-											if ( !(m_env.isVisible(Im_x-i+1,Im_y+j))
-										       || (m_env.isVisible(Im_x-i+1,Im_y+j-1)) ){
-											
-												cornerV[k]=1;
-											}
-										}
-									}
 				    			}
 				    		}
 				    		if (zTMap[k]>d){
@@ -901,6 +843,28 @@ public class ErnestModel extends Model
 			    				else        cornerT[k]=0;	
 			    			}
 				    	}
+				    	
+				    	
+				    	// corners
+				    	// 1
+						if (!m_env.isVisible(Im_x-i,Im_y+j-1))
+						if ( (!m_env.isVisible(Im_x-i+1,Im_y+j))
+						   ||( m_env.isVisible(Im_x-i+1,Im_y+j-1) )
+						   ||( m_env.isVisible(Im_x-i+1,Im_y+j) && !m_env.seeBlock(Im_x-i+1, Im_y+j).equals(m_env.seeBlock(Im_x-i, Im_y+j))) ){
+							
+							cornersPoints.add(new Point( -(float)imin*10 , (float)jmin*10, ai1,0) );
+						}
+						
+						
+						// 2
+						if (!m_env.isVisible(Im_x-i,Im_y+j-1))
+						if ( (!m_env.isVisible(Im_x-i-1,Im_y+j))
+						   ||( m_env.isVisible(Im_x-i-1,Im_y+j-1) )
+						   ||( m_env.isVisible(Im_x-i-1,Im_y+j) && !m_env.seeBlock(Im_x-i-1, Im_y+j).equals(m_env.seeBlock(Im_x-i, Im_y+j))) ){
+							
+							cornersPoints.add(new Point( -(float)iplus*10 , (float)jmin*10, ai2,0) );
+						}
+
 					}
 				}
 				
@@ -942,26 +906,6 @@ public class ErnestModel extends Model
 				    				rv[k]=d;
 				    				zVMap[k]= d;
 				    				colorMap[k]=bgc;
-				    				cornerV[k]=0;
-									
-									if      (k==ai2){
-										if (Im_x-i-1>=0){
-											if ( !(m_env.isVisible(Im_x-i-1,Im_y+j))
-										       || (m_env.isVisible(Im_x-i-1,Im_y+j-1)) ){
-											
-												cornerV[k]=1;
-											}
-										}
-									}
-									else if (k==ai1){
-										if (Im_x-i+1<m_w){
-											if ( ( m_env.isVisible(Im_x-i,Im_y+j-1) &&  m_env.isVisible(Im_x-i+1,Im_y+j) )
-											   ||(!m_env.isVisible(Im_x-i+1,Im_y+j) && !m_env.isVisible(Im_x-i+1,Im_y+j) ) ){
-											
-												cornerV[k]=2;
-											}
-										}
-									}
 				    			}
 				    		}
 				    		if (zTMap[k]>d){
@@ -980,26 +924,6 @@ public class ErnestModel extends Model
 				    				rv[k]=d;
 				    				zVMap[k]=d;
 				    				colorMap[k]=bgc;
-				    				cornerV[k]=0;
-									
-									if      (k==ai3){
-										if (Im_y+j+1<m_h){
-											if ( !(m_env.isVisible(Im_x-i,Im_y+j+1))
-										       || (m_env.isVisible(Im_x-i+1,Im_y+j+1)) ){
-											
-												cornerV[k]=2;
-											}
-										}
-									}
-									else if (k==ai1){
-										if (Im_x-i+1<m_w){
-											if ( ( m_env.isVisible(Im_x-i,Im_y+j-1) &&  m_env.isVisible(Im_x-i+1,Im_y+j) )
-											   ||(!m_env.isVisible(Im_x-i,Im_y+j-1) && !m_env.isVisible(Im_x-i+1,Im_y+j) ) ){
-											
-												cornerV[k]=1;
-											}
-										}
-									}
 				    			}
 				    		}
 				    		if (zTMap[k]>d-0.01){
@@ -1011,6 +935,35 @@ public class ErnestModel extends Model
 			    				else             cornerT[k]=0;
 			    			}
 				    	}
+						
+				    	// corners
+						// 1
+						if ( (!m_env.isVisible(Im_x-i+1,Im_y+j) && !m_env.isVisible(Im_x-i,Im_y+j-1) )
+						   ||( m_env.isVisible(Im_x-i+1,Im_y+j) &&  m_env.isVisible(Im_x-i,Im_y+j-1) )
+						   ||( m_env.isVisible(Im_x-i+1,Im_y+j) && !m_env.seeBlock(Im_x-i+1, Im_y+j).equals(m_env.seeBlock(Im_x-i, Im_y+j)))
+						   ||( m_env.isVisible(Im_x-i,Im_y+j-1) && !m_env.seeBlock(Im_x-i, Im_y+j-1).equals(m_env.seeBlock(Im_x-i, Im_y+j))) ){
+									
+								cornersPoints.add(new Point( -(float)imin*10 , (float)jmin*10, ai1,0) );
+						}
+						
+						
+						// 2
+						if (Im_x-i-1>=0 && !m_env.isVisible(Im_x-i,Im_y+j-1))
+						if ( (!m_env.isVisible(Im_x-i-1,Im_y+j) && !m_env.isVisible(Im_x-i,Im_y+j-1))
+						   ||( m_env.isVisible(Im_x-i-1,Im_y+j-1) )
+						   ||( m_env.isVisible(Im_x-i-1,Im_y+j) && !m_env.seeBlock(Im_x-i-1, Im_y+j).equals(m_env.seeBlock(Im_x-i, Im_y+j))) ){
+							
+							cornersPoints.add(new Point( -(float)iplus*10 , (float)jmin*10, ai2,0) );
+						}
+						
+						// 3
+						if (Im_y+j+1<m_h && !m_env.isVisible(Im_x-i+1,Im_y+j))
+						if ( (!m_env.isVisible(Im_x-i,Im_y+j+1) && !m_env.isVisible(Im_x-i+1,Im_y+j))
+						   ||( m_env.isVisible(Im_x-i+1,Im_y+j+1) )
+						   ||( m_env.isVisible(Im_x-i,Im_y+j+1) && !m_env.seeBlock(Im_x-i, Im_y+j+1).equals(m_env.seeBlock(Im_x-i, Im_y+j))) ){
+							
+							cornersPoints.add(new Point( -(float)imin*10 , (float)jplus*10, ai3,0) );
+						}
 						
 					}
 				}
@@ -1061,15 +1014,65 @@ public class ErnestModel extends Model
 								tactileMap[k%360]=m_env.CUDDLE;
 							}
 						}
-						
-						cornerV[ai3%360]=1;
-						cornerV[ai4%360]=2;
 					}
 				}
 				
 				
 			}
 		}
+		
+		
+		// remove masked point of interest
+		int index=0;
+		while (index<cornersPoints.size()){
+			
+			if (  cornersPoints.get(index).distance<=rv[cornersPoints.get(index).angle]+5
+				||cornersPoints.get(index).distance<=rv[((cornersPoints.get(index).angle)-1+360)%360]+5
+				||cornersPoints.get(index).distance<=rv[((cornersPoints.get(index).angle)+1+360)%360]+5){
+				
+				index++;
+			}
+			else{
+				cornersPoints.remove(index);
+			}
+		}
+		
+		// remove double
+		index=0;
+		boolean test=false;
+		while (index<cornersPoints.size()){
+			test=false;
+			for (int i=index+1;i<cornersPoints.size();i++){
+				if (  Math.abs(cornersPoints.get(index).position.x - cornersPoints.get(i).position.x)<2
+				   && Math.abs(cornersPoints.get(index).position.y - cornersPoints.get(i).position.y)<2){
+					test=true;
+				}
+			}
+			if (test) cornersPoints.remove(index);
+			else index++;
+		}
+		
+		index=0;
+		while (index<cornersPoints.size()){
+			int index2=index+1;
+			test=false;
+			boolean test2=false;    // indicate if the point Index is removed or not
+			while (index2<cornersPoints.size() && !test2){
+				if (Math.abs(cornersPoints.get(index).angle-cornersPoints.get(index2).angle)<=1){
+					if (cornersPoints.get(index).distance>cornersPoints.get(index2).distance){
+						cornersPoints.remove(index);
+						test2=true;
+					}
+					else{
+						cornersPoints.remove(index2);
+					}
+				}
+				index2++;
+			}
+			if (!test2) index++;
+		}
+		
+		
 		
 		
 		// fill the output vectors (agent orientation)
@@ -1078,97 +1081,139 @@ public class ErnestModel extends Model
 			int offset=(i-orientationDeg+630)%360;
 			rv2[i]= rv[offset];
 			colorMap2[i]=colorMap[offset];
-			cornerV2[i]=cornerV[offset];
-			
-			if (!colorMap[offset].equals(colorMap[(offset-1+360)%360])
-			   && rv[offset]<rv[(offset-1+360)%360]+10){
-				cornerV2[i]=1;
-			}
 			
 			rt2[i]= rt[offset];
 			tactileMap2[i]=tactileMap[offset];
 			cornerT2[i]=cornerT[offset];
+		}
+		for (int i=0;i<cornersPoints.size();i++){
+			cornersPoints.get(i).rotate(-mOrientation.z, orientationDeg+90);
+			cornerV2[cornersPoints.get(i).angle]=1;
 		}
 		
 		/*
 		int j=0;
 		double x,y;
 		for (int i=0;i<360;i++){
-			j=(int) rv2[(359-i+180)%360];
+			j=(int) rv2[(359-i+180)%360]*2;
 			double angle =mOrientation.z + (double)i*Math.PI/180;
 			boolean found=false;
-			while (j<200 && !found){
+			while (j>0 && !found){
 				x= mPosition.x + ((double)j/20)*Math.cos(angle);
 				y= mPosition.y + ((double)j/20)*Math.sin(angle);
 				if (Math.round(x)>=0 && Math.round(y)>=0 && Math.round(x)<m_w && Math.round(y)<m_h){
-					visualImage[i][j]= m_env.seeBlock(Math.round(x),Math.round(y));
-					if (!m_env.seeBlock(Math.round(x),Math.round(y)).equals(Model.FIELD_COLOR)){
+					//visualImage[i][j]= m_env.seeBlock(Math.round(x),Math.round(y));
+					if (m_env.seeBlock(Math.round(x),Math.round(y)).equals(Model.FIELD_COLOR)){
 						found=true;
 						rv2[(359-i+180)%360]=(double)j/2;
 						rt2[(359-i+180)%360]=(double)j/2;
 					}
 				}
-				else
-					found=true;
-				
-				
-				j++;
+				else found=true;
+				j--;
 				
 			}
-		}*/
+		}/**/
 		
 		
-		// determine points of interest
-		ArrayList<Integer> pointType=new ArrayList<Integer>();
+		// detection of appearing and disappearing points
 		for (int i=0;i<360;i++){
 			if (cornerV2[i]>0){
-				cornersPoints.add(new Vector3f( (float)(rv2[i]*Math.cos((-i+180)*Math.PI/180)) ,
-						                        (float)(rv2[i]*Math.sin((-i+180)*Math.PI/180)) ,
-						                        i ) );
-			
-				if (rv2[i]<=rv2[(i-1+360)%360]+10 && rv2[i]<=rv2[(i+1+360)%360]+10){
-					pointType.add(0);
+				if ( rv2[i]+5<rv2[(i-1+360)%360]){
+					cornersPoints.add(new Point( (float)(rv2[(i-1+360)%360]*Math.cos((-(i-1+360)%360+180)*Math.PI/180)) ,
+                            					 (float)(rv2[(i-1+360)%360]*Math.sin((-(i-1+360)%360+180)*Math.PI/180)) ,
+                            					 (i-1+360)%360 , 1 ) );
 				}
-				else{
-					if (rv2[i]<=rv2[(i-1+360)%360]+10) pointType.add(1);
-					else                               pointType.add(2);
-				}	
+				if ( rv2[i]+5<rv2[(i+1+360)%360]){
+					cornersPoints.add(new Point( (float)(rv2[(i+1+360)%360]*Math.cos((-(i+1+360)%360+180)*Math.PI/180)) ,
+                            					 (float)(rv2[(i+1+360)%360]*Math.sin((-(i+1+360)%360+180)*Math.PI/180)) ,
+                            					 (i+1+360)%360 , 2 ) );
+				}
+			}
+		}
+		
+		
+		
+		// sort points by angle
+		Point temp;
+		for (int i=1;i<cornersPoints.size();i++){
+			int memory=cornersPoints.get(i).angle;
+			temp=cornersPoints.get(i);
+			int compt=i-1;
+			boolean marqueur;
+			
+			do{
+				marqueur=false;
+				if (cornersPoints.get(compt).angle>memory){
+					cornersPoints.set(compt+1,cornersPoints.get(compt));
+					compt--;
+					marqueur=true;
+                }
+				if (compt<0) marqueur=false;
+            }
+			while(marqueur);
+			cornersPoints.set(compt+1,temp);
+        }
+		
+		// set points color
+		for (int i=0;i<cornersPoints.size();i++){
+			if ( rv2[cornersPoints.get(i).angle]+20 > rv2[(cornersPoints.get(i).angle+1+360)%360]){
+				cornersPoints.get(i).setColorsRight(colorMap2[(cornersPoints.get(i).angle+1+360)%360]);
 			}
 			else{
-				
-				if ( (cornerV2[(i-1+360)%360]>0 && rv2[i]>rv2[(i-1+360)%360]+10)
-				   ||(cornerV2[(i+1+360)%360]>0 && rv2[i]>rv2[(i+1+360)%360]+10) ){
-					
-					cornersPoints.add(new Vector3f( (float)(rv2[i]*Math.cos((-i+180)*Math.PI/180)) ,
-	                        (float)(rv2[i]*Math.sin((-i+180)*Math.PI/180)) ,
-	                        i ) );
-					
-					if (rv2[i]<=rv2[(i-1+360)%360]+10) pointType.add(1);
-					else                               pointType.add(2);
-				}
-				/*else{
-					cornersPoints.add(new Vector3f( (float)(rv2[i]*Math.cos((-i+180)*Math.PI/180)) ,
-                        (float)(rv2[i]*Math.sin((-i+180)*Math.PI/180)) ,
-                        i ) );
-				
-					pointType.add(10);
-				}*/
+				cornersPoints.get(i).setColorsRight(Color.black);
+			}
+			
+			if ( rv2[cornersPoints.get(i).angle]+20 > rv2[(cornersPoints.get(i).angle-1+360)%360]){
+				cornersPoints.get(i).setColorsLeft(colorMap2[(cornersPoints.get(i).angle-1+360)%360]);
+			}
+			else{
+				cornersPoints.get(i).setColorsLeft(Color.black);
 			}
 		}
+
+		
+		
+		// determine if points are appearing or disappearing
+		for (int i=0;i<cornersPoints.size();i++){
+			if (cornersPoints.get(i).type==1 || cornersPoints.get(i).type==2){
+				
+				float angle=mEgoSpeedT.x*cornersPoints.get(i).position.y-mEgoSpeedT.y*cornersPoints.get(i).position.x;
+				
+				if (angle>0){
+					if (cornersPoints.get(i).type==1) cornersPoints.get(i).type=3;
+					else cornersPoints.get(i).type=4;
+				}
+				if (angle<0){
+					if (cornersPoints.get(i).type==1) cornersPoints.get(i).type=4;
+					else cornersPoints.get(i).type=3;
+				}
+				
+			}
+		}/**/
+		
 		
 		for (int i=1;i<cornersPoints.size();i++){
-			segments.add(new Vector3f[2]);
-			segments.get(i-1)[0]=cornersPoints.get(i-1);
-			segments.get(i-1)[1]=cornersPoints.get(i  );
-			segmentColor.add(colorMap2[(int)cornersPoints.get(i).z-1]);
+			if (  (cornersPoints.get(i-1).type==0 && cornersPoints.get(i).type==0)
+				||	( (cornersPoints.get(i-1).type==0 || cornersPoints.get(i).type==0) 
+					&& cornersPoints.get(i-1).angle+1!=cornersPoints.get(i).angle) ){
+				
+				if (!cornersPoints.get(i-1).rightColor.equals(Color.black) && !cornersPoints.get(i).leftColor.equals(Color.black)){
+					if (cornersPoints.get(i-1).rightColor.equals(cornersPoints.get(i).leftColor)){
+						segments.add(new Segment(cornersPoints.get(i-1),cornersPoints.get(i)));
+					}
+				}
+			}
 		}
-		segments.add(new Vector3f[2]);
-		segments.get(segments.size()-1)[0]=cornersPoints.get(0);
-		segments.get(segments.size()-1)[1]=cornersPoints.get(cornersPoints.size()-1);
-		segmentColor.add(colorMap2[(int)cornersPoints.get(cornersPoints.size()-1).z-1]);
+		segments.add(new Segment(cornersPoints.get(cornersPoints.size()-1),cornersPoints.get(0)));
+		/**/
 		
-		
-		
+		/*
+		for (int i=0;i<360;i++){
+			cornersPoints.add(new Point( (float)(rv2[i]*Math.cos((-i+180)*Math.PI/180)) ,
+					 (float)(rv2[i]*Math.sin((-i+180)*Math.PI/180)) ,
+					 (i+1+360)%360 , 10 ) );
+		}/**/
 		
 		// fill the retina vector
 		for (int i=0;i<Ernest.RESOLUTION_RETINA;i++){
@@ -1188,30 +1233,14 @@ public class ErnestModel extends Model
 			//m_env.saveImage();
 		}
 		
-		// compute appearing and disappearing points
-		for (int i=0;i<cornersPoints.size();i++){
-			if (pointType.get(i)==1 || pointType.get(i)==2){
-				
-				float angle=mEgoSpeedT.x*cornersPoints.get(i).y-mEgoSpeedT.y*cornersPoints.get(i).x;
-				
-				if (angle>0){
-					if (pointType.get(i)==1) pointType.set(i, 3);
-					else pointType.set(i, 4);
-				}
-				if (angle<0){
-					if (pointType.get(i)==1) pointType.set(i, 4);
-					else pointType.set(i, 3);
-				}
-				
-			}
-		}
+		
 		
 		// update eye display
 		Matrix3f rot = new Matrix3f();
 		rot.rotZ( -mOrientation.z);
 		rot.transform(mSpeedT, mEgoSpeedT);
 		
-		m_eye.updateRetine(rv2,colorMap2,cornerV2,rt2,tactileMap2,cornerT2,cornersPoints,pointType,segments,segmentColor,mEgoSpeedT,mSpeedR);
+		m_eye.updateRetine(rv2,colorMap2,cornerV2,rt2,tactileMap2,cornerT2,cornersPoints,segments,mEgoSpeedT,mSpeedR);
 		
 		return retina;
 	}

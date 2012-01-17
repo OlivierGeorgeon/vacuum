@@ -5,6 +5,9 @@ import java.util.ArrayList;
 
 import javax.vecmath.Vector3f;
 
+import memory110.Point;
+import memory110.Segment;
+
 public class InternalView {
 
 	
@@ -14,10 +17,8 @@ public class InternalView {
 	int[] tactileMap;
 	int[] corner;
 	int[] corner2;
-	ArrayList<Vector3f> cornerPoints;
-	ArrayList<Integer> pointType;
-	ArrayList<Vector3f[]> segments;
-	ArrayList<Color> segmentColor; 
+	ArrayList<Point> cornerPoints;
+	ArrayList<Segment> segments;
 	
 	public Vector3f speedT;
 	public Vector3f speedR;
@@ -33,15 +34,16 @@ public class InternalView {
     	tactileMap=new int[360];
     	corner2=new int[360];
     	
-    	cornerPoints=new ArrayList<Vector3f>();
+    	segments=new ArrayList<Segment>();
+    	
+    	cornerPoints=new ArrayList<Point>();
     	
     	speedT=new Vector3f(0,0,0);
     	speedR=new Vector3f(0,0,0);
 	}
 	
 	public void updateRetine(double[] r,Color[] cm,int[] cor,double[] rt,int[] cmt,int[] cort,
-			                 ArrayList<Vector3f> cornerList, ArrayList<Integer> type, ArrayList<Vector3f[]> segmentList, ArrayList<Color> segmentsColor,
-			                 Vector3f st,Vector3f sr){
+			                 ArrayList<Point> cornerList, ArrayList<Segment> segmentList, Vector3f st,Vector3f sr){
     	retine=r;
     	colorMap=cm;
     	corner=cor;
@@ -51,12 +53,10 @@ public class InternalView {
     	corner2=cort;
     	
     	cornerPoints=cornerList;
-    	pointType=type;
     	
     	speedT=st;
     	speedR=sr;
     	
     	segments=segmentList;
-    	segmentColor=segmentsColor;
     }
 }
