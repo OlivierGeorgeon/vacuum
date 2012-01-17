@@ -287,7 +287,7 @@ public class TactileMap {
 		/////////////////////////////////////////////////////////
 		// place neurons on the map
 		/////////////////////////////////////////////////////////
-		double dist,dist2,dist3;
+		/*double dist,dist2,dist3;
 		double a,b;
 		
 		float capacity=500; 
@@ -304,7 +304,7 @@ public class TactileMap {
         
 		
         // compute relation between neurons
-        for (int i=0;i<resolution*sensorRes;i++){
+       /* for (int i=0;i<resolution*sensorRes;i++){
                 for (int j=0;j<resolution*sensorRes;j++){
                         if (i!=j){
                                 if ( (m_tactileVariations[i]== capacity && m_tactileVariations[j]>0) 

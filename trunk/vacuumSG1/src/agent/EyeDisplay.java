@@ -219,43 +219,34 @@ public class EyeDisplay extends JPanel {
 
         	
         	
-             
+             /*
              for (int i=0;i<size;i++){
                      if (eye.cornerPoints.get(i).type==10){
                              g.setColor(Color.green);
                              g.fillOval(300+(int)(eye.cornerPoints.get(i).position.x*4-2),300-(int)(eye.cornerPoints.get(i).position.y*4+2),5,5);
                      }
-             }
+             }*/
              
              for (int i=0;i<size;i++){
+            	 /*
             	 	if (eye.cornerPoints.get(i).type!=10){
             	 		g.setColor(eye.cornerPoints.get(i).leftColor);
-            	 		g.fillOval(300+(int)(eye.cornerPoints.get(i).position.x*4-6),300-(int)(eye.cornerPoints.get(i).position.y*4+2),5,5);
+            	 		if (!eye.cornerPoints.get(i).leftColor.equals(Color.black)) g.fillOval(300+(int)(eye.cornerPoints.get(i).position.x*4-6),300-(int)(eye.cornerPoints.get(i).position.y*4+2),5,5);
             	 		g.setColor(eye.cornerPoints.get(i).rightColor);
-            	 		g.fillOval(300+(int)(eye.cornerPoints.get(i).position.x*4+2),300-(int)(eye.cornerPoints.get(i).position.y*4+2),5,5);
-            	 	}
+            	 		if (!eye.cornerPoints.get(i).rightColor.equals(Color.black))g.fillOval(300+(int)(eye.cornerPoints.get(i).position.x*4+2),300-(int)(eye.cornerPoints.get(i).position.y*4+2),5,5);
+            	 	}*/
+            	 	
                      if (eye.cornerPoints.get(i).type==0){
                              g.setColor(Color.blue);
                              g.fillOval(300+(int)(eye.cornerPoints.get(i).position.x*4-2),300-(int)(eye.cornerPoints.get(i).position.y*4+2),5,5);
                             
+                             /*
                              g.setColor(Color.red);
-                             
-                             localSpeed.scale(0);
-                             localSpeed.y=(float) (eye.retine[(int)eye.cornerPoints.get(i).angle]/10)*eye.speedR.z;
-                             
-                             Matrix3f rot = new Matrix3f();
-                             rot.rotZ((float) ( -(eye.cornerPoints.get(i).angle*Math.PI/180)));
-                             rot.transform(localSpeed, localSpeed);
-                             
-                     
-                             localSpeed.sub(eye.speedT);
-                     
-                     
-                     
                              g.drawLine(300+(int)(eye.cornerPoints.get(i).position.x*4+2),
-                                             300-(int)(eye.cornerPoints.get(i).position.y*4-2),
-                                             300+(int)(eye.cornerPoints.get(i).position.x*4 + localSpeed.x*400+2),
-                                             300-(int)(eye.cornerPoints.get(i).position.y*4 + localSpeed.y*400-2));
+                                     300-(int)(eye.cornerPoints.get(i).position.y*4-2),
+                                     300+(int)(eye.cornerPoints.get(i).position.x*4 + eye.cornerPoints.get(i).speed.x*200+2),
+                                     300-(int)(eye.cornerPoints.get(i).position.y*4 + eye.cornerPoints.get(i).speed.y*200-2));
+                             */
                      }
                      else{
                              
@@ -276,18 +267,20 @@ public class EyeDisplay extends JPanel {
                      }
              } /**/
              
-             /*
-             for (int i=0;i<eye.segments.size();i++){
-            	 g.setColor(eye.segmentColor.get(i));
-            	 g.drawLine(300+(int)(eye.segments.get(i).firstPoint.position.x*4), 300-(int)(eye.segments.get(i).firstPoint.position.y*4),
-            			    300+(int)(eye.segments.get(i).secondPoint.position.x*4), 300-(int)(eye.segments.get(i).secondPoint.position.y*4));
-             }/**/
-
              
              for (int i=0;i<eye.segments.size();i++){
             	 g.setColor(eye.segments.get(i).color);
             	 g.drawLine(300+(int)(eye.segments.get(i).firstPoint.position.x*4), 300-(int)(eye.segments.get(i).firstPoint.position.y*4),
             			    300+(int)(eye.segments.get(i).secondPoint.position.x*4), 300-(int)(eye.segments.get(i).secondPoint.position.y*4));
+             }/**/
+             
+             
+             g.setColor(Color.red);
+             for (int i=0;i<eye.segments.size();i++){
+            	 g.drawLine(300+(int)eye.segments.get(i).position.x*4,
+            			    300-(int)eye.segments.get(i).position.y*4,
+            			    300+(int)(eye.segments.get(i).position.x*4+ eye.segments.get(i).speed.x*200),
+            			    300-(int)(eye.segments.get(i).position.y*4+ eye.segments.get(i).speed.y*200) );
              }/**/
         }   
         

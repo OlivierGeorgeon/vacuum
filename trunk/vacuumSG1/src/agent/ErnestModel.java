@@ -1001,7 +1001,7 @@ public class ErnestModel extends Model
 						
 						int ai5=ai4-ai3;
 						
-						for (int k=ai3;k<ai4;k++){
+						for (int k=ai3;k<=ai4;k++){
 							if (zVMap[k%360]>d*10){
 								rv[k%360]=d*10 - 2*Math.sin(Math.PI*(k-ai3)/(ai4-ai3));
 								zVMap[k%360]= d*10- 2*Math.sin(Math.PI*(k-ai3)/(ai4-ai3));
@@ -1014,6 +1014,15 @@ public class ErnestModel extends Model
 								tactileMap[k%360]=m_env.CUDDLE;
 							}
 						}
+						
+						// corners
+				    	// 1
+						cornersPoints.add(new Point( d*10, (ai3+360)%360,0) );
+						cornersPoints.get(cornersPoints.size()-1).addSpeed(m_env.m_modelList.get(a).mSpeedT);
+
+						// 2
+						cornersPoints.add(new Point( d*10, (ai4+360)%360,0) );
+						cornersPoints.get(cornersPoints.size()-1).addSpeed(m_env.m_modelList.get(a).mSpeedT);
 					}
 				}
 				
@@ -1192,7 +1201,16 @@ public class ErnestModel extends Model
 			}
 		}/**/
 		
+		// update point speed
+		Matrix3f rot = new Matrix3f();
+		rot.rotZ( -mOrientation.z);
+		rot.transform(mSpeedT, mEgoSpeedT);
+		for (int i=1;i<cornersPoints.size();i++){
+			cornersPoints.get(i).addRotation(mSpeedR);
+			cornersPoints.get(i).subSpeed(mEgoSpeedT);
+		}
 		
+		// generate segments
 		for (int i=1;i<cornersPoints.size();i++){
 			if (  (cornersPoints.get(i-1).type==0 && cornersPoints.get(i).type==0)
 				||	( (cornersPoints.get(i-1).type==0 || cornersPoints.get(i).type==0) 
@@ -1206,7 +1224,11 @@ public class ErnestModel extends Model
 			}
 		}
 		segments.add(new Segment(cornersPoints.get(cornersPoints.size()-1),cornersPoints.get(0)));
-		/**/
+		
+		
+		
+		
+
 		
 		/*
 		for (int i=0;i<360;i++){
@@ -1226,21 +1248,14 @@ public class ErnestModel extends Model
 		
 		// update colliculus
 		if (sensor){
-			
 			updateColliculus(rv2, colorMap2, rt2, tactileMap2, lastAction, speed);
 			//colliculus.update(rv2, colorMap2, rt2, tactileMap2, lastAction, speed);
 			//colliculusFrame.saveImage();
 			//m_env.saveImage();
 		}
 		
-		
-		
-		// update eye display
-		Matrix3f rot = new Matrix3f();
-		rot.rotZ( -mOrientation.z);
-		rot.transform(mSpeedT, mEgoSpeedT);
-		
-		m_eye.updateRetine(rv2,colorMap2,cornerV2,rt2,tactileMap2,cornerT2,cornersPoints,segments,mEgoSpeedT,mSpeedR);
+		// update display
+		m_eye.updateRetine(rv2,colorMap2,cornerV2,rt2,tactileMap2,cornerT2,cornersPoints,segments);
 		
 		return retina;
 	}
