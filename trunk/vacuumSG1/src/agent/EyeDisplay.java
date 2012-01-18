@@ -269,18 +269,18 @@ public class EyeDisplay extends JPanel {
              
              
              for (int i=0;i<eye.segments.size();i++){
-            	 g.setColor(eye.segments.get(i).color);
-            	 g.drawLine(300+(int)(eye.segments.get(i).firstPoint.position.x*4), 300-(int)(eye.segments.get(i).firstPoint.position.y*4),
-            			    300+(int)(eye.segments.get(i).secondPoint.position.x*4), 300-(int)(eye.segments.get(i).secondPoint.position.y*4));
+            	 g.setColor(new Color(eye.segments.get(i).getValue()));
+            	 g.drawLine(300+(int)(eye.segments.get(i).getFirstPosition().x*4), 300-(int)(eye.segments.get(i).getFirstPosition().y*4),
+            			    300+(int)(eye.segments.get(i).getSecondPosition().x*4), 300-(int)(eye.segments.get(i).getSecondPosition().y*4));
              }/**/
              
              
              g.setColor(Color.red);
              for (int i=0;i<eye.segments.size();i++){
-            	 g.drawLine(300+(int)eye.segments.get(i).position.x*4,
-            			    300-(int)eye.segments.get(i).position.y*4,
-            			    300+(int)(eye.segments.get(i).position.x*4+ eye.segments.get(i).speed.x*200),
-            			    300-(int)(eye.segments.get(i).position.y*4+ eye.segments.get(i).speed.y*200) );
+            	 g.drawLine(300+(int)eye.segments.get(i).getPosition().x*4,
+            			    300-(int)eye.segments.get(i).getPosition().y*4,
+            			    300+(int)(eye.segments.get(i).getPosition().x*4+ eye.segments.get(i).getSpeed().x*200),
+            			    300-(int)(eye.segments.get(i).getPosition().y*4+ eye.segments.get(i).getSpeed().y*200) );
              }/**/
         }   
         

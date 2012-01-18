@@ -5,6 +5,8 @@ import java.util.ArrayList;
 
 import javax.vecmath.Vector3f;
 
+import spas.ISegment;
+
 import memory110.Point;
 import memory110.Segment;
 
@@ -18,7 +20,7 @@ public class InternalView {
 	int[] corner;
 	int[] corner2;
 	ArrayList<Point> cornerPoints;
-	ArrayList<Segment> segments;
+	ArrayList<ISegment> segments;
 	
 	int left,right;
 	
@@ -31,14 +33,14 @@ public class InternalView {
     	tactileMap=new int[360];
     	corner2=new int[360];
     	
-    	segments=new ArrayList<Segment>();
+    	segments=new ArrayList<ISegment>();
     	
     	cornerPoints=new ArrayList<Point>();
 
 	}
 	
 	public void updateRetine(double[] r,Color[] cm,int[] cor,double[] rt,int[] cmt,int[] cort,
-			                 ArrayList<Point> cornerList, ArrayList<Segment> segmentList){
+			                 ArrayList<Point> cornerList, ArrayList<ISegment> segmentList){
     	retine=r;
     	colorMap=cm;
     	corner=cor;

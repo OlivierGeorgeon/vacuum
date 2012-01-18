@@ -21,6 +21,7 @@ import memory110.Segment;
 import ernest.*;
 import utils.Pair;
 import spas.IPlace;
+import spas.ISegment;
 import tracing.*;
 
 /**************************************
@@ -413,7 +414,7 @@ public class ErnestModel extends Model
 		Color[][] visualImage=new Color[360][200];
 		
 		ArrayList<Point> cornersPoints=new ArrayList<Point>();
-		ArrayList<Segment> segments=new ArrayList<Segment>();
+		ArrayList<ISegment> segments=new ArrayList<ISegment>();
 		
 		EyeFixation[] retina= new EyeFixation[Ernest.RESOLUTION_RETINA];
 		
