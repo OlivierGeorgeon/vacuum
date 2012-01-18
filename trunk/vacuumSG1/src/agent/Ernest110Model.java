@@ -38,10 +38,8 @@ import utils.Pair;
  **************************************/
 public class Ernest110Model extends ErnestModel 
 {
-//      final static float TRANSLATION_IMPULSION = .15f; // .13f
     final static float TRANSLATION_FRICTION = .90f; // .95f
     
-//      final static float ROTATION_IMPULSION = 0.123f; //(float)Math.toRadians(7f); // degrees   . 5.5f
     final static float ROTATION_FRICTION = .9f; // .95f
 
     private static Color UNANIMATED_COLOR = Color.GRAY;
@@ -101,8 +99,8 @@ public class Ernest110Model extends ErnestModel
         
         // Only trace the first agent.
         
-//        if (ident == 0)
-//        	m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","h-yXVWrEwtYclxuPQUlmTOXprcFzol");
+        if (ident == 0)
+        	m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","h-yXVWrEwtYclxuPQUlmTOXprcFzol");
                         
         // Initialize the Ernest === 
         
@@ -233,8 +231,8 @@ public class Ernest110Model extends ErnestModel
      */
     private int[][] sense()
     {
-        if (m_tracer != null)
-                m_tracer.startNewEvent(m_counter);
+//        if (m_tracer != null)
+//               m_tracer.startNewEvent(m_counter);
 
         // See the environment ===
 
@@ -326,10 +324,10 @@ public class Ernest110Model extends ErnestModel
 	        // Trace the environmental data
 	        if (m_tracer != null)
 	        {
-				Object environment = m_tracer.newEvent("environment", "position", m_counter);
-				m_tracer.addSubelement(environment, "x", mPosition.x + "");
-				m_tracer.addSubelement(environment, "y", mPosition.y + "");
-				m_tracer.addSubelement(environment,"orientation", mOrientation.z + "");
+				//Object environment = m_tracer.newEvent("environment", "position", m_counter);
+				m_tracer.addEventElement("x", mPosition.x + "");
+				m_tracer.addEventElement("y", mPosition.y + "");
+				m_tracer.addEventElement("orientation", mOrientation.z + "");
 	        }               
     	}
     }

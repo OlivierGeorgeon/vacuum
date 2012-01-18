@@ -38,7 +38,7 @@ public class ErnestView implements Runnable
 				} catch (InterruptedException e) {e.printStackTrace();}
 
 			if (mainFrame.version!=100){
-				try { Thread.sleep(20);
+				try { Thread.sleep(25);
 				} catch (InterruptedException e) {e.printStackTrace();}
 			}
 		}
