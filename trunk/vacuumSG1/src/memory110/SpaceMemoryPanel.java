@@ -3,6 +3,8 @@ package memory110;
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -19,6 +21,7 @@ import javax.swing.JPanel;
 import agent.Ernest110Model;
 
 import ernest.Ernest;
+import ernest.IErnest;
 
 import spas.IPlace;
 
@@ -35,13 +38,15 @@ public class SpaceMemoryPanel extends JPanel
 	private static final long serialVersionUID = 1L;
 	public int index;
 	
-	public ArrayList<IPlace> placeList;
+	//public ArrayList<IPlace> placeList;
+	
+	private IErnest m_ernest;
 	
 	public SpaceMemory spaceMemory;
 	
 	public SpaceMemoryPanel(SpaceMemory spaceMemory2){
 		index=0;
-		placeList=new ArrayList<IPlace>();
+		//placeList=new ArrayList<IPlace>();
 		spaceMemory=spaceMemory2;
 	}
 	
@@ -49,9 +54,9 @@ public class SpaceMemoryPanel extends JPanel
 		spaceMemory=mem;
 	}
 	
-	public void update(ArrayList<IPlace> list){
-		placeList=list;
-	}
+//	public void update(ArrayList<IPlace> list){
+//		placeList=list;
+//	}
 	
 	public void paintComponent(Graphics g){
 		
@@ -72,9 +77,20 @@ public class SpaceMemoryPanel extends JPanel
         g2d.transform(orientation);
 		g2d.setColor(Color.gray);
         g2d.fill(Ernest110Model.shape());
+        g2d.setTransform(ref);
+        
+        // Display counter
+        
+		String counter = spaceMemory.m_counter + ""; 
+		
+		Font font = new Font("Dialog", Font.BOLD, 18);
+		g2d.setFont(font);
+		FontMetrics fm = getFontMetrics(font);
+		int width = fm.stringWidth(counter);
+		g2d.setColor(Color.GRAY);		
+		g2d.drawString(counter, 2 * RADIUS * SCALE - 30 - width, 30);	
 		
         // Display places
-        g2d.setTransform(ref);
 		g2d.setStroke(new BasicStroke(SCALE / 3f));
 
         // Transparency

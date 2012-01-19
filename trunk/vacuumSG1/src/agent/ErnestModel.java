@@ -372,9 +372,9 @@ public class ErnestModel extends Model
 		}
 	}
 	
-	public List<IPlace> getPlaceList(){
-		return m_ernest.getPlaceList();
-	}
+//	public List<IPlace> getPlaceList(){
+//		return m_ernest.getPlaceList();
+//	}
 	
 	
 	
