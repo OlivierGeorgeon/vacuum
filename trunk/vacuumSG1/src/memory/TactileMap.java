@@ -57,7 +57,7 @@ public class TactileMap {
 	public double[] valueY;
 	public double[] valueOldX;
 	public double[] valueOldY;
-	public double attraction,repulsion;
+	public double attraction;
 	int nbStimuli=5;
 	
 	public ErnestModel ernest;
@@ -309,7 +309,41 @@ public class TactileMap {
 		// sensors around ernest
 		senseAround(rt,t);
 		
+		// detect wrong points
+		boolean test=false;
+		for (int i=0;i<resolution*sensorRes;i++){
+			
+			/*
+			// if point changed its state
+			if (m_tactilePressureOld[i]!=m_tactilePressure[i]){
+				// Localize the closest point with the same state
+				double dmin=1000;
+				int min=-1;
+				double d=0;
+				for (int j=0;j<resolution*sensorRes;j++){
+					if (i!=j){
+						if (  (m_tactilePressure[i]!=0 && m_tactilePressure[j]!=0)
+							||(m_tactilePressure[i]==0 && m_tactilePressure[j]==0) ){
+							
+							d=Math.sqrt( (sensorX[i]-sensorX[j])*(sensorX[i]-sensorX[j]) + (sensorY[i]-sensorY[j])*(sensorY[i]-sensorY[j]) );
+							
+							if (d<dmin){
+								dmin=d;
+								min=j;
+							}
+						}
+					}
+				}
+				
+				if (min>=0){
+					sensorX[i]-=(sensorX[i]-sensorX[min])/2;	
+					sensorY[i]-=(sensorY[i]-sensorY[min])/2;
+				}
+			}/**/
+		}
 		
+		voronoi();
+		delaunay();
 		
 		
 		/////////////////////////////////////////////////////////
@@ -411,7 +445,7 @@ public class TactileMap {
 				timerMap[i]=20;
 		}
 		
-		normalize();
+		repulsion();
 		
 		////////////////////////////////////////////////////////////////
 		// reset maps
@@ -1356,6 +1390,20 @@ public class TactileMap {
 						delaunayLinks[voronoiPoints[i][j]][voronoiPoints[i][j+1]]=true;
 					}
 				}
+			}
+		}
+	}
+	
+	
+	public void repulsion(){
+		for (int i=0;i<resolution*sensorRes;i++){
+			for (int j=0;j<resolution*sensorRes;j++){
+				double d=Math.sqrt( (sensorX[i]-sensorX[j])*(sensorX[i]-sensorX[j]) + (sensorY[i]-sensorY[j])*(sensorY[i]-sensorY[j]) );
+				if (d<3 && d!=0){
+					sensorX[i]+=(sensorX[i]-sensorX[j])/d;
+					sensorY[i]+=(sensorY[i]-sensorY[j])/d;
+				}
+				
 			}
 		}
 	}

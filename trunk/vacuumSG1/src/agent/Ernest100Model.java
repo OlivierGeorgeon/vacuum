@@ -144,7 +144,7 @@ public class Ernest100Model extends ErnestModel
 		boolean distpTactile=true;
 		boolean dispVisual=false;
 		boolean dispColliculus=false;
-		boolean dispEyeView=true;
+		boolean dispEyeView=false;
 		
 		int size;
 		int i;
