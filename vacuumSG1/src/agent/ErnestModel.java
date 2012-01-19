@@ -973,76 +973,81 @@ public class ErnestModel extends Model
 						}
 						
 					}
+				}	
+			}
+		}
+		
+		// agents detection
+		for (int a=0;a<m_env.m_modelList.size();a++){
+			Color bgc = m_env.AGENT;
+			int tactile=m_env.CUDDLE;
+			if (a!=ident){
+				d= (mPosition.x-m_env.m_modelList.get(a).mPosition.x)*(mPosition.x-m_env.m_modelList.get(a).mPosition.x)
+				  +(mPosition.y-m_env.m_modelList.get(a).mPosition.y)*(mPosition.y-m_env.m_modelList.get(a).mPosition.y);
+				d=Math.sqrt(d);
+				
+				int ai1=0;
+				int ai2=0;
+				int ai3=0;
+				int ai4=0;
+				if (mPosition.x-m_env.m_modelList.get(a).mPosition.x<=0){
+					a1=Math.toDegrees( Math.acos( (mPosition.y-m_env.m_modelList.get(a).mPosition.y)/d));
+					ai1=180-(int)a1;
+				}
+				else{
+					a1=Math.toDegrees( Math.acos( (mPosition.y-m_env.m_modelList.get(a).mPosition.y)/d));
+					ai1=(int)a1+180;
 				}
 				
+				a2=Math.atan(0.4/d);
+				a2=Math.toDegrees(a2);
 				
-				// agents detection
-				for (int a=0;a<m_env.m_modelList.size();a++){
-					Color bgc = m_env.AGENT;
-					int tactile=m_env.CUDDLE;
-					if (a!=ident){
-						d= (mPosition.x-m_env.m_modelList.get(a).mPosition.x)*(mPosition.x-m_env.m_modelList.get(a).mPosition.x)
-						  +(mPosition.y-m_env.m_modelList.get(a).mPosition.y)*(mPosition.y-m_env.m_modelList.get(a).mPosition.y);
-						d=Math.sqrt(d);
-						
-						int ai1=0;
-						int ai2=0;
-						int ai3=0;
-						int ai4=0;
-						if (mPosition.x-m_env.m_modelList.get(a).mPosition.x<=0){
-							a1=Math.toDegrees( Math.acos( (mPosition.y-m_env.m_modelList.get(a).mPosition.y)/d));
-							ai1=180-(int)a1;
-						}
-						else{
-							a1=Math.toDegrees( Math.acos( (mPosition.y-m_env.m_modelList.get(a).mPosition.y)/d));
-							ai1=(int)a1+180;
-						}
-						
-						a2=Math.atan(0.4/d);
-						a2=Math.toDegrees(a2);
-						
-						ai2= (int)a2;
-						
-						ai3=ai1-ai2+360;
-						ai4=ai1+ai2+360;
-						
-						int ai5=ai4-ai3;
-						
-						for (int k=ai3;k<=ai4;k++){
-							if (zVMap[k%360]>d*10){
-								rv[k%360]=d*10 /*- 2*Math.sin(Math.PI*(k-ai3)/(ai4-ai3))*/;
-								zVMap[k%360]= d*10 /*- 2*Math.sin(Math.PI*(k-ai3)/(ai4-ai3))*/;
-								colorMap[k%360]=bgc;
-							}
-							
-							if (zTMap[k%360]>d*10){
-								rt[k%360]=d*10 /*- 2*Math.sin(Math.PI*(k-ai3)/(ai4-ai3))*/;
-								zTMap[k%360]= d*10 /*- 2*Math.sin(Math.PI*(k-ai3)/(ai4-ai3))*/;
-								tactileMap[k%360]=m_env.CUDDLE;
-							}
-						}
-						
-						// corners
-				    	// 1
-						ai3=ai3%360;
-						float px=(float) (rv[ai3]*Math.cos(((-ai3+90)%360)*Math.PI/180)/10);
-						float py=(float) (rv[ai3]*Math.sin(((-ai3+90)%360)*Math.PI/180)/10);
-						cornersPoints.add(new Point(px,py,ai3,0));
-						cornersPoints.get(cornersPoints.size()-1).addSpeed(m_env.m_modelList.get(a).mSpeedT);
-						
-						// 2
-						ai4=ai4%360;
-						px=(float) (rv[ai4]*Math.cos(((-ai4+90)%360)*Math.PI/180)/10);
-						py=(float) (rv[ai4]*Math.sin(((-ai4+90)%360)*Math.PI/180)/10);
-						cornersPoints.add(new Point(px,py,ai4,0));
-						cornersPoints.get(cornersPoints.size()-1).addSpeed(m_env.m_modelList.get(a).mSpeedT);
-						
+				ai2= (int)a2;
+				
+				ai3=ai1-ai2+360;
+				ai4=ai1+ai2+360;
+				
+				int ai5=ai4-ai3;
+				
+				for (int k=ai3;k<=ai4;k++){
+					if (zVMap[k%360]>d*10){
+						rv[k%360]=d*10 /*- 2*Math.sin(Math.PI*(k-ai3)/(ai4-ai3))*/;
+						zVMap[k%360]= d*10 /*- 2*Math.sin(Math.PI*(k-ai3)/(ai4-ai3))*/;
+						colorMap[k%360]=bgc;
+					}
+					
+					if (zTMap[k%360]>d*10){
+						rt[k%360]=d*10 /*- 2*Math.sin(Math.PI*(k-ai3)/(ai4-ai3))*/;
+						zTMap[k%360]= d*10 /*- 2*Math.sin(Math.PI*(k-ai3)/(ai4-ai3))*/;
+						tactileMap[k%360]=m_env.CUDDLE;
 					}
 				}
 				
+				// corners
+		    	// 1
+				ai3=ai3%360;
+				float px=(float) (rv[ai3]*Math.cos(((-ai3+90)%360)*Math.PI/180)/10);
+				float py=(float) (rv[ai3]*Math.sin(((-ai3+90)%360)*Math.PI/180)/10);
+				cornersPoints.add(new Point(px,py,ai3,0));
+				cornersPoints.get(cornersPoints.size()-1).addSpeed(m_env.m_modelList.get(a).mSpeedT);
+				
+				// 2
+				ai4=ai4%360;
+				px=(float) (rv[ai4]*Math.cos(((-ai4+90)%360)*Math.PI/180)/10);
+				py=(float) (rv[ai4]*Math.sin(((-ai4+90)%360)*Math.PI/180)/10);
+				cornersPoints.add(new Point(px,py,ai4,0));
+				cornersPoints.get(cornersPoints.size()-1).addSpeed(m_env.m_modelList.get(a).mSpeedT);
 				
 			}
 		}
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		
 		// remove masked point of interest
@@ -1219,6 +1224,7 @@ public class ErnestModel extends Model
 				
 			}
 		}/**/
+		
 		
 		// update point speed
 		Matrix3f rot = new Matrix3f();
