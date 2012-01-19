@@ -64,4 +64,9 @@ public class Segment implements ISegment
 	{
 		return secondPoint.position;
 	}
+	
+	public float getSpan()
+	{
+		return firstPoint.position.angle(secondPoint.position);
+	}
 }
