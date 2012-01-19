@@ -29,6 +29,15 @@ public class Point {
 		speed=new Vector3f();
 	}
 	
+	public Point(float x, float y, int a, int t,double d){
+		angle=a;
+		type=t;
+		position=new Vector3f(x,y,0);
+		distance=d;
+		
+		speed=new Vector3f();
+	}
+	
 	/**
 	 * create point according to the distance
 	 * @param d  distance from the agent

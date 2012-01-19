@@ -455,12 +455,18 @@ public class ErnestModel extends Model
 		for (int i=0;i<sight;i++){
 			for (int j=0;j<sight;j++){
 				
+				int Im_xpi=Im_x+i;
+				int Im_ypj=Im_y+j;
+				
+				int Im_xmi=Im_x-i;
+				int Im_ymj=Im_y-j;
+				
 				// (1) cells on the top right side
-				if ( (i>0)&& (Im_x+i<m_w) && (Im_y+j<m_h) ){
-					if (!m_env.isEmpty(Im_x+i,Im_y+j) ){
+				if ( (i>0)&& (Im_xpi<m_w) && (Im_ypj<m_h) ){
+					if (!m_env.isEmpty(Im_xpi,Im_ypj) ){
 						// determine color and tactile property of a block
-						Color bgc = m_env.seeBlock(Im_x+i,Im_y+j);
-						int tactile=m_env.touchBlock(Im_x+i,Im_y+j);
+						Color bgc = m_env.seeBlock(Im_xpi,Im_ypj);
+						int tactile=m_env.touchBlock(Im_xpi,Im_ypj);
 						
 						// determine the position of the three visible points of the block in polar reference
 						imin =(double)i-0.5 - (mPosition.x-Im_x);
@@ -495,7 +501,7 @@ public class ErnestModel extends Model
 							
 							
 							// visual vector if the block is visible
-							if (m_env.isVisible(Im_x+i,Im_y+j)){
+							if (m_env.isVisible(Im_xpi,Im_ypj)){
 								if (zVMap[k]>d){
 									rv[k]=d;                        // fill Z-Map
 									zVMap[k]= d;
@@ -521,7 +527,7 @@ public class ErnestModel extends Model
 							
 							d= d1*10 +   (d3-d1)*10*(k-ai1)/(ai3-ai1);
 							// visual vector if the block is visible
-							if (m_env.isVisible(Im_x+i,Im_y+j)){
+							if (m_env.isVisible(Im_xpi,Im_ypj)){
 								if (zVMap[k]>d){
 									rv[k]=d;
 									zVMap[k]= d;
@@ -544,28 +550,28 @@ public class ErnestModel extends Model
 						
 						// corners
 						// 1
-						if ( (!m_env.isVisible(Im_x+i-1,Im_y+j) && !m_env.isVisible(Im_x+i,Im_y+j-1) )
-						   ||( m_env.isVisible(Im_x+i-1,Im_y+j) &&  m_env.isVisible(Im_x+i,Im_y+j-1) )
-						   ||( m_env.isVisible(Im_x+i-1,Im_y+j) && !m_env.seeBlock(Im_x+i-1, Im_y+j).equals(m_env.seeBlock(Im_x+i, Im_y+j)))
-						   ||( m_env.isVisible(Im_x+i,Im_y+j-1) && !m_env.seeBlock(Im_x+i, Im_y+j-1).equals(m_env.seeBlock(Im_x+i, Im_y+j))) ){
+						if ( (!m_env.isVisible(Im_xpi-1,Im_ypj) && !m_env.isVisible(Im_xpi,Im_ypj-1) )
+						   ||( m_env.isVisible(Im_xpi-1,Im_ypj) &&  m_env.isVisible(Im_xpi,Im_ypj-1) )
+						   ||( m_env.isVisible(Im_xpi-1,Im_ypj) && !m_env.seeBlock(Im_xpi-1, Im_ypj).equals(m_env.seeBlock(Im_xpi, Im_ypj)))
+						   ||( m_env.isVisible(Im_xpi,Im_ypj-1) && !m_env.seeBlock(Im_xpi, Im_ypj-1).equals(m_env.seeBlock(Im_xpi, Im_ypj))) ){
 									
 								cornersPoints.add(new Point( (float)imin , (float)jmin, ai1,0) );
 						}
 						
 						// 2
-						if (Im_y+j+1<m_h && (!m_env.isVisible(Im_x+i-1,Im_y+j)))
-						if ( (!m_env.isVisible(Im_x+i-1,Im_y+j) && !m_env.isVisible(Im_x+i,Im_y+j+1))
-						   ||( m_env.isVisible(Im_x+i-1,Im_y+j+1) )
-						   ||( m_env.isVisible(Im_x+i,Im_y+j+1) && !m_env.seeBlock(Im_x+i, Im_y+j+1).equals(m_env.seeBlock(Im_x+i, Im_y+j))) ){
+						if (Im_ypj+1<m_h && (!m_env.isVisible(Im_xpi-1,Im_ypj)))
+						if ( (!m_env.isVisible(Im_xpi-1,Im_ypj) && !m_env.isVisible(Im_xpi,Im_ypj+1))
+						   ||( m_env.isVisible(Im_xpi-1,Im_ypj+1) )
+						   ||( m_env.isVisible(Im_xpi,Im_ypj+1) && !m_env.seeBlock(Im_xpi, Im_ypj+1).equals(m_env.seeBlock(Im_xpi, Im_ypj))) ){
 							
 							cornersPoints.add(new Point( (float)imin , (float)jplus, ai2,0) );
 						}
 						
 						// 3
-						if (Im_x+i+1<m_h && !m_env.isVisible(Im_x+i,Im_y+j-1))
-						if ( (!m_env.isVisible(Im_x+i+1,Im_y+j) && !m_env.isVisible(Im_x+i+1,Im_y+j))
-						   ||( m_env.isVisible(Im_x+i+1,Im_y+j-1) )
-						   ||( m_env.isVisible(Im_x+i+1,Im_y+j) && !m_env.seeBlock(Im_x+i+1, Im_y+j).equals(m_env.seeBlock(Im_x+i, Im_y+j))) ){
+						if (Im_xpi+1<m_h && !m_env.isVisible(Im_xpi,Im_ypj-1))
+						if ( (!m_env.isVisible(Im_xpi+1,Im_ypj) && !m_env.isVisible(Im_xpi+1,Im_ypj))
+						   ||( m_env.isVisible(Im_xpi+1,Im_ypj-1) )
+						   ||( m_env.isVisible(Im_xpi+1,Im_ypj) && !m_env.seeBlock(Im_xpi+1, Im_ypj).equals(m_env.seeBlock(Im_xpi, Im_ypj))) ){
 							
 							cornersPoints.add(new Point( (float)iplus , (float)jmin, ai3,0) );
 						}
@@ -573,10 +579,10 @@ public class ErnestModel extends Model
 				}
 
 				// (2) cells on the bottom right side
-				if ( (j>0) && (Im_x+i<m_w) && (Im_y-j>=0) ){
-					if (!m_env.isEmpty(Im_x+i,Im_y-j) ){
-						Color bgc = m_env.seeBlock(Im_x+i,Im_y-j);
-						int tactile=m_env.touchBlock(Im_x+i,Im_y-j);
+				if ( (j>0) && (Im_xpi<m_w) && (Im_ymj>=0) ){
+					if (!m_env.isEmpty(Im_xpi,Im_ymj) ){
+						Color bgc = m_env.seeBlock(Im_xpi,Im_ymj);
+						int tactile=m_env.touchBlock(Im_xpi,Im_ymj);
 						
 						
 						
@@ -612,7 +618,7 @@ public class ErnestModel extends Model
 						
 						for (int k=ai2;k<=ai1;k++){
 							d= ( d2*10 +   (d1-d2)*10*(k-ai2)/(ai1-ai2));
-							if (m_env.isVisible(Im_x+i,Im_y-j)){
+							if (m_env.isVisible(Im_xpi,Im_ymj)){
 								if (zVMap[k]>d){
 									rv[k]=d;
 									zVMap[k]= d;
@@ -632,7 +638,7 @@ public class ErnestModel extends Model
 						}		
 						for (int k=ai1;k<=ai3;k++){
 							d= ( d1*10 +   (d3-d1)*10*(k-ai1)/(ai3-ai1));
-							if (m_env.isVisible(Im_x+i,Im_y-j)){
+							if (m_env.isVisible(Im_xpi,Im_ymj)){
 								if (zVMap[k]>d){
 									rv[k]=d;
 									zVMap[k]= d;
@@ -653,29 +659,29 @@ public class ErnestModel extends Model
 						
 						// corners
 						// 1
-						if ( (!m_env.isVisible(Im_x+i,Im_y-j+1) && !m_env.isVisible(Im_x+i-1,Im_y-j) )
-						   ||( m_env.isVisible(Im_x+i,Im_y-j+1) &&  m_env.isVisible(Im_x+i-1,Im_y-j) )
-						   ||( m_env.isVisible(Im_x+i,Im_y-j+1) && !m_env.seeBlock(Im_x+i, Im_y-j+1).equals(m_env.seeBlock(Im_x+i, Im_y-j)))
-						   ||( m_env.isVisible(Im_x+i-1,Im_y-j) && !m_env.seeBlock(Im_x+i-1, Im_y-j).equals(m_env.seeBlock(Im_x+i, Im_y-j))) ){
+						if ( (!m_env.isVisible(Im_xpi,Im_ymj+1) && !m_env.isVisible(Im_xpi-1,Im_ymj) )
+						   ||( m_env.isVisible(Im_xpi,Im_ymj+1) &&  m_env.isVisible(Im_xpi-1,Im_ymj) )
+						   ||( m_env.isVisible(Im_xpi,Im_ymj+1) && !m_env.seeBlock(Im_xpi, Im_ymj+1).equals(m_env.seeBlock(Im_xpi, Im_ymj)))
+						   ||( m_env.isVisible(Im_xpi-1,Im_ymj) && !m_env.seeBlock(Im_xpi-1, Im_ymj).equals(m_env.seeBlock(Im_xpi, Im_ymj))) ){
 									
 								cornersPoints.add(new Point( (float)imin , -(float)jmin, ai1,0) );
 						}
 						
 						
 						// 2
-						if (Im_x+i+1<m_w && !m_env.isVisible(Im_x+i,Im_y-j+1))
-						if ( (!m_env.isVisible(Im_x+i+1,Im_y-j+1) && !m_env.isVisible(Im_x+i+1,Im_y-j))
-						   ||( m_env.isVisible(Im_x+i+1,Im_y-j+1) )
-						   ||( m_env.isVisible(Im_x+i+1,Im_y-j) && !m_env.seeBlock(Im_x+i+1, Im_y-j).equals(m_env.seeBlock(Im_x+i, Im_y-j))) ){
+						if (Im_xpi+1<m_w && !m_env.isVisible(Im_xpi,Im_ymj+1))
+						if ( (!m_env.isVisible(Im_xpi+1,Im_ymj+1) && !m_env.isVisible(Im_xpi+1,Im_ymj))
+						   ||( m_env.isVisible(Im_xpi+1,Im_ymj+1) )
+						   ||( m_env.isVisible(Im_xpi+1,Im_ymj) && !m_env.seeBlock(Im_xpi+1, Im_ymj).equals(m_env.seeBlock(Im_xpi, Im_ymj))) ){
 							
 							cornersPoints.add(new Point( (float)iplus , -(float)jmin, ai2,0) );
 						}
 						
 						// 3
-						if (Im_x+i+1<m_h && !m_env.isVisible(Im_x+i-1,Im_y-j))
-						if ( (!m_env.isVisible(Im_x+i-1,Im_y-j-1) && !m_env.isVisible(Im_x+i,Im_y-j-1))
-						   ||( m_env.isVisible(Im_x+i-1,Im_y-j-1) )
-						   ||( m_env.isVisible(Im_x+i,Im_y-j-1) && !m_env.seeBlock(Im_x+i, Im_y-j-1).equals(m_env.seeBlock(Im_x+i, Im_y-j))) ){
+						if (Im_xpi+1<m_h && !m_env.isVisible(Im_xpi-1,Im_ymj))
+						if ( (!m_env.isVisible(Im_xpi-1,Im_ymj-1) && !m_env.isVisible(Im_xpi,Im_ymj-1))
+						   ||( m_env.isVisible(Im_xpi-1,Im_ymj-1) )
+						   ||( m_env.isVisible(Im_xpi,Im_ymj-1) && !m_env.seeBlock(Im_xpi, Im_ymj-1).equals(m_env.seeBlock(Im_xpi, Im_ymj))) ){
 							
 							cornersPoints.add(new Point( (float)imin , -(float)jplus, ai3,0) );
 						}
@@ -684,10 +690,10 @@ public class ErnestModel extends Model
 				
 				
 				// (3) cells on the bottom left side
-				if ( (i>0) && (Im_x-i>=0) && (Im_y-j>=0) ){
-					if (!m_env.isEmpty(Im_x-i,Im_y-j) ){
-						Color bgc = m_env.seeBlock(Im_x-i,Im_y-j);
-						int tactile=m_env.touchBlock(Im_x-i,Im_y-j);
+				if ( (i>0) && (Im_xmi>=0) && (Im_ymj>=0) ){
+					if (!m_env.isEmpty(Im_xmi,Im_ymj) ){
+						Color bgc = m_env.seeBlock(Im_xmi,Im_ymj);
+						int tactile=m_env.touchBlock(Im_xmi,Im_ymj);
 						
 						imin =(double)i-0.5 + (mPosition.x-Im_x);
 						imin2=imin*imin;
@@ -713,7 +719,7 @@ public class ErnestModel extends Model
 						
 						for (int k=ai2;k<=ai1;k++){
 							d=   d2*10 +   (d1-d2)*10*(k-ai2)/(ai1-ai2);
-							if (m_env.isVisible(Im_x-i,Im_y-j)){
+							if (m_env.isVisible(Im_xmi,Im_ymj)){
 								if (zVMap[k]>d){
 									rv[k]=d;
 									zVMap[k]=d;
@@ -731,7 +737,7 @@ public class ErnestModel extends Model
 						}		
 						for (int k=ai1;k<=ai3;k++){
 							d=  d1*10 +   (d3-d1)*10*(k-ai1)/(ai3-ai1);
-							if (m_env.isVisible(Im_x-i,Im_y-j)){
+							if (m_env.isVisible(Im_xmi,Im_ymj)){
 								if (zVMap[k]>d){
 									rv[k]=d;
 									zVMap[k]=d;
@@ -751,29 +757,29 @@ public class ErnestModel extends Model
 						
 						// corners
 						// 1
-						if ( (!m_env.isVisible(Im_x-i,Im_y-j+1) && !m_env.isVisible(Im_x-i+1,Im_y-j) )
-						   ||( m_env.isVisible(Im_x-i,Im_y-j+1) &&  m_env.isVisible(Im_x-i+1,Im_y-j) )
-						   ||( m_env.isVisible(Im_x-i,Im_y-j+1) && !m_env.seeBlock(Im_x-i, Im_y-j+1).equals(m_env.seeBlock(Im_x-i, Im_y-j)))
-						   ||( m_env.isVisible(Im_x-i+1,Im_y-j) && !m_env.seeBlock(Im_x-i+1, Im_y-j).equals(m_env.seeBlock(Im_x-i, Im_y-j))) ){
+						if ( (!m_env.isVisible(Im_xmi,Im_ymj+1) && !m_env.isVisible(Im_xmi+1,Im_ymj) )
+						   ||( m_env.isVisible(Im_xmi,Im_ymj+1) &&  m_env.isVisible(Im_xmi+1,Im_ymj) )
+						   ||( m_env.isVisible(Im_xmi,Im_ymj+1) && !m_env.seeBlock(Im_xmi, Im_ymj+1).equals(m_env.seeBlock(Im_xmi, Im_ymj)))
+						   ||( m_env.isVisible(Im_xmi+1,Im_ymj) && !m_env.seeBlock(Im_xmi+1, Im_ymj).equals(m_env.seeBlock(Im_xmi, Im_ymj))) ){
 									
 								cornersPoints.add(new Point( -(float)imin , -(float)jmin, ai1,0) );
 						}
 						
 						// 2
-						if (Im_y-j-1>=0 && !m_env.isVisible(Im_x-i+1,Im_y-j))
-						if ( (!m_env.isVisible(Im_x-i,Im_y-j-1) && !m_env.isVisible(Im_x-i+1,Im_y-j-1))
-						   ||( m_env.isVisible(Im_x-i+1,Im_y-j-1) )
-						   ||( m_env.isVisible(Im_x-i,Im_y-j-1) && !m_env.seeBlock(Im_x-i, Im_y-j-1).equals(m_env.seeBlock(Im_x-i, Im_y-j))) ){
+						if (Im_ymj-1>=0 && !m_env.isVisible(Im_xmi+1,Im_ymj))
+						if ( (!m_env.isVisible(Im_xmi,Im_ymj-1) && !m_env.isVisible(Im_xmi+1,Im_ymj-1))
+						   ||( m_env.isVisible(Im_xmi+1,Im_ymj-1) )
+						   ||( m_env.isVisible(Im_xmi,Im_ymj-1) && !m_env.seeBlock(Im_xmi, Im_ymj-1).equals(m_env.seeBlock(Im_xmi, Im_ymj))) ){
 							
 							cornersPoints.add(new Point( -(float)imin , -(float)jplus, ai2,0) );
 						}
 						
 						
 						// 3
-						if (Im_x-i-1>=0 && !m_env.isVisible(Im_x-i,Im_y-j+1))
-						if ( (!m_env.isVisible(Im_x-i,Im_y-j+1) && !m_env.isVisible(Im_x-i-1,Im_y-j))
-						   ||( m_env.isVisible(Im_x-i-1,Im_y-j+1) )
-						   ||( m_env.isVisible(Im_x-i-1,Im_y-j) && !m_env.seeBlock(Im_x-i-1, Im_y-j).equals(m_env.seeBlock(Im_x-i, Im_y-j))) ){
+						if (Im_xmi-1>=0 && !m_env.isVisible(Im_xmi,Im_ymj+1))
+						if ( (!m_env.isVisible(Im_xmi,Im_ymj+1) && !m_env.isVisible(Im_xmi-1,Im_ymj))
+						   ||( m_env.isVisible(Im_xmi-1,Im_ymj+1) )
+						   ||( m_env.isVisible(Im_xmi-1,Im_ymj) && !m_env.seeBlock(Im_xmi-1, Im_ymj).equals(m_env.seeBlock(Im_xmi, Im_ymj))) ){
 							
 							cornersPoints.add(new Point( -(float)iplus , -(float)jmin, ai3,0) );
 						}
@@ -783,10 +789,10 @@ public class ErnestModel extends Model
 				
 				// (5) cells exactly on the top
 				// In this case, there is only two visible points and one visible segment
-				if ( (j>0) && (i==0) && (Im_y+j<m_h) ){
-					if (!m_env.isEmpty(Im_x-i,Im_y+j) ){
-						Color bgc = m_env.seeBlock(Im_x-i,Im_y+j);
-						int tactile=m_env.touchBlock(Im_x-i,Im_y+j);
+				if ( (j>0) && (i==0) && (Im_ypj<m_h) ){
+					if (!m_env.isEmpty(Im_xmi,Im_ypj) ){
+						Color bgc = m_env.seeBlock(Im_xmi,Im_ypj);
+						int tactile=m_env.touchBlock(Im_xmi,Im_ypj);
 						
 						imin =(double)i-0.5 + (mPosition.x-Im_x);
 						imin2=imin*imin;
@@ -811,7 +817,7 @@ public class ErnestModel extends Model
 				    	int count=0;
 				    	for (int k=ai2;k<360;k++){
 				    		d= d2*10 +   (d1-d2)*10*(k-ai2)/((ai1-ai2+360)%360);
-				    		if (m_env.isVisible(Im_x-i,Im_y+j)){
+				    		if (m_env.isVisible(Im_xmi,Im_ypj)){
 				    			if (zVMap[k]>d){
 				    				rv[k]=d;
 				    				zVMap[k]= d;
@@ -829,7 +835,7 @@ public class ErnestModel extends Model
 				    	}
 				    	for (int k=0;k<=ai1;k++){
 				    		d= d2*10 +   (d1-d2)*10*(k+count)/((ai1-ai2+360)%360);
-				    		if (m_env.isVisible(Im_x-i,Im_y+j)){
+				    		if (m_env.isVisible(Im_xmi,Im_ypj)){
 				    			if (zVMap[k]>d){
 				    				rv[k]=d;
 				    				zVMap[k]= d;
@@ -848,20 +854,20 @@ public class ErnestModel extends Model
 				    	
 				    	// corners
 				    	// 1
-						if (!m_env.isVisible(Im_x-i,Im_y+j-1))
-						if ( (!m_env.isVisible(Im_x-i+1,Im_y+j))
-						   ||( m_env.isVisible(Im_x-i+1,Im_y+j-1) )
-						   ||( m_env.isVisible(Im_x-i+1,Im_y+j) && !m_env.seeBlock(Im_x-i+1, Im_y+j).equals(m_env.seeBlock(Im_x-i, Im_y+j))) ){
+						if (!m_env.isVisible(Im_xmi,Im_ypj-1))
+						if ( (!m_env.isVisible(Im_xmi+1,Im_ypj))
+						   ||( m_env.isVisible(Im_xmi+1,Im_ypj-1) )
+						   ||( m_env.isVisible(Im_xmi+1,Im_ypj) && !m_env.seeBlock(Im_xmi+1, Im_ypj).equals(m_env.seeBlock(Im_xmi, Im_ypj))) ){
 							
 							cornersPoints.add(new Point( -(float)imin , (float)jmin, ai1,0) );
 						}
 						
 						
 						// 2
-						if (!m_env.isVisible(Im_x-i,Im_y+j-1))
-						if ( (!m_env.isVisible(Im_x-i-1,Im_y+j))
-						   ||( m_env.isVisible(Im_x-i-1,Im_y+j-1) )
-						   ||( m_env.isVisible(Im_x-i-1,Im_y+j) && !m_env.seeBlock(Im_x-i-1, Im_y+j).equals(m_env.seeBlock(Im_x-i, Im_y+j))) ){
+						if (!m_env.isVisible(Im_xmi,Im_ypj-1))
+						if ( (!m_env.isVisible(Im_xmi-1,Im_ypj))
+						   ||( m_env.isVisible(Im_xmi-1,Im_ypj-1) )
+						   ||( m_env.isVisible(Im_xmi-1,Im_ypj) && !m_env.seeBlock(Im_xmi-1, Im_ypj).equals(m_env.seeBlock(Im_xmi, Im_ypj))) ){
 							
 							cornersPoints.add(new Point( -(float)iplus , (float)jmin, ai2,0) );
 						}
@@ -870,10 +876,10 @@ public class ErnestModel extends Model
 				}
 				
 				// (4) cells on the top left side
-				if ( (j>0) && (i>0) && (Im_x-i>=0) && (Im_y+j<m_h) ){
-					if (!m_env.isEmpty(Im_x-i,Im_y+j) ){
-						Color bgc = m_env.seeBlock(Im_x-i,Im_y+j);
-						int tactile=m_env.touchBlock(Im_x-i,Im_y+j);
+				if ( (j>0) && (i>0) && (Im_xmi>=0) && (Im_ypj<m_h) ){
+					if (!m_env.isEmpty(Im_xmi,Im_ypj) ){
+						Color bgc = m_env.seeBlock(Im_xmi,Im_ypj);
+						int tactile=m_env.touchBlock(Im_xmi,Im_ypj);
 						
 						imin =(double)i-0.5 + (mPosition.x-Im_x);
 						imin2=imin*imin;
@@ -902,7 +908,7 @@ public class ErnestModel extends Model
 						
 				    	for (int k=ai2;k<=ai1;k++){
 				    		d= d2*10 +   (d1-d2)*10*(k-ai2)/(ai1-ai2);
-				    		if (m_env.isVisible(Im_x-i,Im_y+j)){
+				    		if (m_env.isVisible(Im_xmi,Im_ypj)){
 				    			if (zVMap[k]>d){
 				    				rv[k]=d;
 				    				zVMap[k]= d;
@@ -920,7 +926,7 @@ public class ErnestModel extends Model
 				    	}		
 				    	for (int k=ai1;k<=ai3;k++){
 				    		d= d1*10 +   (d3-d1)*10*(k-ai1)/(ai3-ai1);
-				    		if (m_env.isVisible(Im_x-i,Im_y+j)){
+				    		if (m_env.isVisible(Im_xmi,Im_ypj)){
 				    			if (zVMap[k]>d-0.01){
 				    				rv[k]=d;
 				    				zVMap[k]=d;
@@ -939,29 +945,29 @@ public class ErnestModel extends Model
 						
 				    	// corners
 						// 1
-						if ( (!m_env.isVisible(Im_x-i+1,Im_y+j) && !m_env.isVisible(Im_x-i,Im_y+j-1) )
-						   ||( m_env.isVisible(Im_x-i+1,Im_y+j) &&  m_env.isVisible(Im_x-i,Im_y+j-1) )
-						   ||( m_env.isVisible(Im_x-i+1,Im_y+j) && !m_env.seeBlock(Im_x-i+1, Im_y+j).equals(m_env.seeBlock(Im_x-i, Im_y+j)))
-						   ||( m_env.isVisible(Im_x-i,Im_y+j-1) && !m_env.seeBlock(Im_x-i, Im_y+j-1).equals(m_env.seeBlock(Im_x-i, Im_y+j))) ){
+						if ( (!m_env.isVisible(Im_xmi+1,Im_ypj) && !m_env.isVisible(Im_xmi,Im_ypj-1) )
+						   ||( m_env.isVisible(Im_xmi+1,Im_ypj) &&  m_env.isVisible(Im_xmi,Im_ypj-1) )
+						   ||( m_env.isVisible(Im_xmi+1,Im_ypj) && !m_env.seeBlock(Im_xmi+1, Im_ypj).equals(m_env.seeBlock(Im_xmi, Im_ypj)))
+						   ||( m_env.isVisible(Im_xmi,Im_ypj-1) && !m_env.seeBlock(Im_xmi, Im_ypj-1).equals(m_env.seeBlock(Im_xmi, Im_ypj))) ){
 									
 								cornersPoints.add(new Point( -(float)imin , (float)jmin, ai1,0) );
 						}
 						
 						
 						// 2
-						if (Im_x-i-1>=0 && !m_env.isVisible(Im_x-i,Im_y+j-1))
-						if ( (!m_env.isVisible(Im_x-i-1,Im_y+j) && !m_env.isVisible(Im_x-i,Im_y+j-1))
-						   ||( m_env.isVisible(Im_x-i-1,Im_y+j-1) )
-						   ||( m_env.isVisible(Im_x-i-1,Im_y+j) && !m_env.seeBlock(Im_x-i-1, Im_y+j).equals(m_env.seeBlock(Im_x-i, Im_y+j))) ){
+						if (Im_xmi-1>=0 && !m_env.isVisible(Im_xmi,Im_ypj-1))
+						if ( (!m_env.isVisible(Im_xmi-1,Im_ypj) && !m_env.isVisible(Im_xmi,Im_ypj-1))
+						   ||( m_env.isVisible(Im_xmi-1,Im_ypj-1) )
+						   ||( m_env.isVisible(Im_xmi-1,Im_ypj) && !m_env.seeBlock(Im_xmi-1, Im_ypj).equals(m_env.seeBlock(Im_xmi, Im_ypj))) ){
 							
 							cornersPoints.add(new Point( -(float)iplus , (float)jmin, ai2,0) );
 						}
 						
 						// 3
-						if (Im_y+j+1<m_h && !m_env.isVisible(Im_x-i+1,Im_y+j))
-						if ( (!m_env.isVisible(Im_x-i,Im_y+j+1) && !m_env.isVisible(Im_x-i+1,Im_y+j))
-						   ||( m_env.isVisible(Im_x-i+1,Im_y+j+1) )
-						   ||( m_env.isVisible(Im_x-i,Im_y+j+1) && !m_env.seeBlock(Im_x-i, Im_y+j+1).equals(m_env.seeBlock(Im_x-i, Im_y+j))) ){
+						if (Im_ypj+1<m_h && !m_env.isVisible(Im_xmi+1,Im_ypj))
+						if ( (!m_env.isVisible(Im_xmi,Im_ypj+1) && !m_env.isVisible(Im_xmi+1,Im_ypj))
+						   ||( m_env.isVisible(Im_xmi+1,Im_ypj+1) )
+						   ||( m_env.isVisible(Im_xmi,Im_ypj+1) && !m_env.seeBlock(Im_xmi, Im_ypj+1).equals(m_env.seeBlock(Im_xmi, Im_ypj))) ){
 							
 							cornersPoints.add(new Point( -(float)imin , (float)jplus, ai3,0) );
 						}
@@ -1101,7 +1107,7 @@ public class ErnestModel extends Model
 			cornerV2[cornersPoints.get(i).angle]=1;
 		}
 		
-		
+		/*
 		int j=0;
 		double x,y;
 		for (int i=0;i<360;i++){
@@ -1123,21 +1129,26 @@ public class ErnestModel extends Model
 				j--;
 				
 			}
-		}
+		}*/
 		
 		
 		// detection of appearing and disappearing points
 		for (int i=0;i<360;i++){
+			
 			if (cornerV2[i]>0){
-				if ( rv2[i]+5<rv2[(i-1+360)%360]){
-					cornersPoints.add(new Point( (float)(rv2[(i-1+360)%360]*Math.cos((-(i-1+360)%360+180)*Math.PI/180))/10 ,
-                            					 (float)(rv2[(i-1+360)%360]*Math.sin((-(i-1+360)%360+180)*Math.PI/180))/10 ,
-                            					 (i-1+360)%360 , 1 ) );
+				int i_min= (i-1+360)%360;
+				int i_plus= (i+1+360)%360;
+				double i_minRad =(-i_min +180)*Math.PI/180;
+				double i_plusRad=(-i_plus+180)*Math.PI/180;
+				if ( rv2[i]+5<rv2[i_min]){
+					cornersPoints.add(new Point( (float)(rv2[i_min]*Math.cos(i_minRad))/10 ,
+                            					 (float)(rv2[i_min]*Math.sin(i_minRad))/10 ,
+                            					 i_min , 1 ) );
 				}
-				if ( rv2[i]+5<rv2[(i+1+360)%360]){
-					cornersPoints.add(new Point( (float)(rv2[(i+1+360)%360]*Math.cos((-(i+1+360)%360+180)*Math.PI/180))/10 ,
-                            					 (float)(rv2[(i+1+360)%360]*Math.sin((-(i+1+360)%360+180)*Math.PI/180))/10 ,
-                            					 (i+1+360)%360 , 2 ) );
+				if ( rv2[i]+5<rv2[i_plus]){
+					cornersPoints.add(new Point( (float)(rv2[i_plus]*Math.cos(i_plusRad))/10 ,
+                            					 (float)(rv2[i_plus]*Math.sin(i_plusRad))/10 ,
+                            					 i_plus , 2 ) );
 				}
 			}
 		}
