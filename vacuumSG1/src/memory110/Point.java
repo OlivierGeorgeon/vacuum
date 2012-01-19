@@ -112,4 +112,9 @@ public class Point {
 
         speed.add(localSpeed);
 	}
+	
+	public float getAngle()
+	{
+		return (float)Math.atan2((double)position.y, position.x);			
+	}
 }

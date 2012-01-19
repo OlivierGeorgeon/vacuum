@@ -58,21 +58,24 @@ public class SpaceMemoryPanel extends JPanel
 		Graphics2D g2d = (Graphics2D)g;
 		
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+
+		// Display background
 		g2d.setColor(Color.white);
 		g2d.fillRect(0, 0, 2 * RADIUS * SCALE, 2 * RADIUS * SCALE);
 		
+        // Display agent
         AffineTransform ref = g2d.getTransform();
         AffineTransform orientation = new AffineTransform();
         orientation.translate(RADIUS * SCALE,RADIUS * SCALE);
         orientation.rotate(Math.PI/2);
         orientation.scale(SCALE / 100f, SCALE / 100f);
         g2d.transform(orientation);
-
-        // display agent
 		g2d.setColor(Color.gray);
         g2d.fill(Ernest110Model.shape());
 		
+        // Display places
         g2d.setTransform(ref);
+		g2d.setStroke(new BasicStroke(SCALE / 3f));
 
         // Transparency
 //		float alpha = 0.8f;
@@ -85,8 +88,6 @@ public class SpaceMemoryPanel extends JPanel
 		double angle;
 		double span;
 		int focusRadius = SCALE / 3;
-		
-		g2d.setStroke(new BasicStroke(SCALE / 3f));
 		
 		for (IPlace place : spaceMemory.placeList)
 		{
