@@ -600,7 +600,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 	 */
 	public void drawGrid()
 	{
-		resizeGrid();
+		
 		
 		// handle mouse events from continuous environment
 		int c= m_envPanel.getClicked();
@@ -652,7 +652,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 				m_environment.traceUserEvent("add_food", m_envPanel.m_clickX, m_h-1-m_envPanel.m_clickY);
 			}
 		}
-		
+		resizeGrid();
 		m_envPanel.repaint();
 		
 	}

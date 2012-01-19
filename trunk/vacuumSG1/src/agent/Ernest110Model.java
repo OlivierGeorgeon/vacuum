@@ -227,7 +227,7 @@ public class Ernest110Model extends ErnestModel
 			m_env.frameList.get(i).repaint();
 		}
 		
-		rendu();
+		if (cognitiveMode!=AGENT_STOP) rendu();
         anim();
     }
     

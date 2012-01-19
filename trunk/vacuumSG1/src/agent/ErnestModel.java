@@ -1010,26 +1010,33 @@ public class ErnestModel extends Model
 						
 						for (int k=ai3;k<=ai4;k++){
 							if (zVMap[k%360]>d*10){
-								rv[k%360]=d*10 - 2*Math.sin(Math.PI*(k-ai3)/(ai4-ai3));
-								zVMap[k%360]= d*10- 2*Math.sin(Math.PI*(k-ai3)/(ai4-ai3));
+								rv[k%360]=d*10 /*- 2*Math.sin(Math.PI*(k-ai3)/(ai4-ai3))*/;
+								zVMap[k%360]= d*10 /*- 2*Math.sin(Math.PI*(k-ai3)/(ai4-ai3))*/;
 								colorMap[k%360]=bgc;
 							}
 							
 							if (zTMap[k%360]>d*10){
-								rt[k%360]=d*10 - 2*Math.sin(Math.PI*(k-ai3)/(ai4-ai3));
-								zTMap[k%360]= d*10- 2*Math.sin(Math.PI*(k-ai3)/(ai4-ai3));
+								rt[k%360]=d*10 /*- 2*Math.sin(Math.PI*(k-ai3)/(ai4-ai3))*/;
+								zTMap[k%360]= d*10 /*- 2*Math.sin(Math.PI*(k-ai3)/(ai4-ai3))*/;
 								tactileMap[k%360]=m_env.CUDDLE;
 							}
 						}
 						
 						// corners
 				    	// 1
-						cornersPoints.add(new Point( d, (ai3+360)%360,0) );
+						ai3=ai3%360;
+						float px=(float) (rv[ai3]*Math.cos(((-ai3+90)%360)*Math.PI/180));
+						float py=(float) (rv[ai3]*Math.sin(((-ai3+90)%360)*Math.PI/180));
+						cornersPoints.add(new Point(px,py,ai3,0));
 						cornersPoints.get(cornersPoints.size()-1).addSpeed(m_env.m_modelList.get(a).mSpeedT);
-
+						
 						// 2
-						cornersPoints.add(new Point( d, (ai4+360)%360,0) );
+						ai4=ai4%360;
+						px=(float) (rv[ai4]*Math.cos(((-ai4+90)%360)*Math.PI/180));
+						py=(float) (rv[ai4]*Math.sin(((-ai4+90)%360)*Math.PI/180));
+						cornersPoints.add(new Point(px,py,ai4,0));
 						cornersPoints.get(cornersPoints.size()-1).addSpeed(m_env.m_modelList.get(a).mSpeedT);
+						
 					}
 				}
 				
@@ -1222,6 +1229,7 @@ public class ErnestModel extends Model
 			cornersPoints.get(i).subSpeed(mEgoSpeedT);
 		}
 		
+		
 		// generate segments
 		for (int i=1;i<cornersPoints.size();i++){
 			if (  (cornersPoints.get(i-1).type==0 && cornersPoints.get(i).type==0)
@@ -1236,7 +1244,7 @@ public class ErnestModel extends Model
 			}
 		}
 		segments.add(new Segment(cornersPoints.get(cornersPoints.size()-1),cornersPoints.get(0)));
-
+	
 		
 		/*
 		for (int i=0;i<360;i++){
@@ -1247,9 +1255,10 @@ public class ErnestModel extends Model
 		
 		// fill the retina vector
 		for (int i=0;i<Ernest.RESOLUTION_RETINA;i++){
+			int angle=(int)(i*180/Ernest.RESOLUTION_RETINA+180/Ernest.RESOLUTION_RETINA/2+90);
 			retina[Ernest.RESOLUTION_RETINA-i-1]= new EyeFixation();
-			retina[Ernest.RESOLUTION_RETINA-i-1].setColor(colorMap2[(int)(i*180/Ernest.RESOLUTION_RETINA+180/Ernest.RESOLUTION_RETINA/2+90)]);
-			retina[Ernest.RESOLUTION_RETINA-i-1].setDistance((int) rv2[(int)(i*180/Ernest.RESOLUTION_RETINA+180/Ernest.RESOLUTION_RETINA/2+90)]);
+			retina[Ernest.RESOLUTION_RETINA-i-1].setColor(colorMap2[angle]);
+			retina[Ernest.RESOLUTION_RETINA-i-1].setDistance((int) rv2[angle]);
 		}
 		
 
@@ -1264,7 +1273,7 @@ public class ErnestModel extends Model
 		
 		// update display
 		m_eye.updateRetine(rv2,colorMap2,cornerV2,rt2,tactileMap2,cornerT2,cornersPoints,segments);
-		
+		/**/
 		return retina;
 	}
 }
