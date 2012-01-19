@@ -1025,15 +1025,15 @@ public class ErnestModel extends Model
 						// corners
 				    	// 1
 						ai3=ai3%360;
-						float px=(float) (rv[ai3]*Math.cos(((-ai3+90)%360)*Math.PI/180));
-						float py=(float) (rv[ai3]*Math.sin(((-ai3+90)%360)*Math.PI/180));
+						float px=(float) (rv[ai3]*Math.cos(((-ai3+90)%360)*Math.PI/180)/10);
+						float py=(float) (rv[ai3]*Math.sin(((-ai3+90)%360)*Math.PI/180)/10);
 						cornersPoints.add(new Point(px,py,ai3,0));
 						cornersPoints.get(cornersPoints.size()-1).addSpeed(m_env.m_modelList.get(a).mSpeedT);
 						
 						// 2
 						ai4=ai4%360;
-						px=(float) (rv[ai4]*Math.cos(((-ai4+90)%360)*Math.PI/180));
-						py=(float) (rv[ai4]*Math.sin(((-ai4+90)%360)*Math.PI/180));
+						px=(float) (rv[ai4]*Math.cos(((-ai4+90)%360)*Math.PI/180)/10);
+						py=(float) (rv[ai4]*Math.sin(((-ai4+90)%360)*Math.PI/180)/10);
 						cornersPoints.add(new Point(px,py,ai4,0));
 						cornersPoints.get(cornersPoints.size()-1).addSpeed(m_env.m_modelList.get(a).mSpeedT);
 						
