@@ -27,10 +27,10 @@ import spas.IPlace;
 public class SpaceMemoryPanel extends JPanel
 {
 	/** The radius of the display area in grid units. */
-	public final static int RADIUS = 10;
+	public final static int RADIUS = 6;
 	
 	/** The number of pixels per grid units. */
-	public final static int SCALE = 20; 
+	public final static int SCALE = 40; 
 	
 	private static final long serialVersionUID = 1L;
 	public int index;
@@ -103,7 +103,10 @@ public class SpaceMemoryPanel extends JPanel
 			// The focus represented as a red circle
 			if (place.getFocus())
 			{
-				g2d.setColor(Color.RED);			
+				if (place.getAttractiveness(1) >= 0)
+					g2d.setColor(Color.MAGENTA);			
+				else
+					g2d.setColor(Color.RED);			
 				g2d.fillOval(RADIUS * SCALE + (int) (d * Math.cos(rad)) - focusRadius, RADIUS * SCALE  - (int) (d * Math.sin(rad)) - focusRadius, 2 * focusRadius, 2 * focusRadius);
 			}
 		}
