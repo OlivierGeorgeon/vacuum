@@ -480,19 +480,19 @@ public class VisualMap {
 				
 				for (int i=0;i<mapSizeTheta;i++){
 					for (int j=0;j<mapSizeR;j++){
-						flowX1.get(act)[i][j]=0;
-						flowY1.get(act)[i][j]=0;
-						flowX2.get(act)[i][j]=0;
-						flowY2.get(act)[i][j]=0;
-						confidenceFlow.get(act)[i][j]=0;
-						speedDirection.get(act)[i][j]=0;
+						flowX1.get(flowX1.size()-1)[i][j]=0;
+						flowY1.get(flowX1.size()-1)[i][j]=0;
+						flowX2.get(flowX1.size()-1)[i][j]=0;
+						flowY2.get(flowX1.size()-1)[i][j]=0;
+						confidenceFlow.get(flowX1.size()-1)[i][j]=0;
+						speedDirection.get(flowX1.size()-1)[i][j]=0;
 					}
 				}
 				for (int i=0;i<mapSize;i++){
 					for (int j=0;j<mapSize;j++){
-						flowX3.get(act)[i][j]=0;
-						flowY3.get(act)[i][j]=0;
-						confidenceFlowC.get(act)[i][j]=0;
+						flowX3.get(flowX1.size()-1)[i][j]=0;
+						flowY3.get(flowX1.size()-1)[i][j]=0;
+						confidenceFlowC.get(flowX1.size()-1)[i][j]=0;
 					}
 				}
 			}

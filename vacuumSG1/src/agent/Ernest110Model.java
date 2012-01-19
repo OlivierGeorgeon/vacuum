@@ -204,6 +204,9 @@ public class Ernest110Model extends ErnestModel
 		mSpeedR=new Vector3f(mOrientation);
 		mSpeedR.sub(mPreviousOrientation);
 		
+		if (mSpeedR.z > Math.PI) mSpeedR.z-=2*Math.PI;
+		if (mSpeedR.z<=-Math.PI) mSpeedR.z+=2*Math.PI;
+		
 		mPreviousPosition.set(mPosition);
 		mPreviousOrientation.set(mOrientation);
         

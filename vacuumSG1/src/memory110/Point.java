@@ -11,6 +11,8 @@ public class Point {
 	public int angle;
 	public double distance;
 	
+	public int ix,jy;
+	
 	public Color leftColor=Color.black;
 	public Color rightColor=Color.black;
 	
@@ -18,8 +20,8 @@ public class Point {
 	
 	public Vector3f speed;
 	
-	public Point(float x, float y, int i, int t){
-		angle=i;
+	public Point(float x, float y, int a, int t){
+		angle=a;
 		type=t;
 		position=new Vector3f(x,y,0);
 		distance=Math.sqrt(x*x+y*y);

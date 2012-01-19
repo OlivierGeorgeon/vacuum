@@ -43,100 +43,13 @@ public class TactileMapPanel extends JPanel{
 		g.setColor(Color.white);
 		g.fillRect(0, 0, 300, 800);
 		
-		/*
-		// draw the tactile retina
-		width=600/(tmap.resolution*tmap.sensorRes);
-		g.setColor(Color.black);
-		for (int i=0;i<tmap.resolution*tmap.sensorRes;i++){
-			g.fillRect(width*i, 110-(int)(tmap.m_tactilePressure[i]*100), width, (int)(tmap.m_tactilePressure[i]*100) );
-		}
-		*/
 
 		int offsetX,offsetY;
-		
-		/*
-		for (int k=0;k<Math.min(3, tmap.flowX1.size());k++){
-			
-			// draw neuron flow vector
-			for (int i=0;i<tmap.resolution*tmap.sensorRes;i++){
-			
-				offsetX=50;
-				offsetY=0;
-				if (k==0){
-					offsetX=550;
-					offsetY=550;
-				}
-				else if (k==1){
-					offsetX=200;
-					offsetY=550;
-				}
-				else if (k==2){
-					offsetX=550;
-					offsetY=150;
-				}
-				
-				g.setColor(Color.blue);
-				g.drawLine(offsetX+(int)(tmap.sensorX[i]), offsetY+(int)(tmap.sensorY[i]),
-						   offsetX+(int)(tmap.sensorX[i]+1000*tmap.flowVectorX.get(k)[i]),
-						   offsetY+(int)(tmap.sensorY[i]+1000*tmap.flowVectorY.get(k)[i]) );
-			}
-			
-			/*
-			for (int i=0;i<50;i+=2){
-				for (int j=0;j<50;j+=2){
-
-					
-					// draw improved flow
-					offsetX=50;
-					offsetY=0;
-					if (k==0){
-						offsetX=550;
-						offsetY=550;
-					}
-					else if (k==1){
-						offsetX=200;
-						offsetY=550;
-					}
-					else if (k==2){
-						offsetX=550;
-						offsetY=150;
-					}
-					
-					
-					if (tmap.potentialTestMap[i][j]){
-						g.setColor(new Color(Math.min(1,tmap.potentialMap[i][j]),1-Math.min(1,tmap.potentialMap[i][j]),0));
-					
-						g.drawLine(offsetX-tmap.mapSize/2*width + i*width+width/2,
-								   offsetY-tmap.mapSize/2*width + j*width+width/2,
-								   offsetX-tmap.mapSize/2*width + i*width+width/2+(int)(1000*tmap.flowX2.get(k)[i][j]),
-								   offsetY-tmap.mapSize/2*width + j*width+width/2+(int)(1000*tmap.flowY2.get(k)[i][j]) );
-					}
-					else{
-						g.setColor(Color.blue);
-						g.drawLine(offsetX-tmap.mapSize/2*width + i*width+width/2,
-								   offsetY-tmap.mapSize/2*width + j*width+width/2,
-								   offsetX-tmap.mapSize/2*width + i*width+width/2+(int)(1000*tmap.flowX2.get(k)[i][j]),
-								   offsetY-tmap.mapSize/2*width + j*width+width/2+(int)(1000*tmap.flowY2.get(k)[i][j]) );
-					}
-				}
-			} /**/
-		//}
-		
-		/*
-		// draw sensor neuron activity in the internal map
-		g.setColor(Color.black);
-		g.drawRect(5, 30, 290, 230);		
-		for (int i=0;i<tmap.resolution*tmap.sensorRes;i++){
-			g.setColor(Color.black);
-			if (tmap.m_tactileObject[i%tmap.resolution]==1) g.setColor(Color.gray);
-			if (tmap.m_tactileObject[i%tmap.resolution]==2) g.setColor(Color.lightGray);
-			if (tmap.m_tactileObject[i%tmap.resolution]==3) g.setColor(Color.white);
-			g.fillOval(150+(int)(tmap.sensorX[i]-25*tmap.m_tactilePressure[i]), 150+(int)(tmap.sensorY[i]-25*tmap.m_tactilePressure[i]),
-					   (int)(50*tmap.m_tactilePressure[i]), (int)(50*tmap.m_tactilePressure[i]));
-		}*/
 
 		offsetX=150;
 		offsetY=150;
+		// draw "neuron" network
+		int size=3;
 		for (int i=0;i<tmap.resolution*tmap.sensorRes;i++){
 			// draw neurons in neuron display
 			/*if (i==tmap.resolution/2) g.setColor(Color.red);
@@ -146,7 +59,7 @@ public class TactileMapPanel extends JPanel{
 			else 
 				g.setColor(Color.black);*/
 			
-			int size=2;
+			
 			/*
 			// action link
 			for (int j=0;j<tmap.resolution*tmap.sensorRes;j++){
@@ -164,10 +77,16 @@ public class TactileMapPanel extends JPanel{
 				}
 			}/**/
 			
-			g.setColor(new Color((int)tmap.timerMap[i]*5,(40-(int)tmap.timerMap[i])*5,0));
+			//g.setColor(new Color((int)tmap.timerMap[i]*5,(40-(int)tmap.timerMap[i])*5,0));
+			
+			//g.setColor(new Color((int)(tmap.m_tactileVariations[i]*5), 250-(int)(tmap.m_tactileVariations[i]*5),0));
+			
+			if (tmap.m_tactilePressure[i]!=0) g.setColor(Color.green);
+			else                              g.setColor(Color.red);
 			
 			// neurons display
 			g.fillOval(offsetX+(int)(tmap.sensorX[i]*size)-2, offsetX+(int)(tmap.sensorY[i]*size)-2, 4, 4);
+			g.fillOval(offsetX+(int)(tmap.sensorX[i]*size)-2, offsetX+300+(int)(tmap.sensorY[i]*size)-2, 4, 4);
 			
 			// connections of first neuron layer
 			g.setColor(Color.black);
@@ -192,73 +111,72 @@ public class TactileMapPanel extends JPanel{
 			if (i>=tmap.resolution && i<2*tmap.resolution && tmap.sensorRes>2){
 				    g.drawLine(offsetX+(int)(tmap.sensorX[i]*size), offsetX+(int)(tmap.sensorY[i]*size),
                     offsetX+(int)(tmap.sensorX[i+tmap.resolution]*size), offsetX+(int)(tmap.sensorY[i+tmap.resolution]*size));
-			}
-			
-			/*
-			// speed direction
-			g.setColor(Color.red);
-			if (tmap.speedDirectionX.size()>0){
-				g.drawLine(450+(int)(tmap.sensorX[i]*size), offsetX+(int)(tmap.sensorY[i]*size),
-						   450+(int)(tmap.sensorX[i]*size)+ (int)(200*tmap.speedDirectionX.get(0)[i]),
-						   offsetX+(int)(tmap.sensorY[i]*size)+ (int)(200*tmap.speedDirectionY.get(0)[i]));
-			}
-			
-			if (tmap.speedDirectionX.size()>1){
-				g.drawLine(offsetX+(int)(tmap.sensorX[i]*size), 450+(int)(tmap.sensorY[i]*size),
-						   offsetX+(int)(tmap.sensorX[i]*size)+ (int)(200*tmap.speedDirectionX.get(1)[i]),
-						   450+(int)(tmap.sensorY[i]*size)+ (int)(200*tmap.speedDirectionY.get(1)[i]));
-			}
-			
-			if (tmap.speedDirectionX.size()>2){
-				g.drawLine(450+(int)(tmap.sensorX[i]*size), 450+(int)(tmap.sensorY[i]*size),
-						   450+(int)(tmap.sensorX[i]*size)+ (int)(200*tmap.speedDirectionX.get(2)[i]),
-						   450+(int)(tmap.sensorY[i]*size)+ (int)(200*tmap.speedDirectionY.get(2)[i]));
-			}/* */
-			
-			
-			
-			
-			
-			/*
-			// movement relation
-			for (int j=0;j<tmap.resolution*tmap.sensorRes;j++){
-				if (tmap.speedDirectionX.size()>0){
-					g.setColor(new Color(0,0,tmap.speedDirection.get(0)[i][j]));
-					g.fillRect(450+i*5, 10+j*5, 5, 5);
-				}
-			
-				if (tmap.speedDirectionX.size()>1){
-					g.setColor(new Color(0,0,tmap.speedDirection.get(1)[i][j]));
-					g.fillRect(20+i*5, 450+j*5, 5, 5);
-				}
-			
-				if (tmap.speedDirectionX.size()>2){
-					g.setColor(new Color(0,0,tmap.speedDirection.get(1)[i][j]));
-					g.fillRect(450+i*5, 450+j*5, 5, 5);
-				}
-			}/* */
-			
-			/*
-			// relative movement relation
-			for (int j=0;j<i;j++){
-				if (tmap.speedDirectionX.size()>0){
-					g.setColor(new Color(0,0,0.5f+(tmap.speedDirection.get(0)[i][j]-tmap.speedDirection.get(0)[j][i])/2));
-					g.fillRect(450+i*5, 10+j*5, 5, 5);
-				}
-			
-				if (tmap.speedDirectionX.size()>1){
-					g.setColor(new Color(0,0,0.5f+(tmap.speedDirection.get(1)[i][j]-tmap.speedDirection.get(1)[j][i])/2));
-					g.fillRect(20+i*5, 450+j*5, 5, 5);
-				}
-			
-				if (tmap.speedDirectionX.size()>2){
-					g.setColor(new Color(0,0,0.5f+(tmap.speedDirection.get(2)[i][j]-tmap.speedDirection.get(2)[j][i])/2));
-					g.fillRect(450+i*5, 450+j*5, 5, 5);
-				}
-			}/* */
+			}/**/
+
+		}
+		
+		// draw neutral neuron network
+		g.setColor(Color.orange);
+		for (int i=0;i<20;i++){
+			g.fillOval(offsetX+(int)(tmap.neutralX[i]*size)-2, offsetX+300+(int)(tmap.neutralY[i]*size)-2, 4, 4);
 		}
 		
 		
+		// draw voronoi matrix
+		int red,green,blue;
+		for (int i=0;i<100;i++){
+			for (int j=0;j<100;j++){
+				if (tmap.voronoiPoints[i][j]==-1){
+					g.setColor(Color.black);
+				}
+				else{
+					if (tmap.voronoiPoints[i][j]<tmap.resolution*tmap.sensorRes){
+						//red= (tmap.voronoiPoints[i][j]%2)*200;
+						//green=(tmap.voronoiPoints[i][j]%3)*120;
+						//blue=(tmap.voronoiPoints[i][j]%4)*60;
+						//g.setColor(new Color(red,green,blue));
+					
+						if (tmap.m_tactilePressure[tmap.voronoiPoints[i][j]]==0){
+							g.setColor(Color.green);
+						}
+						else{
+							g.setColor(Color.red);
+						}
+					}
+					else{
+						g.setColor(Color.orange);
+					}
+				}
+				
+				g.fillRect(500+2*i, 50+2*j, 2, 2);
+			}
+		}
+		
+		// draw delaunay links
+		int x1,y1,x2,y2;
+		g.setColor(Color.red);
+		for (int i=0;i<tmap.resolution*tmap.sensorRes+20;i++){
+			for (int j=0;j<tmap.resolution*tmap.sensorRes+20;j++){
+				
+				if (tmap.delaunayLinks[i][j]){
+				
+					if (i<tmap.resolution*tmap.sensorRes) x1=(int)tmap.sensorX[i];
+					else x1=(int)tmap.neutralX[i-tmap.resolution*tmap.sensorRes];
+				
+					if (i<tmap.resolution*tmap.sensorRes) y1=(int)tmap.sensorY[i];
+					else y1=(int)tmap.neutralY[i-tmap.resolution*tmap.sensorRes];
+					
+					if (j<tmap.resolution*tmap.sensorRes) x2=(int)tmap.sensorX[j];
+					else x2=(int)tmap.neutralX[j-tmap.resolution*tmap.sensorRes];
+				
+					if (j<tmap.resolution*tmap.sensorRes) y2=(int)tmap.sensorY[j];
+					else y2=(int)tmap.neutralY[j-tmap.resolution*tmap.sensorRes];
+				
+					g.drawLine(offsetX+size*x1, offsetX+300+size*y1,offsetX+size*x2, offsetX+300+size*y2);
+				
+				}
+			}
+		}
 		
 		//draw neuron distances
 		/*

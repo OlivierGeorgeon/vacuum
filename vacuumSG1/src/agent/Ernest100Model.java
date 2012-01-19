@@ -64,6 +64,8 @@ public class Ernest100Model extends ErnestModel
 	
 	public boolean tempo=true;
 	
+	public boolean bump=false;
+	
 	public Ernest100Model(int i) {
 		super(i);
 	}
@@ -141,7 +143,7 @@ public class Ernest100Model extends ErnestModel
 		
 		boolean distpTactile=true;
 		boolean dispVisual=false;
-		boolean dispColliculus=true;
+		boolean dispColliculus=false;
 		boolean dispEyeView=true;
 		
 		int size;
@@ -209,6 +211,18 @@ public class Ernest100Model extends ErnestModel
 		{
 			int[] intention = stepErnest(status);
 			enactSchema(intention);
+			
+			/*
+			if (bump && lastAction==0){
+				double choice=Math.random();
+				if (choice<0.5) turnLeft();
+				else            turnRight();
+			}
+			else{
+				forward();
+			}*/
+			
+			bump=false;
 		}
 
 		if (cognitiveMode == AGENT_STEP)
@@ -546,22 +560,7 @@ public class Ernest100Model extends ErnestModel
 //							mPosition.x-=dx2/2;
 //							mPosition.y-=dy2/2;
 //						}
-						
-						/*
-						double dx2= Math.cos(-mOrientation.z) - Math.sin(-mOrientation.z);
-						double dy2= Math.sin(-mOrientation.z) + Math.cos(-mOrientation.z);
-						
-						System.out.println("----------- "+ident+" ; "+dx2+" , "+dy2);
-						
-						mTranslation.x=(float) (mTranslation.x*(1-dx2));
-						mTranslation.y=(float) (mTranslation.y*(1-dy2));
-						/*
-						dx2= Math.cos(-m_env.m_modelList.get(a).mOrientation.z) - Math.sin(-m_env.m_modelList.get(a).mOrientation.z);
-						dy2= Math.sin(-m_env.m_modelList.get(a).mOrientation.z) + Math.cos(-m_env.m_modelList.get(a).mOrientation.z);
-						
-						m_env.m_modelList.get(a).mTranslation.x=(float) (m_env.m_modelList.get(a).mTranslation.x*(1-dx2));
-						m_env.m_modelList.get(a).mTranslation.y=(float) (m_env.m_modelList.get(a).mTranslation.y*(1-dy2));
-						*/
+
 					}
 				}
 			}
@@ -585,6 +584,8 @@ public class Ernest100Model extends ErnestModel
 			
 			
 			statusL=status1 && status2 && status4;
+			
+			if (!status1 || ! status2) bump=true;
 			
 			float speed=0;
 			
@@ -647,16 +648,7 @@ public class Ernest100Model extends ErnestModel
 
 		if ((adjacent_x >= 0) && (adjacent_x < m_w) && (adjacent_y >= 0) && (adjacent_y < m_h))
 			setAnim(adjacent_x, adjacent_y, ANIM_NO);	
-		
-		//setChanged();
-		//notifyObservers2();			
-		
-		//if (tempo) sleep(10);
-		
-		//setChanged();
-		//notifyObservers2();
-		
-		
+
 		rendu();
 		
 		if (act==0) return status1 && status2; // && status5;
@@ -685,12 +677,7 @@ public class Ernest100Model extends ErnestModel
 			retina[i] = scanArc(angle, Math.PI/Ernest.RESOLUTION_RETINA);
 			angle = angle + Math.PI/Ernest.RESOLUTION_RETINA;
 		}
-		//time1=System.currentTimeMillis();
-		//System.out.print("step : "+(time1-time2)+" millisecondes");
 		rendu();
-		//time2=System.currentTimeMillis();
-		//System.out.println(" ; rendu : "+(time2-time1)+" millisecondes");
-		//time2=time1;
 		
 		return retina;
 	}
