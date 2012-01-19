@@ -549,7 +549,7 @@ public class ErnestModel extends Model
 						   ||( m_env.isVisible(Im_x+i-1,Im_y+j) && !m_env.seeBlock(Im_x+i-1, Im_y+j).equals(m_env.seeBlock(Im_x+i, Im_y+j)))
 						   ||( m_env.isVisible(Im_x+i,Im_y+j-1) && !m_env.seeBlock(Im_x+i, Im_y+j-1).equals(m_env.seeBlock(Im_x+i, Im_y+j))) ){
 									
-								cornersPoints.add(new Point( (float)imin*10 , (float)jmin*10, ai1,0) );
+								cornersPoints.add(new Point( (float)imin , (float)jmin, ai1,0) );
 						}
 						
 						// 2
@@ -558,7 +558,7 @@ public class ErnestModel extends Model
 						   ||( m_env.isVisible(Im_x+i-1,Im_y+j+1) )
 						   ||( m_env.isVisible(Im_x+i,Im_y+j+1) && !m_env.seeBlock(Im_x+i, Im_y+j+1).equals(m_env.seeBlock(Im_x+i, Im_y+j))) ){
 							
-							cornersPoints.add(new Point( (float)imin*10 , (float)jplus*10, ai2,0) );
+							cornersPoints.add(new Point( (float)imin , (float)jplus, ai2,0) );
 						}
 						
 						// 3
@@ -567,7 +567,7 @@ public class ErnestModel extends Model
 						   ||( m_env.isVisible(Im_x+i+1,Im_y+j-1) )
 						   ||( m_env.isVisible(Im_x+i+1,Im_y+j) && !m_env.seeBlock(Im_x+i+1, Im_y+j).equals(m_env.seeBlock(Im_x+i, Im_y+j))) ){
 							
-							cornersPoints.add(new Point( (float)iplus*10 , (float)jmin*10, ai3,0) );
+							cornersPoints.add(new Point( (float)iplus , (float)jmin, ai3,0) );
 						}
 					}
 				}
@@ -658,7 +658,7 @@ public class ErnestModel extends Model
 						   ||( m_env.isVisible(Im_x+i,Im_y-j+1) && !m_env.seeBlock(Im_x+i, Im_y-j+1).equals(m_env.seeBlock(Im_x+i, Im_y-j)))
 						   ||( m_env.isVisible(Im_x+i-1,Im_y-j) && !m_env.seeBlock(Im_x+i-1, Im_y-j).equals(m_env.seeBlock(Im_x+i, Im_y-j))) ){
 									
-								cornersPoints.add(new Point( (float)imin*10 , -(float)jmin*10, ai1,0) );
+								cornersPoints.add(new Point( (float)imin , -(float)jmin, ai1,0) );
 						}
 						
 						
@@ -668,7 +668,7 @@ public class ErnestModel extends Model
 						   ||( m_env.isVisible(Im_x+i+1,Im_y-j+1) )
 						   ||( m_env.isVisible(Im_x+i+1,Im_y-j) && !m_env.seeBlock(Im_x+i+1, Im_y-j).equals(m_env.seeBlock(Im_x+i, Im_y-j))) ){
 							
-							cornersPoints.add(new Point( (float)iplus*10 , -(float)jmin*10, ai2,0) );
+							cornersPoints.add(new Point( (float)iplus , -(float)jmin, ai2,0) );
 						}
 						
 						// 3
@@ -677,7 +677,7 @@ public class ErnestModel extends Model
 						   ||( m_env.isVisible(Im_x+i-1,Im_y-j-1) )
 						   ||( m_env.isVisible(Im_x+i,Im_y-j-1) && !m_env.seeBlock(Im_x+i, Im_y-j-1).equals(m_env.seeBlock(Im_x+i, Im_y-j))) ){
 							
-							cornersPoints.add(new Point( (float)imin*10 , -(float)jplus*10, ai3,0) );
+							cornersPoints.add(new Point( (float)imin , -(float)jplus, ai3,0) );
 						}
 					}
 				}
@@ -756,7 +756,7 @@ public class ErnestModel extends Model
 						   ||( m_env.isVisible(Im_x-i,Im_y-j+1) && !m_env.seeBlock(Im_x-i, Im_y-j+1).equals(m_env.seeBlock(Im_x-i, Im_y-j)))
 						   ||( m_env.isVisible(Im_x-i+1,Im_y-j) && !m_env.seeBlock(Im_x-i+1, Im_y-j).equals(m_env.seeBlock(Im_x-i, Im_y-j))) ){
 									
-								cornersPoints.add(new Point( -(float)imin*10 , -(float)jmin*10, ai1,0) );
+								cornersPoints.add(new Point( -(float)imin , -(float)jmin, ai1,0) );
 						}
 						
 						// 2
@@ -765,7 +765,7 @@ public class ErnestModel extends Model
 						   ||( m_env.isVisible(Im_x-i+1,Im_y-j-1) )
 						   ||( m_env.isVisible(Im_x-i,Im_y-j-1) && !m_env.seeBlock(Im_x-i, Im_y-j-1).equals(m_env.seeBlock(Im_x-i, Im_y-j))) ){
 							
-							cornersPoints.add(new Point( -(float)imin*10 , -(float)jplus*10, ai2,0) );
+							cornersPoints.add(new Point( -(float)imin , -(float)jplus, ai2,0) );
 						}
 						
 						
@@ -775,7 +775,7 @@ public class ErnestModel extends Model
 						   ||( m_env.isVisible(Im_x-i-1,Im_y-j+1) )
 						   ||( m_env.isVisible(Im_x-i-1,Im_y-j) && !m_env.seeBlock(Im_x-i-1, Im_y-j).equals(m_env.seeBlock(Im_x-i, Im_y-j))) ){
 							
-							cornersPoints.add(new Point( -(float)iplus*10 , -(float)jmin*10, ai3,0) );
+							cornersPoints.add(new Point( -(float)iplus , -(float)jmin, ai3,0) );
 						}
 						
 					}
@@ -853,7 +853,7 @@ public class ErnestModel extends Model
 						   ||( m_env.isVisible(Im_x-i+1,Im_y+j-1) )
 						   ||( m_env.isVisible(Im_x-i+1,Im_y+j) && !m_env.seeBlock(Im_x-i+1, Im_y+j).equals(m_env.seeBlock(Im_x-i, Im_y+j))) ){
 							
-							cornersPoints.add(new Point( -(float)imin*10 , (float)jmin*10, ai1,0) );
+							cornersPoints.add(new Point( -(float)imin , (float)jmin, ai1,0) );
 						}
 						
 						
@@ -863,7 +863,7 @@ public class ErnestModel extends Model
 						   ||( m_env.isVisible(Im_x-i-1,Im_y+j-1) )
 						   ||( m_env.isVisible(Im_x-i-1,Im_y+j) && !m_env.seeBlock(Im_x-i-1, Im_y+j).equals(m_env.seeBlock(Im_x-i, Im_y+j))) ){
 							
-							cornersPoints.add(new Point( -(float)iplus*10 , (float)jmin*10, ai2,0) );
+							cornersPoints.add(new Point( -(float)iplus , (float)jmin, ai2,0) );
 						}
 
 					}
@@ -944,7 +944,7 @@ public class ErnestModel extends Model
 						   ||( m_env.isVisible(Im_x-i+1,Im_y+j) && !m_env.seeBlock(Im_x-i+1, Im_y+j).equals(m_env.seeBlock(Im_x-i, Im_y+j)))
 						   ||( m_env.isVisible(Im_x-i,Im_y+j-1) && !m_env.seeBlock(Im_x-i, Im_y+j-1).equals(m_env.seeBlock(Im_x-i, Im_y+j))) ){
 									
-								cornersPoints.add(new Point( -(float)imin*10 , (float)jmin*10, ai1,0) );
+								cornersPoints.add(new Point( -(float)imin , (float)jmin, ai1,0) );
 						}
 						
 						
@@ -954,7 +954,7 @@ public class ErnestModel extends Model
 						   ||( m_env.isVisible(Im_x-i-1,Im_y+j-1) )
 						   ||( m_env.isVisible(Im_x-i-1,Im_y+j) && !m_env.seeBlock(Im_x-i-1, Im_y+j).equals(m_env.seeBlock(Im_x-i, Im_y+j))) ){
 							
-							cornersPoints.add(new Point( -(float)iplus*10 , (float)jmin*10, ai2,0) );
+							cornersPoints.add(new Point( -(float)iplus , (float)jmin, ai2,0) );
 						}
 						
 						// 3
@@ -963,7 +963,7 @@ public class ErnestModel extends Model
 						   ||( m_env.isVisible(Im_x-i+1,Im_y+j+1) )
 						   ||( m_env.isVisible(Im_x-i,Im_y+j+1) && !m_env.seeBlock(Im_x-i, Im_y+j+1).equals(m_env.seeBlock(Im_x-i, Im_y+j))) ){
 							
-							cornersPoints.add(new Point( -(float)imin*10 , (float)jplus*10, ai3,0) );
+							cornersPoints.add(new Point( -(float)imin , (float)jplus, ai3,0) );
 						}
 						
 					}
@@ -1018,11 +1018,11 @@ public class ErnestModel extends Model
 						
 						// corners
 				    	// 1
-						cornersPoints.add(new Point( d*10, (ai3+360)%360,0) );
+						cornersPoints.add(new Point( d, (ai3+360)%360,0) );
 						cornersPoints.get(cornersPoints.size()-1).addSpeed(m_env.m_modelList.get(a).mSpeedT);
 
 						// 2
-						cornersPoints.add(new Point( d*10, (ai4+360)%360,0) );
+						cornersPoints.add(new Point( d, (ai4+360)%360,0) );
 						cornersPoints.get(cornersPoints.size()-1).addSpeed(m_env.m_modelList.get(a).mSpeedT);
 					}
 				}
@@ -1036,9 +1036,9 @@ public class ErnestModel extends Model
 		int index=0;
 		while (index<cornersPoints.size()){
 			
-			if (  cornersPoints.get(index).distance<=rv[cornersPoints.get(index).angle]+5
-				||cornersPoints.get(index).distance<=rv[((cornersPoints.get(index).angle)-1+360)%360]+5
-				||cornersPoints.get(index).distance<=rv[((cornersPoints.get(index).angle)+1+360)%360]+5){
+			if (  cornersPoints.get(index).distance*10<=rv[cornersPoints.get(index).angle]+5
+				||cornersPoints.get(index).distance*10<=rv[((cornersPoints.get(index).angle)-1+360)%360]+5
+				||cornersPoints.get(index).distance*10<=rv[((cornersPoints.get(index).angle)+1+360)%360]+5){
 				
 				index++;
 			}
@@ -1053,8 +1053,8 @@ public class ErnestModel extends Model
 		while (index<cornersPoints.size()){
 			test=false;
 			for (int i=index+1;i<cornersPoints.size();i++){
-				if (  Math.abs(cornersPoints.get(index).position.x - cornersPoints.get(i).position.x)<2
-				   && Math.abs(cornersPoints.get(index).position.y - cornersPoints.get(i).position.y)<2){
+				if (  Math.abs(cornersPoints.get(index).position.x*10 - cornersPoints.get(i).position.x*10)<2
+				   && Math.abs(cornersPoints.get(index).position.y*10 - cornersPoints.get(i).position.y*10)<2){
 					test=true;
 				}
 			}
@@ -1101,7 +1101,7 @@ public class ErnestModel extends Model
 			cornerV2[cornersPoints.get(i).angle]=1;
 		}
 		
-		/*
+		
 		int j=0;
 		double x,y;
 		for (int i=0;i<360;i++){
@@ -1123,20 +1123,20 @@ public class ErnestModel extends Model
 				j--;
 				
 			}
-		}/**/
+		}
 		
 		
 		// detection of appearing and disappearing points
 		for (int i=0;i<360;i++){
 			if (cornerV2[i]>0){
 				if ( rv2[i]+5<rv2[(i-1+360)%360]){
-					cornersPoints.add(new Point( (float)(rv2[(i-1+360)%360]*Math.cos((-(i-1+360)%360+180)*Math.PI/180)) ,
-                            					 (float)(rv2[(i-1+360)%360]*Math.sin((-(i-1+360)%360+180)*Math.PI/180)) ,
+					cornersPoints.add(new Point( (float)(rv2[(i-1+360)%360]*Math.cos((-(i-1+360)%360+180)*Math.PI/180))/10 ,
+                            					 (float)(rv2[(i-1+360)%360]*Math.sin((-(i-1+360)%360+180)*Math.PI/180))/10 ,
                             					 (i-1+360)%360 , 1 ) );
 				}
 				if ( rv2[i]+5<rv2[(i+1+360)%360]){
-					cornersPoints.add(new Point( (float)(rv2[(i+1+360)%360]*Math.cos((-(i+1+360)%360+180)*Math.PI/180)) ,
-                            					 (float)(rv2[(i+1+360)%360]*Math.sin((-(i+1+360)%360+180)*Math.PI/180)) ,
+					cornersPoints.add(new Point( (float)(rv2[(i+1+360)%360]*Math.cos((-(i+1+360)%360+180)*Math.PI/180))/10 ,
+                            					 (float)(rv2[(i+1+360)%360]*Math.sin((-(i+1+360)%360+180)*Math.PI/180))/10 ,
                             					 (i+1+360)%360 , 2 ) );
 				}
 			}
@@ -1225,10 +1225,6 @@ public class ErnestModel extends Model
 			}
 		}
 		segments.add(new Segment(cornersPoints.get(cornersPoints.size()-1),cornersPoints.get(0)));
-		
-		
-		
-		
 
 		
 		/*
