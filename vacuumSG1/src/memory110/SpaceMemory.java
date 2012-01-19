@@ -2,18 +2,32 @@ package memory110;
 
 import java.util.ArrayList;
 
+import ernest.IErnest;
+
 import spas.IPlace;
 
 public class SpaceMemory {
 
+	public IErnest m_ernest;
+
 	public ArrayList<IPlace> placeList;
+	public int m_counter;
 	
 	public SpaceMemory(){
-		
 	}
 	
-	public void update(ArrayList<IPlace> list){
-		placeList=list;
+	public void setErnest(IErnest ernest)
+	{	
+		m_ernest = ernest;
+	}
+	
+	/**
+	 * Update the the information to display
+	 */
+	public void update()
+	{
+		placeList = m_ernest.getPlaceList();
+		m_counter = m_ernest.getCounter();
 	}
 	
 }

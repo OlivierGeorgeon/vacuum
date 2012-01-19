@@ -31,9 +31,9 @@ public class SpaceMemoryFrame extends JFrame{
 		panel.setMemory(mem);
 	}
 	
-	public void update(ArrayList<IPlace> list){
-		panel.update(list);
-	}
+//	public void update(ArrayList<IPlace> list){
+//		panel.update(list);
+//	}
 	
 	public void paint(){
     	panel.repaint();
