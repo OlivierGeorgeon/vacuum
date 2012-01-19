@@ -228,7 +228,7 @@ public class EyeDisplay extends JPanel {
     				
     				// draw speed vector of corner points
     				if (pointSpeed){
-    	    			g2d.setStroke(new BasicStroke(SCALE / 10f));
+    	    			g2d.setStroke(new BasicStroke(SCALE / 20f));
     					g2d.setColor(Color.red);
     					g2d.drawLine(300+(int)(eye.cornerPoints.get(i).position.x*SCALE+2),
     						       300-(int)(eye.cornerPoints.get(i).position.y*SCALE-2),
