@@ -7,7 +7,7 @@ import javax.vecmath.Vector3f;
 
 public class Point {
 
-	public Vector3f position;
+	public Vector3f position=new Vector3f(0,0,0);
 	public int angle;
 	public double distance;
 	
@@ -18,7 +18,7 @@ public class Point {
 	
 	public int type;
 	
-	public Vector3f speed;
+	public Vector3f speed=new Vector3f();
 	
 	public Point(float x, float y, int a, int t){
 		angle=a;
@@ -28,15 +28,7 @@ public class Point {
 		
 		speed=new Vector3f();
 	}
-	
-	public Point(float x, float y, int a, int t,double d){
-		angle=a;
-		type=t;
-		position=new Vector3f(x,y,0);
-		distance=d;
-		
-		speed=new Vector3f();
-	}
+
 	
 	/**
 	 * create point according to the distance
@@ -48,10 +40,10 @@ public class Point {
 		angle=i;
 		type=t;
 		distance=d;
-		
-		position=new Vector3f((float)(d*Math.cos((double) (-i+90)*Math.PI/180)),
-				              (float)(d*Math.sin((double) (-i+90)*Math.PI/180)),
-				              0);
+		/*double a=(double) (-i+90)*Math.PI/180;
+		/*position=new Vector3f((float)(d*Math.cos(a)),
+				              (float)(d*Math.sin(a)),
+				              0);*/
 		speed=new Vector3f();
 	}
 	
