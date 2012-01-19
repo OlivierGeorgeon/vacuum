@@ -528,6 +528,7 @@ public class Ernest110Model extends ErnestModel
     }
 
     /**
+     * The shape is centered in (0,0) and fits in a 100x100 rectangle.
      * @return The shark area.
      */
     public static Area shape()

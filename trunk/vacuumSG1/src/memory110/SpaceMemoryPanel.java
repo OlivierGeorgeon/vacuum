@@ -5,6 +5,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Arc2D;
 import java.awt.geom.Area;
@@ -25,8 +26,11 @@ import spas.IPlace;
 
 public class SpaceMemoryPanel extends JPanel
 {
-	public final static int SCALE = 50; 
-	public final static int RADIUS = 5;
+	/** The radius of the display area in grid units. */
+	public final static int RADIUS = 10;
+	
+	/** The number of pixels per grid units. */
+	public final static int SCALE = 20; 
 	
 	private static final long serialVersionUID = 1L;
 	public int index;
@@ -53,6 +57,7 @@ public class SpaceMemoryPanel extends JPanel
 		
 		Graphics2D g2d = (Graphics2D)g;
 		
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
 		g2d.setColor(Color.white);
 		g2d.fillRect(0, 0, 2 * RADIUS * SCALE, 2 * RADIUS * SCALE);
 		
@@ -60,7 +65,7 @@ public class SpaceMemoryPanel extends JPanel
         AffineTransform orientation = new AffineTransform();
         orientation.translate(RADIUS * SCALE,RADIUS * SCALE);
         orientation.rotate(Math.PI/2);
-        orientation.scale(.5f,.5f);
+        orientation.scale(SCALE / 100f, SCALE / 100f);
         g2d.transform(orientation);
 
         // display agent
@@ -79,8 +84,9 @@ public class SpaceMemoryPanel extends JPanel
 		double rad;
 		double angle;
 		double span;
+		int focusRadius = SCALE / 3;
 		
-		g2d.setStroke(new BasicStroke(10.0f));
+		g2d.setStroke(new BasicStroke(SCALE / 3f));
 		
 		for (IPlace place : spaceMemory.placeList)
 		{
@@ -88,16 +94,17 @@ public class SpaceMemoryPanel extends JPanel
 			
 			rad = (float)Math.atan2((double)place.getPosition().y, place.getPosition().x);			
 			angle = rad*180/Math.PI;
-			
+						
+			// The places represented as arcs
 			span=place.getSpan()*180/Math.PI;
-			
 			g2d.setColor(new Color(place.getBundle().getValue()));			
 			g2d.drawArc(RADIUS * SCALE - (int)d, RADIUS * SCALE - (int)d, 2*(int)d, 2*(int)d, (int)(angle-span/2), (int)span);
 			
+			// The focus represented as a red circle
 			if (place.getFocus())
 			{
 				g2d.setColor(Color.RED);			
-				g2d.fillOval(RADIUS * SCALE + (int) (d * Math.cos(rad)) - 10, RADIUS * SCALE  - (int) (d * Math.sin(rad)) - 10, 20, 20);
+				g2d.fillOval(RADIUS * SCALE + (int) (d * Math.cos(rad)) - focusRadius, RADIUS * SCALE  - (int) (d * Math.sin(rad)) - focusRadius, 2 * focusRadius, 2 * focusRadius);
 			}
 		}
 	}
