@@ -84,7 +84,7 @@ public class EyeDisplay extends JPanel {
         g2d.setTransform(ref);
         
         // Points        
-        Arc2D.Double pie = new Arc2D.Double(-SCALE /4, -SCALE /4, SCALE/2, SCALE/2, 0, 180, Arc2D.PIE);
+        Arc2D.Double pie = new Arc2D.Double(-SCALE /8, -SCALE /8, SCALE/4, SCALE/4, 0, 180, Arc2D.PIE);
 
     	if (viewORsegments){
     		// visual
@@ -222,7 +222,7 @@ public class EyeDisplay extends JPanel {
     			}
     			
     			// draw points
-    			if (eye.cornerPoints.get(i).type==0){
+    			if (eye.cornerPoints.get(i).type<=0){
     				g2d.setColor(Color.blue);
     				g2d.fillOval(300+(int)(eye.cornerPoints.get(i).position.x*SCALE-2),300-(int)(eye.cornerPoints.get(i).position.y*SCALE+2),5,5);
     				

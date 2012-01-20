@@ -1026,25 +1026,20 @@ public class ErnestModel extends Model
 				// corners
 		    	// 1
 				ai3=ai3%360;
-				float px=(float) (rv[ai3]*Math.cos(((-ai3+90)%360)*Math.PI/180)/10);
-				float py=(float) (rv[ai3]*Math.sin(((-ai3+90)%360)*Math.PI/180)/10);
-				cornersPoints.add(new Point(px,py,ai3,0));
+				float px=(float) (d*Math.cos(((-ai3+90)%360)*Math.PI/180));
+				float py=(float) (d*Math.sin(((-ai3+90)%360)*Math.PI/180));
+				cornersPoints.add(new Point(px,py,ai3,-1));
 				cornersPoints.get(cornersPoints.size()-1).addSpeed(m_env.m_modelList.get(a).mSpeedT);
 				
 				// 2
 				ai4=ai4%360;
-				px=(float) (rv[ai4]*Math.cos(((-ai4+90)%360)*Math.PI/180)/10);
-				py=(float) (rv[ai4]*Math.sin(((-ai4+90)%360)*Math.PI/180)/10);
-				cornersPoints.add(new Point(px,py,ai4,0));
+				px=(float) (d*Math.cos(((-ai4+90)%360)*Math.PI/180));
+				py=(float) (d*Math.sin(((-ai4+90)%360)*Math.PI/180));
+				cornersPoints.add(new Point(px,py,ai4,-1));
 				cornersPoints.get(cornersPoints.size()-1).addSpeed(m_env.m_modelList.get(a).mSpeedT);
 				
 			}
 		}
-		
-		
-		
-		
-		
 		
 		
 		
@@ -1064,6 +1059,7 @@ public class ErnestModel extends Model
 				cornersPoints.remove(index);
 			}
 		}
+		
 		
 		// remove double
 		index=0;
@@ -1119,7 +1115,7 @@ public class ErnestModel extends Model
 			cornerV2[cornersPoints.get(i).angle]=1;
 		}
 		
-		/*
+		
 		int j=0;
 		double x,y;
 		for (int i=0;i<360;i++){
@@ -1141,7 +1137,7 @@ public class ErnestModel extends Model
 				j--;
 				
 			}
-		}*/
+		}
 		
 		
 		// detection of appearing and disappearing points
@@ -1152,12 +1148,13 @@ public class ErnestModel extends Model
 				int i_plus= (i+1+360)%360;
 				double i_minRad =(-i_min +180)*Math.PI/180;
 				double i_plusRad=(-i_plus+180)*Math.PI/180;
-				if ( rv2[i]+5<rv2[i_min]){
+				if (rv2[i]+5<rv2[i_min]){
 					cornersPoints.add(new Point( (float)(rv2[i_min]*Math.cos(i_minRad))/10 ,
                             					 (float)(rv2[i_min]*Math.sin(i_minRad))/10 ,
                             					 i_min , 1 ) );
+					
 				}
-				if ( rv2[i]+5<rv2[i_plus]){
+				if (rv2[i]+5<rv2[i_plus]){
 					cornersPoints.add(new Point( (float)(rv2[i_plus]*Math.cos(i_plusRad))/10 ,
                             					 (float)(rv2[i_plus]*Math.sin(i_plusRad))/10 ,
                             					 i_plus , 2 ) );
@@ -1190,19 +1187,65 @@ public class ErnestModel extends Model
 		
 		// set points color
 		for (int i=0;i<cornersPoints.size();i++){
-			if ( rv2[cornersPoints.get(i).angle]+20 > rv2[(cornersPoints.get(i).angle+1+360)%360]){
+			
+			if ( rv2[cornersPoints.get(i).angle]+10 > rv2[(cornersPoints.get(i).angle+1+360)%360]){
 				cornersPoints.get(i).setColorsRight(colorMap2[(cornersPoints.get(i).angle+1+360)%360]);
 			}
 			else{
 				cornersPoints.get(i).setColorsRight(Color.black);
 			}
 			
-			if ( rv2[cornersPoints.get(i).angle]+20 > rv2[(cornersPoints.get(i).angle-1+360)%360]){
+			if ( rv2[cornersPoints.get(i).angle]+10 > rv2[(cornersPoints.get(i).angle-1+360)%360]){
 				cornersPoints.get(i).setColorsLeft(colorMap2[(cornersPoints.get(i).angle-1+360)%360]);
 			}
 			else{
 				cornersPoints.get(i).setColorsLeft(Color.black);
 			}
+			
+			
+			/*
+			int d_angle, angle1,angle2;
+			double dist=0;
+			// left side color
+			angle1=cornersPoints.get(i).angle;
+			
+			if (i==0) angle2=cornersPoints.get(cornersPoints.size()-1).angle;
+			else      angle2=cornersPoints.get(i-1).angle;
+			
+			if (angle1<angle2) angle2-=360;
+			
+			d_angle=angle1-angle2;
+			
+			dist=rv2[angle1]-(rv2[angle1]-rv2[(angle2+360)%360])/d_angle;
+			
+			System.out.println("+++++++++++++++ "+d_angle+" ; "+rv2[angle1]+" , "+rv2[(angle2+360)%360]+" ; "+dist+" ~= "+rv[(angle1-1+360)%360]);
+			
+			if (Math.abs(dist-rv[(angle1-1+360)%360])<5){
+				cornersPoints.get(i).setColorsRight(colorMap2[(cornersPoints.get(i).angle-1+360)%360]);
+			}
+			else{
+				cornersPoints.get(i).setColorsRight(Color.black);
+			}
+			
+			
+			// right side color
+			angle1=cornersPoints.get(i).angle;
+			
+			if (i==cornersPoints.size()-1) angle2=cornersPoints.get(0).angle;
+			else                           angle2=cornersPoints.get(i+1).angle;
+			
+			if (angle1>angle2) angle2+=360;
+			
+			d_angle=angle1-angle2;
+			
+			dist=rv2[angle1]-(rv2[angle1]-rv2[(angle2+360)%360])/d_angle;
+			
+			if (Math.abs(dist-rv[(angle1+1+360)%360])<2){
+				cornersPoints.get(i).setColorsRight(colorMap2[(cornersPoints.get(i).angle+1+360)%360]);
+			}
+			else{
+				cornersPoints.get(i).setColorsRight(Color.black);
+			}*/
 		}
 
 		
@@ -1238,8 +1281,8 @@ public class ErnestModel extends Model
 		
 		// generate segments
 		for (int i=1;i<cornersPoints.size();i++){
-			if (  (cornersPoints.get(i-1).type==0 && cornersPoints.get(i).type==0)
-				||	( (cornersPoints.get(i-1).type==0 || cornersPoints.get(i).type==0) 
+			if (  (cornersPoints.get(i-1).type<=0 && cornersPoints.get(i).type<=0)
+				||	( (cornersPoints.get(i-1).type<=0 || cornersPoints.get(i).type<=0) 
 					&& cornersPoints.get(i-1).angle+1!=cornersPoints.get(i).angle) ){
 				
 				if (!cornersPoints.get(i-1).rightColor.equals(Color.black) && !cornersPoints.get(i).leftColor.equals(Color.black)){
@@ -1254,8 +1297,8 @@ public class ErnestModel extends Model
 		
 		/*
 		for (int i=0;i<360;i++){
-			cornersPoints.add(new Point( (float)(rv2[i]*Math.cos((-i+180)*Math.PI/180)) ,
-					 (float)(rv2[i]*Math.sin((-i+180)*Math.PI/180)) ,
+			cornersPoints.add(new Point( (float)(rv2[i]*Math.cos((-i+180)*Math.PI/180))/10 ,
+					 (float)(rv2[i]*Math.sin((-i+180)*Math.PI/180))/10 ,
 					 (i+1+360)%360 , 10 ) );
 		}/**/
 		
