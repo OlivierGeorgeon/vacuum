@@ -104,8 +104,6 @@ public class Environment extends Observable {
 	private int m_delay;
 	private int m_informationX = 100;
 	private int m_informationY = 100;
-	protected int m_counter = 0;
-	
 	
 	public int[][] m_anim;
 	public Block[][] m_blocks;
@@ -362,14 +360,12 @@ public class Environment extends Observable {
 		return (m_informationX == x && m_informationY == y);
 	}
 
-	public void setCounter(int counter)
-	{
-		m_counter = counter;
-	}
-	
 	public int getCounter()
 	{
-		return m_counter;
+		if (m_modelList.size()>0)
+			return m_modelList.get(identDisplay).getCounter();
+		else
+			return 0;
 	}
 
 	/**
@@ -612,9 +608,9 @@ public class Environment extends Observable {
 	
 	public void traceUserEvent(String type, int x, int y)
 	{
-		//Object element = m_tracer.newEvent("user", type, m_counter);
-		//m_tracer.addSubelement(element, "x", x + "");
-		//m_tracer.addSubelement(element, "y", y + "");
+//		Object element = m_tracer.newEvent("user", type, m_counter);
+//		m_tracer.addSubelement(element, "x", x + "");
+//		m_tracer.addSubelement(element, "y", y + "");
 	}
 		
 	/**

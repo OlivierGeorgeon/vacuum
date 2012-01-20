@@ -153,7 +153,7 @@ public class Ernest104Model extends ErnestModel
 	public int[] stepErnest(boolean status)
 	{
 		if (m_tracer != null)
-			m_tracer.startNewEvent(m_counter);
+			m_tracer.startNewEvent(getCounter());
 
 		// See the environment
 		// 12 visual pixels * 8 visual info + 1 miscelaneous + 3 tactile
@@ -216,8 +216,7 @@ public class Ernest104Model extends ErnestModel
 		int impulsion = schema[1];
 
 		// A new interaction cycle is starting
-		m_counter++;
-		System.out.println("Agent #"+ident+", Step #" + m_counter + "=======");
+		System.out.println("Agent #"+ident+", Step #" + getCounter() + "=======");
 		
 		boolean status = true;
 		
@@ -236,13 +235,13 @@ public class Ernest104Model extends ErnestModel
 			status = forward(impulsion);//1000);
 
 		// Trace the environmental data
-		if (m_tracer != null)
-		{
-			Object environment = m_tracer.newEvent("environment", "position", m_counter);
-			m_tracer.addSubelement(environment, "x", mPosition.x + "");
-			m_tracer.addSubelement(environment, "y", mPosition.y + "");
-			m_tracer.addSubelement(environment,"orientation", mOrientation.z + "");
-		}		
+//		if (m_tracer != null)
+//		{
+//			Object environment = m_tracer.newEvent("environment", "position", m_counter);
+//			m_tracer.addSubelement(environment, "x", mPosition.x + "");
+//			m_tracer.addSubelement(environment, "y", mPosition.y + "");
+//			m_tracer.addSubelement(environment,"orientation", mOrientation.z + "");
+//		}		
 	    return status;
 	}
 

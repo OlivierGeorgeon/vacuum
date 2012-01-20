@@ -1325,4 +1325,9 @@ public class ErnestModel extends Model
 		/**/
 		return retina;
 	}
+	public int getCounter()
+	{
+		return m_ernest.getCounter();
+	}
+
 }

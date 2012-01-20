@@ -66,7 +66,7 @@ public class SpaceMemoryPanel extends JPanel
 
 		// Display background
 		g2d.setColor(Color.white);
-		g2d.fillRect(0, 0, 2 * RADIUS * SCALE, 2 * RADIUS * SCALE);
+		//g2d.fillRect(0, 0, 2 * RADIUS * SCALE, 2 * RADIUS * SCALE);
 		
         // Display agent
         AffineTransform ref = g2d.getTransform();
@@ -76,7 +76,10 @@ public class SpaceMemoryPanel extends JPanel
         orientation.scale(SCALE / 100f, SCALE / 100f);
         g2d.transform(orientation);
 		g2d.setColor(Color.gray);
-        g2d.fill(Ernest110Model.shape());
+        g2d.fill(Ernest110Model.shape(0));
+        Arc2D.Double focus = new Arc2D.Double(-10, -35, 20, 20,0, 180, Arc2D.PIE);
+        g2d.setColor(new Color(spaceMemory.m_focus));
+        //g2d.fill(focus);
         g2d.setTransform(ref);
         
         // Display counter
