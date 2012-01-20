@@ -12,6 +12,7 @@ public class SpaceMemory {
 
 	public ArrayList<IPlace> placeList;
 	public int m_counter;
+	public int m_focus;
 	
 	public SpaceMemory(){
 	}
@@ -28,6 +29,7 @@ public class SpaceMemory {
 	{
 		placeList = m_ernest.getPlaceList();
 		m_counter = m_ernest.getCounter();
+		m_focus = m_ernest.getAttention();
 	}
 	
 }

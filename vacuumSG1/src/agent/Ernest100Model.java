@@ -237,7 +237,7 @@ public class Ernest100Model extends ErnestModel
 	public int[] stepErnest(boolean status)
 	{
 		if (m_tracer != null)
-			m_tracer.startNewEvent(m_counter);
+			m_tracer.startNewEvent(getCounter());
 
 		// See the environment
 		int [][] matrix = new int[Ernest.RESOLUTION_RETINA][8 + 1 + 3];
@@ -303,8 +303,7 @@ public class Ernest100Model extends ErnestModel
 		m_schema = Character.toString((char)schema[0]);
 		
 		// A new interaction cycle is starting
-		m_counter++;
-		System.out.println("Agent #"+ident+", Step #" + m_counter + "=======");
+		System.out.println("Agent #"+ident+", Step #" + getCounter() + "=======");
 		
 		boolean status = true;
 		
@@ -331,13 +330,13 @@ public class Ernest100Model extends ErnestModel
 				status = forward();
 	
 			// Trace the environmental data
-			if (m_tracer != null)
-			{
-				Object environment = m_tracer.newEvent("environment", "position", m_counter);
-				m_tracer.addSubelement(environment, "x", mPosition.x + "");
-				m_tracer.addSubelement(environment, "y", mPosition.y + "");
-				m_tracer.addSubelement(environment,"orientation", mOrientation.z + "");
-			}
+//			if (m_tracer != null)
+//			{
+//				Object environment = m_tracer.newEvent("environment", "position", m_counter);
+//				m_tracer.addSubelement(environment, "x", mPosition.x + "");
+//				m_tracer.addSubelement(environment, "y", mPosition.y + "");
+//				m_tracer.addSubelement(environment,"orientation", mOrientation.z + "");
+//			}
 		}
 		
 	    return status;

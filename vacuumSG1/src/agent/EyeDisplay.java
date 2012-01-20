@@ -22,7 +22,7 @@ import ernest.Ernest;
 public class EyeDisplay extends JPanel {
 
 	/** The radius of the display area in grid units. */
-	public final static int RADIUS = 8;
+	public final static int RADIUS = 10;
 	
 	/** The number of pixels per grid units. */
 	public final static int SCALE = 40; 
@@ -80,11 +80,12 @@ public class EyeDisplay extends JPanel {
         orientation.scale(SCALE / 100f, SCALE / 100f);
         g2d.transform(orientation);
 		g2d.setColor(Color.gray);
-        g2d.fill(Ernest110Model.shape());
+        g2d.fill(Ernest110Model.shape(0));
         g2d.setTransform(ref);
         
         // Points        
-        Arc2D.Double pie = new Arc2D.Double(-SCALE /8, -SCALE /8, SCALE/4, SCALE/4, 0, 180, Arc2D.PIE);
+        //Arc2D.Double pie = new Arc2D.Double(-SCALE /8, -SCALE /8, SCALE/4, SCALE/4, 0, 180, Arc2D.PIE);
+        Arc2D.Double pie = new Arc2D.Double(-SCALE /4, -SCALE /4, SCALE/2, SCALE/2, 0, 180, Arc2D.PIE);
 
     	if (viewORsegments){
     		// visual

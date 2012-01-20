@@ -49,6 +49,7 @@ public class Ernest110Model extends ErnestModel
     
     Color[] pixelColor = new Color[Ernest.RESOLUTION_RETINA];
     Color[][] somatoMapColor = new Color[3][3];
+    Color focusColor = UNANIMATED_COLOR;
     
     /**
      * @param i The agent's numerical id. 
@@ -73,6 +74,8 @@ public class Ernest110Model extends ErnestModel
         for (int i = 0; i < 3; i++)
             for (int j = 0; j < 3; j++)
                 somatoMapColor[i][j] = UNANIMATED_COLOR;
+        
+        focusColor = UNANIMATED_COLOR;
 
         setChanged();
         notifyObservers2();  
@@ -100,8 +103,8 @@ public class Ernest110Model extends ErnestModel
         
         // Only trace the first agent.
         
-        //if (ident == 0)
-       // 	m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","h-yXVWrEwtYclxuPQUlmTOXprcFzol");
+        if (ident == 0)
+        	m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","h-yXVWrEwtYclxuPQUlmTOXprcFzol");
                         
         // Initialize the Ernest === 
         
@@ -320,8 +323,7 @@ public class Ernest110Model extends ErnestModel
 	        int impulsion = schema[1];
 	
 	        // A new interaction cycle is starting
-	        m_counter++;
-	        System.out.println("Agent #"+ident+", Step #" + m_counter + "=======");
+	        System.out.println("Agent #"+ident+", Step #" + getCounter() + "=======");
 	        
 	        if (schema[0] == 'v')
 	        	mRotation.add(new Vector3f(0, 0, (float) - impulsion / Ernest.INT_FACTOR));
@@ -474,11 +476,12 @@ public class Ernest110Model extends ErnestModel
 
         // The shark body
 
-        Area shark = shape();
+        Area shark = shape(ident);
         
         // Retina pixel
         
-        Arc2D.Double pixelIn = new Arc2D.Double(-20, -20, 40, 40,0, 180 / Ernest.RESOLUTION_RETINA + 1, Arc2D.PIE);
+        //Arc2D.Double pixelIn = new Arc2D.Double(-20, -20, 40, 40,0, 180 / Ernest.RESOLUTION_RETINA + 1, Arc2D.PIE);
+        Arc2D.Double focus = new Arc2D.Double(-10, -35, 20, 20,0, 180, Arc2D.PIE);
         
         // The tactile matrix
         
@@ -512,33 +515,41 @@ public class Ernest110Model extends ErnestModel
                 g2d.setColor(somatoMapColor[i][j]);
                 g2d.fill(somatoMap[i][j]);
             }
+        
+        // Draw the focus
+        
+        focusColor = new Color(m_ernest.getAttention());
+        g2d.setColor(focusColor);
+        g2d.fill(focus);
 
         // Draw the retina
         
-        AffineTransform transformColliculus = new AffineTransform();
-        transformColliculus.rotate(0);
-        transformColliculus.translate(0,-22);
-        g2d.transform(transformColliculus);
-        AffineTransform RetinaReference = g2d.getTransform();
-        AffineTransform transformSegment = new AffineTransform();
-        g2d.transform(transformSegment);
-        transformSegment.rotate( - Math.PI / Ernest.RESOLUTION_RETINA);
-        g2d.setColor(Color.BLACK);
-        
-        g2d.setTransform(RetinaReference);
-        for (int i = 0; i < Ernest.RESOLUTION_RETINA; i++)
-        {
-            g2d.setColor(pixelColor[i]);
-            g2d.fill(pixelIn);
-            g2d.transform(transformSegment);
-        }
+//        AffineTransform transformColliculus = new AffineTransform();
+//        transformColliculus.rotate(0);
+//        transformColliculus.translate(0,-22);
+//        g2d.transform(transformColliculus);
+//        AffineTransform RetinaReference = g2d.getTransform();
+//        AffineTransform transformSegment = new AffineTransform();
+//        g2d.transform(transformSegment);
+//        transformSegment.rotate( - Math.PI / Ernest.RESOLUTION_RETINA);
+//        g2d.setColor(Color.BLACK);
+//        
+//        g2d.setTransform(RetinaReference);
+//        for (int i = 0; i < Ernest.RESOLUTION_RETINA; i++)
+//        {
+//            g2d.setColor(pixelColor[i]);
+//            g2d.fill(pixelIn);
+//            g2d.transform(transformSegment);
+//        }
     }
 
     /**
      * The shape is centered in (0,0) and fits in a 100x100 rectangle.
+     * The pelvic fin pattern represents the agent's id number in binary code.
+     * @param ID The agent's id number.
      * @return The shark area.
      */
-    public static Area shape()
+    public static Area shape(int ID)
     {
         GeneralPath body = new GeneralPath();
         body.append(new CubicCurve2D.Double(0,-40, -30,-40, -5, 45, 0, 45), false);
@@ -565,8 +576,12 @@ public class Ernest110Model extends ErnestModel
         caudalFin.append(new CubicCurve2D.Double(-10, 50, -15, 30, 15, 30, 10, 50), false);
 
         Area shark = new Area(body);
-        shark.add(new Area(leftPectoralFin));shark.add(new Area(leftPelvicFin));
-        shark.add(new Area(rightPectoralFin));shark.add(new Area(rightPelvicFin));
+    	shark.add(new Area(leftPectoralFin));
+        if ((ID & 1) == 0)
+        	shark.add(new Area(leftPelvicFin));
+        shark.add(new Area(rightPectoralFin));
+        if ((ID & 2) == 0)
+        	shark.add(new Area(rightPelvicFin));
         
         return shark;
     }

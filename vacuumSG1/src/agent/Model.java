@@ -119,7 +119,7 @@ public class Model extends Observable
 	private int m_delay;
 	private int m_informationX = 100;
 	private int m_informationY = 100;
-	protected int m_counter = 0;
+//	protected int m_counter = 0;
 
 	// A single agent in the environment.
 	public String m_schema = "";
@@ -290,18 +290,6 @@ public class Model extends Observable
     {
             return new Vector3f(mPosition);
     }
-
-	
-	
-	public void setCounter(int counter)
-	{
-		m_counter = counter;
-	}
-	
-	public int getCounter()
-	{
-		return m_counter;
-	}
 
 	/**
 	 * Returns the animation value

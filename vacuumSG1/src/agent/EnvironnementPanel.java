@@ -233,7 +233,8 @@ public class EnvironnementPanel extends JPanel implements MouseListener{
 		
 		String counter ="0";
 		
-		if (m_modelList.size()>0) counter=m_modelList.get(0).getCounter() + ""; 
+		//if (m_modelList.size()>0) counter=m_modelList.get(0).getCounter() + ""; 
+		counter = m_env.getCounter() + "";
 		
 		Font font = new Font("Dialog", Font.BOLD, 10);
 		g2d.setFont(font);
