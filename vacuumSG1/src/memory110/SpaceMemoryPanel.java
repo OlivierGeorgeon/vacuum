@@ -106,7 +106,6 @@ public class SpaceMemoryPanel extends JPanel
 		double rad;
 		double angle;
 		double span;
-		int focusRadius = SCALE / 3;
 		
 		for (IPlace place : spaceMemory.placeList)
 		{
@@ -120,14 +119,24 @@ public class SpaceMemoryPanel extends JPanel
 			g2d.setColor(new Color(place.getBundle().getValue()));			
 			g2d.drawArc(RADIUS * SCALE - (int)d, RADIUS * SCALE - (int)d, 2*(int)d, 2*(int)d, (int)(angle-span/2), (int)span);
 			
-			// The focus represented as a red circle
+		}
+		// The focus represented as a red circle
+		int focusRadius = SCALE / 4;
+		g2d.setStroke(new BasicStroke(SCALE / 10f));
+		for (IPlace place : spaceMemory.placeList)
+		{
 			if (place.getFocus())
 			{
+				d = place.getPosition().length() * SCALE;
+				rad = (float)Math.atan2((double)place.getPosition().y, place.getPosition().x);			
 				if (place.getAttractiveness(1) >= 0)
 					g2d.setColor(Color.MAGENTA);			
 				else
-					g2d.setColor(Color.RED);			
-				g2d.fillOval(RADIUS * SCALE + (int) (d * Math.cos(rad)) - focusRadius, RADIUS * SCALE  - (int) (d * Math.sin(rad)) - focusRadius, 2 * focusRadius, 2 * focusRadius);
+					g2d.setColor(Color.RED);
+				int x0 = RADIUS * SCALE + (int) (d * Math.cos(rad));
+				int y0 = RADIUS * SCALE  - (int) (d * Math.sin(rad));
+				g2d.fillOval(x0 - focusRadius, y0 - focusRadius, 2 * focusRadius, 2 * focusRadius);
+				g2d.drawLine(x0, y0, x0 + (int)(place.getSpeed().x * SCALE * 4), y0 - (int)(place.getSpeed().y * SCALE *4));
 			}
 		}
 	}
