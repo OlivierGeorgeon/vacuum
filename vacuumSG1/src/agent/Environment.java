@@ -20,6 +20,8 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.vecmath.Vector3f;
 
+import spas.IPlace;
+
 
 public class Environment extends Observable {
 	
@@ -84,18 +86,18 @@ public class Environment extends Observable {
 	
 	private static final String PREF_W = "pref_w";
 	private static final String PREF_H = "pref_h";
-	private static final String PREF_X = "pref_x";
-	private static final String PREF_Y = "pref_y";
+//	private static final String PREF_X = "pref_x";
+//	private static final String PREF_Y = "pref_y";
 	private static final String PREF_DIRTY = "pref_dirty";
-	private static final String PREF_STEPS = "pref_steps";
+//	private static final String PREF_STEPS = "pref_steps";
 	private static final String PREF_DELAY = "pref_delay";
-	private static final String PREF_RANDOMBOARD = "pref_randomBoard";
+//	private static final String PREF_RANDOMBOARD = "pref_randomBoard";
 	public static final String PREF_BOARDFILE = "pref_boardFile";
-	private static final String PREF_PICTUREFILE = "pref_pictureFile";
+//	private static final String PREF_PICTUREFILE = "pref_pictureFile";
 	private static final String PREF_SPEAKALOUD = "pref_speakAloud";
-	private static final String PREF_AGENTFILE = "pref_agentFile";
-	private static final String PREF_AGENTTYPE = "pref_agentType";
-	private static final String PREF_AGENTSHORTFILE = "pref_agentShortFile";
+//	private static final String PREF_AGENTFILE = "pref_agentFile";
+//	private static final String PREF_AGENTTYPE = "pref_agentType";
+//	private static final String PREF_AGENTSHORTFILE = "pref_agentShortFile";
 	public static final String DEFAULT_BOARD = "Board16x12.txt";
 		
 	protected int m_w;
@@ -225,21 +227,6 @@ public class Environment extends Observable {
 		return simulationMode;
 	}
 	
-//	public void setRun(int i){
-//		if (m_modelList.size()>i)
-//			m_modelList.get(i).run=true;
-//	}
-//	
-//	public void setStop(int i){
-//		if (m_modelList.size()>i)
-//			m_modelList.get(i).run=false;
-//	}
-//	
-//	public void setStep(int i){
-//		if (m_modelList.size()>i)
-//			m_modelList.get(i).step=true;
-//	}
-
 	public void setEventThread(Runnable t)
 	{ m_eventThread = t; }
 
@@ -252,14 +239,14 @@ public class Environment extends Observable {
 	public boolean isAlga(float x, float y){ 
 		return 	(m_blocks[Math.round(x)][Math.round(y)].isAlga()); 
 	}
-	public boolean isAgent(float x, float y, String name)
-	{
-		for (ErnestModel agent : m_modelList)
-			if (agent.isInCell(Math.round(x), Math.round(y)) && !name.equals(agent.getName())) 
-				return true;
-				
-		return false;			
-	}
+//	public boolean isAgent(float x, float y, String name)
+//	{
+//		for (ErnestModel agent : m_modelList)
+//			if (agent.isInCell(Math.round(x), Math.round(y)) && !name.equals(agent.getName())) 
+//				return true;
+//				
+//		return false;			
+//	}
 	
 	public boolean isEmpty(float x, float y){
 		return m_blocks[Math.round(x)][Math.round(y)].isEmpty();
@@ -350,11 +337,6 @@ public class Environment extends Observable {
 		m_blocks[x][y] = block;
 	}
 
-	//public boolean isAgent(int x, int y)
-	//{
-	//	return (x == Math.round(mPosition.x)) && (y == Math.round(mPosition.y));
-	//}
-	
 	public boolean isInformation(int x, int y)
 	{ 
 		return (m_informationX == x && m_informationY == y);
@@ -399,9 +381,6 @@ public class Environment extends Observable {
 	public int getDirtyCount()
 	{ return m_dirtyCount; }
 
-	//public boolean isAgentStopped()
-	//{ return m_halt; }
-
 	public int getDelay()
 	{ return m_delay; }
 
@@ -441,21 +420,6 @@ public class Environment extends Observable {
 	public int getHeight()
 	{ return m_h; }
 
-	/*
-	public int getCleanSquareCount()
-	{
-		int count = 0;
-		for (int y = 0; y < m_h; y++)
-		{
-			for (int x = 0; x < m_w; x++)
-			{
-				if (m_dirty[x][y] != DIRTY)
-					count++;
-			}
-		}
-		return count;
-	}*/
-
 	public boolean getSpeakAloud()
 	{
 		return m_bSpeakAloud;
@@ -473,43 +437,6 @@ public class Environment extends Observable {
 	{
 		m_bInternalState = b;
 	}
-
-	/**
-	 * Suck a dirty square
-	 * @author mcohen
-	 * @author ogeorgeon
-	 * @return true if the square was dirty, false if the square was clean
-	 */
-	//public boolean suck()
-	//{
-	//	if (m_blocks[Math.round(mPosition.x)][Math.round(mPosition.y)].isFood())
-	//	{
-	//		m_blocks[Math.round(mPosition.x)][Math.round(mPosition.y)] = empty;
-	//		setChanged();
-	//		notifyObservers2();
-	//		
-	//		speak("Yummy", true , false);
-	//		sleep(20);
-
-	//		return true;
-	//	}
-	//	return false;
-	//}
-
-	//public void haltAgent()
-	//{ 
-	//	m_halt = true; 
-	//	setChanged();
-	//	notifyObservers2();
-	//}
-
-	//public void startAgent()
-	//{ 
-	//	m_halt = false; 
-	//	setChanged();
-	//	notifyObservers2();
-	//}
-
 
 	public void setDelay(int delay)
 	{ 
@@ -715,6 +642,19 @@ public class Environment extends Observable {
 	public void paintDream(Graphics2D g,int x,int y,double sx,double sy)
 	{
 		
+	}
+	
+	public void removeEntity(Vector3f position, String name)
+	{
+		if (inScene(Math.round(position.x), Math.round(position.y), Math.round(position.z)))
+		{
+			for (Iterator it = m_modelList.iterator(); it.hasNext();)
+			{
+				ErnestModel entity = (ErnestModel)it.next();
+				if (entity.overlap(position) && !entity.getName().equals(name))
+					it.remove();
+			}		
+		}
 	}
 }
 
