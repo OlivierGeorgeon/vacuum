@@ -32,6 +32,8 @@ import tracing.*;
 public class ErnestModel extends Model 
 {
 
+	private final static Color AGENT_COLOR = new Color(100,100,100);
+	
 	public static int ACTION_FORWARD = 0;
 	public static int ACTION_LEFT = 1;
 	public static int ACTION_RIGHT = 2;
@@ -273,10 +275,12 @@ public class ErnestModel extends Model
 				int dist = (int) Math.sqrt(((i-x0)*(i-x0) + (j-y0)*(j-y0)) * Ernest.INT_FACTOR * Ernest.INT_FACTOR);
 				return Pair.create(dist, bgc);
     		}
-	    	if (m_env.isAgent(i, j, mName))
+	    	//if (m_env.isAgent(i, j, mName))
+	    	ErnestModel entity = m_env.getEntity(new Vector3f(i,j,0), mName);
+	    	if (entity != null)
 	    	{
 				int dist = (int) Math.sqrt(((i-x0)*(i-x0) + (j-y0)*(j-y0)) * Ernest.INT_FACTOR * Ernest.INT_FACTOR);
-				return Pair.create(dist, AGENT_COLOR);
+				return Pair.create(dist, entity.getColor());//AGENT_COLOR);
 	    	}
 
 	    }
@@ -979,7 +983,7 @@ public class ErnestModel extends Model
 		
 		// agents detection
 		for (int a=0;a<m_env.m_modelList.size();a++){
-			Color bgc = m_env.AGENT;
+			//Color bgc = m_env.AGENT;
 			int tactile=m_env.CUDDLE;
 			if (a!=ident){
 				d= (mPosition.x-m_env.m_modelList.get(a).mPosition.x)*(mPosition.x-m_env.m_modelList.get(a).mPosition.x)
@@ -1013,7 +1017,7 @@ public class ErnestModel extends Model
 					if (zVMap[k%360]>d*10){
 						rv[k%360]=d*10 /*- 2*Math.sin(Math.PI*(k-ai3)/(ai4-ai3))*/;
 						zVMap[k%360]= d*10 /*- 2*Math.sin(Math.PI*(k-ai3)/(ai4-ai3))*/;
-						colorMap[k%360]=bgc;
+						colorMap[k%360]=m_env.m_modelList.get(a).getColor(); //bgc;
 					}
 					
 					if (zTMap[k%360]>d*10){
@@ -1325,6 +1329,22 @@ public class ErnestModel extends Model
 		/**/
 		return retina;
 	}
+	
+    public Color getColor()
+    {
+    	return AGENT_COLOR;
+    }
+    
+    public boolean affordEat()
+    {
+    	return false;
+    }
+	
+    public boolean affordCuddle()
+    {
+    	return true;
+    }
+	
 	public int getCounter()
 	{
 		return m_ernest.getCounter();

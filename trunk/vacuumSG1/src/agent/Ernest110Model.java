@@ -30,10 +30,8 @@ import spas.IPlace;
 import tracing.*;
 import utils.Pair;
 
-
 /**************************************
- * A Model for Ernest 10.4
- * Ernest gives impulsions for moving forward and turning
+ * A Model for a fish that moves in the environment
  * @author ogeorgeon
  **************************************/
 public class Ernest110Model extends ErnestModel 
@@ -103,8 +101,8 @@ public class Ernest110Model extends ErnestModel
         
         // Only trace the first agent.
         
-        if (ident == 0)
-        	m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","h-yXVWrEwtYclxuPQUlmTOXprcFzol");
+        //if (ident == 0)
+        //	m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","h-yXVWrEwtYclxuPQUlmTOXprcFzol");
                         
         // Initialize the Ernest === 
         
@@ -285,6 +283,9 @@ public class Ernest110Model extends ErnestModel
         if (m_cuddle)
         	// If Ernest is cuddling then he is also touching ahead.
         	somatoMap[3] = Ernest.STIMULATION_TOUCH_AGENT;
+        if (m_eat)
+        	// If Ernest is cuddling then he is also touching ahead.
+        	somatoMap[3] = Ernest.STIMULATION_TOUCH_FISH;
         for (int i = 0; i < 9; i++)
         	matrix[i][9] = somatoMap[i];
         
@@ -444,6 +445,13 @@ public class Ernest110Model extends ErnestModel
             if (!m_cuddle)
                 mTranslation.scale(.5f); // slowing down makes it look more like cuddling.
             m_cuddle = true;
+        }
+        
+        // Eat a fish agent.
+        if (affordHunt(point))
+        {
+			m_eat = true;
+            //m_env.removeEntity(point, mName);
         }
         
         // Apply friction to the speed vectors

@@ -91,6 +91,9 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 			else if (args[0].equals("Ernest104")){
 				version=104;
 			}
+			else if (args[0].equals("Fish")){
+				version=0;
+			}
 			else if (args[0].equals("Ernest100")){
 				version=100;
 			}
@@ -210,7 +213,6 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 	public void init(String f) throws Exception{
 		int l_w;
 		int l_h;
-		int l_dirtyCount = 0;
 		int l_x = -1;
 		int l_y = -1;
 		
@@ -249,13 +251,31 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 				
 				for (int x = 0; x < m_w; x++){
 					m_environment.m_blocks[x][m_h-1-y]=m_environment.empty;
-					// mauve fish
+					
+					// Fish
 					if (square[x].equals("*"))
 					{
-						l_dirtyCount++;
-						
-						
 						m_environment.m_blocks[x][m_h-1-y]=m_environment.fish;
+					}						
+					if (square[x].equals("+"))
+					{
+						int index=m_modelList.size();
+						
+						m_modelList.add(new FishModel(index));
+						m_modelList.get(index).init(m_w, m_h);
+						m_modelList.get(index).setFrame(this);
+
+						m_modelList.get(index).mPosition.x = x;
+						m_modelList.get(index).mPosition.y = m_h-1 - y;
+						m_modelList.get(index).mPosition.z = 0;
+						m_modelList.get(index).mOrientation.x = 0;
+						m_modelList.get(index).mOrientation.y = 0;
+						m_modelList.get(index).mOrientation.z = 0.1f;
+						m_modelList.get(index).mTranslation.set(new Vector3f());
+						m_modelList.get(index).mRotation.set(new Vector3f());
+						
+						m_modelList.get(index).setEnvironnement(m_environment);
+
 					}
 					
 					// Agent
@@ -266,6 +286,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 						
 						if (version==110) m_modelList.add(new Ernest110Model(index));
 						else if (version==104) m_modelList.add(new Ernest104Model(index));
+						else if (version==0) m_modelList.add(new FishModel(index));
 						else              m_modelList.add(new Ernest100Model(index));
 						m_modelList.get(index).init(m_w, m_h);
 						m_modelList.get(index).setFrame(this);
@@ -290,66 +311,6 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 						
 						m_modelList.get(index).setEnvironnement(m_environment);
 					}
-//					// Agent right
-//					if (square[x].equalsIgnoreCase(">")){
-//						int index=m_modelList.size();
-//						
-//						if (version==110) m_modelList.add(new Ernest110Model(index));
-//						else if (version==104) m_modelList.add(new Ernest104Model(index));
-//						else              m_modelList.add(new Ernest100Model(index));
-//						m_modelList.get(index).init(m_w, m_h);
-//						m_modelList.get(index).setFrame(this);
-//
-//						m_modelList.get(index).mPosition.x = x;
-//						m_modelList.get(index).mPosition.y = m_h-1 - y;
-//						m_modelList.get(index).mPosition.z = 0;
-//						m_modelList.get(index).mOrientation.x = 0;
-//						m_modelList.get(index).mOrientation.y = 0;
-//						m_modelList.get(index).mOrientation.z = 0;
-//						
-//						m_modelList.get(index).setEnvironnement(m_environment);
-//					}
-//					
-//					// Agent down
-//					if (square[x].equalsIgnoreCase("v")){
-//						
-//						int index=m_modelList.size();
-//						if (version==110) m_modelList.add(new Ernest110Model(index));
-//						else if (version==104) m_modelList.add(new Ernest104Model(index));
-//						else              m_modelList.add(new Ernest100Model(index));
-//						m_modelList.get(index).init(m_w, m_h);
-//						m_modelList.get(index).setFrame(this);
-//						
-//						m_modelList.get(index).mPosition.x = x;
-//						m_modelList.get(index).mPosition.y = m_h-1 - y;
-//						m_modelList.get(index).mPosition.z = 0;
-//						m_modelList.get(index).mOrientation.x = 0;
-//						m_modelList.get(index).mOrientation.y = 0;
-//						m_modelList.get(index).mOrientation.z = (float) -Math.PI/2;
-//						
-//						m_modelList.get(index).setEnvironnement(m_environment);
-//					}
-//					// Agent left
-//					if (square[x].equalsIgnoreCase("<"))
-//					{
-//						int index=m_modelList.size();
-//						
-//						if (version==110) m_modelList.add(new Ernest110Model(index));
-//						else if (version==104) m_modelList.add(new Ernest104Model(index));
-//						else              m_modelList.add(new Ernest100Model(index));
-//						m_modelList.get(index).init(m_w, m_h);
-//						m_modelList.get(index).setFrame(this);
-//
-//						m_modelList.get(index).mPosition.x = x;
-//						m_modelList.get(index).mPosition.y = m_h-1 - y;
-//						m_modelList.get(index).mPosition.z = 0;
-//						m_modelList.get(index).mOrientation.x = 0;
-//						m_modelList.get(index).mOrientation.y = 0;
-//						m_modelList.get(index).mOrientation.z = (float) Math.PI;
-//						
-//						m_modelList.get(index).setEnvironnement(m_environment);
-//					}
-					
 					if (Character.isLetter(square[x].toCharArray()[0]))
 					{
 						int code = 'a';
@@ -357,7 +318,6 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 						// Agent on target
 						if (square[x].equalsIgnoreCase("x"))
 						{
-							l_dirtyCount++;
 							l_x = x;
 							l_y = y;	
 						}
@@ -600,8 +560,6 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 	 */
 	public void drawGrid()
 	{
-		
-		
 		// handle mouse events from continuous environment
 		int c= m_envPanel.getClicked();
 		if (c == 1){
@@ -664,7 +622,9 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 	private void resizeGrid()
 	{
 		m_envPanel.setPreferredSize(new Dimension(40*m_envPanel.m_w,40*m_envPanel.m_h));
-		m_board.add(m_envPanel);
+		
+		if (m_board != null) // Not sure why sometimes m_board is null
+			m_board.add(m_envPanel);
 	}
 
 	/**

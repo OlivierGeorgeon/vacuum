@@ -259,7 +259,16 @@ public class Model extends Observable
 	 */
 	public boolean affordSee(Vector3f pos)
 	{
-		return 	(m_env.m_blocks[Math.round(pos.x)][Math.round(pos.y)].isVisible()); 		
+		boolean affordSee = false;
+		
+		// Edible blocks
+		if (m_env.m_blocks[Math.round(pos.x)][Math.round(pos.y)].isVisible())
+			affordSee = true;
+		
+		// Edible entities
+			
+		
+		return affordSee;
 	}
 
     /**
@@ -268,27 +277,35 @@ public class Model extends Observable
      */
     protected boolean affordCuddle(Vector3f pos) 
     {
-            ErnestModel entity = m_env.getEntity(pos, mName);
-        // Only entities and all entities afford cuddle.
-            if (entity == null)
-                    return false;
-            else
-                    return true;
+        ErnestModel entity = m_env.getEntity(pos, mName);
+        if (entity != null && entity.affordCuddle())
+                return true;
+        else
+                return false;
+    }
+    
+    protected boolean affordHunt(Vector3f pos) 
+    {
+        ErnestModel entity = m_env.getEntity(pos, mName);
+        if (entity != null && entity.affordEat())
+                return true;
+        else
+                return false;
     }
     
     protected Vector3f entityCenter(Vector3f pos) 
     {
-            ErnestModel entity = m_env.getEntity(pos, mName);
+        ErnestModel entity = m_env.getEntity(pos, mName);
         // Only entities and all entities afford cuddle.
-            if (entity == null)
-                    return null;
-            else
-                    return entity.getPosition();
+        if (entity == null)
+                return null;
+        else
+                return entity.getPosition();
     }
     
     public Vector3f getPosition() 
     {
-            return new Vector3f(mPosition);
+        return new Vector3f(mPosition);
     }
 
 	/**
