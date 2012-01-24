@@ -243,9 +243,6 @@ public class Ernest110Model extends ErnestModel
      */
     private int[][] sense()
     {
-//        if (m_tracer != null)
-//               m_tracer.startNewEvent(m_counter);
-
         // See the environment ===
 
         // 12 visual pixels * 8 visual info + 1 miscelaneous + 1 tactile
@@ -281,14 +278,13 @@ public class Ernest110Model extends ErnestModel
         
         if (m_schema.equals(">"))
                 matrix[1][8] = (!m_bump ? Ernest.STIMULATION_KINEMATIC_FORWARD : Ernest.STIMULATION_KINEMATIC_BUMP);
-//        else if (m_schema.equals("^"))
-//                matrix[1][8] = (!m_bump ? Ernest.STIMULATION_KINEMATIC_LEFT_EMPTY : Ernest.STIMULATION_KINEMATIC_LEFT_WALL);
-//        else if (m_schema.equals("v"))
-//                matrix[1][8] = (!m_bump ? Ernest.STIMULATION_KINEMATIC_RIGHT_EMPTY : Ernest.STIMULATION_KINEMATIC_RIGHT_WALL);
         
         // Tactile ===
         
         int [] somatoMap = somatoMap();
+        if (m_cuddle)
+        	// If Ernest is cuddling then he is also touching ahead.
+        	somatoMap[3] = Ernest.STIMULATION_TOUCH_AGENT;
         for (int i = 0; i < 9; i++)
         	matrix[i][9] = somatoMap[i];
         
