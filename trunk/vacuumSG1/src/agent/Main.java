@@ -203,14 +203,12 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		addKeyListener(this);
 		setFocusable(true);
 	}
-	
-	
+		
 	/**
 	 * Initialize the grid from a board file
-	 * @author mcohen
-	 * @author ogeorgeon add wall and internal state panel to the grid
 	 */
-	public void init(String f) throws Exception{
+	public void init(String f) throws Exception
+	{
 		int l_w;
 		int l_h;
 		int l_x = -1;
@@ -219,8 +217,8 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		BufferedReader br = null;
 		
 		m_modelList.clear();
-		try{
-
+		try
+		{
 			br = new BufferedReader(new FileReader(f));
 			List<String> lines = new ArrayList<String>();
 			String line = "";
@@ -240,8 +238,8 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 			
 			int y = 0;
 
-			for (Iterator i = lines.iterator(); i.hasNext(); ){
-				
+			for (Iterator i = lines.iterator(); i.hasNext(); )
+			{
 				line = (String)i.next();
 				if (((line.length() + 1) / 2) != m_w)
 					throw new 
@@ -249,14 +247,17 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 
 				String[] square = line.split(" ");
 				
-				for (int x = 0; x < m_w; x++){
+				for (int x = 0; x < m_w; x++)
+				{
 					m_environment.m_blocks[x][m_h-1-y]=m_environment.empty;
 					
-					// Fish
+					// Static fish
 					if (square[x].equals("*"))
 					{
 						m_environment.m_blocks[x][m_h-1-y]=m_environment.fish;
-					}						
+					}	
+					
+					// Fish agents
 					if (square[x].equals("+"))
 					{
 						int index=m_modelList.size();
@@ -275,26 +276,24 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 						m_modelList.get(index).mRotation.set(new Vector3f());
 						
 						m_modelList.get(index).setEnvironnement(m_environment);
-
 					}
 					
-					// Agent
+					// Ernest agents
 					if (square[x].equalsIgnoreCase("^") || square[x].equalsIgnoreCase(">") ||
 						square[x].equalsIgnoreCase("v") || square[x].equalsIgnoreCase("<"))
 					{
 						int index=m_modelList.size();
 						
-						if (version==110) m_modelList.add(new Ernest110Model(index));
+						if (version==110)      m_modelList.add(new Ernest110Model(index));
 						else if (version==104) m_modelList.add(new Ernest104Model(index));
-						else if (version==0) m_modelList.add(new FishModel(index));
-						else              m_modelList.add(new Ernest100Model(index));
+						else if (version==0)   m_modelList.add(new FishModel(index));
+						else                   m_modelList.add(new Ernest100Model(index));
 						m_modelList.get(index).init(m_w, m_h);
 						m_modelList.get(index).setFrame(this);
 
 						m_modelList.get(index).mPosition.x = x;
 						m_modelList.get(index).mPosition.y = m_h-1 - y;
 						m_modelList.get(index).mPosition.z = 0;
-						//m_modelList.get(index).mPreviousPosition.set(m_modelList.get(index).mPosition); 
 						m_modelList.get(index).mOrientation.x = 0;
 						m_modelList.get(index).mOrientation.y = 0;
 						m_modelList.get(index).mTranslation.set(new Vector3f());
@@ -311,6 +310,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 						
 						m_modelList.get(index).setEnvironnement(m_environment);
 					}
+					
 					if (Character.isLetter(square[x].toCharArray()[0]))
 					{
 						int code = 'a';
@@ -324,12 +324,12 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 						// Wall
 						else if (square[x].equalsIgnoreCase("w")
 							 ||  square[x].equalsIgnoreCase("i")
-							 ||  square[x].equalsIgnoreCase("j")){
-							
+							 ||  square[x].equalsIgnoreCase("j"))
+						{
 							m_environment.m_blocks[x][m_h-1-y]=m_environment.wall;
 						}
-						else{
-							
+						else
+						{
 							if (square[x].equalsIgnoreCase("g")){
 								m_environment.m_blocks[x][m_h-1-y]=m_environment.wall2;
 							}
@@ -342,19 +342,18 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 					// Singular dirty square
 					if (Character.isDigit(square[x].toCharArray()[0]))
 					{
-						
-						switch (Integer.parseInt(square[x]) ){
-						case 2: m_environment.m_blocks[x][m_h-1-y]=m_environment.alga4; break;
-						case 3: m_environment.m_blocks[x][m_h-1-y]=m_environment.alga5; break;
-						case 4: m_environment.m_blocks[x][m_h-1-y]=m_environment.alga1; break;
-						case 5: m_environment.m_blocks[x][m_h-1-y]=m_environment.alga2; break;
-						case 9: m_environment.m_blocks[x][m_h-1-y]=m_environment.alga3; break;
-						default: break;
+						switch (Integer.parseInt(square[x]) )
+						{
+							case 2: m_environment.m_blocks[x][m_h-1-y]=m_environment.alga4; break;
+							case 3: m_environment.m_blocks[x][m_h-1-y]=m_environment.alga5; break;
+							case 4: m_environment.m_blocks[x][m_h-1-y]=m_environment.alga1; break;
+							case 5: m_environment.m_blocks[x][m_h-1-y]=m_environment.alga2; break;
+							case 9: m_environment.m_blocks[x][m_h-1-y]=m_environment.alga3; break;
+							default: break;
 						}
 					}
 				}
 				y++;
-				
 			}
 			
 			if (m_modelList.size()<=0)

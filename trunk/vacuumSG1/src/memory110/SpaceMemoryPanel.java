@@ -76,7 +76,7 @@ public class SpaceMemoryPanel extends JPanel
         orientation.scale(SCALE / 100f, SCALE / 100f);
         g2d.transform(orientation);
 		g2d.setColor(Color.gray);
-        g2d.fill(Ernest110Model.shape(0));
+        g2d.fill(Ernest110Model.shape(spaceMemory.m_id));
         Arc2D.Double focus = new Arc2D.Double(-10, -35, 20, 20,0, 180, Arc2D.PIE);
         g2d.setColor(new Color(spaceMemory.m_focus));
         //g2d.fill(focus);
@@ -93,20 +93,14 @@ public class SpaceMemoryPanel extends JPanel
 		g2d.setColor(Color.GRAY);		
 		g2d.drawString(counter, 2 * RADIUS * SCALE - 30 - width, 30);	
 		
-        // Display places
-		g2d.setStroke(new BasicStroke(SCALE / 3f));
-
-        // Transparency
-//		float alpha = 0.8f;
-//		int type = AlphaComposite.SRC_OVER; 
-//		AlphaComposite composite = AlphaComposite.getInstance(type, alpha);
-//		g2d.setComposite(composite);
-		
 		double d;
 		double rad;
 		double angle;
 		double span;
 		
+        // Display the places
+		g2d.setStroke(new BasicStroke(SCALE / 3f));
+
 		for (IPlace place : spaceMemory.placeList)
 		{
 			d = place.getPosition().length() * SCALE;
@@ -120,7 +114,8 @@ public class SpaceMemoryPanel extends JPanel
 			g2d.drawArc(RADIUS * SCALE - (int)d, RADIUS * SCALE - (int)d, 2*(int)d, 2*(int)d, (int)(angle-span/2), (int)span);
 			
 		}
-		// The focus represented as a red circle
+		
+		// Display the focus
 		int focusRadius = SCALE / 4;
 		g2d.setStroke(new BasicStroke(SCALE / 10f));
 		for (IPlace place : spaceMemory.placeList)
