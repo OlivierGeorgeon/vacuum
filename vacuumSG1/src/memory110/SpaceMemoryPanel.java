@@ -58,8 +58,8 @@ public class SpaceMemoryPanel extends JPanel
 //		placeList=list;
 //	}
 	
-	public void paintComponent(Graphics g){
-		
+	public void paintComponent(Graphics g)
+	{
 		Graphics2D g2d = (Graphics2D)g;
 		
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
@@ -76,9 +76,14 @@ public class SpaceMemoryPanel extends JPanel
         orientation.scale(SCALE / 100f, SCALE / 100f);
         g2d.transform(orientation);
 		g2d.setColor(Color.gray);
+//		if (spaceMemory.m_model.getCuddle())
+//			g2d.setColor(Color.PINK);
+//		if (spaceMemory.m_model.getEat())
+//			g2d.setColor(Color.YELLOW);
         g2d.fill(Ernest110Model.shape(spaceMemory.m_id));
+        
         Arc2D.Double focus = new Arc2D.Double(-10, -35, 20, 20,0, 180, Arc2D.PIE);
-        g2d.setColor(new Color(spaceMemory.m_focus));
+        //g2d.setColor(new Color(spaceMemory.m_focus));
         //g2d.fill(focus);
         g2d.setTransform(ref);
         
@@ -131,7 +136,7 @@ public class SpaceMemoryPanel extends JPanel
 				int x0 = RADIUS * SCALE + (int) (d * Math.cos(rad));
 				int y0 = RADIUS * SCALE  - (int) (d * Math.sin(rad));
 				g2d.fillOval(x0 - focusRadius, y0 - focusRadius, 2 * focusRadius, 2 * focusRadius);
-				if (place.getSpeed() != null)
+				//if (place.getSpeed() != null)
 					g2d.drawLine(x0, y0, x0 + (int)(place.getSpeed().x * SCALE * 4), y0 - (int)(place.getSpeed().y * SCALE *4));
 			}
 		}

@@ -315,11 +315,11 @@ public class ErnestModel extends Model
 		Vector3f localPoint = new Vector3f(direction);
 		localPoint.scale(SOMATO_RADIUS);
 		Vector3f point = localToParentRef(localPoint);
-		if (affordTouchSoft(point))
+		if (m_env.affordTouchSoft(point))
 			soma = Ernest.STIMULATION_TOUCH_SOFT;
-		if (affordEat(point))
+		if (m_env.affordEat(point))
 			soma = Ernest.STIMULATION_TOUCH_FISH;
-		if (!affordWalk(point)) 
+		if (!m_env.affordWalk(point)) 
 			soma = Ernest.STIMULATION_TOUCH_WALL;
 		return soma;
 	}
@@ -1348,6 +1348,16 @@ public class ErnestModel extends Model
 	public int getCounter()
 	{
 		return m_ernest.getCounter();
+	}
+	
+	public boolean getCuddle()
+	{
+		return m_cuddle;
+	}
+
+	public boolean getEat()
+	{
+		return m_eat;
 	}
 
 }

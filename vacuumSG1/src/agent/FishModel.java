@@ -166,7 +166,7 @@ public class FishModel extends ErnestModel
         // Stay away from north wall
         Vector3f point = new Vector3f(DIRECTION_NORTH);
         point.scaleAdd(HBradius, mPosition);
-        if (!affordWalk(point))
+        if (!m_env.affordWalk(point))
         {
         	mOrientation.z = - mOrientation.z;
             mPosition.y = Math.round(point.y) - 0.5f - HBradius;
@@ -174,7 +174,7 @@ public class FishModel extends ErnestModel
         // Stay away from east wall
         point = new Vector3f(DIRECTION_EAST);
         point.scaleAdd(HBradius, mPosition);
-        if (!affordWalk(point))
+        if (!m_env.affordWalk(point))
         {
         	mOrientation.z = (float)Math.PI - mOrientation.z;
             mPosition.x = Math.round(point.x) - 0.5f - HBradius;
@@ -182,7 +182,7 @@ public class FishModel extends ErnestModel
         // Stay away from south wall
         point = new Vector3f(DIRECTION_SOUTH);
         point.scaleAdd(HBradius, mPosition);
-        if (!affordWalk(point))
+        if (!m_env.affordWalk(point))
         {
         	mOrientation.z = - mOrientation.z;
             mPosition.y = Math.round(point.y) + 0.5f + HBradius;
@@ -190,7 +190,7 @@ public class FishModel extends ErnestModel
         // Stay away from west wall
         point = new Vector3f(DIRECTION_WEST);
         point.scaleAdd(HBradius, mPosition);
-        if (!affordWalk(point))
+        if (!m_env.affordWalk(point))
         {
         	mOrientation.z = (float)Math.PI - mOrientation.z;
             mPosition.x = Math.round(point.x) + 0.5f + HBradius;
@@ -199,35 +199,35 @@ public class FishModel extends ErnestModel
         Vector3f localPoint = new Vector3f(DIRECTION_AHEAD_LEFT);
         localPoint.scale(HBradius);
         point = localToParentRef(localPoint);
-        if (!affordWalk(point))
+        if (!m_env.affordWalk(point))
             keepDistance(mPosition, cellCenter(point), HBradius + .5f);
     
         // Stay away from Ahead right wall
         localPoint = new Vector3f(DIRECTION_AHEAD_RIGHT);
         localPoint.scale(HBradius);
         point = localToParentRef(localPoint);
-        if (!affordWalk(point))
+        if (!m_env.affordWalk(point))
             keepDistance(mPosition, cellCenter(point), HBradius + .5f);
         
         // Northeast
         point = new Vector3f(DIRECTION_NORTHEAST);
         point.scaleAdd(HBradius, mPosition);
-        if (!affordWalk(point))
+        if (!m_env.affordWalk(point))
             keepDistance(mPosition, cellCenter(point), HBradius + .5f);
         // Southeast
         point = new Vector3f(DIRECTION_SOUTHEAST);
         point.scaleAdd(HBradius, mPosition);
-        if (!affordWalk(point))
+        if (!m_env.affordWalk(point))
             keepDistance(mPosition, cellCenter(point), HBradius + .5f);
         // Southwest
         point = new Vector3f(DIRECTION_SOUTHWEST);
         point.scaleAdd(HBradius, mPosition);
-        if (!affordWalk(point))
+        if (!m_env.affordWalk(point))
             keepDistance(mPosition, cellCenter(point), HBradius + .5f);
         // Northwest
         point = new Vector3f(DIRECTION_NORTHWEST);
         point.scaleAdd(HBradius, mPosition);
-        if (!affordWalk(point))
+        if (!m_env.affordWalk(point))
             keepDistance(mPosition, cellCenter(point), HBradius + .5f);
 
         // Apply friction to the speed vectors
