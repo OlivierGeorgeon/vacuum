@@ -313,7 +313,7 @@ public class TactileMap {
 		//////////////////////////////////////////////////////
 		// state link creation
 		changed=false;
-		boolean found=false;
+		/*boolean found=false;
 		int l=0;
 		int k=0;
 		while (l<stateLink.size() && !found){
@@ -340,7 +340,7 @@ public class TactileMap {
 			}
 			actualState=stateLink.size()-1;
 		}
-		else actualState=l-1;
+		else actualState=l-1;*/
 		
 		
 		
@@ -447,7 +447,7 @@ public class TactileMap {
                 }
         }/* */
         
-		/*
+		
        	// compute neuron "capacity" (symmetric version)
         for (int i=0;i<resolution*sensorRes;i++){
             if (m_tactilePressure[i] != m_tactilePressureOld[i])      m_tactileVariations[i]= capacity;
@@ -470,7 +470,7 @@ public class TactileMap {
                 }
         }/**/
 		
-        /*
+        
 		// change distance between neuron
 		for (int k=0;k<5;k++){
 			for (int i=0;i<resolution*sensorRes;i++){

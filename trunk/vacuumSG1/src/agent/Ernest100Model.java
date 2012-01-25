@@ -209,10 +209,10 @@ public class Ernest100Model extends ErnestModel
 		
 		if ( (!((mTranslation.length()>vlmin) ||  (mRotation.length()>vrmin))) && cognitiveMode > 0 )
 		{
-			//int[] intention = stepErnest(status);
-			//enactSchema(intention);
+			int[] intention = stepErnest(status);
+			enactSchema(intention);
 			
-			
+			/*
 			if (bump && lastAction==0){
 				double choice=Math.random();
 				if (choice<0.5) turnLeft();

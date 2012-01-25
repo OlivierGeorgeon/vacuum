@@ -141,34 +141,33 @@ public class Environment extends Observable {
 	
 	public int simulationMode = SIMULATION_STOP;
 	
-	public Environment(ArrayList<ErnestModel> list,int v)
-	{
+	public Environment(ArrayList<ErnestModel> list,int v){
 		m_modelList=list;
 		m_mainThread = Thread.currentThread();
 		identDisplay=0;
 		version=v;
 		frameList=new ArrayList<JFrame>();
-	}
+		
 
-	public void setEnvironnement(EnvironnementPanel env)
-	{
+	}
+	public void setEnvironnement(EnvironnementPanel env){
 		m_env=env;
 	}
-	
-	public void setFrame(Main m)
-	{
+	public void setFrame(Main m){
 		mainFrame=m;
 	}
 	
 	/**
 	 * Initialize the grid from a board file
+	 * @author mcohen
+	 * @author ogeorgeon add wall and internal state panel to the grid
 	 */
-	public void init(int w,int h) throws Exception
-	{
+	public void init(int w,int h) throws Exception{
 		m_w=w;
 		m_h=h;
 		m_anim=new int[w][h];
-		m_blocks=new Block[w][h];	
+		m_blocks=new Block[w][h];
+		
 	}
 	
 	public void initAgents()
@@ -177,6 +176,12 @@ public class Environment extends Observable {
 			m_modelList.get(i).initErnest();
 	}
 	
+//	public void closeAgents()
+//	{
+//		for (int i=0;i<m_modelList.size();i++)
+//			m_modelList.get(i).closeErnest();
+//	}
+//	
 	public void update()
 	{
 		if (simulationMode > SIMULATION_STOP)
@@ -188,15 +193,15 @@ public class Environment extends Observable {
 			simulationMode = SIMULATION_STOP;
 	}
 	
-	public void setDisplay(int i)
-	{
-		if (m_modelList.size()>i)
-		{
+	public void setDisplay(int ident){
+		int index=indexOf(ident);
+		if (index>=0 && m_modelList.size()>index){
 			if (m_modelList.size()>indexDisplay) m_modelList.get(indexDisplay).display=false;
-			m_modelList.get(i).setDisplay();
-			m_modelList.get(i).display=true;
-			identDisplay=i;
-			indexDisplay=indexOf(i);
+			m_modelList.get(index).setDisplay();
+			m_modelList.get(index).display=true;
+			identDisplay=ident;
+			indexDisplay=index;
+			
 		}
 	}
 	
@@ -226,20 +231,15 @@ public class Environment extends Observable {
 	}
 	
 	public void setEventThread(Runnable t)
-	{ 
-		m_eventThread = t; 
-	}
+	{ m_eventThread = t; }
 
-	public boolean isWall(float x, float y)
-	{ 
+	public boolean isWall(float x, float y){ 
 		return 	(m_blocks[Math.round(x)][Math.round(y)].isWall()); 
 	}
-	public boolean isFood(float x, float y)
-	{ 
+	public boolean isFood(float x, float y){ 
 		return 	(m_blocks[Math.round(x)][Math.round(y)].isFood()); 
 	}
-	public boolean isAlga(float x, float y)
-	{ 
+	public boolean isAlga(float x, float y){ 
 		return 	(m_blocks[Math.round(x)][Math.round(y)].isAlga()); 
 	}
 //	public boolean isAgent(float x, float y, String name)
@@ -329,11 +329,12 @@ public class Environment extends Observable {
 	 * @return true if the given location is within the scene's boundaries.
 	 */
 
-	public boolean inScene(int i, int j, int k) 
-	{
+	public boolean inScene(int i, int j, int k) {
 		return (i >= 0 && i < m_w && j >= 0 && j < m_h && k == 0 );
 	}
 	
+	
+
 	public void setBlock(int x, int y, Block block)
 	{ 
 		m_blocks[x][y] = block;
@@ -380,8 +381,8 @@ public class Environment extends Observable {
 		return m_status;
 	}
 
-//	public int getDirtyCount()
-//	{ return m_dirtyCount; }
+	public int getDirtyCount()
+	{ return m_dirtyCount; }
 
 	public int getDelay()
 	{ return m_delay; }
@@ -396,24 +397,24 @@ public class Environment extends Observable {
 		else                      return -1;
 	}
 	
-	public int agentId(float x, float y)
-	{
-		int index=-1;
+	public int agentId(float x, float y){
+		int ident=-1;
 		float min=2;
 		float d=0;
 		
-		for (int i=0;i<m_modelList.size();i++)
-		{
+		for (int i=0;i<m_modelList.size();i++){
 			d= (m_modelList.get(i).mPosition.x - x)*(m_modelList.get(i).mPosition.x - x)
 			  +(m_modelList.get(i).mPosition.y - (m_h-y))*(m_modelList.get(i).mPosition.y - (m_h-y));
 			d=(float) Math.sqrt(d);
 			
 			if (d<=1 && d<min){
 				min=d;
-				index=i;
+				ident=m_modelList.get(i).ident;
 			}
 		}
-		return index;
+		
+		
+		return ident;
 	}
 
 	public int getWidth()
@@ -464,6 +465,7 @@ public class Environment extends Observable {
 		m_delay = prefs.getInt(PREF_DELAY,INIT_DELAY);
 		m_boardFileName = prefs.get(PREF_BOARDFILE, DEFAULT_BOARD);
 		m_bSpeakAloud = prefs.getBoolean(PREF_SPEAKALOUD, true);
+		
 	}
 
 	/**
@@ -542,6 +544,44 @@ public class Environment extends Observable {
 	}
 		
 	/**
+	 * @param x The x coordinate of the square
+	 * @param y The y coordinate of the square
+	 * @return The background color of a square
+	 *//*
+	public Color getBackgroundColor(float x, float y)
+	{
+		Color backgroundColor = FIELD_COLOR;
+		
+		if (getDirty(x, y) == DIRTY)
+			backgroundColor = WATER_COLOR ;			
+		if (getDirty(x, y) == FOOD)
+			backgroundColor = FOOD_COLOR;			
+		if (getDirty(x, y) > FOOD)
+		{
+			float hue = getDirty(x, y) / 20.0f;
+			backgroundColor = Color.getHSBColor(hue, 1f, 0.9f);
+		}
+		else if (getWall(x, y) == WALL || getWall(x, y) == WALL_INFORMATION || getWall(x, y) == WALL_INFORMATION2)
+			backgroundColor = WALL_COLOR;
+		else if (getWall(x, y) > WALL)
+		{
+			float hue = getWall(x, y) / 20.0f;
+			backgroundColor = Color.getHSBColor(hue, 1.0f, 0.9f);
+		}
+		
+		if (getAnim(x,y) == ANIM_BUMP)
+			backgroundColor = Color.RED;
+		//else if (getAnim(x,y) == ANIM_RUB)
+		// 	backgroundColor = Color.PINK;
+		else if (getAnim(x,y) == ANIM_TOUCH)
+			backgroundColor = Color.YELLOW;
+		
+		//setAnim(m_x, m_y, ANIM_NO);
+
+		return backgroundColor;
+	}*/
+	
+	/**
 	 * Paint a square
 	 */
 	public void paint(int x, int y, Graphics g) 
@@ -552,55 +592,55 @@ public class Environment extends Observable {
 	 * Initialize the agent's picture
 	 * To support the agent's rotation, picture file names must end with _up _right _down _left.
 	 */
-//	private ImageIcon m_icon_up; 
-//	private ImageIcon m_icon_right; 
-//	private ImageIcon m_icon_down; 
-//	private ImageIcon m_icon_left; 
-//	
-//	public void setPicture(String pictureFileName)
-//	{
-//		m_icon_up    = new ImageIcon(pictureFileName);
-//		if ( pictureFileName.indexOf("_up.") > 0 )
-//		{
-//			m_icon_right = new ImageIcon(pictureFileName.replaceFirst("_up.", "_right."));
-//			m_icon_down  = new ImageIcon(pictureFileName.replaceFirst("_up.", "_down."));
-//			m_icon_left  = new ImageIcon(pictureFileName.replaceFirst("_up.", "_left."));
-//		}
-//		else
-//		{
-//			m_icon_right = new ImageIcon(pictureFileName);			
-//			m_icon_down  = new ImageIcon(pictureFileName);			
-//			m_icon_left  = new ImageIcon(pictureFileName);			
-//		}
-//	}
+	private ImageIcon m_icon_up; 
+	private ImageIcon m_icon_right; 
+	private ImageIcon m_icon_down; 
+	private ImageIcon m_icon_left; 
+	
+	public void setPicture(String pictureFileName)
+	{
+		m_icon_up    = new ImageIcon(pictureFileName);
+		if ( pictureFileName.indexOf("_up.") > 0 )
+		{
+			m_icon_right = new ImageIcon(pictureFileName.replaceFirst("_up.", "_right."));
+			m_icon_down  = new ImageIcon(pictureFileName.replaceFirst("_up.", "_down."));
+			m_icon_left  = new ImageIcon(pictureFileName.replaceFirst("_up.", "_left."));
+		}
+		else
+		{
+			m_icon_right = new ImageIcon(pictureFileName);			
+			m_icon_down  = new ImageIcon(pictureFileName);			
+			m_icon_left  = new ImageIcon(pictureFileName);			
+		}
+	}
 	
 	/**
 	 * Paint the agent as an icon.
 	 * @param g The graphic object for painting.
 	 */
-//	public void paintAgent(Graphics2D g,int x,int y,double sx,double sy)
-//	{
-//		Image img = m_icon_up.getImage();
-//		img = m_icon_right.getImage();
-//		/*if (m_orientation == ORIENTATION_RIGHT)
-//			img = m_icon_right.getImage();
-//		if (m_orientation == ORIENTATION_DOWN)
-//			img = m_icon_down.getImage();
-//		if (m_orientation == ORIENTATION_LEFT)
-//			img = m_icon_left.getImage();
-//		 */
-//		g.drawImage(img, 1, 1, null); // TODO check the position and size
-//	}
+	public void paintAgent(Graphics2D g,int x,int y,double sx,double sy)
+	{
+		Image img = m_icon_up.getImage();
+		img = m_icon_right.getImage();
+		/*if (m_orientation == ORIENTATION_RIGHT)
+			img = m_icon_right.getImage();
+		if (m_orientation == ORIENTATION_DOWN)
+			img = m_icon_down.getImage();
+		if (m_orientation == ORIENTATION_LEFT)
+			img = m_icon_left.getImage();
+		 */
+		g.drawImage(img, 1, 1, null); // TODO check the position and size
+	}
 
-//	protected void sleep(int t)
-//	{
-//		try
-//		{ 
-//			Thread.currentThread().sleep(t);
-//		}
-//		catch(InterruptedException ie)
-//		{}
-//	}
+	protected void sleep(int t)
+	{
+		try
+		{ 
+			Thread.currentThread().sleep(t);
+		}
+		catch(InterruptedException ie)
+		{}
+	}
 
 	public void paintDream(Graphics2D g,int x,int y,double sx,double sy)
 	{
@@ -621,7 +661,7 @@ public class Environment extends Observable {
 	}
 	
 	public int indexOf(int ident){
-		int index=0;
+		int index=-1;
 		for (int i=0;i<m_modelList.size();i++){
 			if (m_modelList.get(i).ident==ident) index=i;
 		}
