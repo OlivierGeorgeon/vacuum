@@ -435,20 +435,20 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		else if (e.getSource() == m_arun)
 		{
 			System.out.println("Run Ernest "+ m_environment.identDisplay+" ") ;
-			m_modelList.get(m_environment.identDisplay).cognitiveMode = ErnestModel.AGENT_RUN;
+			m_modelList.get(m_environment.indexDisplay).cognitiveMode = ErnestModel.AGENT_RUN;
 		}
 		
 		// Pause the selected agent ******
 		else if (e.getSource() == m_astop)
 		{
 			System.out.println("Stop Ernest "+ m_environment.identDisplay+" ") ;
-			m_modelList.get(m_environment.identDisplay).cognitiveMode = ErnestModel.AGENT_STOP;
+			m_modelList.get(m_environment.indexDisplay).cognitiveMode = ErnestModel.AGENT_STOP;
 		}
 		
 		// Step the selected agent *****
 		else if (e.getSource() == m_astep)
 		{
-			m_modelList.get(m_environment.identDisplay).cognitiveMode = ErnestModel.AGENT_STEP;
+			m_modelList.get(m_environment.indexDisplay).cognitiveMode = ErnestModel.AGENT_STEP;
 			System.out.println("Agent "+m_environment.identDisplay+" Step") ;
 			m_statusBar.setText("Agent "+m_environment.identDisplay+" Step");
 		}
@@ -524,9 +524,9 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		// Save the preferences
 		m_modelList.get(0).putPreferences();
 
-		m_arun.setEnabled(m_modelList.get(m_environment.identDisplay).cognitiveMode != ErnestModel.AGENT_RUN);
-		m_astop.setEnabled(m_modelList.get(m_environment.identDisplay).cognitiveMode == ErnestModel.AGENT_RUN);
-		m_astep.setEnabled(m_modelList.get(m_environment.identDisplay).cognitiveMode != ErnestModel.AGENT_RUN);
+		m_arun.setEnabled(m_modelList.get(m_environment.indexDisplay).cognitiveMode != ErnestModel.AGENT_RUN);
+		m_astop.setEnabled(m_modelList.get(m_environment.indexDisplay).cognitiveMode == ErnestModel.AGENT_RUN);
+		m_astep.setEnabled(m_modelList.get(m_environment.indexDisplay).cognitiveMode != ErnestModel.AGENT_RUN);
 	}
 
 	public void update(Observable o, Object arg)
@@ -578,9 +578,9 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 			{
 				m_environment.setDisplay(id);
 				m_statusBar.setText("Agent "+m_environment.identDisplay);
-				m_arun.setEnabled(m_modelList.get(m_environment.identDisplay).cognitiveMode != ErnestModel.AGENT_RUN);
-				m_astop.setEnabled(m_modelList.get(m_environment.identDisplay).cognitiveMode == ErnestModel.AGENT_RUN);
-				m_astep.setEnabled(m_modelList.get(m_environment.identDisplay).cognitiveMode == ErnestModel.AGENT_STOP);
+				m_arun.setEnabled(m_modelList.get(m_environment.indexDisplay).cognitiveMode != ErnestModel.AGENT_RUN);
+				m_astop.setEnabled(m_modelList.get(m_environment.indexDisplay).cognitiveMode == ErnestModel.AGENT_RUN);
+				m_astep.setEnabled(m_modelList.get(m_environment.indexDisplay).cognitiveMode == ErnestModel.AGENT_STOP);
 			}
 		}
 		if (c == 3)
