@@ -985,7 +985,7 @@ public class ErnestModel extends Model
 		for (int a=0;a<m_env.m_modelList.size();a++){
 			//Color bgc = m_env.AGENT;
 			int tactile=m_env.CUDDLE;
-			if (a!=ident){
+			if (m_env.m_modelList.get(a).ident!=ident){
 				d= (mPosition.x-m_env.m_modelList.get(a).mPosition.x)*(mPosition.x-m_env.m_modelList.get(a).mPosition.x)
 				  +(mPosition.y-m_env.m_modelList.get(a).mPosition.y)*(mPosition.y-m_env.m_modelList.get(a).mPosition.y);
 				d=Math.sqrt(d);

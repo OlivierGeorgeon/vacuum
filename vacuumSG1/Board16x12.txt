@@ -1,6 +1,6 @@
 w w w w w w w w w w w w w w w w w w
 w - - - - - - - - - - - - w w j i w
-w - 5 w - - - - * * * * - w 4 4 - w
+w - 5 w - - - - + + + + - w 4 4 - w
 w - - w - - - - - - * * - w - - - w
 w - - w w w - - - * * - - - - - - w
 w - - - - - - - - - - - - - - - - w

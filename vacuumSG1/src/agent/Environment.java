@@ -128,6 +128,7 @@ public class Environment extends Observable {
 	protected Main mainFrame;
 	
 	public int identDisplay=0;
+	public int indexDisplay=0;
 	public int version;
 	
 	public ArrayList<JFrame> frameList;
@@ -194,10 +195,11 @@ public class Environment extends Observable {
 	
 	public void setDisplay(int i){
 		if (m_modelList.size()>i){
-			m_modelList.get(identDisplay).display=false;
+			if (m_modelList.size()>indexDisplay) m_modelList.get(indexDisplay).display=false;
 			m_modelList.get(i).setDisplay();
 			m_modelList.get(i).display=true;
 			identDisplay=i;
+			indexDisplay=indexOf(i);
 			
 		}
 	}
@@ -344,10 +346,10 @@ public class Environment extends Observable {
 
 	public int getCounter()
 	{
-		if (m_modelList.size()>0)
-			return m_modelList.get(identDisplay).getCounter();
-		else
-			return 0;
+		int counter=0;
+		if (m_modelList.size()>indexDisplay) counter=m_modelList.get(indexDisplay).getCounter();
+		
+		return counter;
 	}
 
 	/**
@@ -655,6 +657,14 @@ public class Environment extends Observable {
 					it.remove();
 			}		
 		}
+	}
+	
+	public int indexOf(int ident){
+		int index=0;
+		for (int i=0;i<m_modelList.size();i++){
+			if (m_modelList.get(i).ident==ident) index=i;
+		}
+		return index;
 	}
 }
 
