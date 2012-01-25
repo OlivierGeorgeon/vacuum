@@ -136,7 +136,8 @@ public class SpaceMemoryPanel extends JPanel
 				int x0 = RADIUS * SCALE + (int) (d * Math.cos(rad));
 				int y0 = RADIUS * SCALE  - (int) (d * Math.sin(rad));
 				g2d.fillOval(x0 - focusRadius, y0 - focusRadius, 2 * focusRadius, 2 * focusRadius);
-				g2d.drawLine(x0, y0, x0 + (int)(place.getSpeed().x * SCALE * 4), y0 - (int)(place.getSpeed().y * SCALE *4));
+				if (place.getSpeed() != null)
+					g2d.drawLine(x0, y0, x0 + (int)(place.getSpeed().x * SCALE * 4), y0 - (int)(place.getSpeed().y * SCALE *4));
 			}
 		}
 	}
