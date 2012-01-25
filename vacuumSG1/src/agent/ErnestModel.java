@@ -1344,6 +1344,10 @@ public class ErnestModel extends Model
     {
     	return true;
     }
+    
+    public boolean isAgent(){
+    	return true;
+    }
 	
 	public int getCounter()
 	{

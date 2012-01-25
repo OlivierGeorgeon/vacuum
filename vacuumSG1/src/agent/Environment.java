@@ -682,6 +682,7 @@ public class Environment extends Observable {
 					it.remove();
 			}		
 		}
+		indexDisplay=indexOf(identDisplay);
 	}
 	
 	public int indexOf(int ident){

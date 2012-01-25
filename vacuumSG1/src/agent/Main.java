@@ -18,7 +18,7 @@ import java.io.*;
 public class Main extends JFrame implements Observer, ActionListener, KeyListener
 {
 	public final long serialVersionUID = 1;
-	
+
 	public static JFrame MAIN_WIN;
 
 	private static String WindowTitle = "Vacuum-SG V";
@@ -258,25 +258,25 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 					}	
 					
 					// Fish agents
-//					if (square[x].equals("+"))
-//					{
-//						int index=m_modelList.size();
-//						
-//						m_modelList.add(new FishModel(index));
-//						m_modelList.get(index).init(m_w, m_h);
-//						m_modelList.get(index).setFrame(this);
-//
-//						m_modelList.get(index).mPosition.x = x;
-//						m_modelList.get(index).mPosition.y = m_h-1 - y;
-//						m_modelList.get(index).mPosition.z = 0;
-//						m_modelList.get(index).mOrientation.x = 0;
-//						m_modelList.get(index).mOrientation.y = 0;
-//						m_modelList.get(index).mOrientation.z = 0.1f;
-//						m_modelList.get(index).mTranslation.set(new Vector3f());
-//						m_modelList.get(index).mRotation.set(new Vector3f());
-//						
-//						m_modelList.get(index).setEnvironnement(m_environment);
-//					}
+					if (square[x].equals("+"))
+					{
+						int index=m_modelList.size();
+						
+						m_modelList.add(new FishModel(index));
+						m_modelList.get(index).init(m_w, m_h);
+						m_modelList.get(index).setFrame(this);
+
+						m_modelList.get(index).mPosition.x = x;
+						m_modelList.get(index).mPosition.y = m_h-1 - y;
+						m_modelList.get(index).mPosition.z = 0;
+						m_modelList.get(index).mOrientation.x = 0;
+						m_modelList.get(index).mOrientation.y = 0;
+						m_modelList.get(index).mOrientation.z = 0.1f;
+						m_modelList.get(index).mTranslation.set(new Vector3f());
+						m_modelList.get(index).mRotation.set(new Vector3f());
+						
+						m_modelList.get(index).setEnvironnement(m_environment);
+					}
 					
 					// Ernest agents
 					if (square[x].equalsIgnoreCase("^") || square[x].equalsIgnoreCase(">") ||
@@ -363,7 +363,14 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 			//setChanged();
 			//notifyObservers2();
 			
-			m_environment.setDisplay(m_modelList.size()-1);
+			int index=0;
+			boolean found=false;
+			while (index<m_modelList.size() && !found){
+				if (m_modelList.get(index).isAgent()) found=true;
+				else index++;
+			}
+			
+			if (found) m_environment.setDisplay(index);
 		}
 		catch (Exception e)
 		{
@@ -441,6 +448,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		// Pause the selected agent ******
 		else if (e.getSource() == m_astop)
 		{
+			//System.out.println("************* "+m_environment.identDisplay+" ; "+m_environment.indexDisplay+" ; "+m_modelList.size());
 			System.out.println("Stop Ernest "+ m_environment.identDisplay+" ") ;
 			m_modelList.get(m_environment.indexDisplay).cognitiveMode = ErnestModel.AGENT_STOP;
 		}
@@ -550,9 +558,11 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		}*/
 
 		drawGrid();
+		
+		m_envPanel.repaint();
 		getContentPane().validate();
-		repaint();
-		this.repaint();
+		//repaint();
+		//this.repaint();
 	}
 	/**
 	 * Update all the squares in the grid from the model
@@ -611,7 +621,6 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		}
 		resizeGrid();
 		m_envPanel.repaint();
-		
 	}
 
 	/**

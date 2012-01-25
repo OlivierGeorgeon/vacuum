@@ -140,6 +140,7 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
 		indexImage=0;
 		
 		this.repaint();
+
     }
     
 	/**
@@ -227,7 +228,7 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
     
 	
 	
-    public void paint(){
+    public void repaint(){
     	m_env.repaint();
     }
 

@@ -17,6 +17,7 @@ public class SpaceMemory
 	public int m_counter;
 	public int m_focus;
 	public int m_id;
+	public boolean lock=false;
 	
 	public SpaceMemory()
 	{
@@ -37,10 +38,12 @@ public class SpaceMemory
 	 */
 	public void update()
 	{
+		lock=false;
 		placeList = m_ernest.getPlaceList();
 		m_counter = m_ernest.getCounter();
 		m_focus = m_ernest.getAttention();
 		//m_id = m_model.getID();
+		lock=true;
 	}
 	
 }
