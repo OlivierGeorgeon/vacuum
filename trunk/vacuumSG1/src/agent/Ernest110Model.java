@@ -451,7 +451,7 @@ public class Ernest110Model extends ErnestModel
         if (affordHunt(point))
         {
 			m_eat = true;
-            //m_env.removeEntity(point, mName);
+            m_env.removeEntity(point, mName);
         }
         
         // Apply friction to the speed vectors

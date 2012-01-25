@@ -144,7 +144,7 @@ public class Ernest100Model extends ErnestModel
 		boolean distpTactile=true;
 		boolean dispVisual=false;
 		boolean dispColliculus=false;
-		boolean dispEyeView=true;
+		boolean dispEyeView=false;
 		
 		int size;
 		int i;
@@ -209,10 +209,10 @@ public class Ernest100Model extends ErnestModel
 		
 		if ( (!((mTranslation.length()>vlmin) ||  (mRotation.length()>vrmin))) && cognitiveMode > 0 )
 		{
-			int[] intention = stepErnest(status);
-			enactSchema(intention);
+			//int[] intention = stepErnest(status);
+			//enactSchema(intention);
 			
-			/*
+			
 			if (bump && lastAction==0){
 				double choice=Math.random();
 				if (choice<0.5) turnLeft();
@@ -220,7 +220,7 @@ public class Ernest100Model extends ErnestModel
 			}
 			else{
 				forward();
-			}*/
+			}/**/
 			
 			bump=false;
 		}

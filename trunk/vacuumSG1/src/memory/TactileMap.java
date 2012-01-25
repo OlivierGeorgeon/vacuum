@@ -33,14 +33,23 @@ public class TactileMap {
 	
 	//public float   actionLink[][][];
 	//public int confidenceLink[][][];
-	//public float actionValue;
+	public float actionValue;
 	
 	public float voronoiValue[][];
 	public int voronoiPoints[][];
 	
 	public boolean delaunayLinks[][];
 	
-	public float previousState[][][];
+	public double Gx,Gy;
+	
+	public ArrayList<int[][]> stateLink;
+	public int actualState;
+	
+	public float previousState1[][][];
+	public float previousState1Confidence[][][];
+	public float previousState0[][][];
+	public float nextState[][];
+	public boolean changed;
 	
 	public ArrayList<float[]> flowVectorX;			// movement vector on each neuron
 	public ArrayList<float[]> flowVectorY;
@@ -152,7 +161,13 @@ public class TactileMap {
 		voronoiPoints=new int[100][100];
 		delaunayLinks=new boolean[resolution*sensorRes+20][resolution*sensorRes+20];
 		
-		previousState=new float[resolution*sensorRes][resolution*sensorRes][150];
+		previousState0=new float[resolution*sensorRes][resolution*sensorRes][3];
+		previousState1=new float[resolution*sensorRes][resolution*sensorRes][3];
+		previousState1Confidence=new float[resolution*sensorRes][resolution*sensorRes][3];
+		nextState=new float[resolution*sensorRes][3];
+		
+		stateLink=new ArrayList<int[][]>();
+		
 		
 		m_tactileObject=new int[resolution];
 		m_constraints=new float[resolution*sensorRes][resolution*sensorRes];
@@ -212,25 +227,31 @@ public class TactileMap {
 				m_distances[i][j]=0.5;				
 				m_connectionsLenght[i][j]=0;
 				
-				for (int k=0;k<150;k++){
-					previousState[i][j][k]=0;
+				for (int k=0;k<3;k++){
+					previousState0[i][j][k]=0;
+					previousState1[i][j][k]=0;
+					previousState1Confidence[i][j][k]=0;
 				}
 			}
+			for (int k=0;k<3;k++){
+				nextState[i][k]=0;
+			}
 			
+			/*
 			// initialize random neurons positions
 			sensorX[i]= (float) (Math.random()*40-20);//-50*Math.sin(360/resolution*sensorRes*i*Math.PI/180);
 			sensorY[i]= (float) (Math.random()*40-20);// 50*Math.cos(360/resolution*sensorRes*i*Math.PI/180);
-			
+			*/
 			
 		}
 		
 		// initialize neutral neurons
 		for (int i=0;i<20;i++){
-			neutralX[i]= -30*Math.sin(360/20*i*Math.PI/180);
-			neutralY[i]=  30*Math.cos(360/20*i*Math.PI/180);
+			neutralX[i]= -50*Math.sin(360/20*i*Math.PI/180);
+			neutralY[i]=  50*Math.cos(360/20*i*Math.PI/180);
 		}
 		
-		/*
+		
 		// initialize real neuron position
 		for (int j=0;j<sensorRes;j++){
 			for (int i=0;i<resolution;i++){
@@ -278,8 +299,8 @@ public class TactileMap {
 		counter=0;
 		
 		
-		voronoi();
-		delaunay();
+		//voronoi();
+		//delaunay();
 	}
 	
 	/**
@@ -290,13 +311,46 @@ public class TactileMap {
 		//////////////////////////////////////////////////////
 		// save previous values
 		//////////////////////////////////////////////////////
+		// state link creation
+		changed=false;
+		boolean found=false;
+		int l=0;
+		int k=0;
+		while (l<stateLink.size() && !found){
+			k=0;
+			found=true;
+			while (k<resolution*sensorRes){
+				//if ( ((m_tactilePressureOld[k]>0 && stateLink.get(l)[0][k]==0) || (m_tactilePressureOld[k]==0 && stateLink.get(l)[0][k]==1))
+				//   ||((m_tactilePressure[k]   >0 && stateLink.get(l)[1][k]==0) || (m_tactilePressure[k]   ==0 && stateLink.get(l)[1][k]==1)) ){
+				if ( (m_tactilePressure[k]   >0 && stateLink.get(l)[1][k]==0) || (m_tactilePressure[k]   ==0 && stateLink.get(l)[1][k]==1) ){	
+					found=false;
+				}
+				k++;
+			}
+			l++;
+		}
+		if (!found){
+			stateLink.add(new int[2][resolution*sensorRes]);
+			for (int i=0;i<resolution*sensorRes;i++){
+				//if (m_tactilePressureOld[i]>0) stateLink.get(l)[0][i]=1;
+				//else						   stateLink.get(l)[0][i]=0;
+				
+				if (m_tactilePressure[i]>0)    stateLink.get(l)[1][i]=1;
+				else						   stateLink.get(l)[1][i]=0;
+			}
+			actualState=stateLink.size()-1;
+		}
+		else actualState=l-1;
+		
+		
+		
 		// pressure on each neuron
-		boolean changed=false;;
-		for (int i=0;i<resolution*sensorRes;i++){	
+		for (int i=0;i<resolution*sensorRes;i++){
 			m_tactilePressureOld[i]=m_tactilePressure[i];
 		}
+		
 		// position of detected point for each sensor
-		for (int i=0;i<resolution;i++){
+		/*for (int i=0;i<resolution;i++){
 			valueOldX[i]=valueX[i];
 			valueOldY[i]=valueY[i];
 		}/**/
@@ -309,42 +363,56 @@ public class TactileMap {
 		// sensors around ernest
 		senseAround(rt,t);
 		
-		// detect wrong points
+
+		
+		/*
 		boolean test=false;
 		for (int i=0;i<resolution*sensorRes;i++){
 			
-			/*
+			
 			// if point changed its state
-			if (m_tactilePressureOld[i]!=m_tactilePressure[i]){
-				// Localize the closest point with the same state
+			//if (m_tactilePressureOld[i]!=m_tactilePressure[i]){
+				// Localize the center of the group of points
 				double dmin=1000;
 				int min=-1;
 				double d=0;
+				int nb=0;
+				double sumX=0;
+				double sumY=0;
 				for (int j=0;j<resolution*sensorRes;j++){
-					if (i!=j){
+					//if (i!=j){
 						if (  (m_tactilePressure[i]!=0 && m_tactilePressure[j]!=0)
 							||(m_tactilePressure[i]==0 && m_tactilePressure[j]==0) ){
 							
-							d=Math.sqrt( (sensorX[i]-sensorX[j])*(sensorX[i]-sensorX[j]) + (sensorY[i]-sensorY[j])*(sensorY[i]-sensorY[j]) );
-							
-							if (d<dmin){
-								dmin=d;
-								min=j;
-							}
+							sumX+=sensorX[j];
+							sumY+=sensorY[j];
+							nb++;
 						}
-					}
+					//}
 				}
 				
-				if (min>=0){
-					sensorX[i]-=(sensorX[i]-sensorX[min])/2;	
-					sensorY[i]-=(sensorY[i]-sensorY[min])/2;
+				if (nb>0){
+					
+					sumX=sumX/(double)nb;
+					sumY=sumY/(double)nb;
+					if (m_tactilePressure[i]!=0){
+						Gx=sumX;
+						Gy=sumY;
+					}
+					d=Math.sqrt((sensorX[i]-sumX)*(sensorX[i]-sumX)+(sensorY[i]-sumY)*(sensorY[i]-sumY));
+					
+					/*if (d>5){
+						sensorX[i]-=(sensorX[i]-sumX)/d;	
+						sensorY[i]-=(sensorY[i]-sumY)/d;
+					}
 				}
-			}/**/
-		}
+			//}
+		}/**/
 		
 		voronoi();
 		delaunay();
-		
+		//repulsion();
+		//normalize();
 		
 		/////////////////////////////////////////////////////////
 		// place neurons on the map
@@ -445,7 +513,7 @@ public class TactileMap {
 				timerMap[i]=20;
 		}
 		
-		repulsion();
+		//repulsion();
 		
 		////////////////////////////////////////////////////////////////
 		// reset maps
@@ -633,7 +701,7 @@ public class TactileMap {
 			lastAction=act;
 		}
 		
-		//actionValue=speed;
+		actionValue=speed;
 		
 		/*
 		///////////////////////////////////////////////////////////////
@@ -663,34 +731,68 @@ public class TactileMap {
 		///////////////////////////////////////////////////////////////
 		// compute previous state
 		///////////////////////////////////////////////////////////////
-		/*for (int i=0;i<resolution*sensorRes;i++){
+		for (int i=0;i<resolution*sensorRes;i++){
 			for (int j=0;j<resolution*sensorRes;j++){
-				
-				if (timerMap[i]==20){
-					if (timerMap[j]==20){
-						previousState[i][j][lastAction*50+(int)(actionValue*30)]=
-							(previousState[i][j][lastAction*50+(int)(actionValue*30)]*100+1)/101;
+				if (timerMap[i]==20 && m_tactilePressure[i]>0){
+					if (m_tactilePressureOld[j]>0){
+						previousState1[i][j][lastAction]=
+							(previousState1[i][j][lastAction]*previousState1Confidence[i][j][lastAction]+1)
+							/(previousState1Confidence[i][j][lastAction]+1);
+						previousState1Confidence[i][j][lastAction]++;
 					}
 					else{
-						previousState[i][j][lastAction*50+(int)(actionValue*30)]=
-							(previousState[i][j][lastAction*50+(int)(actionValue*30)]*100-1)/101;
+						previousState1[i][j][lastAction]=
+							(previousState1[i][j][lastAction]*previousState1Confidence[i][j][lastAction]-1)
+							/(previousState1Confidence[i][j][lastAction]+1);
+						previousState1Confidence[i][j][lastAction]++;
 					}
 					
 				}
-				else{
-					if (timerMap[j]==20){
-						previousState[i][j][lastAction*50+(int)(actionValue*30)]=
-							(previousState[i][j][lastAction*50+(int)(actionValue*30)]*100-1)/101;
+				/*
+				if (timerMap[i]==20 && m_tactilePressure[i]>0 && nextState[i][lastAction]>0){
+					if (m_tactilePressureOld[j]>0){
+						previousState1[i][j][lastAction]=
+							(previousState1[i][j][lastAction]*10+1)/11;
 					}
 					else{
-						previousState[i][j][lastAction*50+(int)(actionValue*30)]=
-							(previousState[i][j][lastAction*50+(int)(actionValue*30)]*100+1)/101;
+						previousState1[i][j][lastAction]=
+							(previousState1[i][j][lastAction]*10-1)/11;
 					}
-				}
+					
+				}*/
+				
+				
+				
+				/*else{
+					if (m_tactilePressureOld[j]>0){
+						previousState0[i][j][lastAction]=
+							(previousState0[i][j][lastAction]*100+1)/101;
+					}
+					else{
+						previousState0[i][j][lastAction]=
+							(previousState0[i][j][lastAction]*100-1)/101;
+					}
+				}*/
 				
 			}
 		}/**/
 		
+		///////////////////////////////////////////////////////////////
+		// compute next state probability
+		///////////////////////////////////////////////////////////////
+		for (int i=0;i<resolution*sensorRes;i++){
+			float proba=0;
+			float sum=0;
+			for (int a=0;a<3;a++){
+				for (int j=0;j<resolution*sensorRes;j++){
+					if (m_tactilePressure[i]>0) proba+=previousState1[i][j][a];
+					else						proba-=previousState1[i][j][a];
+					sum+=Math.abs(previousState1[i][j][a]);
+				}
+				if (sum>0) nextState[i][a]=proba/sum;
+				else       nextState[i][a]=0;
+			}
+		}
 		
 		
 		/*
@@ -1330,7 +1432,7 @@ public class TactileMap {
 		for (int i=0;i<resolution*sensorRes;i++){
 			x=(int)(2*sensorX[i])+50;
 			y=(int)(2*sensorY[i])+50;
-			for (int i2=-20;i2<20;i2++){
+			for (int i2=-40;i2<40;i2++){
 				for (int j2=-20;j2<20;j2++){
 					if ( (i2!=0 || j2!=0) && x+i2 >=0 && x+i2<100 && y+j2 >=0 && y+j2<100){
 						d=1/Math.sqrt(i2*i2+j2*j2);
@@ -1399,7 +1501,7 @@ public class TactileMap {
 		for (int i=0;i<resolution*sensorRes;i++){
 			for (int j=0;j<resolution*sensorRes;j++){
 				double d=Math.sqrt( (sensorX[i]-sensorX[j])*(sensorX[i]-sensorX[j]) + (sensorY[i]-sensorY[j])*(sensorY[i]-sensorY[j]) );
-				if (d<3 && d!=0){
+				if (d<6 && d!=0){
 					sensorX[i]+=(sensorX[i]-sensorX[j])/d;
 					sensorY[i]+=(sensorY[i]-sensorY[j])/d;
 				}
@@ -1429,13 +1531,13 @@ public class TactileMap {
 			sensorX[i]-=mx;
 			sensorY[i]-=my;
 		}
-		d=Math.sqrt( sensorX[resolution/2]*sensorX[resolution/2] + sensorY[resolution/2]*sensorY[resolution/2]);
+		/*d=Math.sqrt( sensorX[resolution/2]*sensorX[resolution/2] + sensorY[resolution/2]*sensorY[resolution/2]);
 		double angle= Math.sin(sensorX[resolution/2]/d);
 		
 		for (int i=0;i<resolution*sensorRes;i++){
 			sensorX[i]= sensorX[i]*Math.cos(-angle) - sensorY[i]*Math.sin(-angle);
 			sensorY[i]= sensorX[i]*Math.sin(-angle) + sensorY[i]*Math.cos(-angle);
-		}
+		}*/
 	}
 
 	/*
