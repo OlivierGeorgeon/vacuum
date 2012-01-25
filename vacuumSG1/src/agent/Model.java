@@ -177,6 +177,11 @@ public class Model extends Observable
 		return mName;
 	}
  	
+	public int getID()
+	{
+		return ident;
+	}
+ 	
 	/**
 	 * @param position The position to test.
 	 * @return true if this agent overlaps this position.

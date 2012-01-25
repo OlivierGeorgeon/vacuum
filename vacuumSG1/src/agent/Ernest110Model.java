@@ -98,6 +98,7 @@ public class Ernest110Model extends ErnestModel
         m_ernest = new Ernest();
         m_sensorymotorSystem = new SpatialSensorimotorSystem();
 		m_SpaceMemory.setErnest(m_ernest);
+		m_SpaceMemory.setModel(this);
         
         // Only trace the first agent.
         
