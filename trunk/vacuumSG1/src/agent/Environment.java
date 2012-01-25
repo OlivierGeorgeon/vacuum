@@ -255,8 +255,14 @@ public class Environment extends Observable {
 		return m_blocks[Math.round(x)][Math.round(y)].isEmpty();
 	}
 	
-	public boolean isVisible(float x, float y){
-		return m_blocks[Math.round(x)][Math.round(y)].isVisible();
+	public boolean isVisible(float x, float y)
+	{
+		boolean afford;
+		if (inScene(Math.round(x), Math.round(y), 0))
+			afford = m_blocks[Math.round(x)][Math.round(y)].isVisible();
+		else 
+			afford = true;
+		return afford;
 	}
 	
 	public Color seeBlock(float x, float y){
@@ -273,7 +279,12 @@ public class Environment extends Observable {
 	 */
 	protected boolean affordWalk(Vector3f pos) 
 	{
-		return (!m_blocks[Math.round(pos.x)][Math.round(pos.y)].isWall());
+		boolean afford;
+		if (inScene(Math.round(pos.x), Math.round(pos.y), 0))
+			afford = (!m_blocks[Math.round(pos.x)][Math.round(pos.y)].isWall());
+		else 
+			afford = false;
+		return afford;
 	}
 	/**
 	 * @param pos The position to test in Cartesian coordinates
@@ -281,7 +292,12 @@ public class Environment extends Observable {
 	 */
 	protected boolean affordTouchSoft(Vector3f pos) 
 	{
-		return (m_blocks[Math.round(pos.x)][Math.round(pos.y)].isAlga());
+		boolean afford;
+		if (inScene(Math.round(pos.x), Math.round(pos.y), 0))
+			afford = (m_blocks[Math.round(pos.x)][Math.round(pos.y)].isAlga());
+		else 
+			afford = false;
+		return afford;
 	}
 	/**
 	 * @param pos The position to test in Cartesian coordinates.
@@ -289,7 +305,12 @@ public class Environment extends Observable {
 	 */
 	protected boolean affordEat(Vector3f pos) 
 	{
-		return (m_blocks[Math.round(pos.x)][Math.round(pos.y)].isFood());
+		boolean afford;
+		if (inScene(Math.round(pos.x), Math.round(pos.y), 0))
+			afford = (m_blocks[Math.round(pos.x)][Math.round(pos.y)].isFood());
+		else 
+			afford = false;
+		return afford;
 	}
 	/**
 	 * @param pos The position to test in cartesian coordinates.
@@ -297,7 +318,12 @@ public class Environment extends Observable {
 	 */
 	public boolean affordSee(Vector3f pos)
 	{
-		return 	(m_blocks[Math.round(pos.x)][Math.round(pos.y)].isVisible()); 		
+		boolean afford;
+		if (inScene(Math.round(pos.x), Math.round(pos.y), 0))
+			afford = m_blocks[Math.round(pos.x)][Math.round(pos.y)].isVisible();
+		else 
+			afford = true;
+		return afford;
 	}
 	
 	/**
@@ -332,8 +358,6 @@ public class Environment extends Observable {
 	public boolean inScene(int i, int j, int k) {
 		return (i >= 0 && i < m_w && j >= 0 && j < m_h && k == 0 );
 	}
-	
-	
 
 	public void setBlock(int x, int y, Block block)
 	{ 

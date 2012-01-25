@@ -258,25 +258,25 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 					}	
 					
 					// Fish agents
-					if (square[x].equals("+"))
-					{
-						int index=m_modelList.size();
-						
-						m_modelList.add(new FishModel(index));
-						m_modelList.get(index).init(m_w, m_h);
-						m_modelList.get(index).setFrame(this);
-
-						m_modelList.get(index).mPosition.x = x;
-						m_modelList.get(index).mPosition.y = m_h-1 - y;
-						m_modelList.get(index).mPosition.z = 0;
-						m_modelList.get(index).mOrientation.x = 0;
-						m_modelList.get(index).mOrientation.y = 0;
-						m_modelList.get(index).mOrientation.z = 0.1f;
-						m_modelList.get(index).mTranslation.set(new Vector3f());
-						m_modelList.get(index).mRotation.set(new Vector3f());
-						
-						m_modelList.get(index).setEnvironnement(m_environment);
-					}
+//					if (square[x].equals("+"))
+//					{
+//						int index=m_modelList.size();
+//						
+//						m_modelList.add(new FishModel(index));
+//						m_modelList.get(index).init(m_w, m_h);
+//						m_modelList.get(index).setFrame(this);
+//
+//						m_modelList.get(index).mPosition.x = x;
+//						m_modelList.get(index).mPosition.y = m_h-1 - y;
+//						m_modelList.get(index).mPosition.z = 0;
+//						m_modelList.get(index).mOrientation.x = 0;
+//						m_modelList.get(index).mOrientation.y = 0;
+//						m_modelList.get(index).mOrientation.z = 0.1f;
+//						m_modelList.get(index).mTranslation.set(new Vector3f());
+//						m_modelList.get(index).mRotation.set(new Vector3f());
+//						
+//						m_modelList.get(index).setEnvironnement(m_environment);
+//					}
 					
 					// Ernest agents
 					if (square[x].equalsIgnoreCase("^") || square[x].equalsIgnoreCase(">") ||

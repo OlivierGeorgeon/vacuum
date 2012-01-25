@@ -238,43 +238,43 @@ public class Model extends Observable
 	 * @param pos The position to test in Cartesian coordinates.
 	 * @return true if this position is a wall 
 	 */
-	protected boolean affordWalk(Vector3f pos) 
-	{
-		return (!m_env.m_blocks[Math.round(pos.x)][Math.round(pos.y)].isWall());
-	}
+//	protected boolean affordWalk(Vector3f pos) 
+//	{
+//		return (!m_env.m_blocks[Math.round(pos.x)][Math.round(pos.y)].isWall());
+//	}
 	/**
 	 * @param pos The position to test in Cartesian coordinates
 	 * @return true if this position is dirty but not food. 
 	 */
-	protected boolean affordTouchSoft(Vector3f pos) 
-	{
-		return (m_env.m_blocks[Math.round(pos.x)][Math.round(pos.y)].isAlga());
-	}
+//	protected boolean affordTouchSoft(Vector3f pos) 
+//	{
+//		return (m_env.m_blocks[Math.round(pos.x)][Math.round(pos.y)].isAlga());
+//	}
 	/**
 	 * @param pos The position to test in Cartesian coordinates.
 	 * @return true if this position is food. 
 	 */
-	protected boolean affordEat(Vector3f pos) 
-	{
-		return (m_env.m_blocks[Math.round(pos.x)][Math.round(pos.y)].isFood());
-	}
+//	protected boolean affordEat(Vector3f pos) 
+//	{
+//		return (m_env.m_blocks[Math.round(pos.x)][Math.round(pos.y)].isFood());
+//	}
 	/**
 	 * @param pos The position to test in cartesian coordinates.
 	 * @return true if this position is dirty or wall. 
 	 */
-	public boolean affordSee(Vector3f pos)
-	{
-		boolean affordSee = false;
-		
-		// Edible blocks
-		if (m_env.m_blocks[Math.round(pos.x)][Math.round(pos.y)].isVisible())
-			affordSee = true;
-		
-		// Edible entities
-			
-		
-		return affordSee;
-	}
+//	public boolean affordSee(Vector3f pos)
+//	{
+//		boolean affordSee = false;
+//		
+//		// Edible blocks
+//		if (m_env.m_blocks[Math.round(pos.x)][Math.round(pos.y)].isVisible())
+//			affordSee = true;
+//		
+//		// Edible entities
+//			
+//		
+//		return affordSee;
+//	}
 
     /**
      * @param pos The position to test in cartesian coordinates.
