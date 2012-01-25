@@ -173,25 +173,22 @@ public class EyeDisplay extends JPanel {
     		boolean drawSegments=true;				// draw segments
     		boolean segmentSpeed=false;              // draw segment speed vectors
         		
-        		Vector3f localSpeed=new Vector3f();
+        	Vector3f localSpeed=new Vector3f();
         		
-        		// Draw the agent
-        		//g2d.setColor(Color.red);
-        		//g2d.fillOval(300,300,5,5);
+        	// Draw the agent
+        	//g2d.setColor(Color.red);
+        	//g2d.fillOval(300,300,5,5);
         		
+        	if (eye.lock){
+        	for (int i=0;i<eye.cornerPoints.size();i++){
         		
-        		int size=eye.cornerPoints.size();
-
-        		for (int i=0;i<size;i++){
- 
-        			// draw non corner points
+        		// draw non corner points
         		if (wallPoints){
         			if (eye.cornerPoints.get(i).type==10){
         				g2d.setColor(Color.green);
         				g2d.fillOval(300+(int)(eye.cornerPoints.get(i).position.x*SCALE-2),300-(int)(eye.cornerPoints.get(i).position.y*SCALE+2),5,5);
         			}
         		}
-    			
         		// draw left and right points' colors
     			if (pointColors){
     				if (eye.cornerPoints.get(i).type!=10){
@@ -273,7 +270,7 @@ public class EyeDisplay extends JPanel {
                			    300-(int)(eye.segments.get(i).getPosition().y*SCALE+ eye.segments.get(i).getSpeed().y*500) );
     			}
     		}
-
+        	}
     	}
     }   
     

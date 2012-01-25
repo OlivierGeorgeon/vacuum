@@ -270,6 +270,10 @@ public class FishModel extends ErnestModel
     {
     	return false;
     }
+    
+    public boolean isAgent(){
+    	return false;
+    }
 		
 	public int getCounter()
 	{

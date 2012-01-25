@@ -22,6 +22,8 @@ public class InternalView {
 	ArrayList<Point> cornerPoints;
 	ArrayList<ISegment> segments;
 	
+	boolean lock=true;
+	
 	int left,right;
 	
 	public InternalView(){
@@ -41,7 +43,9 @@ public class InternalView {
 	
 	public void updateRetine(double[] r,Color[] cm,int[] cor,double[] rt,int[] cmt,int[] cort,
 			                 ArrayList<Point> cornerList, ArrayList<ISegment> segmentList){
-    	retine=r;
+    	
+		lock=false;
+		retine=r;
     	colorMap=cm;
     	corner=cor;
     	
@@ -52,5 +56,6 @@ public class InternalView {
     	cornerPoints=cornerList;
     	
     	segments=segmentList;
+    	lock=true;
     }
 }

@@ -224,11 +224,9 @@ public class Model extends Observable
 	 * @author ogeorgeon add wall and internal state panel to the grid
 	 */
 	public void init(int w,int h) throws Exception{
-		System.out.println("test1.1");
 		m_w=w;
 		m_h=h;
 		mRotation.z=0;
-		System.out.println("test1.2");
 	}
 
 	public void setEventThread(Runnable t)
