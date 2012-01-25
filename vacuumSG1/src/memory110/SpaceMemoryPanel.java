@@ -30,7 +30,9 @@ import spas.IPlace;
 public class SpaceMemoryPanel extends JPanel
 {
 	/** The radius of the display area in grid units. */
-	public final static int RADIUS = 6;
+	//public final static int RADIUS = 6;
+	public final static int WIDTH = 300;
+	public final static int HEIGHT = 225;
 	
 	/** The number of pixels per grid units. */
 	public final static int SCALE = 40; 
@@ -71,15 +73,15 @@ public class SpaceMemoryPanel extends JPanel
         // Display agent
         AffineTransform ref = g2d.getTransform();
         AffineTransform orientation = new AffineTransform();
-        orientation.translate(RADIUS * SCALE,RADIUS * SCALE);
+        orientation.translate(WIDTH, HEIGHT);
         orientation.rotate(Math.PI/2);
         orientation.scale(SCALE / 100f, SCALE / 100f);
         g2d.transform(orientation);
 		g2d.setColor(Color.gray);
-//		if (spaceMemory.m_model.getCuddle())
-//			g2d.setColor(Color.PINK);
-//		if (spaceMemory.m_model.getEat())
-//			g2d.setColor(Color.YELLOW);
+		if (spaceMemory.m_model.getCuddle())
+			g2d.setColor(Color.PINK);
+		if (spaceMemory.m_model.getEat())
+			g2d.setColor(Color.YELLOW);
         g2d.fill(Ernest110Model.shape(spaceMemory.m_id));
         
         Arc2D.Double focus = new Arc2D.Double(-10, -35, 20, 20,0, 180, Arc2D.PIE);
@@ -96,7 +98,7 @@ public class SpaceMemoryPanel extends JPanel
 		FontMetrics fm = getFontMetrics(font);
 		int width = fm.stringWidth(counter);
 		g2d.setColor(Color.GRAY);		
-		g2d.drawString(counter, 2 * RADIUS * SCALE - 30 - width, 30);	
+		g2d.drawString(counter, 2 * WIDTH - 30 - width, 30);	
 		
 		double d;
 		double rad;
@@ -116,7 +118,7 @@ public class SpaceMemoryPanel extends JPanel
 			// The places represented as arcs
 			span=place.getSpan()*180/Math.PI;
 			g2d.setColor(new Color(place.getBundle().getValue()));			
-			g2d.drawArc(RADIUS * SCALE - (int)d, RADIUS * SCALE - (int)d, 2*(int)d, 2*(int)d, (int)(angle-span/2), (int)span);
+			g2d.drawArc(WIDTH - (int)d, HEIGHT - (int)d, 2*(int)d, 2*(int)d, (int)(angle-span/2), (int)span);
 			
 		}
 		
@@ -133,8 +135,8 @@ public class SpaceMemoryPanel extends JPanel
 					g2d.setColor(Color.MAGENTA);			
 				else
 					g2d.setColor(Color.RED);
-				int x0 = RADIUS * SCALE + (int) (d * Math.cos(rad));
-				int y0 = RADIUS * SCALE  - (int) (d * Math.sin(rad));
+				int x0 = WIDTH + (int) (d * Math.cos(rad));
+				int y0 = HEIGHT  - (int) (d * Math.sin(rad));
 				g2d.fillOval(x0 - focusRadius, y0 - focusRadius, 2 * focusRadius, 2 * focusRadius);
 				if (place.getSpeed() != null)
 					g2d.drawLine(x0, y0, x0 + (int)(place.getSpeed().x * SCALE * 4), y0 - (int)(place.getSpeed().y * SCALE *4));

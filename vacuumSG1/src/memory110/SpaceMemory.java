@@ -11,8 +11,8 @@ import spas.IPlace;
 public class SpaceMemory 
 {
 	public IErnest m_ernest;
-	//public ErnestModel m_model;
-
+	public ErnestModel m_model;
+ 
 	public ArrayList<IPlace> placeList;
 	public int m_counter;
 	public int m_focus;
@@ -28,10 +28,10 @@ public class SpaceMemory
 		m_ernest = ernest;
 	}
 	
-//	public void setModel(ErnestModel model)
-//	{	
-//		m_model = model;
-//	}
+	public void setModel(ErnestModel model)
+	{	
+		m_model = model;
+	}
 	
 	/**
 	 * Update the the information to display
@@ -42,7 +42,7 @@ public class SpaceMemory
 		placeList = m_ernest.getPlaceList();
 		m_counter = m_ernest.getCounter();
 		m_focus = m_ernest.getAttention();
-		//m_id = m_model.getID();
+		m_id = m_model.getID();
 		lock=true;
 	}
 	
