@@ -327,8 +327,8 @@ public class ErnestModel extends Model
 	 * @param localVec A position relative to Ernest.
 	 * @return The absolute position relative to the board ((rotZ(mOrientation.z) * localVec) + mPosition). 
 	 */
-	public Vector3f localToParentRef(Vector3f localVec) {
-		
+	public Vector3f localToParentRef(Vector3f localVec) 
+	{
 		Matrix3f rot = new Matrix3f();
 		rot.rotZ(mOrientation.z);
 		

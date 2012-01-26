@@ -35,7 +35,7 @@ public class SpaceMemoryPanel extends JPanel
 	public final static int HEIGHT = 225;
 	
 	/** The number of pixels per grid units. */
-	public final static int SCALE = 40; 
+	public final static int SCALE = 30; 
 	
 	private static final long serialVersionUID = 1L;
 	public int index;
