@@ -571,21 +571,11 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 	{
 		// handle mouse events from continuous environment
 		int c= m_envPanel.getClicked();
+		
+		// click left : change agent
 		if (c == 1){
 			int id=m_environment.agentId(m_envPanel.m_FclickX, m_envPanel.m_FclickY);
-			if (id==-1){
-				
-				if (m_environment.isWall(m_envPanel.m_clickX,m_h-1-m_envPanel.m_clickY)){
-					m_environment.setBlock(m_envPanel.m_clickX, m_h-1-m_envPanel.m_clickY, Model.empty);
-					m_environment.traceUserEvent("remove_wall", m_envPanel.m_clickX, m_h-1-m_envPanel.m_clickY);
-				}
-				else{
-					m_environment.setBlock(m_envPanel.m_clickX, m_h-1-m_envPanel.m_clickY, Model.wall);
-					m_environment.traceUserEvent("add_wall", m_envPanel.m_clickX, m_h-1-m_envPanel.m_clickY);
-				}
-			}
-			else
-			{
+			if (id!=-1){
 				m_environment.setDisplay(id);
 				m_statusBar.setText("Agent "+m_environment.identDisplay);
 				m_arun.setEnabled(m_modelList.get(m_environment.indexDisplay).cognitiveMode != ErnestModel.AGENT_RUN);
@@ -593,32 +583,76 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 				m_astep.setEnabled(m_modelList.get(m_environment.indexDisplay).cognitiveMode == ErnestModel.AGENT_STOP);
 			}
 		}
-		if (c == 3)
-		{
-			if (m_environment.isAlga(m_envPanel.m_clickX,m_h-1-m_envPanel.m_clickY))
-			{
-				m_environment.setBlock(m_envPanel.m_clickX, m_h-1-m_envPanel.m_clickY, Model.empty);
-				m_environment.traceUserEvent("remove_water", m_envPanel.m_clickX, m_h-1-m_envPanel.m_clickY);
-			}
-			else
-			{
-				m_environment.setBlock(m_envPanel.m_clickX, m_h-1-m_envPanel.m_clickY, Model.alga1);
-				m_environment.traceUserEvent("add_water", m_envPanel.m_clickX, m_h-1-m_envPanel.m_clickY);
-			}
-		}
-		if (c == 2)
-		{
-			if (m_environment.isFood(m_envPanel.m_clickX,m_h-1-m_envPanel.m_clickY))
-			{
+		
+		// click wheel : add or remove static fish
+		if (c == 2){
+			if (m_environment.isFood(m_envPanel.m_clickX,m_h-1-m_envPanel.m_clickY)){
 				m_environment.setBlock(m_envPanel.m_clickX, m_h-1-m_envPanel.m_clickY, Model.empty);
 				m_environment.traceUserEvent("remove_food", m_envPanel.m_clickX, m_h-1-m_envPanel.m_clickY);
 			}
-			else
-			{
-				m_environment.setBlock(m_envPanel.m_clickX, m_h-1-m_envPanel.m_clickY, Model.fish);
-				m_environment.traceUserEvent("add_food", m_envPanel.m_clickX, m_h-1-m_envPanel.m_clickY);
+			else{
+				if (m_environment.isEmpty(m_envPanel.m_clickX,m_h-1-m_envPanel.m_clickY)){
+					m_environment.setBlock(m_envPanel.m_clickX, m_h-1-m_envPanel.m_clickY, Model.fish);
+					m_environment.traceUserEvent("add_food", m_envPanel.m_clickX, m_h-1-m_envPanel.m_clickY);
+				}
 			}
 		}
+		
+		// click right : add or remove wall
+		if (c == 3){
+			if (m_environment.isWall(m_envPanel.m_clickX,m_h-1-m_envPanel.m_clickY)){
+				m_environment.setBlock(m_envPanel.m_clickX, m_h-1-m_envPanel.m_clickY, Model.empty);
+				m_environment.traceUserEvent("remove_wall", m_envPanel.m_clickX, m_h-1-m_envPanel.m_clickY);
+			}
+			else{
+				if (m_environment.isEmpty(m_envPanel.m_clickX,m_h-1-m_envPanel.m_clickY)){
+					m_environment.setBlock(m_envPanel.m_clickX, m_h-1-m_envPanel.m_clickY, Model.wall);
+					m_environment.traceUserEvent("add_wall", m_envPanel.m_clickX, m_h-1-m_envPanel.m_clickY);
+				}
+			}
+		}
+		
+		// click wheel + shift : add moving fish
+		if (c == 5){
+			if (!m_environment.isWall(m_envPanel.m_clickX,m_h-1-m_envPanel.m_clickY)){
+				int index=m_modelList.size();
+			
+				m_modelList.add(new FishModel(index));
+				try {
+					m_modelList.get(index).init(m_w, m_h);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				m_modelList.get(index).setFrame(this);
+			
+				m_modelList.get(index).mPosition.x = m_envPanel.m_FclickX;
+				m_modelList.get(index).mPosition.y = m_h - 0.5f - m_envPanel.m_FclickY;
+				m_modelList.get(index).mPosition.z = 0;
+				m_modelList.get(index).mOrientation.x = 0;
+				m_modelList.get(index).mOrientation.y = 0;
+				m_modelList.get(index).mOrientation.z = 0.1f;
+				m_modelList.get(index).mTranslation.set(new Vector3f());
+				m_modelList.get(index).mRotation.set(new Vector3f());
+			
+				m_modelList.get(index).setEnvironnement(m_environment);
+				m_modelList.get(index).initErnest();
+			}
+		}
+		
+		// click right + shift : add or remove alga
+		if (c == 6){
+			if (m_environment.isAlga(m_envPanel.m_clickX,m_h-1-m_envPanel.m_clickY)){
+				m_environment.setBlock(m_envPanel.m_clickX, m_h-1-m_envPanel.m_clickY, Model.empty);
+				m_environment.traceUserEvent("remove_water", m_envPanel.m_clickX, m_h-1-m_envPanel.m_clickY);
+			}
+			else{
+				if (m_environment.isEmpty(m_envPanel.m_clickX,m_h-1-m_envPanel.m_clickY)){
+					m_environment.setBlock(m_envPanel.m_clickX, m_h-1-m_envPanel.m_clickY, Model.alga1);
+					m_environment.traceUserEvent("add_water", m_envPanel.m_clickX, m_h-1-m_envPanel.m_clickY);
+				}
+			}
+		}
+		
 		resizeGrid();
 		m_envPanel.repaint();
 	}
