@@ -102,8 +102,8 @@ public class Ernest110Model extends ErnestModel
         
         // Only trace the first agent.
         
-        //if (ident == 8)
-        //	m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","h-yXVWrEwtYclxuPQUlmTOXprcFzol");
+        if (ident == 7)
+        	m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","h-yXVWrEwtYclxuPQUlmTOXprcFzol");
                         
         // Initialize the Ernest === 
         
@@ -349,11 +349,17 @@ public class Ernest110Model extends ErnestModel
         boolean status = true;
         float HBradius = BOUNDING_RADIUS;  // radius of Ernest hitbox 
         
+        // Move the agent
+        rotate(mTranslation, - mRotation.z / 4);
         mPosition.set(localToParentRef(mTranslation));
         mOrientation.z += mRotation.z;
         
         if (mOrientation.z < - Math.PI) mOrientation.z += 2 * Math.PI;
         if (mOrientation.z > Math.PI)   mOrientation.z -= 2 * Math.PI;
+        
+        // Apply friction to the speed vectors
+        mTranslation.scale(TRANSLATION_FRICTION);
+        mRotation.scale(ROTATION_FRICTION);
         
         // Bumping ====
 
@@ -394,14 +400,14 @@ public class Ernest110Model extends ErnestModel
                 status = false;
             mPosition.x = Math.round(point.x) + 0.5f + HBradius;
         }
-        // Stay away from ahead left wall
+        // Stay away from front left wall
         Vector3f localPoint = new Vector3f(DIRECTION_AHEAD_LEFT);
         localPoint.scale(HBradius);
         point = localToParentRef(localPoint);
         if (!m_env.affordWalk(point))
             keepDistance(mPosition, cellCenter(point), HBradius + .5f);
     
-        // Stay away from Ahead right wall
+        // Stay away from front right wall
         localPoint = new Vector3f(DIRECTION_AHEAD_RIGHT);
         localPoint.scale(HBradius);
         point = localToParentRef(localPoint);
@@ -429,7 +435,7 @@ public class Ernest110Model extends ErnestModel
         if (!m_env.affordWalk(point))
             keepDistance(mPosition, cellCenter(point), HBradius + .5f);
 
-        // Eat
+        // Eat an edible square
 		if (m_env.affordEat(mPosition)) 
 		{
 			m_eat = true;
@@ -454,10 +460,6 @@ public class Ernest110Model extends ErnestModel
 			m_eat = true;
             m_env.removeEntity(point, mName);
         }
-        
-        // Apply friction to the speed vectors
-        mTranslation.scale(TRANSLATION_FRICTION);
-        mRotation.scale(ROTATION_FRICTION);
         
         mainFrame.drawGrid();
         
@@ -570,4 +572,12 @@ public class Ernest110Model extends ErnestModel
         
         return shark;
     }
+    
+	private void rotate(Vector3f vector, float angle) 
+	{
+		Matrix3f rot = new Matrix3f();
+		rot.rotZ(angle);		
+		rot.transform(vector); // (rot * localVec) is placed into parentVec
+	}	
+
 }
