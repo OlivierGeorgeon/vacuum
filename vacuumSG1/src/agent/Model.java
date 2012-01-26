@@ -222,6 +222,7 @@ public class Model extends Observable
 	 * Initialize the grid from a board file
 	 * @author mcohen
 	 * @author ogeorgeon add wall and internal state panel to the grid
+	 * @throws Exception 
 	 */
 	public void init(int w,int h) throws Exception{
 		m_w=w;

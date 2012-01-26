@@ -110,6 +110,8 @@ public class Environment extends Observable {
 	public int[][] m_anim;
 	public Block[][] m_blocks;
 	public ArrayList<ErnestModel> m_modelList;
+	
+	public boolean lock=false;
 
 	// Maik Friedrich
 	private String m_boardFileName = "";
@@ -184,6 +186,7 @@ public class Environment extends Observable {
 //	
 	public void update()
 	{
+		lock=false;
 		if (simulationMode > SIMULATION_STOP)
 		{
 			for (int i=0; i < m_modelList.size(); i++)
@@ -191,6 +194,8 @@ public class Environment extends Observable {
 		}
 		if (simulationMode == SIMULATION_STEP)
 			simulationMode = SIMULATION_STOP;
+		
+		lock=true;
 	}
 	
 	public void setDisplay(int ident){

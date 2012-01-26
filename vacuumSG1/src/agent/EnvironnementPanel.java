@@ -154,6 +154,7 @@ public class EnvironnementPanel extends JPanel implements MouseListener{
 		}
 		
 		// draw informations
+		
 		drawInformation((Graphics2D)g.create());
 		
 		// draw dream square
@@ -178,10 +179,13 @@ public class EnvironnementPanel extends JPanel implements MouseListener{
 		if (e.getButton() == MouseEvent.BUTTON1)
 			if (e.isShiftDown()) m_clicked = 4;
 			else m_clicked = 1;
+		if (e.getButton() == MouseEvent.BUTTON2)
+				if (e.isShiftDown()) m_clicked = 5;
+				else m_clicked = 2;
 		if (e.getButton() == MouseEvent.BUTTON3)
 		{
-			if (e.isShiftDown()) m_clicked = 3;
-			else m_clicked = 2;
+			if (e.isShiftDown()) m_clicked = 6;
+			else m_clicked = 3;
 		}
 	}
 	
