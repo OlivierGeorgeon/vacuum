@@ -32,8 +32,9 @@ import tracing.*;
 public class ErnestModel extends Model 
 {
 
-	private final static Color AGENT_COLOR = new Color(100,100,100);
-	
+	public final static Color AGENT_COLOR = new Color(128,128,128);
+	//public final static Color AGENT_COLOR = new Color(90,90,90);
+
 	public static int ACTION_FORWARD = 0;
 	public static int ACTION_LEFT = 1;
 	public static int ACTION_RIGHT = 2;

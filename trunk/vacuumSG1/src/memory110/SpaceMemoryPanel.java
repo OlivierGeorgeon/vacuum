@@ -32,7 +32,7 @@ public class SpaceMemoryPanel extends JPanel
 	/** The radius of the display area in grid units. */
 	//public final static int RADIUS = 6;
 	public final static int WIDTH = 300;
-	public final static int HEIGHT = 225;
+	public final static int HEIGHT = 250;
 	
 	/** The number of pixels per grid units. */
 	public final static int SCALE = 30; 

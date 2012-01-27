@@ -102,8 +102,8 @@ public class Ernest110Model extends ErnestModel
         
         // Only trace the first agent.
         
-        if (ident == 7)
-        	m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","h-yXVWrEwtYclxuPQUlmTOXprcFzol");
+//        if (ident == 8)
+//        	m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","h-yXVWrEwtYclxuPQUlmTOXprcFzol");
                         
         // Initialize the Ernest === 
         
@@ -516,10 +516,11 @@ public class Ernest110Model extends ErnestModel
 
         // Draw the body
         
+        g2d.setColor(ErnestModel.AGENT_COLOR);
         for (int i = 0; i < 3; i++)
             for (int j = 0; j < 3; j++)
             {
-                g2d.setColor(somatoMapColor[i][j]);
+                //g2d.setColor(somatoMapColor[i][j]);
                 g2d.fill(somatoMap[i][j]);
             }
         
