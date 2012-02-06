@@ -82,7 +82,7 @@ public class SpaceMemoryPanel extends JPanel
 			g2d.setColor(Color.PINK);
 		if (spaceMemory.m_model.getEat())
 			g2d.setColor(Color.YELLOW);
-        g2d.fill(Ernest110Model.shape(spaceMemory.m_id));
+        g2d.fill(Ernest110Model.shape(spaceMemory.getID()));
         
         Arc2D.Double focus = new Arc2D.Double(-10, -35, 20, 20,0, 180, Arc2D.PIE);
         //g2d.setColor(new Color(spaceMemory.m_focus));
@@ -90,9 +90,7 @@ public class SpaceMemoryPanel extends JPanel
         g2d.setTransform(ref);
         
         // Display counter
-        
-		String counter = spaceMemory.m_counter + ""; 
-		
+		String counter = spaceMemory.getCounter() + ""; 
 		Font font = new Font("Dialog", Font.BOLD, 18);
 		g2d.setFont(font);
 		FontMetrics fm = getFontMetrics(font);
@@ -108,7 +106,7 @@ public class SpaceMemoryPanel extends JPanel
         // Display the places
 		g2d.setStroke(new BasicStroke(SCALE / 3f));
 
-		for (IPlace place : spaceMemory.placeList)
+		for (IPlace place : spaceMemory.getPlaceList())
 		{
 			d = place.getPosition().length() * SCALE;
 			
@@ -125,7 +123,7 @@ public class SpaceMemoryPanel extends JPanel
 		// Display the focus
 		int focusRadius = SCALE / 4;
 		g2d.setStroke(new BasicStroke(SCALE / 10f));
-		for (IPlace place : spaceMemory.placeList)
+		for (IPlace place : spaceMemory.getPlaceList())
 		{
 			if (place.getFocus())
 			{

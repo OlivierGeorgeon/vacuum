@@ -10,22 +10,11 @@ import spas.IPlace;
 
 public class SpaceMemory 
 {
-	public IErnest m_ernest;
 	public ErnestModel m_model;
- 
-	public ArrayList<IPlace> placeList;
-	public int m_counter;
-	public int m_focus;
-	public int m_id;
-	public boolean lock=false;
+//	public boolean lock=false;
 	
 	public SpaceMemory()
 	{
-	}
-	
-	public void setErnest(IErnest ernest)
-	{	
-		m_ernest = ernest;
 	}
 	
 	public void setModel(ErnestModel model)
@@ -34,16 +23,35 @@ public class SpaceMemory
 	}
 	
 	/**
-	 * Update the the information to display
+	 * Update the information to display
 	 */
-	public void update()
+//	public void update()
+//	{
+//		lock=false;
+////		placeList = m_ernest.getPlaceList();
+////		m_counter = m_ernest.getCounter();
+////		m_focus = m_ernest.getAttention();
+////		m_id = m_model.getID();
+//		lock=true;
+//	}
+	
+	public ArrayList<IPlace> getPlaceList()
 	{
-		lock=false;
-		placeList = m_ernest.getPlaceList();
-		m_counter = m_ernest.getCounter();
-		m_focus = m_ernest.getAttention();
-		m_id = m_model.getID();
-		lock=true;
+		return m_model.getErnest().getPlaceList();
 	}
 	
+	public int getCounter()
+	{
+		return m_model.getErnest().getCounter();
+	}
+	
+	public int getFocus()
+	{
+		return m_model.getErnest().getAttention();
+	}
+	
+	public int getID()
+	{	
+		return m_model.getID();
+	}
 }

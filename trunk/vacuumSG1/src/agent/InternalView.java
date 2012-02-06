@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import javax.vecmath.Vector3f;
 
+import spas.IPlace;
 import spas.ISegment;
 
 import memory110.Point;
@@ -26,6 +27,8 @@ public class InternalView {
 	
 	int left,right;
 	
+	public ErnestModel m_model;
+	
 	public InternalView(){
 		retine=new double[360];
     	colorMap=new Color[360];
@@ -39,6 +42,11 @@ public class InternalView {
     	
     	cornerPoints=new ArrayList<Point>();
 
+	}
+	
+	public void setModel(ErnestModel model)
+	{	
+		m_model = model;
 	}
 	
 	public void updateRetine(double[] r,Color[] cm,int[] cor,double[] rt,int[] cmt,int[] cort,
@@ -58,4 +66,23 @@ public class InternalView {
     	segments=segmentList;
     	lock=true;
     }
+	public ArrayList<IPlace> getPlaceList()
+	{
+		return m_model.getErnest().getPlaceList();
+	}
+	
+	public int getCounter()
+	{
+		return m_model.getErnest().getCounter();
+	}
+	
+	public int getFocus()
+	{
+		return m_model.getErnest().getAttention();
+	}
+	
+	public int getID()
+	{	
+		return m_model.getID();
+	}
 }

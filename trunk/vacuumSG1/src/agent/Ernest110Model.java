@@ -95,10 +95,13 @@ public class Ernest110Model extends ErnestModel
      */
     public void initErnest()
     {
+    	// Instantiate Ernest
         m_ernest = new Ernest();
         m_sensorymotorSystem = new SpatialSensorimotorSystem();
-		m_SpaceMemory.setErnest(m_ernest);
+        
+        // Initialize the visualization.
 		m_SpaceMemory.setModel(this);
+		m_eye.setModel(this);
         
         // Only trace the first agent.
         
@@ -228,7 +231,7 @@ public class Ernest110Model extends ErnestModel
 		// Refresh the local space memory window
 		//m_SpaceMemory.update( (ArrayList<IPlace>) getPlaceList() );
 		//m_SpaceMemory.update( (ArrayList<IPlace>) m_ernest.getPlaceList());
-		m_SpaceMemory.update();
+		//m_SpaceMemory.update();
 		for (int i=0;i<m_env.frameList.size();i++){
 			m_env.frameList.get(i).repaint();
 		}

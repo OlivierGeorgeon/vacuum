@@ -363,6 +363,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 			//setChanged();
 			//notifyObservers2();
 			
+			// Initialize the display index to the first Ernest agent.
 			int index=0;
 			boolean found=false;
 			while (index<m_modelList.size() && !found){
@@ -371,6 +372,9 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 			}
 			
 			if (found) m_environment.setDisplay(index);
+			
+			// Force the display index
+			m_environment.setDisplay(8);
 		}
 		catch (Exception e)
 		{

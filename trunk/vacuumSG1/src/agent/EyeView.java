@@ -14,7 +14,7 @@ class EyeView extends JFrame{
 	private EyeDisplay ED;
     public EyeView(InternalView m_eye){
 		this.setTitle("Visual Features");       
-        this.setSize(EyeDisplay.RADIUS_SCALE * 2, EyeDisplay.RADIUS_SCALE * 2);
+        this.setSize(EyeDisplay.WIDTH * 2, EyeDisplay.HEIGHT * 2);
         this.setLocationRelativeTo(null);               
         
         ED=new EyeDisplay(m_eye);
