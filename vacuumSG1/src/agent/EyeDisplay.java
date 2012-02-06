@@ -1,5 +1,7 @@
 package agent;
 import java.awt.BasicStroke;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -11,6 +13,8 @@ import java.util.ArrayList;
 import javax.swing.JPanel;
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Vector3f;
+
+import spas.IPlace;
 
 import ernest.Ernest;
 
@@ -25,10 +29,12 @@ public class EyeDisplay extends JPanel {
 	public final static int RADIUS = 10;
 	
 	/** The number of pixels per grid units. */
-	public final static int SCALE = 40; 
+	public final static int SCALE = 30; 
 	
 	/** The radius of the display area in pixels. */
-	public final static int RADIUS_SCALE = 300; 
+	//public final static int RADIUS_SCALE = 300; 
+	public final static int WIDTH = 300;
+	public final static int HEIGHT = 250;
 	
 	/**
 	 * 
@@ -75,14 +81,23 @@ public class EyeDisplay extends JPanel {
         // display the agent.
         AffineTransform ref = g2d.getTransform();
         AffineTransform orientation = new AffineTransform();
-        orientation.translate(RADIUS_SCALE,RADIUS_SCALE);
+        orientation.translate(WIDTH,HEIGHT);
         orientation.rotate(Math.PI/2);
         orientation.scale(SCALE / 100f, SCALE / 100f);
         g2d.transform(orientation);
 		g2d.setColor(Color.gray);
-        g2d.fill(Ernest110Model.shape(0));
+        g2d.fill(Ernest110Model.shape(eye.getID()));
         g2d.setTransform(ref);
-        
+
+        // Display counter
+		String counter = eye.getCounter() + ""; 
+		Font font = new Font("Dialog", Font.BOLD, 18);
+		g2d.setFont(font);
+		FontMetrics fm = getFontMetrics(font);
+		int width = fm.stringWidth(counter);
+		g2d.setColor(Color.GRAY);		
+		g2d.drawString(counter, 2 * WIDTH - 30 - width, 30);	
+		
         // Points        
         //Arc2D.Double pie = new Arc2D.Double(-SCALE /8, -SCALE /8, SCALE/4, SCALE/4, 0, 180, Arc2D.PIE);
         Arc2D.Double pie = new Arc2D.Double(-SCALE /4, -SCALE /4, SCALE/2, SCALE/2, 0, 180, Arc2D.PIE);
@@ -186,7 +201,7 @@ public class EyeDisplay extends JPanel {
         		if (wallPoints){
         			if (eye.cornerPoints.get(i).type==10){
         				g2d.setColor(Color.green);
-        				g2d.fillOval(300+(int)(eye.cornerPoints.get(i).position.x*SCALE-2),300-(int)(eye.cornerPoints.get(i).position.y*SCALE+2),5,5);
+        				g2d.fillOval(WIDTH+(int)(eye.cornerPoints.get(i).position.x*SCALE-2),HEIGHT-(int)(eye.cornerPoints.get(i).position.y*SCALE+2),5,5);
         			}
         		}
         		// draw left and right points' colors
@@ -198,7 +213,7 @@ public class EyeDisplay extends JPanel {
     						//g2d.fillOval(300+(int)(eye.cornerPoints.get(i).position.x*SCALE-6),300-(int)(eye.cornerPoints.get(i).position.y*SCALE+2),5,5);
     				        ref = g2d.getTransform();
     				        orientation = new AffineTransform();
-    				        orientation.translate(RADIUS_SCALE + (eye.cornerPoints.get(i).position.x) * SCALE, RADIUS_SCALE - (eye.cornerPoints.get(i).position.y) * SCALE);
+    				        orientation.translate(WIDTH + (eye.cornerPoints.get(i).position.x) * SCALE, HEIGHT - (eye.cornerPoints.get(i).position.y) * SCALE);
     				        orientation.rotate(- eye.cornerPoints.get(i).getAngle());
     				        g2d.transform(orientation);
     				        g2d.fill(pie);
@@ -210,7 +225,7 @@ public class EyeDisplay extends JPanel {
     						//g2d.fillOval(300+(int)(eye.cornerPoints.get(i).position.x*SCALE+2),300-(int)(eye.cornerPoints.get(i).position.y*SCALE+2),5,5);
     				        ref = g2d.getTransform();
     				        orientation = new AffineTransform();
-    				        orientation.translate(RADIUS_SCALE + (eye.cornerPoints.get(i).position.x) * SCALE, RADIUS_SCALE - (eye.cornerPoints.get(i).position.y) * SCALE);
+    				        orientation.translate(WIDTH + (eye.cornerPoints.get(i).position.x) * SCALE, HEIGHT - (eye.cornerPoints.get(i).position.y) * SCALE);
     				        orientation.rotate( - eye.cornerPoints.get(i).getAngle() + Math.PI);
     				        g2d.transform(orientation);
     				        g2d.fill(pie);
@@ -222,31 +237,31 @@ public class EyeDisplay extends JPanel {
     			// draw points
     			if (eye.cornerPoints.get(i).type<=0){
     				g2d.setColor(Color.blue);
-    				g2d.fillOval(300+(int)(eye.cornerPoints.get(i).position.x*SCALE-2),300-(int)(eye.cornerPoints.get(i).position.y*SCALE+2),5,5);
+    				g2d.fillOval(WIDTH+(int)(eye.cornerPoints.get(i).position.x*SCALE-2),HEIGHT-(int)(eye.cornerPoints.get(i).position.y*SCALE+2),5,5);
     				
     				// draw speed vector of corner points
     				if (pointSpeed){
     	    			g2d.setStroke(new BasicStroke(SCALE / 20f));
     					g2d.setColor(Color.red);
-    					g2d.drawLine(300+(int)(eye.cornerPoints.get(i).position.x*SCALE+2),
-    						       300-(int)(eye.cornerPoints.get(i).position.y*SCALE-2),
-    						       300+(int)(eye.cornerPoints.get(i).position.x*SCALE + eye.cornerPoints.get(i).speed.x*200+2),
-    						       300-(int)(eye.cornerPoints.get(i).position.y*SCALE + eye.cornerPoints.get(i).speed.y*200-2));
+    					g2d.drawLine(WIDTH+(int)(eye.cornerPoints.get(i).position.x*SCALE+2),
+    						       HEIGHT-(int)(eye.cornerPoints.get(i).position.y*SCALE-2),
+    						       WIDTH+(int)(eye.cornerPoints.get(i).position.x*SCALE + eye.cornerPoints.get(i).speed.x*200+2),
+    						       HEIGHT-(int)(eye.cornerPoints.get(i).position.y*SCALE + eye.cornerPoints.get(i).speed.y*200-2));
     				}
                  }
                  else{           
                 	 if (eye.cornerPoints.get(i).type==1 || eye.cornerPoints.get(i).type==2){
                 		 g2d.setColor(Color.red);
-                		 g2d.fillOval(300+(int)(eye.cornerPoints.get(i).position.x*SCALE-2),300-(int)(eye.cornerPoints.get(i).position.y*SCALE+2),5,5);
+                		 g2d.fillOval(WIDTH+(int)(eye.cornerPoints.get(i).position.x*SCALE-2),HEIGHT-(int)(eye.cornerPoints.get(i).position.y*SCALE+2),5,5);
                 	 }
                 	 if (eye.cornerPoints.get(i).type==3){
                 		 g2d.setColor(Color.yellow);
-                		 g2d.fillOval(300+(int)(eye.cornerPoints.get(i).position.x*SCALE-2),300-(int)(eye.cornerPoints.get(i).position.y*SCALE+2),5,5);
+                		 g2d.fillOval(WIDTH+(int)(eye.cornerPoints.get(i).position.x*SCALE-2),HEIGHT-(int)(eye.cornerPoints.get(i).position.y*SCALE+2),5,5);
                 	 }
                 	 
                 	 if (eye.cornerPoints.get(i).type==4){
                 		 g2d.setColor(Color.cyan);
-                		 g2d.fillOval(300+(int)(eye.cornerPoints.get(i).position.x*SCALE-2),300-(int)(eye.cornerPoints.get(i).position.y*SCALE+2),5,5);
+                		 g2d.fillOval(WIDTH+(int)(eye.cornerPoints.get(i).position.x*SCALE-2),HEIGHT-(int)(eye.cornerPoints.get(i).position.y*SCALE+2),5,5);
                 	 }
                  }
     		}
@@ -255,8 +270,8 @@ public class EyeDisplay extends JPanel {
     			g2d.setStroke(new BasicStroke(SCALE / 10f));
     			for (int i=0;i<eye.segments.size();i++){
                	 g2d.setColor(new Color(eye.segments.get(i).getValue()));
-            	 g2d.drawLine(300+(int)(eye.segments.get(i).getFirstPosition().x*SCALE), 300-(int)(eye.segments.get(i).getFirstPosition().y*SCALE),
-            			    300+(int)(eye.segments.get(i).getSecondPosition().x*SCALE), 300-(int)(eye.segments.get(i).getSecondPosition().y*SCALE));
+            	 g2d.drawLine(WIDTH+(int)(eye.segments.get(i).getFirstPosition().x*SCALE), HEIGHT-(int)(eye.segments.get(i).getFirstPosition().y*SCALE),
+            			    WIDTH+(int)(eye.segments.get(i).getSecondPosition().x*SCALE), HEIGHT-(int)(eye.segments.get(i).getSecondPosition().y*SCALE));
     			}
     		}
          
@@ -264,14 +279,35 @@ public class EyeDisplay extends JPanel {
     			//g2d.setStroke(new BasicStroke(SCALE / 5f));
     			g2d.setColor(Color.red);
                 for (int i=0;i<eye.segments.size();i++){
-               	 g2d.drawLine(300+(int)eye.segments.get(i).getPosition().x*SCALE,
-               			    300-(int)eye.segments.get(i).getPosition().y*SCALE,
-               			    300+(int)(eye.segments.get(i).getPosition().x*SCALE+ eye.segments.get(i).getSpeed().x*500),
-               			    300-(int)(eye.segments.get(i).getPosition().y*SCALE+ eye.segments.get(i).getSpeed().y*500) );
+               	 g2d.drawLine(WIDTH+(int)eye.segments.get(i).getPosition().x*SCALE,
+               			    HEIGHT-(int)eye.segments.get(i).getPosition().y*SCALE,
+               			    WIDTH+(int)(eye.segments.get(i).getPosition().x*SCALE+ eye.segments.get(i).getSpeed().x*500),
+               			    HEIGHT-(int)(eye.segments.get(i).getPosition().y*SCALE+ eye.segments.get(i).getSpeed().y*500) );
     			}
     		}
         	}
     	}
+    	
+		// Display the focus
+		int focusRadius = SCALE / 4;
+		g2d.setStroke(new BasicStroke(SCALE / 10f));
+		for (IPlace place : eye.getPlaceList())
+		{
+			if (place.getFocus())
+			{
+				float d = place.getPosition().length() * SCALE;
+				float rad = (float)Math.atan2((double)place.getPosition().y, place.getPosition().x);			
+				if (place.getAttractiveness(1) >= 0)
+					g2d.setColor(Color.MAGENTA);			
+				else
+					g2d.setColor(Color.RED);
+				int x0 = WIDTH + (int) (d * Math.cos(rad));
+				int y0 = HEIGHT  - (int) (d * Math.sin(rad));
+				g2d.fillOval(x0 - focusRadius, y0 - focusRadius, 2 * focusRadius, 2 * focusRadius);
+				if (place.getSpeed() != null)
+					g2d.drawLine(x0, y0, x0 + (int)(place.getSpeed().x * SCALE * 4), y0 - (int)(place.getSpeed().y * SCALE *4));
+			}
+		}
     }   
     
 }

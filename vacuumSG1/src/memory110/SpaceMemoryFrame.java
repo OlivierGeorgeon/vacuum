@@ -36,7 +36,7 @@ public class SpaceMemoryFrame extends JFrame{
 //		panel.update(list);
 //	}
 	
-	public void paint(){
-    	panel.repaint();
-    }
+//	public void paint(){
+//    	panel.repaint();
+//    }
 }

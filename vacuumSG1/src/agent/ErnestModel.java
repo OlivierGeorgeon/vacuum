@@ -1364,5 +1364,10 @@ public class ErnestModel extends Model
 	{
 		return m_eat;
 	}
+	
+	public IErnest getErnest()
+	{
+		return m_ernest;
+	}
 
 }
