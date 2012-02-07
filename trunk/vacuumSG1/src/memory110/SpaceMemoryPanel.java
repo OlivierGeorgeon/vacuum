@@ -110,13 +110,15 @@ public class SpaceMemoryPanel extends JPanel
 		{
 			d = place.getPosition().length() * SCALE;
 			
-			rad = (float)Math.atan2((double)place.getPosition().y, place.getPosition().x);			
+			//rad = (float)Math.atan2((double)place.getPosition().y, place.getPosition().x);			
+			rad = (float)Math.atan2((double)place.getFirstPosition().y, place.getFirstPosition().x);			
 			angle = rad*180/Math.PI;
 						
 			// The places represented as arcs
 			span=place.getSpan()*180/Math.PI;
 			g2d.setColor(new Color(place.getBundle().getValue()));			
-			g2d.drawArc(WIDTH - (int)d, HEIGHT - (int)d, 2*(int)d, 2*(int)d, (int)(angle-span/2), (int)span);
+			//g2d.drawArc(WIDTH - (int)d, HEIGHT - (int)d, 2*(int)d, 2*(int)d, (int)(angle-span/2), (int)span);
+			g2d.drawArc(WIDTH - (int)d, HEIGHT - (int)d, 2*(int)d, 2*(int)d, (int)(angle), (int)span);
 			
 		}
 		
@@ -125,14 +127,23 @@ public class SpaceMemoryPanel extends JPanel
 		g2d.setStroke(new BasicStroke(SCALE / 10f));
 		for (IPlace place : spaceMemory.getPlaceList())
 		{
-			if (place.getFocus())
+			if (place.getType() > 0)
 			{
 				d = place.getPosition().length() * SCALE;
 				rad = (float)Math.atan2((double)place.getPosition().y, place.getPosition().x);			
-				if (place.getAttractiveness(1) >= 0)
-					g2d.setColor(Color.MAGENTA);			
-				else
+				if (place.getType() == 1)
+				{
+					if (place.getAttractiveness(1) >= 0)
+						g2d.setColor(Color.MAGENTA);			
+					else
+						g2d.setColor(Color.BLACK);
+				}
+				else if (place.getType() == 2)
 					g2d.setColor(Color.RED);
+				else if (place.getType() == 3)
+					g2d.setColor(Color.YELLOW);
+				else if (place.getType() == 4)
+					g2d.setColor(Color.PINK);
 				int x0 = WIDTH + (int) (d * Math.cos(rad));
 				int y0 = HEIGHT  - (int) (d * Math.sin(rad));
 				g2d.fillOval(x0 - focusRadius, y0 - focusRadius, 2 * focusRadius, 2 * focusRadius);
