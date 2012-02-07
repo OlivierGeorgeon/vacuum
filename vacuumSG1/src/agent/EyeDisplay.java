@@ -29,7 +29,7 @@ public class EyeDisplay extends JPanel {
 	public final static int RADIUS = 10;
 	
 	/** The number of pixels per grid units. */
-	public final static int SCALE = 30; 
+	public final static int SCALE = 32; 
 	
 	/** The radius of the display area in pixels. */
 	//public final static int RADIUS_SCALE = 300; 
@@ -73,19 +73,23 @@ public class EyeDisplay extends JPanel {
     }
     
 
-    public void paintComponent(Graphics g){
-    	
+    public void paintComponent(Graphics g)
+    {	
 		Graphics2D g2d = (Graphics2D)g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
     	
         // display the agent.
         AffineTransform ref = g2d.getTransform();
         AffineTransform orientation = new AffineTransform();
-        orientation.translate(WIDTH,HEIGHT);
+        orientation.translate(WIDTH, HEIGHT);
         orientation.rotate(Math.PI/2);
         orientation.scale(SCALE / 100f, SCALE / 100f);
         g2d.transform(orientation);
 		g2d.setColor(Color.gray);
+		if (eye.m_model.getCuddle())
+			g2d.setColor(Color.PINK);
+		if (eye.m_model.getEat())
+			g2d.setColor(Color.YELLOW);
         g2d.fill(Ernest110Model.shape(eye.getID()));
         g2d.setTransform(ref);
 
@@ -102,7 +106,8 @@ public class EyeDisplay extends JPanel {
         //Arc2D.Double pie = new Arc2D.Double(-SCALE /8, -SCALE /8, SCALE/4, SCALE/4, 0, 180, Arc2D.PIE);
         Arc2D.Double pie = new Arc2D.Double(-SCALE /4, -SCALE /4, SCALE/2, SCALE/2, 0, 180, Arc2D.PIE);
 
-    	if (viewORsegments){
+    	if (viewORsegments)
+    	{
     		// visual
     			g2d.setColor(Color.BLUE);
     			g2d.fillRect(0,0,720,150);
@@ -178,10 +183,8 @@ public class EyeDisplay extends JPanel {
             	g2d.drawLine(0, 150, 720, 150);
             	g2d.drawLine(0, 450, 720, 450);
     	}
-    	
-    	
-    	else{
-    		
+    	else
+    	{
     		boolean wallPoints=false;				// draw non corner points (if created)
     		boolean pointColors=true;				// draw left and right color of points
     		boolean pointSpeed=true;               // draw speed vector of corner points
@@ -293,14 +296,23 @@ public class EyeDisplay extends JPanel {
 		g2d.setStroke(new BasicStroke(SCALE / 10f));
 		for (IPlace place : eye.getPlaceList())
 		{
-			if (place.getFocus())
+			if (place.getType() > 0)
 			{
 				float d = place.getPosition().length() * SCALE;
 				float rad = (float)Math.atan2((double)place.getPosition().y, place.getPosition().x);			
-				if (place.getAttractiveness(1) >= 0)
-					g2d.setColor(Color.MAGENTA);			
-				else
+				if (place.getType() == 1)
+				{
+					if (place.getAttractiveness(1) >= 0)
+						g2d.setColor(Color.MAGENTA);			
+					else
+						g2d.setColor(Color.BLACK);
+				}
+				else if (place.getType() == 2)
 					g2d.setColor(Color.RED);
+				else if (place.getType() == 3)
+					g2d.setColor(Color.YELLOW);
+				else if (place.getType() == 4)
+					g2d.setColor(Color.PINK);
 				int x0 = WIDTH + (int) (d * Math.cos(rad));
 				int y0 = HEIGHT  - (int) (d * Math.sin(rad));
 				g2d.fillOval(x0 - focusRadius, y0 - focusRadius, 2 * focusRadius, 2 * focusRadius);
@@ -309,6 +321,5 @@ public class EyeDisplay extends JPanel {
 			}
 		}
     }   
-    
 }
 
