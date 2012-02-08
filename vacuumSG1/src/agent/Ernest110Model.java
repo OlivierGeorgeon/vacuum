@@ -181,7 +181,7 @@ public class Ernest110Model extends ErnestModel
      */
     public void update()
     {
-
+    	count();
     	// Sense the environment on each update.
 		int[][] sense = sense();
     	

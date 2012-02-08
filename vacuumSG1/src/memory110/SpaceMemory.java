@@ -54,4 +54,10 @@ public class SpaceMemory
 	{	
 		return m_model.getID();
 	}
+
+	public int getUpdateCount()
+	{
+		return m_model.getUpdateCount();
+	}
+	
 }
