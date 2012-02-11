@@ -297,23 +297,14 @@ public class EyeDisplay extends JPanel {
 		g2d.setStroke(new BasicStroke(SCALE / 10f));
 		for (IPlace place : eye.getPlaceList())
 		{
-			if (place.getType() > Spas.PLACE_SALIENCE)
+			if (place.getType() == Spas.PLACE_FOCUS)
 			{
 				float d = place.getPosition().length() * SCALE;
 				float rad = (float)Math.atan2((double)place.getPosition().y, place.getPosition().x);			
-				if (place.getType() == Spas.PLACE_FOCUS)
-				{
-					if (place.getAttractiveness(1) >= 0)
-						g2d.setColor(Color.MAGENTA);			
-					else
-						g2d.setColor(Color.BLACK);
-				}
-				else if (place.getType() == Spas.PLACE_KINEMATIC)
-					g2d.setColor(Color.RED);
-				else if (place.getType() == Spas.PLACE_GUSTATORY)
-					g2d.setColor(Color.YELLOW);
-				else if (place.getType() == Spas.PLACE_CUDDLE)
-					g2d.setColor(Color.PINK);
+				if (place.getAttractiveness(1) >= 0)
+					g2d.setColor(Color.MAGENTA);			
+				else
+					g2d.setColor(Color.BLACK);
 				int x0 = WIDTH + (int) (d * Math.cos(rad));
 				int y0 = HEIGHT  - (int) (d * Math.sin(rad));
 				g2d.fillOval(x0 - focusRadius, y0 - focusRadius, 2 * focusRadius, 2 * focusRadius);
