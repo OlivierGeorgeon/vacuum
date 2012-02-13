@@ -36,7 +36,7 @@ public class SpaceMemoryPanel extends JPanel
 	public final static int HEIGHT = 250;
 	
 	/** The number of pixels per grid units. */
-	public final static int SCALE = 50; 
+	public final static int SCALE = 40; 
 	
 	private static final long serialVersionUID = 1L;
 	public int index;
@@ -67,7 +67,32 @@ public class SpaceMemoryPanel extends JPanel
 		g2d.setColor(Color.white);
 		//g2d.fillRect(0, 0, 2 * RADIUS * SCALE, 2 * RADIUS * SCALE);
 		
-        // Display agent
+        // Display counter
+		String counter = spaceMemory.getCounter() + ""; 
+		Font font = new Font("Dialog", Font.BOLD, 18);
+		g2d.setFont(font);
+		FontMetrics fm = getFontMetrics(font);
+		int width = fm.stringWidth(counter);
+		g2d.setColor(Color.GRAY);		
+		g2d.drawString(counter, 2 * WIDTH - 30 - width, 30);	
+		
+		float refAngle = 0;
+		for (IPlace place : spaceMemory.getPlaceList())
+		{
+			if (place.getType() == Spas.PLACE_FOCUS)
+			{
+				refAngle = place.getDirection();
+			}
+		}
+		refAngle = - spaceMemory.getOrientation();
+		AffineTransform ref0 = g2d.getTransform();
+		AffineTransform ref1 = new AffineTransform();
+		ref1.translate(0, 0);
+        ref1.rotate(refAngle, WIDTH, HEIGHT);
+        g2d.transform(ref1);
+        //g2d.setTransform(ref0);
+		
+		// Display agent
         AffineTransform ref = g2d.getTransform();
         AffineTransform orientation = new AffineTransform();
         orientation.translate(WIDTH, HEIGHT);
@@ -86,22 +111,13 @@ public class SpaceMemoryPanel extends JPanel
         //g2d.fill(focus);
         g2d.setTransform(ref);
         
-        // Display counter
-		String counter = spaceMemory.getCounter() + ""; 
-		Font font = new Font("Dialog", Font.BOLD, 18);
-		g2d.setFont(font);
-		FontMetrics fm = getFontMetrics(font);
-		int width = fm.stringWidth(counter);
-		g2d.setColor(Color.GRAY);		
-		g2d.drawString(counter, 2 * WIDTH - 30 - width, 30);	
-		
 		double d;
 		double rad;
 		double angle;
 		double span;
 		
         // Display the places
-		g2d.setStroke(new BasicStroke(SCALE / 3f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER));
+		//g2d.setStroke(new BasicStroke(SCALE / 3f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER));
 		g2d.setStroke(new BasicStroke(SCALE / 3f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER));
 
 		
@@ -112,18 +128,19 @@ public class SpaceMemoryPanel extends JPanel
 			{
 				d = place.getPosition().length() * SCALE;
 				
-				//rad = (float)Math.atan2((double)place.getPosition().y, place.getPosition().x);			
-				rad = (float)Math.atan2((double)place.getFirstPosition().y, place.getFirstPosition().x);			
+				rad = (float)Math.atan2((double)place.getPosition().y, place.getPosition().x);			
+				//rad = (float)Math.atan2((double)place.getFirstPosition().y, place.getFirstPosition().x);			
 				angle = rad*180/Math.PI;
 							
 				// The places represented as arcs
 				span=place.getSpan()*180/Math.PI;
 				g2d.setColor(new Color(place.getBundle().getValue()));		
 				
-				g2d.setStroke(new BasicStroke(SCALE / (3f + 2*(spaceMemory.getUpdateCount() - place.getUpdateCount())), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+				//g2d.setStroke(new BasicStroke(SCALE / (3f + 2*(spaceMemory.getUpdateCount() - place.getUpdateCount())), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+				g2d.setStroke(new BasicStroke(SCALE / 4f * ( 1  - (spaceMemory.getUpdateCount() - place.getUpdateCount())/10f), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 	
 				if (place.getType() == Spas.PLACE_TOUCH)
-					g2d.drawArc(WIDTH - (int)d, HEIGHT - (int)d, 2*(int)d, 2*(int)d, (int)(angle), (int)span);
+					g2d.drawArc(WIDTH - (int)d, HEIGHT - (int)d, 2*(int)d, 2*(int)d, (int)(angle), (int)1);
 				else
 					g2d.drawLine(WIDTH + (int)(place.getFirstPosition().x * SCALE), HEIGHT - (int)(place.getFirstPosition().y * SCALE), 
 						WIDTH + (int)(place.getSecondPosition().x * SCALE), HEIGHT - (int)(place.getSecondPosition().y * SCALE));
@@ -144,9 +161,10 @@ public class SpaceMemoryPanel extends JPanel
 				if (place.getType() == Spas.PLACE_CUDDLE) 
 					g2d.setColor(Color.PINK);
 				if (place.getType() == Spas.PLACE_PRIMITIVE) 
-					g2d.setColor(Color.GRAY);
+					g2d.setColor(Color.BLUE);
 				
-				g2d.setStroke(new BasicStroke(SCALE / (3f + (spaceMemory.getUpdateCount() - place.getUpdateCount())), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+				//g2d.setStroke(new BasicStroke(SCALE / (3f + (spaceMemory.getUpdateCount() - place.getUpdateCount())), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+				g2d.setStroke(new BasicStroke(SCALE / 3f * ( 1  - (spaceMemory.getUpdateCount() - place.getUpdateCount())/15f), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 	
 				g2d.drawLine(WIDTH + (int)(place.getFirstPosition().x * SCALE), HEIGHT - (int)(place.getFirstPosition().y * SCALE), 
 					WIDTH + (int)(place.getSecondPosition().x * SCALE), HEIGHT - (int)(place.getSecondPosition().y * SCALE));
@@ -154,7 +172,7 @@ public class SpaceMemoryPanel extends JPanel
 		}
 				
 		// Display the focus
-		int focusRadius = SCALE / 4;
+		int focusRadius = SCALE / 5;
 		g2d.setStroke(new BasicStroke(SCALE / 10f));
 		for (IPlace place : spaceMemory.getPlaceList())
 		{
@@ -162,15 +180,20 @@ public class SpaceMemoryPanel extends JPanel
 			{
 				d = place.getPosition().length() * SCALE;
 				rad = (float)Math.atan2((double)place.getPosition().y, place.getPosition().x);			
-				if (place.getAttractiveness(1) >= 0)
-					g2d.setColor(Color.MAGENTA);			
-				else
-					g2d.setColor(Color.BLACK);
+				g2d.setColor(new Color(place.getBundle().getValue()));		
+//				if (place.getAttractiveness(1) >= 0)
+//					g2d.setColor(Color.MAGENTA);			
+//				else
+//					g2d.setColor(Color.BLACK);
 				int x0 = WIDTH + (int) (d * Math.cos(rad));
 				int y0 = HEIGHT - (int) (d * Math.sin(rad));
 				g2d.fillOval(x0 - focusRadius, y0 - focusRadius, 2 * focusRadius, 2 * focusRadius);
+				
+				g2d.setColor(Color.MAGENTA);		
 				if (place.getSpeed() != null)
 					g2d.drawLine(x0, y0, x0 + (int)(place.getSpeed().x * SCALE * 4), y0 - (int)(place.getSpeed().y * SCALE *4));
+				g2d.setStroke(new BasicStroke(SCALE / 20f));
+				g2d.drawOval(x0 - focusRadius, y0 - focusRadius, 2 * focusRadius, 2 * focusRadius);
 			}
 		}
 	}

@@ -69,4 +69,12 @@ public class Segment implements ISegment
 	{
 		return firstPoint.position.angle(secondPoint.position);
 	}
+
+	@Override
+	public float getWidth() 
+	{
+		Vector3f w = new Vector3f(getFirstPosition());
+		w.sub(getSecondPosition());
+		return w.length();
+	}
 }
