@@ -582,6 +582,11 @@ public class Model extends Observable
 	{
 		m_night = !m_night;
 	}
+	
+	public float getOrientation()
+	{
+		return mOrientation.z;
+	}
 
 	public void paintDream(Graphics2D g,int x,int y,double sx,double sy)
 	{

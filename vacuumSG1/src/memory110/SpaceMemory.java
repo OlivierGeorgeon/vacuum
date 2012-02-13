@@ -60,4 +60,8 @@ public class SpaceMemory
 		return m_model.getUpdateCount();
 	}
 	
+	public float getOrientation()
+	{
+		return m_model.getOrientation();
+	}
 }
