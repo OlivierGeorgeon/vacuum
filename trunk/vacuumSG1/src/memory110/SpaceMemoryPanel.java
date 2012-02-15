@@ -124,7 +124,8 @@ public class SpaceMemoryPanel extends JPanel
 		// Display the visual and tactile places
 		for (IPlace place : spaceMemory.getPlaceList())
 		{
-			if (place.getType() <= Spas.PLACE_FOCUS)
+			//if (place.getType() == Spas.PLACE_PERSISTENT)
+			if (place.getType() < Spas.PLACE_FOCUS)
 			{
 				d = place.getPosition().length() * SCALE;
 				
@@ -137,7 +138,7 @@ public class SpaceMemoryPanel extends JPanel
 				g2d.setColor(new Color(place.getBundle().getValue()));		
 				
 				//g2d.setStroke(new BasicStroke(SCALE / (3f + 2*(spaceMemory.getUpdateCount() - place.getUpdateCount())), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-				g2d.setStroke(new BasicStroke(SCALE / 4f * ( 1  - (spaceMemory.getUpdateCount() - place.getUpdateCount())/10f), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+				g2d.setStroke(new BasicStroke(Math.max(SCALE / 4f * ( 1  - (spaceMemory.getUpdateCount() - place.getUpdateCount())/10f), 1), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 	
 				if (place.getType() == Spas.PLACE_TOUCH)
 					g2d.drawArc(WIDTH - (int)d, HEIGHT - (int)d, 2*(int)d, 2*(int)d, (int)(angle), (int)1);
@@ -150,7 +151,7 @@ public class SpaceMemoryPanel extends JPanel
 		// Display the bump, eat, and cuddle places
 		for (IPlace place : spaceMemory.getPlaceList())
 		{
-			if (place.getType() > Spas.PLACE_FOCUS)
+			if (place.getType() > Spas.PLACE_FOCUS && place.getType() < Spas.PLACE_PERSISTENT)
 			{
 				// The places represented as arcs
 				//g2d.setColor(new Color(place.getBundle().getValue()));		
@@ -164,7 +165,7 @@ public class SpaceMemoryPanel extends JPanel
 					g2d.setColor(Color.BLUE);
 				
 				//g2d.setStroke(new BasicStroke(SCALE / (3f + (spaceMemory.getUpdateCount() - place.getUpdateCount())), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-				g2d.setStroke(new BasicStroke(SCALE / 3f * ( 1  - (spaceMemory.getUpdateCount() - place.getUpdateCount())/15f), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+				g2d.setStroke(new BasicStroke(Math.max(SCALE / 3f * ( 1  - (spaceMemory.getUpdateCount() - place.getUpdateCount())/15f), 1), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 	
 				g2d.drawLine(WIDTH + (int)(place.getFirstPosition().x * SCALE), HEIGHT - (int)(place.getFirstPosition().y * SCALE), 
 					WIDTH + (int)(place.getSecondPosition().x * SCALE), HEIGHT - (int)(place.getSecondPosition().y * SCALE));
@@ -174,27 +175,22 @@ public class SpaceMemoryPanel extends JPanel
 		// Display the focus
 		int focusRadius = SCALE / 5;
 		g2d.setStroke(new BasicStroke(SCALE / 10f));
-		for (IPlace place : spaceMemory.getPlaceList())
-		{
-			if (place.getType() == Spas.PLACE_FOCUS)
-			{
-				d = place.getPosition().length() * SCALE;
-				rad = (float)Math.atan2((double)place.getPosition().y, place.getPosition().x);			
-				g2d.setColor(new Color(place.getBundle().getValue()));		
-//				if (place.getAttractiveness(1) >= 0)
-//					g2d.setColor(Color.MAGENTA);			
-//				else
-//					g2d.setColor(Color.BLACK);
-				int x0 = WIDTH + (int) (d * Math.cos(rad));
-				int y0 = HEIGHT - (int) (d * Math.sin(rad));
-				g2d.fillOval(x0 - focusRadius, y0 - focusRadius, 2 * focusRadius, 2 * focusRadius);
-				
-				g2d.setColor(Color.MAGENTA);		
-				if (place.getSpeed() != null)
-					g2d.drawLine(x0, y0, x0 + (int)(place.getSpeed().x * SCALE * 4), y0 - (int)(place.getSpeed().y * SCALE *4));
-				g2d.setStroke(new BasicStroke(SCALE / 20f));
-				g2d.drawOval(x0 - focusRadius, y0 - focusRadius, 2 * focusRadius, 2 * focusRadius);
-			}
-		}
+//		for (IPlace place : spaceMemory.getPlaceList())
+//		{
+//			if (place.getType() == Spas.PLACE_FOCUS)
+//			{
+		IPlace focusPlace = spaceMemory.getFocusPlace();
+		d = focusPlace.getPosition().length() * SCALE;
+		rad = (float)Math.atan2((double)focusPlace.getPosition().y, focusPlace.getPosition().x);			
+		g2d.setColor(new Color(focusPlace.getBundle().getValue()));		
+		int x0 = WIDTH + (int) (d * Math.cos(rad));
+		int y0 = HEIGHT - (int) (d * Math.sin(rad));
+		//g2d.fillOval(x0 - focusRadius, y0 - focusRadius, 2 * focusRadius, 2 * focusRadius);
+		
+		g2d.setColor(Color.MAGENTA);		
+		if (focusPlace.getSpeed() != null)
+			g2d.drawLine(x0, y0, x0 + (int)(focusPlace.getSpeed().x * SCALE * 4), y0 - (int)(focusPlace.getSpeed().y * SCALE *4));
+		g2d.setStroke(new BasicStroke(SCALE / 20f));
+		g2d.drawOval(x0 - focusRadius, y0 - focusRadius, 2 * focusRadius, 2 * focusRadius);
 	}
 }
