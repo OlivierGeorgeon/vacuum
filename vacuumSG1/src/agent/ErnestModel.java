@@ -90,9 +90,6 @@ public class ErnestModel extends Model
 	
 	private int m_updateCount;
 	
-	public Vector3f mPreviousPosition = new Vector3f(mPosition);
-	public Vector3f mPreviousOrientation = new Vector3f(mOrientation);
-	
 	public Vector3f mSpeedT;    // translation and rotation speed in absolute reference
 	public Vector3f mSpeedR;    // translation and rotation speed in absolute reference
 	
@@ -1376,5 +1373,5 @@ public class ErnestModel extends Model
 	{
 		return m_updateCount;
 	}
-
+	
 }

@@ -113,7 +113,6 @@ public class Environment extends Observable {
 	
 	public boolean lock=false;
 
-	// Maik Friedrich
 	private String m_boardFileName = "";
 
 	private static final Random m_rand = new Random();
@@ -549,6 +548,7 @@ public class Environment extends Observable {
 
 	public void setBoardFileName(String file) {
 		m_boardFileName = file;
+		putPreferences();
 	}
 
 	public String getBoardFileName() {

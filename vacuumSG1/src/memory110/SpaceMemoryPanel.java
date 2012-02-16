@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JPanel;
+import javax.vecmath.Vector3f;
 
 import agent.Ernest110Model;
 
@@ -76,29 +77,35 @@ public class SpaceMemoryPanel extends JPanel
 		g2d.setColor(Color.GRAY);		
 		g2d.drawString(counter, 2 * WIDTH - 30 - width, 30);	
 		
-		float refAngle = 0;
-		for (IPlace place : spaceMemory.getPlaceList())
-		{
-			if (place.getType() == Spas.PLACE_FOCUS)
-			{
-				refAngle = place.getDirection();
-			}
-		}
-		refAngle = - spaceMemory.getOrientation();
+		float orientation = 0;
+//		for (IPlace place : spaceMemory.getPlaceList())
+//		{
+//			if (place.getType() == Spas.PLACE_FOCUS)
+//			{
+//				refAngle = place.getDirection();
+//			}
+//		}
+
+		IPlace focusPlace = spaceMemory.getFocusPlace();
+		orientation = spaceMemory.getOrientation();
+		
+		float x = (float)Math.cos(orientation + focusPlace.getDirection()) * focusPlace.getDistance();
+		float y = (float)Math.sin(orientation + focusPlace.getDirection()) * focusPlace.getDistance();
+		
 		AffineTransform ref0 = g2d.getTransform();
 		AffineTransform ref1 = new AffineTransform();
-		ref1.translate(0, 0);
-        ref1.rotate(refAngle, WIDTH, HEIGHT);
+		ref1.translate( - x * SCALE,  y * SCALE);
+        ref1.rotate(- orientation, WIDTH, HEIGHT);
         g2d.transform(ref1);
         //g2d.setTransform(ref0);
 		
 		// Display agent
         AffineTransform ref = g2d.getTransform();
-        AffineTransform orientation = new AffineTransform();
-        orientation.translate(WIDTH, HEIGHT);
-        orientation.rotate(Math.PI/2);
-        orientation.scale(SCALE / 100f, SCALE / 100f);
-        g2d.transform(orientation);
+        AffineTransform placeAgent = new AffineTransform();
+        placeAgent.translate(WIDTH, HEIGHT);
+        placeAgent.rotate(Math.PI/2);
+        placeAgent.scale(SCALE / 100f, SCALE / 100f);
+        g2d.transform(placeAgent);
 		g2d.setColor(Color.gray);
 //		if (spaceMemory.m_model.getCuddle())
 //			g2d.setColor(Color.PINK);
@@ -151,7 +158,7 @@ public class SpaceMemoryPanel extends JPanel
 		// Display the bump, eat, and cuddle places
 		for (IPlace place : spaceMemory.getPlaceList())
 		{
-			if (place.getType() > Spas.PLACE_FOCUS && place.getType() < Spas.PLACE_PERSISTENT)
+			if (place.getType() > Spas.PLACE_FOCUS)// && place.getType() < Spas.PLACE_PERSISTENT)
 			{
 				// The places represented as arcs
 				//g2d.setColor(new Color(place.getBundle().getValue()));		
@@ -175,11 +182,7 @@ public class SpaceMemoryPanel extends JPanel
 		// Display the focus
 		int focusRadius = SCALE / 5;
 		g2d.setStroke(new BasicStroke(SCALE / 10f));
-//		for (IPlace place : spaceMemory.getPlaceList())
-//		{
-//			if (place.getType() == Spas.PLACE_FOCUS)
-//			{
-		IPlace focusPlace = spaceMemory.getFocusPlace();
+
 		d = focusPlace.getPosition().length() * SCALE;
 		rad = (float)Math.atan2((double)focusPlace.getPosition().y, focusPlace.getPosition().x);			
 		g2d.setColor(new Color(focusPlace.getBundle().getValue()));		
@@ -189,7 +192,7 @@ public class SpaceMemoryPanel extends JPanel
 		
 		g2d.setColor(Color.MAGENTA);		
 		if (focusPlace.getSpeed() != null)
-			g2d.drawLine(x0, y0, x0 + (int)(focusPlace.getSpeed().x * SCALE * 4), y0 - (int)(focusPlace.getSpeed().y * SCALE *4));
+			g2d.drawLine(x0, y0, x0 + (int)(focusPlace.getSpeed().x * SCALE), y0 - (int)(focusPlace.getSpeed().y * SCALE));
 		g2d.setStroke(new BasicStroke(SCALE / 20f));
 		g2d.drawOval(x0 - focusRadius, y0 - focusRadius, 2 * focusRadius, 2 * focusRadius);
 	}

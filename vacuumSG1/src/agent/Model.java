@@ -85,9 +85,9 @@ public class Model extends Observable
 	public static final int INIT_H         = 4;
 	public static final int INIT_X         = 0;
 	public static final int INIT_Y         = 0;
-	public static final int INIT_DIRTY     = 10;
+	//public static final int INIT_DIRTY     = 10;
 	public static final int INIT_STEPS     = 100;
-	public static final int INIT_DELAY     = 500;
+	//public static final int INIT_DELAY     = 500;
 	public static final int ORIENTATION_UP    = 0; //(Orientation is clockwise)
 	public static final int ORIENTATION_RIGHT = 90;
 	public static final int ORIENTATION_DOWN  = 180;
@@ -98,21 +98,6 @@ public class Model extends Observable
 	
 	public static final String INIT_PICTURE    = "vacuum.gif";
 	
-	private static final String PREF_W = "pref_w";
-	private static final String PREF_H = "pref_h";
-	private static final String PREF_X = "pref_x";
-	private static final String PREF_Y = "pref_y";
-	private static final String PREF_DIRTY = "pref_dirty";
-	private static final String PREF_STEPS = "pref_steps";
-	private static final String PREF_DELAY = "pref_delay";
-	private static final String PREF_RANDOMBOARD = "pref_randomBoard";
-	private static final String PREF_BOARDFILE = "pref_boardFile";
-	private static final String PREF_PICTUREFILE = "pref_pictureFile";
-	private static final String PREF_SPEAKALOUD = "pref_speakAloud";
-	private static final String PREF_AGENTFILE = "pref_agentFile";
-	private static final String PREF_AGENTTYPE = "pref_agentType";
-	private static final String PREF_AGENTSHORTFILE = "pref_agentShortFile";
-		
 	protected int m_w;
 	protected int m_h;
 	private int m_dirtyCount;
@@ -133,8 +118,12 @@ public class Model extends Observable
 	/** The angular rotation speed of Ernest. (in radius - trigonometric - counterclockwise)*/
 	protected Vector3f mRotation = new Vector3f();
 
+	/** The Cartesian previous position */
     protected Vector3f mPreviousPosition = new Vector3f();
 
+	/** The previous orientation */
+	protected Vector3f mPreviousOrientation = new Vector3f(mOrientation);
+	
 	public Environment m_env;
 
 	private static final Random m_rand = new Random();
@@ -395,35 +384,6 @@ public class Model extends Observable
 		notifyObservers2();
 	}
 
-	/**
-	 * Initialize the preferences from Registry
-	 * @author ogeorgeon 
-	 */
-	public void initPreferences()
-	{
-		Preferences prefs = Preferences.userRoot().node("vacuum");
-		//m_x = prefs.getInt(PREF_X,INIT_X);
-		//m_y = prefs.getInt(PREF_Y,INIT_Y);
-		m_dirtyCount = prefs.getInt(PREF_DIRTY,INIT_DIRTY);
-		m_delay = prefs.getInt(PREF_DELAY,INIT_DELAY);
-		m_bSpeakAloud = prefs.getBoolean(PREF_SPEAKALOUD, true);
-		
-	}
-
-	/**
-	 * Save the preferences to Registry
-	 * @author ogeorgeon 
-	 */
-	public void putPreferences()
-	{
-		Preferences prefs = Preferences.userRoot().node("vacuum");
-		//prefs.putFloat(PREF_X, m_x);
-		//prefs.putFloat(PREF_Y, m_y);
-		prefs.putInt(PREF_DIRTY, m_dirtyCount);
-		prefs.putInt(PREF_DELAY, m_delay);
-		prefs.putBoolean(PREF_SPEAKALOUD, m_bSpeakAloud);
-	}
-
 	public boolean isInCell(int i, int j)
 	{
 		if (i == Math.round(mPosition.x) && j == Math.round(mPosition.y))
@@ -585,7 +545,7 @@ public class Model extends Observable
 	
 	public float getOrientation()
 	{
-		return mOrientation.z;
+		return mPreviousOrientation.z;
 	}
 
 	public void paintDream(Graphics2D g,int x,int y,double sx,double sy)

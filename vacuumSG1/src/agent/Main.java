@@ -50,6 +50,21 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 	
 	private Thread agentThread = null;
 	
+	private static final String PREF_W = "pref_w";
+	private static final String PREF_H = "pref_h";
+	private static final String PREF_X = "pref_x";
+	private static final String PREF_Y = "pref_y";
+	private static final String PREF_DIRTY = "pref_dirty";
+	private static final String PREF_STEPS = "pref_steps";
+	private static final String PREF_DELAY = "pref_delay";
+	private static final String PREF_RANDOMBOARD = "pref_randomBoard";
+	private static final String PREF_BOARDFILE = "pref_boardFile";
+	private static final String PREF_PICTUREFILE = "pref_pictureFile";
+	private static final String PREF_SPEAKALOUD = "pref_speakAloud";
+	private static final String PREF_AGENTFILE = "pref_agentFile";
+	private static final String PREF_AGENTTYPE = "pref_agentType";
+	private static final String PREF_AGENTSHORTFILE = "pref_agentShortFile";
+		
 	/////////////////////////////////////////////////////////////////////////////////////////
 	
 	private EnvironnementPanel m_envPanel;
@@ -534,7 +549,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
     		m_Helpframe = new HelpFrames(this, "About");
 	    }
 		// Save the preferences
-		m_modelList.get(0).putPreferences();
+		//putPreferences();
 
 		m_arun.setEnabled(m_modelList.get(m_environment.indexDisplay).cognitiveMode != ErnestModel.AGENT_RUN);
 		m_astop.setEnabled(m_modelList.get(m_environment.indexDisplay).cognitiveMode == ErnestModel.AGENT_RUN);
@@ -780,4 +795,5 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 	public void keyReleased(KeyEvent e) 
 	{
 	}
+	
 }
