@@ -2,6 +2,8 @@ package memory110;
 
 import java.util.ArrayList;
 
+import javax.vecmath.Vector3f;
+
 import agent.ErnestModel;
 
 import ernest.IErnest;
@@ -68,5 +70,5 @@ public class SpaceMemory
 	public IPlace getFocusPlace()
 	{
 		return m_model.getErnest().getFocusPlace();
-	}
+	}	
 }
