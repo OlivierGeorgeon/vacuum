@@ -94,7 +94,7 @@ public class SpaceMemoryPanel extends JPanel
 		
 		AffineTransform ref0 = g2d.getTransform();
 		AffineTransform ref1 = new AffineTransform();
-		ref1.translate( - x * SCALE,  y * SCALE);
+		//ref1.translate( - x * SCALE,  y * SCALE);
         ref1.rotate(- orientation, WIDTH, HEIGHT);
         g2d.transform(ref1);
         //g2d.setTransform(ref0);
@@ -140,7 +140,6 @@ public class SpaceMemoryPanel extends JPanel
 				//rad = (float)Math.atan2((double)place.getFirstPosition().y, place.getFirstPosition().x);			
 				angle = rad*180/Math.PI;
 							
-				// The places represented as arcs
 				span=place.getSpan()*180/Math.PI;
 				g2d.setColor(new Color(place.getBundle().getValue()));		
 				
