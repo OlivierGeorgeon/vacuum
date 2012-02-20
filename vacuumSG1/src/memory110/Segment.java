@@ -65,6 +65,18 @@ public class Segment implements ISegment
 		return secondPoint.position;
 	}
 	
+	@Override
+	public Vector3f getFirstPositionAllocentric() 
+	{
+		return firstPoint.positionAllocentric;
+	}
+
+	@Override
+	public Vector3f getSecondPositionAllocentric() 
+	{
+		return secondPoint.positionAllocentric;
+	}
+	
 	public float getSpan()
 	{
 		return firstPoint.position.angle(secondPoint.position);

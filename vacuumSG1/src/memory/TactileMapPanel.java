@@ -49,7 +49,7 @@ public class TactileMapPanel extends JPanel{
 		offsetX=160;
 		offsetY=160;
 		// draw "neuron" network
-		int size=5;
+		int size=2;
 		for (int i=0;i<tmap.resolution*tmap.sensorRes;i++){
 			// draw neurons in neuron display
 			/*if (i==tmap.resolution/2) g.setColor(Color.red);
@@ -294,7 +294,7 @@ public class TactileMapPanel extends JPanel{
 			g.drawLine(300, index+1, 570, index+1);
 		}/**/
 
-		
+		/*
 		// draw state links
 		for (int l=0;l<tmap.stateLink.size();l++){
 			int y=l%400;
@@ -314,7 +314,7 @@ public class TactileMapPanel extends JPanel{
 		int x=(tmap.actualState-y)/400;
 		g.setColor(Color.blue);
 		g.fillRect(295+120*x, 5+y*2, 2, 2);
-		
+		/**/
 		
 		
 		/*
@@ -349,6 +349,51 @@ public class TactileMapPanel extends JPanel{
 				
 			}
 		}/**/
+		
+		/*
+		// draw neuron memory
+		for (int i=0;i<tmap.resolution*tmap.sensorRes;i++){
+			for (int j=0;j<100;j++){
+				if (tmap.pointForwardMemory[i][j]<0) g.setColor(Color.black);
+				else if (tmap.pointForwardMemory[i][j]==0) g.setColor(Color.blue);
+				else g.setColor(Color.green);
+				
+				
+				g.fillRect(300+i*6, 10+j*3, 4, 5);
+			}
+		}
+		for (int i=0;i<tmap.resolution*tmap.sensorRes;i++){
+			for (int j=0;j<100;j++){
+				if (tmap.pointTurnMemory[i][j]<0) g.setColor(Color.black);
+				else if (tmap.pointTurnMemory[i][j]==0) g.setColor(Color.blue);
+				else g.setColor(Color.green);
+				
+				
+				g.fillRect(300+j*4, 400+i*5, 4, 4);
+			}
+		}/**/
+		
+		/*
+		// draw real neuron relative position matrix
+		for (int i=0;i<tmap.resolution*tmap.sensorRes;i++){
+			for (int j=0;j<tmap.resolution*tmap.sensorRes;j++){
+				g.setColor(new Color( (tmap.pointRelativeReal[i][j]+5)*25, 250-(tmap.pointRelativeReal[i][j]+5)*25,0));
+				
+				g.fillRect(300+i*6, 10+j*6, 6, 6);
+			}
+		}/**/
+		
+		/*
+		// draw neuron relative position matrix
+		for (int i=0;i<tmap.resolution*tmap.sensorRes;i++){
+			for (int j=0;j<tmap.resolution*tmap.sensorRes;j++){
+				g.setColor(new Color( (tmap.pointRelative[i][j]+5)*25, 250-(tmap.pointRelative[i][j]+5)*25,0));
+				
+				g.fillRect(300+i*6, 400+j*6, 6, 6);
+			}
+		}/**/
+		
+		
 		
 		/*
 		size=10;

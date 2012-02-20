@@ -218,7 +218,7 @@ public class Ernest110Model extends ErnestModel
 		mPreviousOrientation.set(mOrientation);
         
         // Update Ernest.
-		
+		//if (cognitiveMode!=AGENT_STOP) rendu();
 		m_ernest.setSegmentList(m_eye.segments);
         
 		int[] intention = m_ernest.update(sense);

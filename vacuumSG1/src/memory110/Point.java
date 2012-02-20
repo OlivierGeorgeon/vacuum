@@ -8,6 +8,7 @@ import javax.vecmath.Vector3f;
 public class Point {
 
 	public Vector3f position=new Vector3f(0,0,0);
+	public Vector3f positionAllocentric=new Vector3f(0,0,0);
 	public int angle;
 	public double distance;
 	
@@ -24,6 +25,7 @@ public class Point {
 		angle=a;
 		type=t;
 		position=new Vector3f(x,y,0);
+		positionAllocentric=new Vector3f(x,y,0);
 		distance=Math.sqrt(x*x+y*y);
 		
 		speed=new Vector3f();

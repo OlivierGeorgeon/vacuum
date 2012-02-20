@@ -65,6 +65,7 @@ public class FishModel extends ErnestModel
     public FishModel(int i) 
     {
         super(i);
+        mName = "Fish " + i;
     }
     
     /**
