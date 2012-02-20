@@ -475,6 +475,7 @@ public class ErnestModel extends Model
 						jmin2=jmin*jmin;
 						jplus=(double)j+0.5 - (mPosition.y-Im_y);
 						
+						// determine distance of these points
 						d1=  imin2 + jmin2;
 						d1=Math.sqrt(d1);
 						d2=  imin2 + (jplus*jplus);
@@ -482,6 +483,7 @@ public class ErnestModel extends Model
 						d3=  (iplus*iplus) + jmin2;
 						d3=Math.sqrt(d3);
 						
+						// compute angles in degrees of these points
 						a1=  Math.toDegrees( Math.acos( jmin/d1));
 						a2=  Math.toDegrees( Math.acos( jplus/d2));
 						a3=  Math.toDegrees( Math.acos( jmin/d3));
@@ -493,19 +495,15 @@ public class ErnestModel extends Model
 						
 				    	// fill the output vectors with the first visible segment
 						for (int k=ai2;k<=ai1;k++){
-							
 							//d=10* imin/Math.cos((double)(90-k)*Math.PI/180);
-							
 							d= d2*10 +   (d1-d2)*10*(k-ai2)/(ai1-ai2);
-							
 							
 							// visual vector if the block is visible
 							if (m_env.isVisible(Im_xpi,Im_ypj)){
 								if (zVMap[k]>d){
-									rv[k]=d;                        // fill Z-Map
-									zVMap[k]= d;
+									rv[k]=d;
+									zVMap[k]= d;					// fill Z-Map
 									colorMap[k]=bgc;
-
 								}
 							}
 							// tactile vector
@@ -517,21 +515,20 @@ public class ErnestModel extends Model
 								else if (k==ai1) cornerT[k]=2;
 								else             cornerT[k]=0;
 							}
-						}	
+						}
+						
 						// fill the output vectors with the second visible segment (if visible)
 						if (imin>0){
 						for (int k=ai1;k<=ai3;k++){
-							
-							//d=10* jmin/Math.cos((k)*Math.PI/180);
-							
+							//d=10* jmin/Math.cos((k)*Math.PI/180);							
 							d= d1*10 +   (d3-d1)*10*(k-ai1)/(ai3-ai1);
+							
 							// visual vector if the block is visible
 							if (m_env.isVisible(Im_xpi,Im_ypj)){
 								if (zVMap[k]>d){
 									rv[k]=d;
 									zVMap[k]= d;
 									colorMap[k]=bgc;
-
 								}
 							}
 							// tactile vector
@@ -546,7 +543,7 @@ public class ErnestModel extends Model
 						}
 						}
 						
-						
+						// generate the list of points
 						// corners
 						// 1
 						if ( (!m_env.isVisible(Im_xpi-1,Im_ypj) && !m_env.isVisible(Im_xpi,Im_ypj-1) )
@@ -567,7 +564,7 @@ public class ErnestModel extends Model
 						}
 						
 						// 3
-						if (Im_xpi+1<m_h && !m_env.isVisible(Im_xpi,Im_ypj-1))
+						if (Im_xpi+1<m_w && !m_env.isVisible(Im_xpi,Im_ypj-1))
 						if ( (!m_env.isVisible(Im_xpi+1,Im_ypj) && !m_env.isVisible(Im_xpi+1,Im_ypj))
 						   ||( m_env.isVisible(Im_xpi+1,Im_ypj-1) )
 						   ||( m_env.isVisible(Im_xpi+1,Im_ypj) && !m_env.seeBlock(Im_xpi+1, Im_ypj).equals(m_env.seeBlock(Im_xpi, Im_ypj))) ){
@@ -677,7 +674,7 @@ public class ErnestModel extends Model
 						}
 						
 						// 3
-						if (Im_xpi+1<m_h && !m_env.isVisible(Im_xpi-1,Im_ymj))
+						if (Im_ymj-1>=0 && !m_env.isVisible(Im_xpi-1,Im_ymj))
 						if ( (!m_env.isVisible(Im_xpi-1,Im_ymj-1) && !m_env.isVisible(Im_xpi,Im_ymj-1))
 						   ||( m_env.isVisible(Im_xpi-1,Im_ymj-1) )
 						   ||( m_env.isVisible(Im_xpi,Im_ymj-1) && !m_env.seeBlock(Im_xpi, Im_ymj-1).equals(m_env.seeBlock(Im_xpi, Im_ymj))) ){

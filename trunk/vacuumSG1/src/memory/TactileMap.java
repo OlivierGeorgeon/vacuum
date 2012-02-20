@@ -40,15 +40,23 @@ public class TactileMap {
 	
 	public boolean delaunayLinks[][];
 	
+	public int pointForwardMemory[][];
+	public int pointTurnMemory[][];
+	public float forwardIntegration;
+	public float rotationIntegration;
+	
+	public int pointRelative[][];
+	public int pointRelativeReal[][];
+	
 	public double Gx,Gy;
 	
-	public ArrayList<int[][]> stateLink;
-	public int actualState;
+	//public ArrayList<int[][]> stateLink;
+	//public int actualState;
 	
-	public float previousState1[][][];
-	public float previousState1Confidence[][][];
-	public float previousState0[][][];
-	public float nextState[][];
+	//public float previousState1[][][];
+	//public float previousState1Confidence[][][];
+	//public float previousState0[][][];
+	//public float nextState[][];
 	public boolean changed;
 	
 	public ArrayList<float[]> flowVectorX;			// movement vector on each neuron
@@ -161,12 +169,18 @@ public class TactileMap {
 		voronoiPoints=new int[100][100];
 		delaunayLinks=new boolean[resolution*sensorRes+20][resolution*sensorRes+20];
 		
-		previousState0=new float[resolution*sensorRes][resolution*sensorRes][3];
-		previousState1=new float[resolution*sensorRes][resolution*sensorRes][3];
-		previousState1Confidence=new float[resolution*sensorRes][resolution*sensorRes][3];
-		nextState=new float[resolution*sensorRes][3];
+		//previousState0=new float[resolution*sensorRes][resolution*sensorRes][3];
+		//previousState1=new float[resolution*sensorRes][resolution*sensorRes][3];
+		//previousState1Confidence=new float[resolution*sensorRes][resolution*sensorRes][3];
+		//nextState=new float[resolution*sensorRes][3];
 		
-		stateLink=new ArrayList<int[][]>();
+		//stateLink=new ArrayList<int[][]>();
+		
+		pointForwardMemory=new int[resolution*sensorRes][100];
+		pointTurnMemory=new int[resolution*sensorRes][100];
+		pointRelative=new int[resolution*sensorRes][resolution*sensorRes];
+		pointRelativeReal=new int[resolution*sensorRes][resolution*sensorRes];
+		
 		
 		
 		m_tactileObject=new int[resolution];
@@ -226,32 +240,44 @@ public class TactileMap {
 				m_constraints[i][j]=0;
 				m_distances[i][j]=0.5;				
 				m_connectionsLenght[i][j]=0;
-				
+
+				/*
 				for (int k=0;k<3;k++){
 					previousState0[i][j][k]=0;
 					previousState1[i][j][k]=0;
 					previousState1Confidence[i][j][k]=0;
-				}
-			}
-			for (int k=0;k<3;k++){
-				nextState[i][k]=0;
+				}*/
+				
+				pointRelative[i][j]=0;
 			}
 			
-			/*
+			for (int j=0;j<100;j++){
+				pointForwardMemory[i][j]=-1;
+				pointTurnMemory[i][j]=-1;
+			}
+			forwardIntegration=0;
+			rotationIntegration=0;
+			
+			
+			/*for (int k=0;k<3;k++){
+				nextState[i][k]=0;
+			}*/
+			
+			
 			// initialize random neurons positions
 			sensorX[i]= (float) (Math.random()*40-20);//-50*Math.sin(360/resolution*sensorRes*i*Math.PI/180);
 			sensorY[i]= (float) (Math.random()*40-20);// 50*Math.cos(360/resolution*sensorRes*i*Math.PI/180);
-			*/
+			/**/
 			
 		}
-		
+		/*
 		// initialize neutral neurons
 		for (int i=0;i<20;i++){
 			neutralX[i]= -50*Math.sin(360/20*i*Math.PI/180);
 			neutralY[i]=  50*Math.cos(360/20*i*Math.PI/180);
-		}
+		}*/
 		
-		
+		/*
 		// initialize real neuron position
 		for (int j=0;j<sensorRes;j++){
 			for (int i=0;i<resolution;i++){
@@ -261,6 +287,23 @@ public class TactileMap {
 				if (j==2) r=15;
 				sensorX[i+j*resolution]= -(r)*Math.sin(360/resolution*i*Math.PI/180);
 				sensorY[i+j*resolution]=  (r)*Math.cos(360/resolution*i*Math.PI/180);
+			}
+		}/**/
+		
+		for (int i=0;i<resolution*sensorRes;i++){
+			for (int j=0;j<resolution*sensorRes;j++){
+				if (sensorY[i]>sensorY[j]) pointRelativeReal[i][j]=5;
+				if (sensorY[i]<sensorY[j]) pointRelativeReal[i][j]=-5;
+				
+				//if (Math.abs(sensorY[i]-sensorY[j])>10)pointRelative[i][j]=0;
+			}
+		}
+		
+		/*
+		// initialize real neuron position
+		for (int j=0;j<sensorRes;j++){
+			for (int i=0;i<resolution;i++){
+				sensorY[i+j*resolution]= 0;
 			}
 		}/**/
 		
@@ -409,8 +452,8 @@ public class TactileMap {
 			//}
 		}/**/
 		
-		voronoi();
-		delaunay();
+		//voronoi();
+		//delaunay();
 		//repulsion();
 		//normalize();
 		
@@ -421,7 +464,7 @@ public class TactileMap {
 		double a,b;
 		
 		float capacity=500; 
-		/*
+		
         // compute neuron "capacity" (asymmetric version)
         for (int i=0;i<resolution*sensorRes;i++){
                 if (m_tactilePressure[i] > m_tactilePressureOld[i])      m_tactileVariations[i]= capacity;
@@ -447,7 +490,7 @@ public class TactileMap {
                 }
         }/* */
         
-		
+		/*
        	// compute neuron "capacity" (symmetric version)
         for (int i=0;i<resolution*sensorRes;i++){
             if (m_tactilePressure[i] != m_tactilePressureOld[i])      m_tactileVariations[i]= capacity;
@@ -727,7 +770,7 @@ public class TactileMap {
 		} /* */
 		
 		
-		
+		/*
 		///////////////////////////////////////////////////////////////
 		// compute previous state
 		///////////////////////////////////////////////////////////////
@@ -774,9 +817,10 @@ public class TactileMap {
 					}
 				}*/
 				
-			}
-		}/**/
+			//}
+		//}/**/
 		
+		/*
 		///////////////////////////////////////////////////////////////
 		// compute next state probability
 		///////////////////////////////////////////////////////////////
@@ -792,7 +836,7 @@ public class TactileMap {
 				if (sum>0) nextState[i][a]=proba/sum;
 				else       nextState[i][a]=0;
 			}
-		}
+		}*/
 		
 		
 		/*
@@ -830,6 +874,139 @@ public class TactileMap {
 			}
 		}/**/
 		
+		///////////////////////////////////////////////////////////////
+		// compute point memory
+		///////////////////////////////////////////////////////////////
+		if (act==0){
+			forwardIntegration+=speed*3;
+			while (forwardIntegration>1){
+				for (int i=0;i<resolution*sensorRes;i++){
+					for (int j=0;j<99;j++){
+						pointForwardMemory[i][99-j]=pointForwardMemory[i][98-j];
+					}	
+				}
+				forwardIntegration-=1;
+				for (int i=0;i<resolution*sensorRes;i++){
+					pointForwardMemory[i][0]=m_tactilePressure[i];
+				}
+			}
+			for (int i=0;i<resolution*sensorRes;i++){
+				pointForwardMemory[i][0]=m_tactilePressure[i];
+			}
+			
+			for (int i=0;i<resolution*sensorRes;i++){
+				for (int j=0;j<100;j++){
+					pointTurnMemory[i][j]=-1;
+				}
+			}
+		}
+		
+		if (act>0){
+			if (act==1) rotationIntegration+=speed*5;
+			else        rotationIntegration-=speed*5;
+			
+			while (rotationIntegration>1){
+				for (int i=0;i<resolution*sensorRes;i++){
+					for (int j=0;j<99;j++){
+						pointTurnMemory[i][99-j]=pointTurnMemory[i][98-j];
+					}
+					pointTurnMemory[i][0]=-1;
+				}
+				rotationIntegration-=1;
+				for (int i=0;i<resolution*sensorRes;i++){
+					pointTurnMemory[i][50]=m_tactilePressure[i];
+				}
+			}
+			while (rotationIntegration<-1){
+				for (int i=0;i<resolution*sensorRes;i++){
+					for (int j=0;j<99;j++){
+						pointTurnMemory[i][j]=pointTurnMemory[i][j+1];
+					}
+					pointTurnMemory[i][99]=-1;
+				}
+				rotationIntegration+=1;
+				for (int i=0;i<resolution*sensorRes;i++){
+					pointTurnMemory[i][50]=m_tactilePressure[i];
+				}
+			}
+			
+			for (int i=0;i<resolution*sensorRes;i++){
+				pointTurnMemory[i][50]=m_tactilePressure[i];
+			}
+			
+			for (int i=0;i<resolution*sensorRes;i++){
+				for (int j=0;j<100;j++){
+					pointForwardMemory[i][j]=-1;
+				}
+			}
+		}/**/
+		
+		
+		///////////////////////////////////////////////////////////////
+		// determine relative position of points
+		if (act==0){
+			for (int I=0;I<resolution*sensorRes;I++){
+				// if a point changed its state (nothing -> object)
+				if (pointForwardMemory[I][0]<pointForwardMemory[I][1]){
+					for (int I2=0;I2<resolution*sensorRes;I2++){
+						if (I!=I2){
+							int j=1;
+							// find the last value change
+							while (j<99 && !(pointForwardMemory[I2][j]<pointForwardMemory[I2][j+1])){
+								j++;
+							}
+							if (j<99){
+								
+								pointRelative[I][I2]=Math.min( 5, pointRelative[I][I2]+1);
+								pointRelative[I2][I]=Math.max(-5, pointRelative[I2][I]-1);
+							}
+						}
+					}
+					
+				}
+			}
+		}/**/
+		
+		/*
+		for (int i=0;i<resolution*sensorRes;i++){
+			for (int j=0;j<resolution*sensorRes;j++){
+				if (sensorY[i]>sensorY[j]) pointRelativeReal[i][j]=5;
+				if (sensorY[i]<sensorY[j]) pointRelativeReal[i][j]=-5;
+				
+				//if (Math.abs(sensorY[i]-sensorY[j])>10)pointRelative[i][j]=0;
+			}
+		}/**/
+		
+		
+		
+		
+		/*
+		///////////////////////////////////////////////////////////////
+		// move neuron according to relative neuron position
+		double min=0;
+		double max=0;
+		for (int k=0;k<10;k++)
+		for (int i=0;i<resolution*sensorRes;i++){
+			for (int j=0;j<resolution*sensorRes;j++){
+				if (sensorY[i]>=sensorY[j] && pointRelative[i][j]<0){
+					sensorY[i]-=0.5;
+					sensorY[j]+=0.5;
+				}
+				if (sensorY[i]<=sensorY[j] && pointRelative[i][j]>0){
+					sensorY[i]+=0.5;
+					sensorY[j]-=0.5;
+				}
+				if (sensorY[i]>max) max=sensorY[i];
+				if (sensorY[i]<min) min=sensorY[i];
+			}
+		}
+		
+		if (max-min>0){
+			double r=30/(max-min);
+			for (int i=0;i<resolution*sensorRes;i++){
+				sensorY[i]=sensorY[i]*r;
+			}
+		}/**/
 		
 		/*
 		///////////////////////////////////////////////////////////////
