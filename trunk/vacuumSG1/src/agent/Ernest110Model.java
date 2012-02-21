@@ -202,8 +202,7 @@ public class Ernest110Model extends ErnestModel
         sense[5][8] = (int)(mTranslation.length() * Ernest.INT_FACTOR);
         sense[6][8] = cognitiveMode;
         
-        
-        
+               
      // compute absolute movements
 		mSpeedT=new Vector3f(mPosition);
 		mSpeedT.sub(mPreviousPosition);

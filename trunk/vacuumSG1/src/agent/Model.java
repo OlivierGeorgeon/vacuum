@@ -545,6 +545,7 @@ public class Model extends Observable
 	
 	public float getOrientation()
 	{
+		//return mOrientation.z;
 		return mPreviousOrientation.z;
 	}
 
