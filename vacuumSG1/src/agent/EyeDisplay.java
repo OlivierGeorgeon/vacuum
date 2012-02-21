@@ -198,120 +198,100 @@ public class EyeDisplay extends JPanel {
         	//g2d.setColor(Color.red);
         	//g2d.fillOval(300,300,5,5);
         		
-        	if (eye.lock){
-        	for (int i=0;i<eye.cornerPoints.size();i++){
-        		
-        		// draw non corner points
-        		if (wallPoints){
-        			if (eye.cornerPoints.get(i).type==10){
-        				g2d.setColor(Color.green);
-        				g2d.fillOval(WIDTH+(int)(eye.cornerPoints.get(i).position.x*SCALE-2),HEIGHT-(int)(eye.cornerPoints.get(i).position.y*SCALE+2),5,5);
-        			}
-        		}
-        		// draw left and right points' colors
-    			if (pointColors){
-    				if (eye.cornerPoints.get(i).type!=10){
-    					g2d.setColor(eye.cornerPoints.get(i).leftColor);
-    					if (!eye.cornerPoints.get(i).leftColor.equals(Color.black)) 
-    					{
-    						//g2d.fillOval(300+(int)(eye.cornerPoints.get(i).position.x*SCALE-6),300-(int)(eye.cornerPoints.get(i).position.y*SCALE+2),5,5);
-    				        ref = g2d.getTransform();
-    				        orientation = new AffineTransform();
-    				        orientation.translate(WIDTH + (eye.cornerPoints.get(i).position.x) * SCALE, HEIGHT - (eye.cornerPoints.get(i).position.y) * SCALE);
-    				        orientation.rotate(- eye.cornerPoints.get(i).getAngle());
-    				        g2d.transform(orientation);
-    				        g2d.fill(pie);
-    				        g2d.setTransform(ref);
-    					}
-    					g2d.setColor(eye.cornerPoints.get(i).rightColor);
-    					if (!eye.cornerPoints.get(i).rightColor.equals(Color.black))
-    					{
-    						//g2d.fillOval(300+(int)(eye.cornerPoints.get(i).position.x*SCALE+2),300-(int)(eye.cornerPoints.get(i).position.y*SCALE+2),5,5);
-    				        ref = g2d.getTransform();
-    				        orientation = new AffineTransform();
-    				        orientation.translate(WIDTH + (eye.cornerPoints.get(i).position.x) * SCALE, HEIGHT - (eye.cornerPoints.get(i).position.y) * SCALE);
-    				        orientation.rotate( - eye.cornerPoints.get(i).getAngle() + Math.PI);
-    				        g2d.transform(orientation);
-    				        g2d.fill(pie);
-    				        g2d.setTransform(ref);
-    					}
-    				}
-    			}
-    			
-    			// draw points
-    			if (eye.cornerPoints.get(i).type<=0){
-    				g2d.setColor(Color.blue);
-    				g2d.fillOval(WIDTH+(int)(eye.cornerPoints.get(i).position.x*SCALE-2),HEIGHT-(int)(eye.cornerPoints.get(i).position.y*SCALE+2),5,5);
-    				
-    				// draw speed vector of corner points
-    				if (pointSpeed){
-    	    			g2d.setStroke(new BasicStroke(SCALE / 20f));
-    					g2d.setColor(Color.red);
-    					g2d.drawLine(WIDTH+(int)(eye.cornerPoints.get(i).position.x*SCALE+2),
-    						       HEIGHT-(int)(eye.cornerPoints.get(i).position.y*SCALE-2),
-    						       WIDTH+(int)(eye.cornerPoints.get(i).position.x*SCALE + eye.cornerPoints.get(i).speed.x*200+2),
-    						       HEIGHT-(int)(eye.cornerPoints.get(i).position.y*SCALE + eye.cornerPoints.get(i).speed.y*200-2));
-    				}
-                 }
-                 else{           
-                	 if (eye.cornerPoints.get(i).type==1 || eye.cornerPoints.get(i).type==2){
-                		 g2d.setColor(Color.red);
-                		 g2d.fillOval(WIDTH+(int)(eye.cornerPoints.get(i).position.x*SCALE-2),HEIGHT-(int)(eye.cornerPoints.get(i).position.y*SCALE+2),5,5);
-                	 }
-                	 if (eye.cornerPoints.get(i).type==3){
-                		 g2d.setColor(Color.yellow);
-                		 g2d.fillOval(WIDTH+(int)(eye.cornerPoints.get(i).position.x*SCALE-2),HEIGHT-(int)(eye.cornerPoints.get(i).position.y*SCALE+2),5,5);
-                	 }
-                	 
-                	 if (eye.cornerPoints.get(i).type==4){
-                		 g2d.setColor(Color.cyan);
-                		 g2d.fillOval(WIDTH+(int)(eye.cornerPoints.get(i).position.x*SCALE-2),HEIGHT-(int)(eye.cornerPoints.get(i).position.y*SCALE+2),5,5);
-                	 }
-                 }
-    		}
-        
-    		if (drawSegments){
-    			g2d.setStroke(new BasicStroke(SCALE / 10f));
-    			for (int i=0;i<eye.segments.size();i++){
-               	 g2d.setColor(new Color(eye.segments.get(i).getValue()));
-            	 g2d.drawLine(WIDTH+(int)(eye.segments.get(i).getFirstPosition().x*SCALE), HEIGHT-(int)(eye.segments.get(i).getFirstPosition().y*SCALE),
-            			    WIDTH+(int)(eye.segments.get(i).getSecondPosition().x*SCALE), HEIGHT-(int)(eye.segments.get(i).getSecondPosition().y*SCALE));
-    			}
-    		}
-         
-    		if (segmentSpeed){
-    			//g2d.setStroke(new BasicStroke(SCALE / 5f));
-    			g2d.setColor(Color.red);
-                for (int i=0;i<eye.segments.size();i++){
-               	 g2d.drawLine(WIDTH+(int)eye.segments.get(i).getPosition().x*SCALE,
-               			    HEIGHT-(int)eye.segments.get(i).getPosition().y*SCALE,
-               			    WIDTH+(int)(eye.segments.get(i).getPosition().x*SCALE+ eye.segments.get(i).getSpeed().x*500),
-               			    HEIGHT-(int)(eye.segments.get(i).getPosition().y*SCALE+ eye.segments.get(i).getSpeed().y*500) );
-    			}
-    		}
+        	if (eye.lock)
+        	{
+	        	for (int i=0;i<eye.cornerPoints.size();i++){
+	        		
+	        		// draw non corner points
+	        		if (wallPoints){
+	        			if (eye.cornerPoints.get(i).type==10){
+	        				g2d.setColor(Color.green);
+	        				g2d.fillOval(WIDTH+(int)(eye.cornerPoints.get(i).position.x*SCALE-2),HEIGHT-(int)(eye.cornerPoints.get(i).position.y*SCALE+2),5,5);
+	        			}
+	        		}
+	        		// draw left and right points' colors
+	    			if (pointColors){
+	    				if (eye.cornerPoints.get(i).type!=10){
+	    					g2d.setColor(eye.cornerPoints.get(i).leftColor);
+	    					if (!eye.cornerPoints.get(i).leftColor.equals(Color.black)) 
+	    					{
+	    						//g2d.fillOval(300+(int)(eye.cornerPoints.get(i).position.x*SCALE-6),300-(int)(eye.cornerPoints.get(i).position.y*SCALE+2),5,5);
+	    				        ref = g2d.getTransform();
+	    				        orientation = new AffineTransform();
+	    				        orientation.translate(WIDTH + (eye.cornerPoints.get(i).position.x) * SCALE, HEIGHT - (eye.cornerPoints.get(i).position.y) * SCALE);
+	    				        orientation.rotate(- eye.cornerPoints.get(i).getAngle());
+	    				        g2d.transform(orientation);
+	    				        g2d.fill(pie);
+	    				        g2d.setTransform(ref);
+	    					}
+	    					g2d.setColor(eye.cornerPoints.get(i).rightColor);
+	    					if (!eye.cornerPoints.get(i).rightColor.equals(Color.black))
+	    					{
+	    						//g2d.fillOval(300+(int)(eye.cornerPoints.get(i).position.x*SCALE+2),300-(int)(eye.cornerPoints.get(i).position.y*SCALE+2),5,5);
+	    				        ref = g2d.getTransform();
+	    				        orientation = new AffineTransform();
+	    				        orientation.translate(WIDTH + (eye.cornerPoints.get(i).position.x) * SCALE, HEIGHT - (eye.cornerPoints.get(i).position.y) * SCALE);
+	    				        orientation.rotate( - eye.cornerPoints.get(i).getAngle() + Math.PI);
+	    				        g2d.transform(orientation);
+	    				        g2d.fill(pie);
+	    				        g2d.setTransform(ref);
+	    					}
+	    				}
+	    			}
+	    			
+	    			// draw points
+	    			if (eye.cornerPoints.get(i).type<=0){
+	    				g2d.setColor(Color.blue);
+	    				g2d.fillOval(WIDTH+(int)(eye.cornerPoints.get(i).position.x*SCALE-2),HEIGHT-(int)(eye.cornerPoints.get(i).position.y*SCALE+2),5,5);
+	    				
+	    				// draw speed vector of corner points
+	    				if (pointSpeed){
+	    	    			g2d.setStroke(new BasicStroke(SCALE / 20f));
+	    					g2d.setColor(Color.red);
+	    					g2d.drawLine(WIDTH+(int)(eye.cornerPoints.get(i).position.x*SCALE+2),
+	    						       HEIGHT-(int)(eye.cornerPoints.get(i).position.y*SCALE-2),
+	    						       WIDTH+(int)(eye.cornerPoints.get(i).position.x*SCALE + eye.cornerPoints.get(i).speed.x*200+2),
+	    						       HEIGHT-(int)(eye.cornerPoints.get(i).position.y*SCALE + eye.cornerPoints.get(i).speed.y*200-2));
+	    				}
+	                 }
+	                 else{           
+	                	 if (eye.cornerPoints.get(i).type==1 || eye.cornerPoints.get(i).type==2){
+	                		 g2d.setColor(Color.red);
+	                		 g2d.fillOval(WIDTH+(int)(eye.cornerPoints.get(i).position.x*SCALE-2),HEIGHT-(int)(eye.cornerPoints.get(i).position.y*SCALE+2),5,5);
+	                	 }
+	                	 if (eye.cornerPoints.get(i).type==3){
+	                		 g2d.setColor(Color.yellow);
+	                		 g2d.fillOval(WIDTH+(int)(eye.cornerPoints.get(i).position.x*SCALE-2),HEIGHT-(int)(eye.cornerPoints.get(i).position.y*SCALE+2),5,5);
+	                	 }
+	                	 
+	                	 if (eye.cornerPoints.get(i).type==4){
+	                		 g2d.setColor(Color.cyan);
+	                		 g2d.fillOval(WIDTH+(int)(eye.cornerPoints.get(i).position.x*SCALE-2),HEIGHT-(int)(eye.cornerPoints.get(i).position.y*SCALE+2),5,5);
+	                	 }
+	                 }
+	    		}
+	        
+	    		if (drawSegments){
+	    			g2d.setStroke(new BasicStroke(SCALE / 10f));
+	    			for (int i=0;i<eye.segments.size();i++){
+	               	 g2d.setColor(new Color(eye.segments.get(i).getValue()));
+	            	 g2d.drawLine(WIDTH+(int)(eye.segments.get(i).getFirstPosition().x*SCALE), HEIGHT-(int)(eye.segments.get(i).getFirstPosition().y*SCALE),
+	            			    WIDTH+(int)(eye.segments.get(i).getSecondPosition().x*SCALE), HEIGHT-(int)(eye.segments.get(i).getSecondPosition().y*SCALE));
+	    			}
+	    		}
+	         
+	    		if (segmentSpeed){
+	    			//g2d.setStroke(new BasicStroke(SCALE / 5f));
+	    			g2d.setColor(Color.red);
+	                for (int i=0;i<eye.segments.size();i++){
+	               	 g2d.drawLine(WIDTH+(int)eye.segments.get(i).getPosition().x*SCALE,
+	               			    HEIGHT-(int)eye.segments.get(i).getPosition().y*SCALE,
+	               			    WIDTH+(int)(eye.segments.get(i).getPosition().x*SCALE+ eye.segments.get(i).getSpeed().x*500),
+	               			    HEIGHT-(int)(eye.segments.get(i).getPosition().y*SCALE+ eye.segments.get(i).getSpeed().y*500) );
+	    			}
+	    		}
         	}
-    	}
-    	
-		// Display the focus
-		int focusRadius = SCALE / 4;
-		g2d.setStroke(new BasicStroke(SCALE / 10f));
-		for (IPlace place : eye.getPlaceList())
-		{
-			if (place.getType() == Spas.PLACE_FOCUS)
-			{
-				float d = place.getPosition().length() * SCALE;
-				float rad = (float)Math.atan2((double)place.getPosition().y, place.getPosition().x);			
-				if (place.getAttractiveness(1) >= 0)
-					g2d.setColor(Color.MAGENTA);			
-				else
-					g2d.setColor(Color.BLACK);
-				int x0 = WIDTH + (int) (d * Math.cos(rad));
-				int y0 = HEIGHT  - (int) (d * Math.sin(rad));
-				g2d.fillOval(x0 - focusRadius, y0 - focusRadius, 2 * focusRadius, 2 * focusRadius);
-				if (place.getSpeed() != null)
-					g2d.drawLine(x0, y0, x0 + (int)(place.getSpeed().x * SCALE * 4), y0 - (int)(place.getSpeed().y * SCALE *4));
-			}
-		}
+    	}    	
     }   
 }
 
