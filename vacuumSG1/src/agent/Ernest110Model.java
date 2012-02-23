@@ -217,24 +217,7 @@ public class Ernest110Model extends ErnestModel
         sense[6][8] = cognitiveMode;
         
                
-     // compute absolute movements
-		mSpeedT=new Vector3f(mPosition);
-		mSpeedT.sub(mPreviousPosition);
-		
-		mSpeedR=new Vector3f(mOrientation);
-		mSpeedR.sub(mPreviousOrientation);
-		
-		Matrix3f rot2 = new Matrix3f();
-		rot2.rotZ( -mOrientation.z);
-		rot2.transform(mSpeedT, mEgoSpeedT);
-		
-		//m_ear.computeEars(mEgoSpeedT, mSpeedR);
-		
-		if (mSpeedR.z > Math.PI) mSpeedR.z-=2*Math.PI;
-		if (mSpeedR.z<=-Math.PI) mSpeedR.z+=2*Math.PI;
-		
-		mPreviousPosition.set(mPosition);
-		mPreviousOrientation.set(mOrientation);
+
         
         // Update Ernest.
 
@@ -481,6 +464,26 @@ public class Ernest110Model extends ErnestModel
 			m_eat = true;
             m_env.removeEntity(point, mName);
         }
+        
+        
+        // compute absolute movements
+		mSpeedT=new Vector3f(mPosition);
+		mSpeedT.sub(mPreviousPosition);
+		
+		mSpeedR=new Vector3f(mOrientation);
+		mSpeedR.sub(mPreviousOrientation);
+		
+		Matrix3f rot2 = new Matrix3f();
+		rot2.rotZ( -mOrientation.z);
+		rot2.transform(mSpeedT, mEgoSpeedT);
+		
+		//m_ear.computeEars(mEgoSpeedT, mSpeedR);
+		
+		if (mSpeedR.z > Math.PI) mSpeedR.z-=2*Math.PI;
+		if (mSpeedR.z<=-Math.PI) mSpeedR.z+=2*Math.PI;
+		
+		mPreviousPosition.set(mPosition);
+		mPreviousOrientation.set(mOrientation);
         
         if (cognitiveMode!=AGENT_STOP) rendu();
         
