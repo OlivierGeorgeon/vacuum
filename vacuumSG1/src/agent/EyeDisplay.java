@@ -188,9 +188,9 @@ public class EyeDisplay extends JPanel {
     	{
     		boolean wallPoints=false;				// draw non corner points (if created)
     		boolean pointColors=true;				// draw left and right color of points
-    		boolean pointSpeed=true;               // draw speed vector of corner points
+    		boolean pointSpeed=false;               // draw speed vector of corner points
     		boolean drawSegments=true;				// draw segments
-    		boolean segmentSpeed=false;              // draw segment speed vectors
+    		boolean segmentSpeed=true;              // draw segment speed vectors
         		
         	Vector3f localSpeed=new Vector3f();
         		
@@ -284,8 +284,8 @@ public class EyeDisplay extends JPanel {
 	    			//g2d.setStroke(new BasicStroke(SCALE / 5f));
 	    			g2d.setColor(Color.red);
 	                for (int i=0;i<eye.segments.size();i++){
-	               	 g2d.drawLine(WIDTH+(int)eye.segments.get(i).getPosition().x*SCALE,
-	               			    HEIGHT-(int)eye.segments.get(i).getPosition().y*SCALE,
+	               	 g2d.drawLine(WIDTH+(int)(eye.segments.get(i).getPosition().x*SCALE),
+	               			    HEIGHT-(int)(eye.segments.get(i).getPosition().y*SCALE),
 	               			    WIDTH+(int)(eye.segments.get(i).getPosition().x*SCALE+ eye.segments.get(i).getSpeed().x*500),
 	               			    HEIGHT-(int)(eye.segments.get(i).getPosition().y*SCALE+ eye.segments.get(i).getSpeed().y*500) );
 	    			}

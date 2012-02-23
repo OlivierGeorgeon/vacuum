@@ -1057,8 +1057,8 @@ public class ErnestModel extends Model
 		while (index<cornersPoints.size()){
 			test=false;
 			for (int i=index+1;i<cornersPoints.size();i++){
-				if (  Math.abs(cornersPoints.get(index).position.x*10 - cornersPoints.get(i).position.x*10)<2
-				   && Math.abs(cornersPoints.get(index).position.y*10 - cornersPoints.get(i).position.y*10)<2){
+				if (  Math.abs(cornersPoints.get(index).position.x*10 - cornersPoints.get(i).position.x*10)<4
+				   && Math.abs(cornersPoints.get(index).position.y*10 - cornersPoints.get(i).position.y*10)<4){
 					test=true;
 				}
 			}
@@ -1067,7 +1067,7 @@ public class ErnestModel extends Model
 			else index++;
 		}
 		
-		/*
+		
 		index=0;
 		while (index<cornersPoints.size()){
 			int index2=index+1;
@@ -1086,7 +1086,7 @@ public class ErnestModel extends Model
 				index2++;
 			}
 			if (!test2) index++;
-		}*/
+		}
 		
 		
 		
@@ -1180,14 +1180,14 @@ public class ErnestModel extends Model
 		// set points color
 		for (int i=0;i<cornersPoints.size();i++){
 			
-			if ( rv2[cornersPoints.get(i).angle]+10 > rv2[(cornersPoints.get(i).angle+1+360)%360]){
+			if ( rv2[cornersPoints.get(i).angle]+10 > rv2[(cornersPoints.get(i).angle+1+360)%360] && cornersPoints.get(i).type!=1){
 				cornersPoints.get(i).setColorsRight(colorMap2[(cornersPoints.get(i).angle+1+360)%360]);
 			}
 			else{
 				cornersPoints.get(i).setColorsRight(Color.black);
 			}
 			
-			if ( rv2[cornersPoints.get(i).angle]+10 > rv2[(cornersPoints.get(i).angle-1+360)%360]){
+			if ( rv2[cornersPoints.get(i).angle]+10 > rv2[(cornersPoints.get(i).angle-1+360)%360] && cornersPoints.get(i).type!=2){
 				cornersPoints.get(i).setColorsLeft(colorMap2[(cornersPoints.get(i).angle-1+360)%360]);
 			}
 			else{
@@ -1232,16 +1232,31 @@ public class ErnestModel extends Model
 		for (int i=1;i<cornersPoints.size();i++){
 			if (  (cornersPoints.get(i-1).type<=0 && cornersPoints.get(i).type<=0)
 				||	( (cornersPoints.get(i-1).type<=0 || cornersPoints.get(i).type<=0) 
-					&& cornersPoints.get(i-1).angle+1!=cornersPoints.get(i).angle) ){
+					&& cornersPoints.get(i-1).angle!=cornersPoints.get(i).angle) ){
 				
 				if (!cornersPoints.get(i-1).rightColor.equals(Color.black) && !cornersPoints.get(i).leftColor.equals(Color.black)){
 					if (cornersPoints.get(i-1).rightColor.equals(cornersPoints.get(i).leftColor)){
+
 						segments.add(new Segment(cornersPoints.get(i-1),cornersPoints.get(i)));
 					}
 				}
 			}
 		}
-		segments.add(new Segment(cornersPoints.get(cornersPoints.size()-1),cornersPoints.get(0)));
+		
+		// segment between first and last point
+		if (  (cornersPoints.get(cornersPoints.size()-1).type<=0 && cornersPoints.get(0).type<=0)
+				||	( (cornersPoints.get(cornersPoints.size()-1).type<=0 || cornersPoints.get(0).type<=0) 
+					&& cornersPoints.get(cornersPoints.size()-1).angle!=cornersPoints.get(0).angle) ){
+				
+				if (!cornersPoints.get(cornersPoints.size()-1).rightColor.equals(Color.black) && !cornersPoints.get(0).leftColor.equals(Color.black)){
+					if (cornersPoints.get(cornersPoints.size()-1).rightColor.equals(cornersPoints.get(0).leftColor)){
+
+						segments.add(new Segment(cornersPoints.get(cornersPoints.size()-1),cornersPoints.get(0)));
+					}
+				}
+		}
+
+		
 	
 		
 		/*
