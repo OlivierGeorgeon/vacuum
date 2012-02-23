@@ -183,7 +183,7 @@ public class ColliculusPanel extends JPanel{
 				/* */
 				
 				//---------------------------------------------------------------
-				// bundle map with speculation
+				/*// bundle map with speculation
 				offsetX=500;
 				offsetY=170;
 				if (colliculus.bundleMapProba[i][j]>0.05){
@@ -196,6 +196,25 @@ public class ColliculusPanel extends JPanel{
 				
 				/* */
 				
+				
+				
+				
+				//---------------------------------------------------------------
+				// bundle pattern
+				offsetX=500;
+				offsetY=170;
+				max=0;
+				for (int k=2;k<11;k++){
+					if (colliculus.bundlePattern[i][j][k]>max) max=colliculus.bundlePattern[i][j][k];
+				}
+				g.setColor(new Color(max,
+									 colliculus.bundlePattern[i][j][1],
+									 colliculus.bundlePattern[i][j][0]));
+				
+				
+				g.fillRect(offsetX-colliculus.vmap.mapSize/2*width + i*width,
+						   offsetY-colliculus.vmap.mapSize/2*width + j*width, 
+						   width, width);
 			}
 		}
 		//Error intializing

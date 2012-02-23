@@ -23,6 +23,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import javax.vecmath.Matrix3f;
 import javax.vecmath.Vector3f;
 
 import ernest.*;
@@ -59,8 +60,6 @@ public class Ernest100Model extends ErnestModel
 	
 	public TactileMap m_tactile;
 	public VisualMap m_visual;
-
-	//public Color frontColor;
 	
 	public boolean tempo=true;
 	
@@ -143,8 +142,9 @@ public class Ernest100Model extends ErnestModel
 		
 		boolean distpTactile=true;
 		boolean dispVisual=false;
-		boolean dispColliculus=false;
+		boolean dispColliculus=true;
 		boolean dispEyeView=false;
+		boolean dispInnerEar=true;
 		
 		int size;
 		int i;
@@ -200,6 +200,19 @@ public class Ernest100Model extends ErnestModel
 			}	
 			if (!found) m_env.frameList.add(new EyeView(m_eye)); 
 			else        ((EyeView) m_env.frameList.get(i-1)).setEye(m_eye);
+		}
+		
+		///////////////////
+		if (dispInnerEar){
+			size=m_env.frameList.size();
+			i=0;
+			found=false; 
+			while (i<size && !found){
+				if (m_env.frameList.get(i).getClass().getName().equals("InnerEar")) found=true;
+				i++;
+			}	
+			if (!found) m_env.frameList.add(new InnerEarFrame(m_ear)); 
+			else        ((InnerEarFrame) m_env.frameList.get(i-1)).setInnerEar(m_ear);
 		}
 	}
 
@@ -398,6 +411,8 @@ public class Ernest100Model extends ErnestModel
 		mTranslation.y=0;
 		mRotation.scale(0);
 		
+		colliculus.saveEnv();
+		
 		lastAction=ACTION_FORWARD;
 		return status;
 	}
@@ -430,7 +445,7 @@ public class Ernest100Model extends ErnestModel
 		
 		status3=m_env.isAlga(cell_x,cell_y) || m_env.isFood(cell_x,cell_y);
 		
-			
+		
 			
 			
 	// compute new position
@@ -570,6 +585,12 @@ public class Ernest100Model extends ErnestModel
 			
 			mSpeedR=new Vector3f(mOrientation);
 			mSpeedR.sub(mPreviousOrientation);
+			
+			Matrix3f rot = new Matrix3f();
+			rot.rotZ( -mOrientation.z);
+			rot.transform(mSpeedT, mEgoSpeedT);
+			
+			m_ear.computeEars(mEgoSpeedT, mSpeedR);
 			
 			mPreviousPosition.set(mPosition);
 			mPreviousOrientation.set(mOrientation);
