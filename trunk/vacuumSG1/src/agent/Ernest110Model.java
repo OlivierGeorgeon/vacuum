@@ -237,10 +237,11 @@ public class Ernest110Model extends ErnestModel
 		mPreviousOrientation.set(mOrientation);
         
         // Update Ernest.
-		//if (cognitiveMode!=AGENT_STOP) rendu();
+
 		m_ernest.setSegmentList(m_eye.segments);
         
 		int[] intention = m_ernest.update(sense);
+		// if (cognitiveMode!=AGENT_STOP) rendu();
 		
         if (intention[0] != 0 && cognitiveMode == AGENT_STEP)
         	cognitiveMode = AGENT_STOP;
@@ -251,11 +252,9 @@ public class Ernest110Model extends ErnestModel
 		//m_SpaceMemory.update( (ArrayList<IPlace>) getPlaceList() );
 		//m_SpaceMemory.update( (ArrayList<IPlace>) m_ernest.getPlaceList());
 		//m_SpaceMemory.update();
-		for (int i=0;i<m_env.frameList.size();i++){
-			m_env.frameList.get(i).repaint();
-		}
+
 		
-		if (cognitiveMode!=AGENT_STOP) rendu();
+		//if (cognitiveMode!=AGENT_STOP) rendu();
         anim();
     }
     
@@ -483,7 +482,13 @@ public class Ernest110Model extends ErnestModel
             m_env.removeEntity(point, mName);
         }
         
+        if (cognitiveMode!=AGENT_STOP) rendu();
+        
         mainFrame.drawGrid();
+        
+        for (int i=0;i<m_env.frameList.size();i++){
+			m_env.frameList.get(i).repaint();
+		}
         
         if (!status)
         	m_bump = true;
