@@ -72,6 +72,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 	private boolean m_halt = true;
 	protected int m_w;
 	protected int m_h;
+	protected int index;
 	
 	
 	private final JLabel m_statusBar = new JLabel();
@@ -229,6 +230,8 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		int l_x = -1;
 		int l_y = -1;
 		
+		index=0;
+		
 		BufferedReader br = null;
 		
 		m_modelList.clear();
@@ -275,7 +278,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 					// Fish agents
 					if (square[x].equals("+"))
 					{
-						int index=m_modelList.size();
+						//int index=m_modelList.size();
 						
 						m_modelList.add(new FishModel(index));
 						m_modelList.get(index).init(m_w, m_h);
@@ -291,13 +294,15 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 						m_modelList.get(index).mRotation.set(new Vector3f());
 						
 						m_modelList.get(index).setEnvironnement(m_environment);
+						
+						index++;
 					}
 					
 					// Ernest agents
 					if (square[x].equalsIgnoreCase("^") || square[x].equalsIgnoreCase(">") ||
 						square[x].equalsIgnoreCase("v") || square[x].equalsIgnoreCase("<"))
 					{
-						int index=m_modelList.size();
+						//int index=m_modelList.size();
 						
 						if (version==110)      m_modelList.add(new Ernest110Model(index));
 						else if (version==104) m_modelList.add(new Ernest104Model(index));
@@ -324,6 +329,8 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 							m_modelList.get(index).mOrientation.z = (float) Math.PI;
 						
 						m_modelList.get(index).setEnvironnement(m_environment);
+						
+						index++;
 					}
 					
 					if (Character.isLetter(square[x].toCharArray()[0]))
@@ -634,27 +641,29 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		// click wheel + shift : add moving fish
 		if (c == 5){
 			if (!m_environment.isWall(m_envPanel.m_clickX,m_h-1-m_envPanel.m_clickY)){
-				int index=m_modelList.size();
+				int index2=m_modelList.size();
 			
 				m_modelList.add(new FishModel(index));
 				try {
-					m_modelList.get(index).init(m_w, m_h);
+					m_modelList.get(index2).init(m_w, m_h);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				m_modelList.get(index).setFrame(this);
+				m_modelList.get(index2).setFrame(this);
 			
-				m_modelList.get(index).mPosition.x = m_envPanel.m_FclickX;
-				m_modelList.get(index).mPosition.y = m_h - 0.5f - m_envPanel.m_FclickY;
-				m_modelList.get(index).mPosition.z = 0;
-				m_modelList.get(index).mOrientation.x = 0;
-				m_modelList.get(index).mOrientation.y = 0;
-				m_modelList.get(index).mOrientation.z = 0.1f;
-				m_modelList.get(index).mTranslation.set(new Vector3f());
-				m_modelList.get(index).mRotation.set(new Vector3f());
+				m_modelList.get(index2).mPosition.x = m_envPanel.m_FclickX;
+				m_modelList.get(index2).mPosition.y = m_h - 0.5f - m_envPanel.m_FclickY;
+				m_modelList.get(index2).mPosition.z = 0;
+				m_modelList.get(index2).mOrientation.x = 0;
+				m_modelList.get(index2).mOrientation.y = 0;
+				m_modelList.get(index2).mOrientation.z = 0.1f;
+				m_modelList.get(index2).mTranslation.set(new Vector3f());
+				m_modelList.get(index2).mRotation.set(new Vector3f());
 			
-				m_modelList.get(index).setEnvironnement(m_environment);
-				m_modelList.get(index).initErnest();
+				m_modelList.get(index2).setEnvironnement(m_environment);
+				m_modelList.get(index2).initErnest();
+				
+				index++;
 			}
 		}
 		

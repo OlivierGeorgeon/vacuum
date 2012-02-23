@@ -265,7 +265,7 @@ public class TactileMap {
 			
 			
 			// initialize random neurons positions
-			sensorX[i]= (float) (Math.random()*40-20);//-50*Math.sin(360/resolution*sensorRes*i*Math.PI/180);
+			/*sensorX[i]= (float) (Math.random()*40-20);//-50*Math.sin(360/resolution*sensorRes*i*Math.PI/180);
 			sensorY[i]= (float) (Math.random()*40-20);// 50*Math.cos(360/resolution*sensorRes*i*Math.PI/180);
 			/**/
 			
@@ -277,7 +277,7 @@ public class TactileMap {
 			neutralY[i]=  50*Math.cos(360/20*i*Math.PI/180);
 		}*/
 		
-		/*
+		
 		// initialize real neuron position
 		for (int j=0;j<sensorRes;j++){
 			for (int i=0;i<resolution;i++){
@@ -462,7 +462,7 @@ public class TactileMap {
 		/////////////////////////////////////////////////////////
 		double dist,dist2,dist3;
 		double a,b;
-		
+		/*
 		float capacity=500; 
 		
         // compute neuron "capacity" (asymmetric version)
@@ -513,7 +513,7 @@ public class TactileMap {
                 }
         }/**/
 		
-        
+        /*
 		// change distance between neuron
 		for (int k=0;k<5;k++){
 			for (int i=0;i<resolution*sensorRes;i++){

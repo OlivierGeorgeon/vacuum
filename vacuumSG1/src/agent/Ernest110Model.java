@@ -138,6 +138,7 @@ public class Ernest110Model extends ErnestModel
 		
 		boolean dispSpaceMemory=true;
 		boolean dispEyeView=true;
+		boolean dispInnerEar=false;
 		
 		int size;
 		int i;
@@ -170,6 +171,19 @@ public class Ernest110Model extends ErnestModel
 		
 			if (!found) m_env.frameList.add(new EyeView(m_eye)); 
 			else        ((EyeView) m_env.frameList.get(i-1)).setEye(m_eye);
+		}
+		
+		///////////////////
+		if (dispInnerEar){
+			size=m_env.frameList.size();
+			i=0;
+			found=false; 
+			while (i<size && !found){
+				if (m_env.frameList.get(i).getClass().getName().equals("InnerEar")) found=true;
+				i++;
+			}	
+			if (!found) m_env.frameList.add(new InnerEarFrame(m_ear)); 
+			else        ((InnerEarFrame) m_env.frameList.get(i-1)).setInnerEar(m_ear);
 		}
 	}
     
@@ -209,6 +223,12 @@ public class Ernest110Model extends ErnestModel
 		
 		mSpeedR=new Vector3f(mOrientation);
 		mSpeedR.sub(mPreviousOrientation);
+		
+		Matrix3f rot2 = new Matrix3f();
+		rot2.rotZ( -mOrientation.z);
+		rot2.transform(mSpeedT, mEgoSpeedT);
+		
+		//m_ear.computeEars(mEgoSpeedT, mSpeedR);
 		
 		if (mSpeedR.z > Math.PI) mSpeedR.z-=2*Math.PI;
 		if (mSpeedR.z<=-Math.PI) mSpeedR.z+=2*Math.PI;

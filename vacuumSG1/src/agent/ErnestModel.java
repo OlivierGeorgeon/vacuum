@@ -86,6 +86,7 @@ public class ErnestModel extends Model
 	final protected Vector3f DIRECTION_NORTHWEST = new Vector3f(-1, 1, 0);
 	
 	public InternalView m_eye;
+	public InnerEar m_ear;
 	public int lastAction;
 	
 	private int m_updateCount;
@@ -103,6 +104,8 @@ public class ErnestModel extends Model
 		mSpeedR=new Vector3f(0f,0f,0f);
 		
 		mEgoSpeedT=new Vector3f(0f,0f,0f);
+		
+		m_ear=new InnerEar();
 	}
 	
 	/**
@@ -386,11 +389,20 @@ public class ErnestModel extends Model
 		
 	}
 	
+	/**
+	 * rendu function without colliculus update
+	 * @return
+	 */
 	protected EyeFixation[] rendu(){
 		return rendu(false,0);
 	}
 	
-	
+	/**
+	 * rendu function, draw the visual and tactile retina, fill the point and segment lists 
+	 * @param sensor : update the colliculus if true (for Ernest 100)
+	 * @param speed  : speed of the agent (for the colliculus update)
+	 * @return
+	 */
 	protected EyeFixation[] rendu(boolean sensor,float speed){
 		double[] rv    = new double[360];          // visual distance vector (absolute orientation)
 		double[] rv2   = new double[360];          // visual distance vector (agent orientation)
@@ -405,21 +417,21 @@ public class ErnestModel extends Model
 		int[] tactileMap =new int[360];            // tactile property vector (absolute orientation)
 		int[] tactileMap2=new int[360];            // tactile property vector (agent orientation)
 		
-		int[] cornerV = new int[360];              // visual corner vector
-		int[] cornerV2= new int[360];
-		int[] cornerT = new int[360];              // tactile corner vector
-		int[] cornerT2= new int[360];
+		int[] cornerV = new int[360];              // allocentric visual corner vector
+		int[] cornerV2= new int[360];			   // egocentric visual corner vector
+		int[] cornerT = new int[360];              // allocentric tactile corner vector
+		int[] cornerT2= new int[360];			   // egocentric tactile corner vector
 		
-		Color[][] visualImage=new Color[360][200];
 		
-		ArrayList<Point> cornersPoints=new ArrayList<Point>();
-		ArrayList<ISegment> segments=new ArrayList<ISegment>();
+		ArrayList<Point> cornersPoints=new ArrayList<Point>();    // points list
+		ArrayList<ISegment> segments=new ArrayList<ISegment>();   // segment list
 		
 		EyeFixation[] retina= new EyeFixation[Ernest.RESOLUTION_RETINA];
 		
 		double d=0;
-		double d1,d2,d3,d4;
-		double a1,a2,a3,a4;
+		double d1,d2,d3;                   // distance of corners of a square
+		double a1, a2, a3;                 // angles of corners of a square (in degree)
+		int ai1,ai2,ai3;
 		
 		double imin,iplus,jmin,jplus;
 		double imin2,jmin2;
@@ -442,15 +454,15 @@ public class ErnestModel extends Model
 		
 		
 		// the area around the agent is divided into five parts
-		// 4 4 4 4 5 1 1 1 1
-		// 4 4 4 4 5 1 1 1 1
-		// 4 4 4 4 5 1 1 1 1
-		// 3 3 3 3 A 1 1 1 1
-		// 3 3 3 3 2 2 2 2 2
+		// 4 4 4 4 5 1 1 1 1         corner number :
+		// 4 4 4 4 5 1 1 1 1         area 1 :     area 2 :    area 3 :   area 4 :    area 5 :
+		// 4 4 4 4 5 1 1 1 1         2-----       1----3      3----1     -----3      ------
+		// 3 3 3 3 A 1 1 1 1         |    |       |    |      |    |     |    |      |    |
+		// 3 3 3 3 2 2 2 2 2         1----3       2-----      -----2     2----1      2----1
 		// 3 3 3 3 2 2 2 2 2
 		// 3 3 3 3 2 2 2 2 2
 
-		
+		// the five parts are computed in parallel. Only area 1 is commented, other areas are computed in the same way
 		for (int i=0;i<sight;i++){
 			for (int j=0;j<sight;j++){
 				
@@ -488,12 +500,11 @@ public class ErnestModel extends Model
 						a2=  Math.toDegrees( Math.acos( jplus/d2));
 						a3=  Math.toDegrees( Math.acos( jmin/d3));
 						
+				    	ai1=(int)a1;
+				    	ai2=(int)a2;
+				    	ai3=(int)a3;
 						
-				    	int ai1=(int)a1;
-				    	int ai2=(int)a2;
-				    	int ai3=(int)a3;
-						
-				    	// fill the output vectors with the first visible segment
+				    	// fill the output vectors with the first visible segment (1-2)
 						for (int k=ai2;k<=ai1;k++){
 							//d=10* imin/Math.cos((double)(90-k)*Math.PI/180);
 							d= d2*10 +   (d1-d2)*10*(k-ai2)/(ai1-ai2);
@@ -502,14 +513,14 @@ public class ErnestModel extends Model
 							if (m_env.isVisible(Im_xpi,Im_ypj)){
 								if (zVMap[k]>d){
 									rv[k]=d;
-									zVMap[k]= d;					// fill Z-Map
+									zVMap[k]= d;				   // fill Z-Map
 									colorMap[k]=bgc;
 								}
 							}
 							// tactile vector
 							if (zTMap[k]>d){
 								rt[k]=d;
-								zTMap[k]= d;
+								zTMap[k]= d;                       // fill Z-Map
 								tactileMap[k]=tactile;
 								if      (k==ai2) cornerT[k]=1;
 								else if (k==ai1) cornerT[k]=2;
@@ -517,7 +528,7 @@ public class ErnestModel extends Model
 							}
 						}
 						
-						// fill the output vectors with the second visible segment (if visible)
+						// fill the output vectors with the second visible segment (1-3) (if visible)
 						if (imin>0){
 						for (int k=ai1;k<=ai3;k++){
 							//d=10* jmin/Math.cos((k)*Math.PI/180);							
@@ -543,7 +554,7 @@ public class ErnestModel extends Model
 						}
 						}
 						
-						// generate the list of points
+						// generate the list of points. A corner is defined as a point in certain conditions
 						// corners
 						// 1
 						if ( (!m_env.isVisible(Im_xpi-1,Im_ypj) && !m_env.isVisible(Im_xpi,Im_ypj-1) )
@@ -579,9 +590,7 @@ public class ErnestModel extends Model
 					if (!m_env.isEmpty(Im_xpi,Im_ymj) ){
 						Color bgc = m_env.seeBlock(Im_xpi,Im_ymj);
 						int tactile=m_env.touchBlock(Im_xpi,Im_ymj);
-						
-						
-						
+
 						imin =(double)i-0.5 - (mPosition.x-Im_x);
 						imin2=imin*imin;
 						iplus=(double)i+0.5 - (mPosition.x-Im_x);
@@ -599,8 +608,6 @@ public class ErnestModel extends Model
 						a1=  Math.toDegrees( Math.acos( jmin/d1));
 						a2=  Math.toDegrees( Math.acos( jmin/d2));
 						a3=  Math.toDegrees( Math.acos( jplus/d3));
-						
-				    	int ai1,ai2,ai3;
 				    	
 				    	if (i-0.5>=0){
 				    		ai1=180-(int)a1;
@@ -619,7 +626,6 @@ public class ErnestModel extends Model
 									rv[k]=d;
 									zVMap[k]= d;
 									colorMap[k]=bgc;
-									
 								}
 							}
 							if (zTMap[k]>d){
@@ -639,7 +645,6 @@ public class ErnestModel extends Model
 									rv[k]=d;
 									zVMap[k]= d;
 									colorMap[k]=bgc;
-
 								}
 							}
 							if (zTMap[k]>d){
@@ -662,8 +667,7 @@ public class ErnestModel extends Model
 									
 								cornersPoints.add(new Point( (float)imin , -(float)jmin, ai1,0) );
 						}
-						
-						
+
 						// 2
 						if (Im_xpi+1<m_w && !m_env.isVisible(Im_xpi,Im_ymj+1))
 						if ( (!m_env.isVisible(Im_xpi+1,Im_ymj+1) && !m_env.isVisible(Im_xpi+1,Im_ymj))
@@ -709,9 +713,9 @@ public class ErnestModel extends Model
 						a2=  Math.toDegrees( Math.acos( jplus/d2));
 						a3=  Math.toDegrees( Math.acos( jmin/d3));
 						
-				    	int ai1=180+(int)a1;
-				    	int ai2=180+(int)a2;
-				    	int ai3=180+(int)a3;
+				    	ai1=180+(int)a1;
+				    	ai2=180+(int)a2;
+				    	ai3=180+(int)a3;
 						
 						for (int k=ai2;k<=ai1;k++){
 							d=   d2*10 +   (d1-d2)*10*(k-ai2)/(ai1-ai2);
@@ -738,7 +742,6 @@ public class ErnestModel extends Model
 									rv[k]=d;
 									zVMap[k]=d;
 									colorMap[k]=bgc;
-
 								}
 							}
 							if (zTMap[k]>d){
@@ -770,7 +773,6 @@ public class ErnestModel extends Model
 							cornersPoints.add(new Point( -(float)imin , -(float)jplus, ai2,0) );
 						}
 						
-						
 						// 3
 						if (Im_xmi-1>=0 && !m_env.isVisible(Im_xmi,Im_ymj+1))
 						if ( (!m_env.isVisible(Im_xmi,Im_ymj+1) && !m_env.isVisible(Im_xmi-1,Im_ymj))
@@ -779,95 +781,6 @@ public class ErnestModel extends Model
 							
 							cornersPoints.add(new Point( -(float)iplus , -(float)jmin, ai3,0) );
 						}
-						
-					}
-				}
-				
-				// (5) cells exactly on the top
-				// In this case, there is only two visible points and one visible segment
-				if ( (j>0) && (i==0) && (Im_ypj<m_h) ){
-					if (!m_env.isEmpty(Im_xmi,Im_ypj) ){
-						Color bgc = m_env.seeBlock(Im_xmi,Im_ypj);
-						int tactile=m_env.touchBlock(Im_xmi,Im_ypj);
-						
-						imin =(double)i-0.5 + (mPosition.x-Im_x);
-						imin2=imin*imin;
-						iplus=(double)i+0.5 + (mPosition.x-Im_x);
-						jmin =(double)j-0.5 - (mPosition.y-Im_y);
-						jmin2=jmin*jmin;
-						
-						d1=  imin2 + jmin2;
-						d1=Math.sqrt(d1);
-						d2=  (iplus*iplus) + jmin2;
-						d2=Math.sqrt(d2);
-						
-						a1=  Math.toDegrees( Math.acos( jmin/d1));
-						a2=  Math.toDegrees( Math.acos( jmin/d2));
-
-						
-						int ai1,ai2;
-						ai1=(int)a1;
-				    	ai2=360-(int)a2;
-				    	if (ai2==360) ai2=359;
-				    	
-				    	int count=0;
-				    	for (int k=ai2;k<360;k++){
-				    		d= d2*10 +   (d1-d2)*10*(k-ai2)/((ai1-ai2+360)%360);
-				    		if (m_env.isVisible(Im_xmi,Im_ypj)){
-				    			if (zVMap[k]>d){
-				    				rv[k]=d;
-				    				zVMap[k]= d;
-				    				colorMap[k]=bgc;
-				    			}
-				    		}
-				    		if (zTMap[k]>d){
-			    				rt[k]=d;
-			    				zTMap[k]= d;
-			    				tactileMap[k]=tactile;
-			    				if      (k==ai2) cornerT[k]=1;
-			    				else             cornerT[k]=0;
-			    			}
-				    		count++;
-				    	}
-				    	for (int k=0;k<=ai1;k++){
-				    		d= d2*10 +   (d1-d2)*10*(k+count)/((ai1-ai2+360)%360);
-				    		if (m_env.isVisible(Im_xmi,Im_ypj)){
-				    			if (zVMap[k]>d){
-				    				rv[k]=d;
-				    				zVMap[k]= d;
-				    				colorMap[k]=bgc;
-				    			}
-				    		}
-				    		if (zTMap[k]>d){
-			    				rt[k]=d;
-			    				zTMap[k]= d;
-			    				tactileMap[k]=tactile;
-			    				if (k==ai1) cornerT[k]=2;
-			    				else        cornerT[k]=0;	
-			    			}
-				    	}
-				    	
-				    	
-				    	// corners
-				    	// 1
-						if (!m_env.isVisible(Im_xmi,Im_ypj-1))
-						if ( (!m_env.isVisible(Im_xmi+1,Im_ypj))
-						   ||( m_env.isVisible(Im_xmi+1,Im_ypj-1) )
-						   ||( m_env.isVisible(Im_xmi+1,Im_ypj) && !m_env.seeBlock(Im_xmi+1, Im_ypj).equals(m_env.seeBlock(Im_xmi, Im_ypj))) ){
-							
-							cornersPoints.add(new Point( -(float)imin , (float)jmin, ai1,0) );
-						}
-						
-						
-						// 2
-						if (!m_env.isVisible(Im_xmi,Im_ypj-1))
-						if ( (!m_env.isVisible(Im_xmi-1,Im_ypj))
-						   ||( m_env.isVisible(Im_xmi-1,Im_ypj-1) )
-						   ||( m_env.isVisible(Im_xmi-1,Im_ypj) && !m_env.seeBlock(Im_xmi-1, Im_ypj).equals(m_env.seeBlock(Im_xmi, Im_ypj))) ){
-							
-							cornersPoints.add(new Point( -(float)iplus , (float)jmin, ai2,0) );
-						}
-
 					}
 				}
 				
@@ -895,7 +808,6 @@ public class ErnestModel extends Model
 						a2=  Math.toDegrees( Math.acos( jmin/d2));
 						a3=  Math.toDegrees( Math.acos( jplus/d3));
 						
-						int ai1,ai2,ai3;
 						ai1=360-(int)a1;
 						ai3=360-(int)a3;
 						if (ai1==360) ai1=359;
@@ -967,24 +879,107 @@ public class ErnestModel extends Model
 							
 							cornersPoints.add(new Point( -(float)imin , (float)jplus, ai3,0) );
 						}
-						
 					}
-				}	
+				}
+				
+				// (5) cells exactly on the top
+				// In this case, there is only two visible points and one visible segment
+				if ( (j>0) && (i==0) && (Im_ypj<m_h) ){
+					if (!m_env.isEmpty(Im_xmi,Im_ypj) ){
+						Color bgc = m_env.seeBlock(Im_xmi,Im_ypj);
+						int tactile=m_env.touchBlock(Im_xmi,Im_ypj);
+						
+						imin =(double)i-0.5 + (mPosition.x-Im_x);
+						imin2=imin*imin;
+						iplus=(double)i+0.5 + (mPosition.x-Im_x);
+						jmin =(double)j-0.5 - (mPosition.y-Im_y);
+						jmin2=jmin*jmin;
+						
+						d1=  imin2 + jmin2;
+						d1=Math.sqrt(d1);
+						d2=  (iplus*iplus) + jmin2;
+						d2=Math.sqrt(d2);
+						
+						a1=  Math.toDegrees( Math.acos( jmin/d1));
+						a2=  Math.toDegrees( Math.acos( jmin/d2));
+
+						ai1=(int)a1;
+				    	ai2=360-(int)a2;
+				    	if (ai2==360) ai2=359;
+				    	
+				    	int count=0;
+				    	for (int k=ai2;k<360;k++){
+				    		d= d2*10 +   (d1-d2)*10*(k-ai2)/((ai1-ai2+360)%360);
+				    		if (m_env.isVisible(Im_xmi,Im_ypj)){
+				    			if (zVMap[k]>d){
+				    				rv[k]=d;
+				    				zVMap[k]= d;
+				    				colorMap[k]=bgc;
+				    			}
+				    		}
+				    		if (zTMap[k]>d){
+			    				rt[k]=d;
+			    				zTMap[k]= d;
+			    				tactileMap[k]=tactile;
+			    				if      (k==ai2) cornerT[k]=1;
+			    				else             cornerT[k]=0;
+			    			}
+				    		count++;
+				    	}
+				    	for (int k=0;k<=ai1;k++){
+				    		d= d2*10 +   (d1-d2)*10*(k+count)/((ai1-ai2+360)%360);
+				    		if (m_env.isVisible(Im_xmi,Im_ypj)){
+				    			if (zVMap[k]>d){
+				    				rv[k]=d;
+				    				zVMap[k]= d;
+				    				colorMap[k]=bgc;
+				    			}
+				    		}
+				    		if (zTMap[k]>d){
+			    				rt[k]=d;
+			    				zTMap[k]= d;
+			    				tactileMap[k]=tactile;
+			    				if (k==ai1) cornerT[k]=2;
+			    				else        cornerT[k]=0;	
+			    			}
+				    	}
+				    	
+				    	// corners
+				    	// 1
+						if (!m_env.isVisible(Im_xmi,Im_ypj-1))
+						if ( (!m_env.isVisible(Im_xmi+1,Im_ypj))
+						   ||( m_env.isVisible(Im_xmi+1,Im_ypj-1) )
+						   ||( m_env.isVisible(Im_xmi+1,Im_ypj) && !m_env.seeBlock(Im_xmi+1, Im_ypj).equals(m_env.seeBlock(Im_xmi, Im_ypj))) ){
+							
+							cornersPoints.add(new Point( -(float)imin , (float)jmin, ai1,0) );
+						}
+						
+						
+						// 2
+						if (!m_env.isVisible(Im_xmi,Im_ypj-1))
+						if ( (!m_env.isVisible(Im_xmi-1,Im_ypj))
+						   ||( m_env.isVisible(Im_xmi-1,Im_ypj-1) )
+						   ||( m_env.isVisible(Im_xmi-1,Im_ypj) && !m_env.seeBlock(Im_xmi-1, Im_ypj).equals(m_env.seeBlock(Im_xmi, Im_ypj))) ){
+							
+							cornersPoints.add(new Point( -(float)iplus , (float)jmin, ai2,0) );
+						}
+					}
+				}
+				
+				
 			}
 		}
 		
 		// agents detection
 		for (int a=0;a<m_env.m_modelList.size();a++){
-			//Color bgc = m_env.AGENT;
-			int tactile=m_env.CUDDLE;
+			// for each other agent (agent or fish)
 			if (m_env.m_modelList.get(a).ident!=ident){
+				// compute distance
 				d= (mPosition.x-m_env.m_modelList.get(a).mPosition.x)*(mPosition.x-m_env.m_modelList.get(a).mPosition.x)
 				  +(mPosition.y-m_env.m_modelList.get(a).mPosition.y)*(mPosition.y-m_env.m_modelList.get(a).mPosition.y);
 				d=Math.sqrt(d);
 				
-				int ai1=0;
-				int ai2=0;
-				int ai3=0;
+				// compute angle
 				int ai4=0;
 				if (mPosition.x-m_env.m_modelList.get(a).mPosition.x<=0){
 					a1=Math.toDegrees( Math.acos( (mPosition.y-m_env.m_modelList.get(a).mPosition.y)/d));
@@ -995,6 +990,7 @@ public class ErnestModel extends Model
 					ai1=(int)a1+180;
 				}
 				
+				// compute border angles
 				a2=Math.atan(0.4/d);
 				a2=Math.toDegrees(a2);
 				
@@ -1002,8 +998,6 @@ public class ErnestModel extends Model
 				
 				ai3=ai1-ai2+360;
 				ai4=ai1+ai2+360;
-				
-				int ai5=ai4-ai3;
 				
 				for (int k=ai3;k<=ai4;k++){
 					if (zVMap[k%360]>d*10){
@@ -1033,12 +1027,11 @@ public class ErnestModel extends Model
 				py=(float) (d*Math.sin(((-ai4+90)%360)*Math.PI/180));
 				cornersPoints.add(new Point(px,py,ai4,-1));
 				cornersPoints.get(cornersPoints.size()-1).addSpeed(m_env.m_modelList.get(a).mSpeedT);
-				
 			}
 		}
 		
-		
-		
+		//-----------------------------------------------------------
+		// at this point, retinas are defines, points are listed
 		
 		
 		// remove masked point of interest
@@ -1060,6 +1053,7 @@ public class ErnestModel extends Model
 		// remove double
 		index=0;
 		boolean test=false;
+		// each point is compared with next points in the list
 		while (index<cornersPoints.size()){
 			test=false;
 			for (int i=index+1;i<cornersPoints.size();i++){
@@ -1068,10 +1062,12 @@ public class ErnestModel extends Model
 					test=true;
 				}
 			}
+			// if an identical point exist, remove the current one
 			if (test) cornersPoints.remove(index);
 			else index++;
 		}
 		
+		/*
 		index=0;
 		while (index<cornersPoints.size()){
 			int index2=index+1;
@@ -1090,15 +1086,15 @@ public class ErnestModel extends Model
 				index2++;
 			}
 			if (!test2) index++;
-		}
+		}*/
 		
 		
 		
 		
 		// fill the output vectors (agent orientation)
-		int orientationDeg= (int)(mOrientation.z * 180 / Math.PI);
+		int orientationDeg= (int)(mOrientation.z * 180 / Math.PI); // compute offset
 		for (int i=0;i<360;i++){
-			int offset=(i-orientationDeg+630)%360;
+			int offset=(i-orientationDeg+630)%360; // 630 = 2 X 360 -90
 			rv2[i]= rv[offset];
 			colorMap2[i]=colorMap[offset];
 			
@@ -1106,12 +1102,13 @@ public class ErnestModel extends Model
 			tactileMap2[i]=tactileMap[offset];
 			cornerT2[i]=cornerT[offset];
 		}
+		// set point angles in egocentric reference
 		for (int i=0;i<cornersPoints.size();i++){
 			cornersPoints.get(i).rotate(-mOrientation.z, orientationDeg+90);
-			cornerV2[cornersPoints.get(i).angle]=1;
+			cornerV2[cornersPoints.get(i).angle]=1;  // mark corner for retina display
 		}
 		
-		
+		// correction of the distance vector (d is supposed constant for each points between 2 points)
 		int j=0;
 		double x,y;
 		for (int i=0;i<360;i++){
@@ -1122,7 +1119,6 @@ public class ErnestModel extends Model
 				x= mPosition.x + ((double)j/20)*Math.cos(angle);
 				y= mPosition.y + ((double)j/20)*Math.sin(angle);
 				if (Math.round(x)>=0 && Math.round(y)>=0 && Math.round(x)<m_w && Math.round(y)<m_h){
-					//visualImage[i][j]= m_env.seeBlock(Math.round(x),Math.round(y));
 					if (m_env.seeBlock(Math.round(x),Math.round(y)).equals(Model.FIELD_COLOR)){
 						found=true;
 						rv2[(359-i+180)%360]=(double)j/2;
@@ -1198,50 +1194,7 @@ public class ErnestModel extends Model
 				cornersPoints.get(i).setColorsLeft(Color.black);
 			}
 			
-			
-			/*
-			int d_angle, angle1,angle2;
-			double dist=0;
-			// left side color
-			angle1=cornersPoints.get(i).angle;
-			
-			if (i==0) angle2=cornersPoints.get(cornersPoints.size()-1).angle;
-			else      angle2=cornersPoints.get(i-1).angle;
-			
-			if (angle1<angle2) angle2-=360;
-			
-			d_angle=angle1-angle2;
-			
-			dist=rv2[angle1]-(rv2[angle1]-rv2[(angle2+360)%360])/d_angle;
-			
-			System.out.println("+++++++++++++++ "+d_angle+" ; "+rv2[angle1]+" , "+rv2[(angle2+360)%360]+" ; "+dist+" ~= "+rv[(angle1-1+360)%360]);
-			
-			if (Math.abs(dist-rv[(angle1-1+360)%360])<5){
-				cornersPoints.get(i).setColorsRight(colorMap2[(cornersPoints.get(i).angle-1+360)%360]);
-			}
-			else{
-				cornersPoints.get(i).setColorsRight(Color.black);
-			}
-			
-			
-			// right side color
-			angle1=cornersPoints.get(i).angle;
-			
-			if (i==cornersPoints.size()-1) angle2=cornersPoints.get(0).angle;
-			else                           angle2=cornersPoints.get(i+1).angle;
-			
-			if (angle1>angle2) angle2+=360;
-			
-			d_angle=angle1-angle2;
-			
-			dist=rv2[angle1]-(rv2[angle1]-rv2[(angle2+360)%360])/d_angle;
-			
-			if (Math.abs(dist-rv[(angle1+1+360)%360])<2){
-				cornersPoints.get(i).setColorsRight(colorMap2[(cornersPoints.get(i).angle+1+360)%360]);
-			}
-			else{
-				cornersPoints.get(i).setColorsRight(Color.black);
-			}*/
+
 		}
 
 		
@@ -1311,9 +1264,6 @@ public class ErnestModel extends Model
 		// update colliculus
 		if (sensor){
 			updateColliculus(rv2, colorMap2, rt2, tactileMap2, lastAction, speed);
-			//colliculus.update(rv2, colorMap2, rt2, tactileMap2, lastAction, speed);
-			//colliculusFrame.saveImage();
-			//m_env.saveImage();
 		}
 		
 		// update display

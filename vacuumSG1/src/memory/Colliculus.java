@@ -32,6 +32,9 @@ public class Colliculus {
 	public float bundleMapProba[][];
 	public int   bundleMapType[][][];
 	
+	public float bundlePattern[][][];
+	public float bundlePatternTemp[][][];
+	
 	//public ArrayList<ISalience> liste;
 
 	public Colliculus(TactileMap tact,VisualMap v){
@@ -96,6 +99,16 @@ public class Colliculus {
 			}
 		}
 
+		bundlePattern=new float[100][100][11];
+		bundlePatternTemp=new float[100][100][11];
+		for (int i=0;i<100;i++){
+			for (int j=0;j<100;j++){
+				for (int k=0;k<11;k++){
+					bundlePattern[i][j][k]=0;
+					bundlePatternTemp[i][j][k]=0;
+				}
+			}
+		}
 			
          TranslationX.add(0f);
          TranslationX.add(0f);
@@ -135,16 +148,18 @@ public class Colliculus {
 		}
 		
 		vmap.seeEnvironment(rv, c);
-		vmap.coefficients(action, speed);
+		//vmap.coefficients(action, speed);
 		//TranslationX=vmap.mTranslationX;
 		//TranslationY=vmap.mTranslationY;
 		//Rotation    =vmap.mRotation;
 		//vmap.moveCharges(TranslationX.get(action), TranslationY.get(action), Rotation.get(action), speed);
 		
 		tmap.touchEnvironment(rt, t);
-		tmap.coefficients(action, speed);
+		//tmap.coefficients(action, speed);
 		//tmap.moveCharges(-TranslationX.get(action), -TranslationY.get(action), -Rotation.get(action), speed);
-/*
+
+		
+		/*
 		computeBundleMap();
 		
 		// generate bundles
@@ -175,7 +190,48 @@ public class Colliculus {
 			}
 		}
 		*/
+		
+		
+		////////////////////////////
+		// bundle pattern
+		
+		
+		
 	}
+	
+	
+	public void saveEnv(){
+		for (int i=0;i<100;i++){
+			for (int j=0;j<100;j++){
+				for (int k=0;k<11;k++){
+					bundlePatternTemp[i][j][k]=vmap.chargeMap1[i][j][k];
+				}
+			}
+		}
+	}
+	
+	public void computeBundlePattern(boolean status){
+		boolean test=false;
+		float Sum=0;
+		for (int i=0;i<100;i++){
+			for (int j=0;j<100;j++){
+				for (int k=0;k<11;k++){
+					
+					Sum+=bundlePattern[i][j][k]*vmap.chargeMap1[i][j][k];
+					
+				}
+			}
+		}
+		
+		if (Sum>=0 && !status){
+			
+		}
+		
+		if (Sum<=0 &&  status){
+			
+		}
+	}
+	
 	
 	/**
 	 * get the list of salience points around the agent
