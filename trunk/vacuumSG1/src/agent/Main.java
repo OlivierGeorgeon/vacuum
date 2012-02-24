@@ -305,9 +305,8 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 						//int index=m_modelList.size();
 						
 						if (version==110)      m_modelList.add(new Ernest110Model(index));
-						else if (version==104) m_modelList.add(new Ernest104Model(index));
 						else if (version==0)   m_modelList.add(new FishModel(index));
-						else                   m_modelList.add(new Ernest100Model(index));
+						else                   m_modelList.add(new Ernest110Model(index));
 						m_modelList.get(index).init(m_w, m_h);
 						m_modelList.get(index).setFrame(this);
 
