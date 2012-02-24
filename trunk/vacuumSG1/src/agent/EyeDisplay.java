@@ -188,7 +188,7 @@ public class EyeDisplay extends JPanel {
     	{
     		boolean wallPoints=false;				// draw non corner points (if created)
     		boolean pointColors=true;				// draw left and right color of points
-    		boolean pointSpeed=false;               // draw speed vector of corner points
+    		boolean pointSpeed=true;               // draw speed vector of corner points
     		boolean drawSegments=true;				// draw segments
     		boolean segmentSpeed=true;              // draw segment speed vectors
         		
@@ -248,10 +248,10 @@ public class EyeDisplay extends JPanel {
 	    				if (pointSpeed){
 	    	    			g2d.setStroke(new BasicStroke(SCALE / 20f));
 	    					g2d.setColor(Color.red);
-	    					g2d.drawLine(WIDTH+(int)(eye.cornerPoints.get(i).position.x*SCALE+2),
-	    						       HEIGHT-(int)(eye.cornerPoints.get(i).position.y*SCALE-2),
-	    						       WIDTH+(int)(eye.cornerPoints.get(i).position.x*SCALE + eye.cornerPoints.get(i).speed.x*200+2),
-	    						       HEIGHT-(int)(eye.cornerPoints.get(i).position.y*SCALE + eye.cornerPoints.get(i).speed.y*200-2));
+	    					g2d.drawLine(WIDTH+(int)(eye.cornerPoints.get(i).position.x*SCALE),
+	    						       HEIGHT-(int)(eye.cornerPoints.get(i).position.y*SCALE),
+	    						       WIDTH+(int)(eye.cornerPoints.get(i).position.x*SCALE + eye.cornerPoints.get(i).speed.x * SCALE),
+	    						       HEIGHT-(int)(eye.cornerPoints.get(i).position.y*SCALE + eye.cornerPoints.get(i).speed.y * SCALE));
 	    				}
 	                 }
 	                 else{           
@@ -281,13 +281,13 @@ public class EyeDisplay extends JPanel {
 	    		}
 	         
 	    		if (segmentSpeed){
-	    			//g2d.setStroke(new BasicStroke(SCALE / 5f));
+	    			g2d.setStroke(new BasicStroke(SCALE / 20f));
 	    			g2d.setColor(Color.red);
 	                for (int i=0;i<eye.segments.size();i++){
 	               	 g2d.drawLine(WIDTH+(int)(eye.segments.get(i).getPosition().x*SCALE),
 	               			    HEIGHT-(int)(eye.segments.get(i).getPosition().y*SCALE),
-	               			    WIDTH+(int)(eye.segments.get(i).getPosition().x*SCALE+ eye.segments.get(i).getSpeed().x*500),
-	               			    HEIGHT-(int)(eye.segments.get(i).getPosition().y*SCALE+ eye.segments.get(i).getSpeed().y*500) );
+	               			    WIDTH+(int)(eye.segments.get(i).getPosition().x*SCALE+ eye.segments.get(i).getSpeed().x*SCALE),
+	               			    HEIGHT-(int)(eye.segments.get(i).getPosition().y*SCALE+ eye.segments.get(i).getSpeed().y*SCALE) );
 	    			}
 	    		}
         	}
