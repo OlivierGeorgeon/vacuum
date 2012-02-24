@@ -199,26 +199,46 @@ public class Ernest110Model extends ErnestModel
     	// Sense the environment on each update.
 		int[][] sense = sense();
     	
-    	// The movement since the last update.
-    	
-        Vector3f move = new Vector3f(mPosition);
-        move.sub(mPreviousPosition);
-        
-        // The movement relative to Ernest
-		Matrix3f rot = new Matrix3f();
-		rot.rotZ(- mOrientation.z);
-		//Vector3f oldPosition = move;
-		rot.transform(move, move); // (rot * move) is placed into move
+//    	// The movement since the last update.
+//    	
+//        Vector3f move = new Vector3f(mPosition);
+//        move.sub(mPreviousPosition);
+//        
+//        // The movement relative to Ernest
+//		Matrix3f rot = new Matrix3f();
+//		rot.rotZ(- mOrientation.z);
+//		rot.transform(move, move); // (rot * move) is placed into move
     
-        sense[2][8] = (int)(move.x * Ernest.INT_FACTOR);
-        sense[3][8] = (int)(move.y * Ernest.INT_FACTOR);
+        //sense[2][8] = (int)(move.x * Ernest.INT_FACTOR);
+        sense[2][8] = (int)(mEgoSpeedT.x * Ernest.INT_FACTOR);
+        //sense[3][8] = (int)(move.y * Ernest.INT_FACTOR);
+        sense[3][8] = (int)(mEgoSpeedT.y * Ernest.INT_FACTOR);
+        
         sense[4][8] = (int)(mRotation.z * Ernest.INT_FACTOR); // TODO take involuntary rotation into account.
+        //sense[4][8] = (int)(mSpeedR.z * Ernest.INT_FACTOR); 
         sense[5][8] = (int)(mTranslation.length() * Ernest.INT_FACTOR);
         sense[6][8] = cognitiveMode;
         
-               
-
+//        // compute absolute movements
+//		mSpeedT=new Vector3f(mPosition);
+//		mSpeedT.sub(mPreviousPosition);
+//		
+//		mSpeedR=new Vector3f(mOrientation);
+//		mSpeedR.sub(mPreviousOrientation);
+//		
+//		Matrix3f rot2 = new Matrix3f();
+//		rot2.rotZ( -mOrientation.z);
+//		rot2.transform(mSpeedT, mEgoSpeedT);
+//		
+//		//m_ear.computeEars(mEgoSpeedT, mSpeedR);
+//		
+//		if (mSpeedR.z > Math.PI) mSpeedR.z-=2*Math.PI;
+//		if (mSpeedR.z<=-Math.PI) mSpeedR.z+=2*Math.PI;
+//		
+//		mPreviousPosition.set(mPosition);
+//		mPreviousOrientation.set(mOrientation);
         
+                       
         // Update Ernest.
 
 		m_ernest.setSegmentList(m_eye.segments);
@@ -353,6 +373,9 @@ public class Ernest110Model extends ErnestModel
         boolean status = true;
         float HBradius = BOUNDING_RADIUS;  // radius of Ernest hitbox 
         
+		mPreviousPosition.set(mPosition);
+		mPreviousOrientation.set(mOrientation);
+        
         // Move the agent
         rotate(mTranslation, - mRotation.z / 4);
         mPosition.set(localToParentRef(mTranslation));
@@ -482,9 +505,6 @@ public class Ernest110Model extends ErnestModel
 		if (mSpeedR.z > Math.PI) mSpeedR.z-=2*Math.PI;
 		if (mSpeedR.z<=-Math.PI) mSpeedR.z+=2*Math.PI;
 		
-		mPreviousPosition.set(mPosition);
-		mPreviousOrientation.set(mOrientation);
-        
         if (cognitiveMode!=AGENT_STOP) rendu();
         
         mainFrame.drawGrid();
