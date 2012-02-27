@@ -21,6 +21,8 @@ public class Point {
 	
 	public Vector3f speed=new Vector3f();
 	
+	public float m_absoluteOrientation;
+	
 	public Point(float x, float y, int a, int t){
 		angle=a;
 		type=t;

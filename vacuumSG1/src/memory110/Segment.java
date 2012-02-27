@@ -89,4 +89,10 @@ public class Segment implements ISegment
 		w.sub(getSecondPosition());
 		return w.length();
 	}
+
+	@Override
+	public float getAbsoluteOrientation() 
+	{
+		return firstPoint.m_absoluteOrientation;
+	}
 }
