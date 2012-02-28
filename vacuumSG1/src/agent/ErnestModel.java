@@ -1021,7 +1021,7 @@ public class ErnestModel extends Model
 				cornersPoints.add(new Point(px,py,ai3,-1));
 				cornersPoints.get(cornersPoints.size()-1).addSpeed(m_env.m_modelList.get(a).mSpeedT);
 				float orientation = m_env.m_modelList.get(a).getOrientation();
-				cornersPoints.get(cornersPoints.size()-1).m_absoluteOrientation = m_env.m_modelList.get(a).getOrientation();
+				cornersPoints.get(cornersPoints.size()-1).m_absoluteOrientation = m_env.m_modelList.get(a).getOrientation() - mOrientation.z;
 				
 				// 2
 				ai4=ai4%360;
@@ -1029,7 +1029,7 @@ public class ErnestModel extends Model
 				py=(float) (d*Math.sin(((-ai4+90)%360)*Math.PI/180));
 				cornersPoints.add(new Point(px,py,ai4,-1));
 				cornersPoints.get(cornersPoints.size()-1).addSpeed(m_env.m_modelList.get(a).mSpeedT);
-				cornersPoints.get(cornersPoints.size()-1).m_absoluteOrientation = m_env.m_modelList.get(a).getOrientation();
+				cornersPoints.get(cornersPoints.size()-1).m_absoluteOrientation = m_env.m_modelList.get(a).getOrientation() - mOrientation.z;
 			}
 		}
 		

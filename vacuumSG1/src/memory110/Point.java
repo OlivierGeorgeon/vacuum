@@ -5,6 +5,8 @@ import java.awt.Color;
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Vector3f;
 
+import ernest.Ernest;
+
 public class Point {
 
 	public Vector3f position=new Vector3f(0,0,0);
@@ -21,7 +23,7 @@ public class Point {
 	
 	public Vector3f speed=new Vector3f();
 	
-	public float m_absoluteOrientation;
+	public float m_absoluteOrientation = Ernest.INFINITE;
 	
 	public Point(float x, float y, int a, int t){
 		angle=a;
