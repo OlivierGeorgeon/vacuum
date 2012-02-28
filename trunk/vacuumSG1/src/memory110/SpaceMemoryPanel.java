@@ -30,6 +30,7 @@ import ernest.IErnest;
 import spas.IAffordance;
 import spas.IPlace;
 import spas.Spas;
+import utils.ErnestUtils;
 
 
 
@@ -81,7 +82,7 @@ public class SpaceMemoryPanel extends JPanel
 		g2d.setColor(Color.GRAY);		
 		g2d.drawString(counter, 2 * WIDTH - 30 - width, 30);	
 		
-		float orientation = 0;
+		float agentOrientation = 0;
 //		for (IPlace place : spaceMemory.getPlaceList())
 //		{
 //			if (place.getType() == Spas.PLACE_FOCUS)
@@ -91,7 +92,7 @@ public class SpaceMemoryPanel extends JPanel
 //		}
 
 		IPlace focusPlace = spaceMemory.getFocusPlace();
-		orientation = spaceMemory.getOrientation();
+		agentOrientation = spaceMemory.getOrientation();
 		
 //		float x = (float)Math.cos(orientation + focusPlace.getDirection()) * focusPlace.getDistance();
 //		float y = (float)Math.sin(orientation + focusPlace.getDirection()) * focusPlace.getDistance();
@@ -99,7 +100,7 @@ public class SpaceMemoryPanel extends JPanel
 		AffineTransform ref0 = g2d.getTransform();
 		AffineTransform ref1 = new AffineTransform();
 		//ref1.translate( - x * SCALE,  y * SCALE);
-        ref1.rotate(- orientation, WIDTH, HEIGHT);
+        ref1.rotate(- agentOrientation, WIDTH, HEIGHT);
         g2d.transform(ref1);
         //g2d.setTransform(ref0);
 		
@@ -155,11 +156,16 @@ public class SpaceMemoryPanel extends JPanel
 				// Display the affordances 
 				if (place == focusPlace)
 				{
-					g2d.setStroke(new BasicStroke(SCALE / 20f));
+					float absoluteOrientation = - place.getOrientation() + agentOrientation; 
+					AffineTransform ref2 = g2d.getTransform();
+					AffineTransform local = new AffineTransform();
+			        local.rotate(absoluteOrientation, WIDTH + (int)(place.getPosition().x * SCALE),HEIGHT - (int)(place.getPosition().y * SCALE) );
+			        g2d.transform(local);
+
+					g2d.setStroke(new BasicStroke(SCALE / 10f));
 					AffineTransform or;
 					for (IAffordance affordance : place.getBundle().getAffordanceList())
 					{
-						g2d.setColor(new Color(place.getBundle().getGustatoryValue()));
 						int x2 = (int)((place.getPosition().x + affordance.getPlace().getPosition().x) * SCALE); 
 						int y2 = (int)((place.getPosition().y + affordance.getPlace().getPosition().y) * SCALE); 
 	 					
@@ -172,13 +178,17 @@ public class SpaceMemoryPanel extends JPanel
 				        ref = g2d.getTransform();
 				        or = new AffineTransform();
 				        or.translate(WIDTH + x2, HEIGHT - y2);
-				        or.scale(( .8f  - (spaceMemory.getUpdateCount() - place.getUpdateCount())/15f),( 1  - (spaceMemory.getUpdateCount() - place.getUpdateCount())/15f));
+				        or.scale(( .6f  - (spaceMemory.getUpdateCount() - place.getUpdateCount())/15f),( .6f  - (spaceMemory.getUpdateCount() - place.getUpdateCount())/15f));
 				        or.rotate(- affordance.getPlace().getOrientation());
 				        g2d.transform(or);
+						g2d.setColor(new Color(place.getBundle().getGustatoryValue()));
 						g2d.fill(shape);
+						g2d.setColor(new Color(place.getBundle().getValue()));
+						g2d.draw(shape);
 				        g2d.setTransform(ref);
 						//g2d.fillOval(WIDTH + x2 - 5, HEIGHT - y2 + 5, 10, 10);
 					}
+			        g2d.setTransform(ref2);
 				}
 			}			
 		}
@@ -244,10 +254,9 @@ public class SpaceMemoryPanel extends JPanel
 			g2d.drawLine(x0, y0, x0 + (int)(focusPlace.getSpeed().x * SCALE), y0 - (int)(focusPlace.getSpeed().y * SCALE));
 		g2d.setStroke(new BasicStroke(SCALE / 20f));
 		g2d.drawOval(x0 - focusRadius, y0 - focusRadius, 2 * focusRadius, 2 * focusRadius);
-		g2d.setColor(Color.BLUE);	
-		float absoluteOrientation = focusPlace.getOrientation();// - orientation; 
-		//g2d.drawLine(x0, y0, x0 + (int)(Math.cos(focusPlace.getOrientation()) * SCALE), y0 - (int)(Math.sin(focusPlace.getOrientation()) * SCALE));
-		g2d.drawLine(x0, y0, x0 + (int)(Math.cos(absoluteOrientation) * SCALE), y0 - (int)(Math.sin(absoluteOrientation) * SCALE));
+		//g2d.setColor(Color.BLUE);	
+		//float absoluteOrientation = focusPlace.getOrientation() - agentOrientation; 
+		//g2d.drawLine(x0, y0, x0 + (int)(Math.cos(absoluteOrientation) * SCALE), y0 - (int)(Math.sin(absoluteOrientation) * SCALE));
 
 	}
 }
