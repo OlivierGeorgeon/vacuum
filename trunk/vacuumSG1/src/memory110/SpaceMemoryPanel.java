@@ -42,7 +42,7 @@ public class SpaceMemoryPanel extends JPanel
 	public final static int HEIGHT = 250;
 	
 	/** The number of pixels per grid units. */
-	public final static int SCALE = 40; 
+	public final static int SCALE = 50; 
 	
 	private static final long serialVersionUID = 1L;
 	public int index;
@@ -94,13 +94,17 @@ public class SpaceMemoryPanel extends JPanel
 		IPlace focusPlace = spaceMemory.getFocusPlace();
 		agentOrientation = spaceMemory.getOrientation();
 		
-//		float x = (float)Math.cos(orientation + focusPlace.getDirection()) * focusPlace.getDistance();
-//		float y = (float)Math.sin(orientation + focusPlace.getDirection()) * focusPlace.getDistance();
+		//float baseOrientation = - agentOrientation + focusPlace.getOrientation();
+		//float baseOrientation = agentOrientation; // allocentric
+		float baseOrientation = - focusPlace.getOrientation();
+		//float baseOrientation = 0; // agent horizontal
+		float x = (float)Math.cos(baseOrientation + focusPlace.getDirection()) * focusPlace.getDistance();
+		float y = (float)Math.sin(baseOrientation + focusPlace.getDirection()) * focusPlace.getDistance();
 		
 		AffineTransform ref0 = g2d.getTransform();
 		AffineTransform ref1 = new AffineTransform();
-		//ref1.translate( - x * SCALE,  y * SCALE);
-        ref1.rotate(- agentOrientation, WIDTH, HEIGHT);
+		ref1.translate( - x * SCALE,  y * SCALE);
+        ref1.rotate(- baseOrientation, WIDTH, HEIGHT);
         g2d.transform(ref1);
         //g2d.setTransform(ref0);
 		
@@ -156,7 +160,7 @@ public class SpaceMemoryPanel extends JPanel
 				// Display the affordances 
 				if (place == focusPlace)
 				{
-					float absoluteOrientation = - place.getOrientation() + agentOrientation; 
+					float absoluteOrientation = - place.getOrientation() ; 
 					AffineTransform ref2 = g2d.getTransform();
 					AffineTransform local = new AffineTransform();
 			        local.rotate(absoluteOrientation, WIDTH + (int)(place.getPosition().x * SCALE),HEIGHT - (int)(place.getPosition().y * SCALE) );
@@ -250,13 +254,13 @@ public class SpaceMemoryPanel extends JPanel
 		//g2d.fillOval(x0 - focusRadius, y0 - focusRadius, 2 * focusRadius, 2 * focusRadius);
 		
 		g2d.setColor(Color.MAGENTA);		
-		if (focusPlace.getSpeed() != null)
-			g2d.drawLine(x0, y0, x0 + (int)(focusPlace.getSpeed().x * SCALE), y0 - (int)(focusPlace.getSpeed().y * SCALE));
+		//if (focusPlace.getSpeed() != null)
+		//	g2d.drawLine(x0, y0, x0 + (int)(focusPlace.getSpeed().x * SCALE), y0 - (int)(focusPlace.getSpeed().y * SCALE));
 		g2d.setStroke(new BasicStroke(SCALE / 20f));
 		g2d.drawOval(x0 - focusRadius, y0 - focusRadius, 2 * focusRadius, 2 * focusRadius);
 		//g2d.setColor(Color.BLUE);	
-		//float absoluteOrientation = focusPlace.getOrientation() - agentOrientation; 
-		//g2d.drawLine(x0, y0, x0 + (int)(Math.cos(absoluteOrientation) * SCALE), y0 - (int)(Math.sin(absoluteOrientation) * SCALE));
+		float absoluteOrientation = focusPlace.getOrientation();// + agentOrientation; 
+		g2d.drawLine(x0 - (int)(Math.cos(absoluteOrientation) * focusRadius), y0 + (int)(Math.sin(absoluteOrientation) * focusRadius), x0 + (int)(Math.cos(absoluteOrientation) * focusRadius *2), y0 - (int)(Math.sin(absoluteOrientation) * focusRadius *2));
 
 	}
 }

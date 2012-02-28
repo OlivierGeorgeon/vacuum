@@ -64,7 +64,7 @@ public class SpaceMemory
 	
 	public float getOrientation()
 	{
-		return m_model.getOrientation();
+		return m_model.getPreviousOrientation();
 	}
 	
 	public IPlace getFocusPlace()
