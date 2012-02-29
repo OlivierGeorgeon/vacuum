@@ -29,6 +29,7 @@ import ernest.IErnest;
 
 import spas.IAffordance;
 import spas.IPlace;
+import spas.LocalSpaceMemory;
 import spas.Spas;
 import utils.ErnestUtils;
 
@@ -95,15 +96,15 @@ public class SpaceMemoryPanel extends JPanel
 		agentOrientation = spaceMemory.getOrientation();
 		
 		//float baseOrientation = - agentOrientation + focusPlace.getOrientation();
-		//float baseOrientation = agentOrientation; // allocentric
-		float baseOrientation = - focusPlace.getOrientation();
+		float baseOrientation = agentOrientation; // allocentric
+		//float baseOrientation = - focusPlace.getOrientation(); // target centric.
 		//float baseOrientation = 0; // agent horizontal
 		float x = (float)Math.cos(baseOrientation + focusPlace.getDirection()) * focusPlace.getDistance();
 		float y = (float)Math.sin(baseOrientation + focusPlace.getDirection()) * focusPlace.getDistance();
 		
 		AffineTransform ref0 = g2d.getTransform();
 		AffineTransform ref1 = new AffineTransform();
-		ref1.translate( - x * SCALE,  y * SCALE);
+		//ref1.translate( - x * SCALE,  y * SCALE);
         ref1.rotate(- baseOrientation, WIDTH, HEIGHT);
         g2d.transform(ref1);
         //g2d.setTransform(ref0);
@@ -149,7 +150,7 @@ public class SpaceMemoryPanel extends JPanel
 				g2d.setColor(new Color(place.getBundle().getValue()));		
 				
 				//g2d.setStroke(new BasicStroke(SCALE / (3f + 2*(spaceMemory.getUpdateCount() - place.getUpdateCount())), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-				g2d.setStroke(new BasicStroke(Math.max(SCALE / 4f * ( 1  - (spaceMemory.getUpdateCount() - place.getUpdateCount())/10f), 1), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+				g2d.setStroke(new BasicStroke(Math.max(SCALE / 4f * ( 1  - (spaceMemory.getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION), 1), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 	
 				if (place.getType() == Spas.PLACE_TOUCH)
 					g2d.drawArc(WIDTH - (int)d, HEIGHT - (int)d, 2*(int)d, 2*(int)d, (int)(angle), (int)1);
@@ -182,10 +183,12 @@ public class SpaceMemoryPanel extends JPanel
 				        ref = g2d.getTransform();
 				        or = new AffineTransform();
 				        or.translate(WIDTH + x2, HEIGHT - y2);
-				        or.scale(( .6f  - (spaceMemory.getUpdateCount() - place.getUpdateCount())/15f),( .6f  - (spaceMemory.getUpdateCount() - place.getUpdateCount())/15f));
+				        or.scale(( .6f  - (spaceMemory.getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION),( .6f  - (spaceMemory.getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION));
 				        or.rotate(- affordance.getPlace().getOrientation());
 				        g2d.transform(or);
 						g2d.setColor(new Color(place.getBundle().getGustatoryValue()));
+						if (place.getBundle().getKinematicValue() == Ernest.STIMULATION_KINEMATIC_BUMP)
+							g2d.setColor(new Color(place.getBundle().getKinematicValue()));							
 						g2d.fill(shape);
 						g2d.setColor(new Color(place.getBundle().getValue()));
 						g2d.draw(shape);
@@ -230,7 +233,7 @@ public class SpaceMemoryPanel extends JPanel
 		        ref = g2d.getTransform();
 		        or = new AffineTransform();
 		        or.translate(WIDTH + (int)(place.getFirstPosition().x * SCALE), HEIGHT - (int)(place.getFirstPosition().y * SCALE));
-		        or.scale(( 1  - (spaceMemory.getUpdateCount() - place.getUpdateCount())/15f),( 1  - (spaceMemory.getUpdateCount() - place.getUpdateCount())/15f));
+		        or.scale(( 1  - (spaceMemory.getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION),( 1  - (spaceMemory.getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION));
 		        or.rotate(- place.getOrientation());
 		        g2d.transform(or);
 				g2d.fill(shape);
