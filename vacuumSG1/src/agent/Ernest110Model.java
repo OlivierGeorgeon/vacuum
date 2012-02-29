@@ -428,13 +428,6 @@ public class Ernest110Model extends ErnestModel
         if (!m_env.affordWalk(point))
             keepDistance(mPosition, cellCenter(point), HBradius + .5f);
 
-        // Eat an edible square
-		if (m_env.affordEat(mPosition)) 
-		{
-			m_eat = true;
-			suck();
-		}
-        
         // Cuddle the agent ahead
         localPoint = new Vector3f(DIRECTION_AHEAD);
         localPoint.scale(HBradius);
@@ -445,15 +438,7 @@ public class Ernest110Model extends ErnestModel
             if (!m_cuddle)
                 mTranslation.scale(.5f); // slowing down makes it look more like cuddling.
             m_cuddle = true;
-        }
-        
-        // Eat a fish agent.
-        if (affordHunt(point))
-        {
-			m_eat = true;
-            m_env.removeEntity(point, mName);
-        }
-        
+        }        
         
         // compute absolute movements
 		mSpeedT=new Vector3f(mPosition);
@@ -478,7 +463,21 @@ public class Ernest110Model extends ErnestModel
         for (int i=0;i<m_env.frameList.size();i++){
 			m_env.frameList.get(i).repaint();
 		}
+
+        // Eat an edible square
+		if (m_env.affordEat(mPosition)) 
+		{
+			m_eat = true;
+			suck();
+		}
         
+        // Eat a fish agent.
+        if (affordHunt(point))
+        {
+			m_eat = true;
+            m_env.removeEntity(point, mName);
+        }
+
         if (!status)
         	m_bump = true;
     }

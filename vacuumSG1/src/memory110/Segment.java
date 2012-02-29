@@ -4,6 +4,8 @@ import java.awt.Color;
 
 import javax.vecmath.Vector3f;
 
+import ernest.Ernest;
+
 import spas.ISegment;
 
 public class Segment implements ISegment
@@ -91,8 +93,11 @@ public class Segment implements ISegment
 	}
 
 	@Override
-	public float getAbsoluteOrientation() 
+	public float getRelativeOrientation() 
 	{
-		return firstPoint.m_absoluteOrientation;
+		float relativeOrientation = Ernest.INFINITE;
+		if (firstPoint.m_relativeOrientation == secondPoint.m_relativeOrientation)
+			relativeOrientation = firstPoint.m_relativeOrientation;
+		return relativeOrientation;
 	}
 }

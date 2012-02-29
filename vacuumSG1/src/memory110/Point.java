@@ -23,7 +23,7 @@ public class Point {
 	
 	public Vector3f speed=new Vector3f();
 	
-	public float m_absoluteOrientation = Ernest.INFINITE;
+	public float m_relativeOrientation = Ernest.INFINITE;
 	
 	public Point(float x, float y, int a, int t){
 		angle=a;

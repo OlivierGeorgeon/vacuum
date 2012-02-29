@@ -680,15 +680,10 @@ public class Environment extends Observable {
 	{
 		if (inScene(Math.round(position.x), Math.round(position.y), Math.round(position.z)))
 		{
-			/*
-			for (Iterator it = m_modelList.iterator(); it.hasNext();)
+			for (int i=0;i<m_modelList.size();i++)
 			{
-				ErnestModel entity = (ErnestModel)it.next();
-				if (entity.overlap(position) && !entity.getName().equals(name))
-					it.remove();
-			}*/
-			for (int i=0;i<m_modelList.size();i++){
-				if (m_modelList.get(i).overlap(position) && !m_modelList.get(i).getName().equals(name)){
+				if (m_modelList.get(i).overlap(position) && !m_modelList.get(i).getName().equals(name) && m_modelList.get(i).affordEat())
+				{
 					m_modelList.remove(i);
 				}
 			}
