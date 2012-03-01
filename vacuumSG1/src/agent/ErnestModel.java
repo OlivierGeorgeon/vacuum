@@ -317,6 +317,10 @@ public class ErnestModel extends Model
 			soma = Ernest.STIMULATION_TOUCH_SOFT;
 		if (m_env.affordEat(point))
 			soma = Ernest.STIMULATION_TOUCH_FISH;
+		if (affordHunt(point))
+			soma = Ernest.STIMULATION_TOUCH_FISH;
+		if (affordCuddle(point))
+			soma = Ernest.STIMULATION_TOUCH_AGENT;
 		if (!m_env.affordWalk(point)) 
 			soma = Ernest.STIMULATION_TOUCH_WALL;
 		return soma;

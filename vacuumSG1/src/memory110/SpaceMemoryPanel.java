@@ -160,7 +160,7 @@ public class SpaceMemoryPanel extends JPanel
 						WIDTH + (int)(place.getSecondPosition().x * SCALE), HEIGHT - (int)(place.getSecondPosition().y * SCALE));
 				
 				// Display the affordances 
-				if (place == focusPlace)
+				//if (place == focusPlace)
 				{
 					float absoluteOrientation = - place.getOrientation() ; 
 					AffineTransform ref2 = g2d.getTransform();

@@ -395,7 +395,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 			if (found) m_environment.setDisplay(index);
 			
 			// Force the display index
-			//m_environment.setDisplay(8);
+			m_environment.setDisplay(8);
 		}
 		catch (Exception e)
 		{
