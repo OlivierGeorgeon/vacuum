@@ -39,6 +39,8 @@ public class Ernest110Model extends ErnestModel
     final static float TRANSLATION_FRICTION = .90f; // .95f
     
     final static float ROTATION_FRICTION = .9f; // .95f
+    
+    final static float SLIPPERY_EFFECT = 4.8f;
 
     private static Color UNANIMATED_COLOR = Color.GRAY;
     
@@ -106,7 +108,7 @@ public class Ernest110Model extends ErnestModel
         // Only trace the first agent.
         
 //        if (ident == 8)
-//        	m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","h-yXVWrEwtYclxuPQUlmTOXprcFzol");
+//       	m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","h-yXVWrEwtYclxuPQUlmTOXprcFzol");
                         
         // Initialize the Ernest === 
         
@@ -271,12 +273,14 @@ public class Ernest110Model extends ErnestModel
         // Tactile ===
         
         int [] somatoMap = somatoMap();
-        if (m_cuddle)
-        	// If Ernest is cuddling then he is also touching ahead.
-        	somatoMap[3] = Ernest.STIMULATION_TOUCH_AGENT;
-        if (m_eat)
-        	// If Ernest is cuddling then he is also touching ahead.
-        	somatoMap[3] = Ernest.STIMULATION_TOUCH_FISH;
+        
+//        if (m_cuddle)
+//        	// If Ernest is cuddling then he is also touching ahead.
+//        	somatoMap[3] = Ernest.STIMULATION_TOUCH_AGENT;
+//        if (m_eat)
+//        	// If Ernest is eating then he is also touching ahead.
+//        	somatoMap[3] = Ernest.STIMULATION_TOUCH_FISH;
+
         for (int i = 0; i < 9; i++)
         	matrix[i][9] = somatoMap[i];
         
@@ -343,7 +347,7 @@ public class Ernest110Model extends ErnestModel
 		mPreviousOrientation.set(mOrientation);
         
         // Move the agent
-        rotate(mTranslation, - mRotation.z / 4);
+        rotate(mTranslation, - mRotation.z / SLIPPERY_EFFECT); // Creates some slippery in the turns.
         mPosition.set(localToParentRef(mTranslation));
         mOrientation.z += mRotation.z;
         
@@ -354,10 +358,22 @@ public class Ernest110Model extends ErnestModel
         mTranslation.scale(TRANSLATION_FRICTION);
         mRotation.scale(ROTATION_FRICTION);
         
+        // Cuddle the agent ahead
+        Vector3f localPoint = new Vector3f(DIRECTION_AHEAD);
+        localPoint.scale(HBradius);
+        Vector3f point = localToParentRef(localPoint);
+        if (affordCuddle(point))
+        {
+            keepDistance(mPosition, entityCenter(point), 2 * HBradius );
+            if (!m_cuddle)
+                mTranslation.scale(.5f); // slowing down makes it look more like cuddling.
+            m_cuddle = true;
+        }        
+        
         // Bumping ====
 
         // Stay away from north wall
-        Vector3f point = new Vector3f(DIRECTION_NORTH);
+        point = new Vector3f(DIRECTION_NORTH);
         point.scaleAdd(HBradius, mPosition);
         if (!m_env.affordWalk(point))
         {
@@ -394,7 +410,7 @@ public class Ernest110Model extends ErnestModel
             mPosition.x = Math.round(point.x) + 0.5f + HBradius;
         }
         // Stay away from front left wall
-        Vector3f localPoint = new Vector3f(DIRECTION_AHEAD_LEFT);
+        localPoint = new Vector3f(DIRECTION_AHEAD_LEFT);
         localPoint.scale(HBradius);
         point = localToParentRef(localPoint);
         if (!m_env.affordWalk(point))
@@ -428,18 +444,6 @@ public class Ernest110Model extends ErnestModel
         if (!m_env.affordWalk(point))
             keepDistance(mPosition, cellCenter(point), HBradius + .5f);
 
-        // Cuddle the agent ahead
-        localPoint = new Vector3f(DIRECTION_AHEAD);
-        localPoint.scale(HBradius);
-        point = localToParentRef(localPoint);
-        if (affordCuddle(point))
-        {
-            keepDistance(mPosition, entityCenter(point), 2 * HBradius );
-            if (!m_cuddle)
-                mTranslation.scale(.5f); // slowing down makes it look more like cuddling.
-            m_cuddle = true;
-        }        
-        
         // compute absolute movements
 		mSpeedT=new Vector3f(mPosition);
 		mSpeedT.sub(mPreviousPosition);
