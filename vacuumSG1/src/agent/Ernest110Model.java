@@ -268,7 +268,9 @@ public class Ernest110Model extends ErnestModel
         // Kinematic (simulates sensors of body action) ===
         
         if (m_schema.equals(">"))
-                matrix[1][8] = (!m_bump ? Ernest.STIMULATION_KINEMATIC_FORWARD : Ernest.STIMULATION_KINEMATIC_BUMP);
+               matrix[1][8] = (!m_bump ? Ernest.STIMULATION_KINEMATIC_FORWARD : Ernest.STIMULATION_KINEMATIC_BUMP);
+        else
+        	matrix[1][8] = Ernest.STIMULATION_KINEMATIC_FORWARD;
         
         // Tactile ===
         
