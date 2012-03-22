@@ -163,12 +163,13 @@ public class Environment extends Observable {
 	 * @author mcohen
 	 * @author ogeorgeon add wall and internal state panel to the grid
 	 */
-	public void init(int w,int h) throws Exception{
+	public void init(int w,int h) //throws Exception
+	{
 		m_w=w;
 		m_h=h;
 		m_anim=new int[w][h];
 		m_blocks=new Block[w][h];
-		
+		putPreferences();
 	}
 	
 	public void initAgents()
@@ -698,5 +699,6 @@ public class Environment extends Observable {
 		}
 		return index;
 	}
+
 }
 
