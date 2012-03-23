@@ -12,9 +12,12 @@ import memory110.SpaceMemoryFrame;
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.RenderingHints;
+import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Arc2D;
 import java.awt.geom.Area;
@@ -26,8 +29,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ernest.*;
+import spas.IAffordance;
 import spas.IPlace;
+import spas.LocalSpaceMemory;
+import spas.Spas;
 import tracing.*;
+import utils.ErnestUtils;
 import utils.Pair;
 
 /**************************************
@@ -50,6 +57,8 @@ public class Ernest120Model extends ErnestModel
     Color[] pixelColor = new Color[Ernest.RESOLUTION_RETINA];
     Color[][] somatoMapColor = new Color[3][3];
     Color focusColor = UNANIMATED_COLOR;
+    Color leftColor = UNANIMATED_COLOR;
+    Color rightColor = UNANIMATED_COLOR;
     
     boolean m_status = true;
     
@@ -78,6 +87,8 @@ public class Ernest120Model extends ErnestModel
                 somatoMapColor[i][j] = UNANIMATED_COLOR;
         
         focusColor = UNANIMATED_COLOR;
+        leftColor =  UNANIMATED_COLOR;
+        rightColor =  UNANIMATED_COLOR;
 
         setChanged();
         notifyObservers2();  
@@ -118,7 +129,7 @@ public class Ernest120Model extends ErnestModel
 
         m_ernest.setParameters(6, 6);
         m_ernest.setTracer(m_tracer);
-        m_ernest.setSensorymotorSystem(new BinarySensorymotorSystem());
+        m_ernest.setSensorymotorSystem(new Ernest12SensorimotorSystem());
 
         m_ernest.addInteraction(">", "t",   20); // Move
         m_ernest.addInteraction("^", "t",  -10); // Left toward empty
@@ -208,7 +219,7 @@ public class Ernest120Model extends ErnestModel
      */
     public void update()
     {
-    	count();
+    	//count();
 
 		String schema = m_ernest.step(m_status);
 		int[] intention = new int[2]; 
@@ -219,6 +230,7 @@ public class Ernest120Model extends ErnestModel
         	cognitiveMode = AGENT_STOP;
 
 		enactSchema(intention);
+        anim();
     }
     
     /**
@@ -226,7 +238,11 @@ public class Ernest120Model extends ErnestModel
      */
     private void enactSchema(int[] schema)
     {
-    	if (schema[0] != 0)
+        focusColor = UNANIMATED_COLOR;
+        leftColor =  UNANIMATED_COLOR;
+        rightColor =  UNANIMATED_COLOR;
+
+        if (schema[0] != 0)
     	{
     		
 	        m_schema = Character.toString((char)schema[0]);
@@ -258,6 +274,38 @@ public class Ernest120Model extends ErnestModel
 	            m_status = m_env.affordWalk(point);
 	            if (m_status)
 	            	mPosition.set(localToParentRef(new Vector3f(DIRECTION_AHEAD)));
+	            else
+	            	focusColor = Color.RED;
+	        }
+	        else if (schema[0] == '-')
+	        {
+	        	Vector3f localPoint = new Vector3f(DIRECTION_AHEAD);
+	        	Vector3f point = localToParentRef(localPoint);
+	            m_status = !m_env.affordWalk(point);
+	            if (m_status)
+	            	focusColor = Environment.WALL1;
+	            else
+	            	focusColor = Color.WHITE;
+	        }
+	        else if (schema[0] == '/')
+	        {
+	        	Vector3f localPoint = new Vector3f(DIRECTION_LEFT);
+	        	Vector3f point = localToParentRef(localPoint);
+	            m_status = !m_env.affordWalk(point);
+	            if (m_status)
+	            	leftColor = Environment.WALL1;
+	            else
+	            	leftColor = Color.WHITE;
+	        }
+	        else if (schema[0] == '\\')
+	        {
+	        	Vector3f localPoint = new Vector3f(DIRECTION_RIGHT);
+	        	Vector3f point = localToParentRef(localPoint);
+	            m_status = !m_env.affordWalk(point);
+	            if (m_status)
+	            	rightColor = Environment.WALL1;
+	            else
+	            	rightColor = Color.WHITE;
 	        }
 	        
 	        // Trace the environmental data
@@ -293,6 +341,8 @@ public class Ernest120Model extends ErnestModel
         
         //Arc2D.Double pixelIn = new Arc2D.Double(-20, -20, 40, 40,0, 180 / Ernest.RESOLUTION_RETINA + 1, Arc2D.PIE);
         Arc2D.Double focus = new Arc2D.Double(-10, -35, 20, 20,0, 180, Arc2D.PIE);
+        Arc2D.Double left = new Arc2D.Double(-10, -35, 20, 20,90, 180, Arc2D.PIE);
+        Arc2D.Double right = new Arc2D.Double(-10, -35, 20, 20,-90, 180, Arc2D.PIE);
         
         // The tactile matrix
         
@@ -330,9 +380,16 @@ public class Ernest120Model extends ErnestModel
         
         // Draw the focus
         
-        focusColor = new Color(m_ernest.getAttention());
-        g2d.setColor(focusColor);
-        g2d.fill(focus);
+        //focusColor = new Color(m_ernest.getAttention());
+        g2d.setColor(leftColor);
+        g2d.fill(left);
+        g2d.setColor(rightColor);
+        g2d.fill(right);
+        if (focusColor != UNANIMATED_COLOR)
+        {
+        	g2d.setColor(focusColor);
+        	g2d.fill(focus);
+        }
     }
 
     /**
@@ -377,4 +434,228 @@ public class Ernest120Model extends ErnestModel
         
         return shark;
     }    
+    
+    private void anim()
+    {
+        // compute absolute movements
+		mSpeedT=new Vector3f(mPosition);
+		mSpeedT.sub(mPreviousPosition);
+		
+		mSpeedR=new Vector3f(mOrientation);
+		mSpeedR.sub(mPreviousOrientation);
+		
+		Matrix3f rot2 = new Matrix3f();
+		rot2.rotZ( -mOrientation.z);
+		rot2.transform(mSpeedT, mEgoSpeedT);
+		
+		//m_ear.computeEars(mEgoSpeedT, mSpeedR);
+		
+		if (mSpeedR.z > Math.PI) mSpeedR.z-=2*Math.PI;
+		if (mSpeedR.z<=-Math.PI) mSpeedR.z+=2*Math.PI;
+		
+        if (cognitiveMode!=AGENT_STOP) rendu();
+        
+        mainFrame.drawGrid();
+        
+        for (int i=0;i<m_env.frameList.size();i++){
+			m_env.frameList.get(i).repaint();
+		}
+    }
+    
+	public void paintSpaceMemory(Graphics g)
+	{
+		final int WIDTH = 300;
+		final int HEIGHT = 250;
+		final int SCALE = 35;//40; 
+
+		boolean displaySensePlace = true;
+		
+		Graphics2D g2d = (Graphics2D)g;
+		
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+
+		// Display background
+		g2d.setColor(Color.white);
+		//g2d.fillRect(0, 0, 2 * RADIUS * SCALE, 2 * RADIUS * SCALE);
+		
+        // Display counter
+		String counter = getCounter() + ""; 
+		Font font = new Font("Dialog", Font.BOLD, 18);
+		g2d.setFont(font);
+		//FontMetrics fm = getFontMetrics(font);
+		//int width = fm.stringWidth(counter);
+		g2d.setColor(Color.GRAY);		
+		//g2d.drawString(counter, 2 * WIDTH - 30 - width, 30);	
+		g2d.drawString(counter, 2 * WIDTH - 50, 30);	
+		
+		float agentOrientation = 0;
+//		for (IPlace place : spaceMemory.getPlaceList())
+//		{
+//			if (place.getType() == Spas.PLACE_FOCUS)
+//			{
+//				refAngle = place.getDirection();
+//			}
+//		}
+
+		IPlace focusPlace = getErnest().getFocusPlace();
+		agentOrientation = getOrientation();
+		
+		//float baseOrientation = - agentOrientation + focusPlace.getOrientation();
+		float baseOrientation = agentOrientation; // allocentric
+		//float baseOrientation = - focusPlace.getOrientation(); // target centric.
+		//float baseOrientation = 0; // agent horizontal
+		//float x = (float)Math.cos(baseOrientation + focusPlace.getDirection()) * focusPlace.getDistance();
+		//float y = (float)Math.sin(baseOrientation + focusPlace.getDirection()) * focusPlace.getDistance();
+		
+		AffineTransform ref0 = g2d.getTransform();
+		AffineTransform ref1 = new AffineTransform();
+		//ref1.translate( - x * SCALE,  y * SCALE);
+        //ref1.rotate(- baseOrientation, WIDTH, HEIGHT);
+        g2d.transform(ref1);
+        //g2d.setTransform(ref0);
+		
+		// Reference transformation
+        AffineTransform ref = g2d.getTransform();
+        
+        //g2d.setTransform(ref);
+        
+		double d;
+		double rad;
+		double angle;
+		double span;
+		
+        // Display the places
+		//g2d.setStroke(new BasicStroke(SCALE / 3f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER));
+		g2d.setStroke(new BasicStroke(SCALE / 3f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER));
+
+		Ellipse2D.Double circle = new Ellipse2D.Double(-10, -10, 20, 20); 
+        Arc2D.Double pie = new Arc2D.Double(-10, -10, 20, 20,0, 180, Arc2D.PIE);
+        Polygon triangle = new Polygon();triangle.addPoint(-10,-10);triangle.addPoint(-10,10);triangle.addPoint(10,0);
+
+        if (displaySensePlace)
+        {
+			// Display the visual and tactile places
+			for (IPlace place : getErnest().getPlaceList())
+			{
+				//if (place.getType() == Spas.PLACE_PERSISTENT)
+				if (place.getType() < Spas.PLACE_FOCUS && place.getType() > Spas.PLACE_BACKGROUND)
+				{
+					d = place.getPosition().length() * SCALE;
+					
+					rad = (float)Math.atan2((double)place.getPosition().y, place.getPosition().x);			
+					//rad = (float)Math.atan2((double)place.getFirstPosition().y, place.getFirstPosition().x);			
+					angle = rad*180/Math.PI;
+								
+					span=place.getSpan()*180/Math.PI;
+					g2d.setColor(new Color(place.getBundle().getValue()));		
+					
+					//g2d.setStroke(new BasicStroke(SCALE / (3f + 2*(spaceMemory.getUpdateCount() - place.getUpdateCount())), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+					g2d.setStroke(new BasicStroke(Math.max(SCALE / 4f * ( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION), 1), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+		
+					if (place.getType() == Spas.PLACE_TOUCH)
+						//g2d.drawArc(WIDTH - (int)d, HEIGHT - (int)d, 2*(int)d, 2*(int)d, (int)(angle), (int)1);
+						g2d.drawArc(WIDTH - (int)d, HEIGHT - (int)d, 2*(int)d, 2*(int)d, (int)(ErnestUtils.polarAngle(place.getFirstPosition())*180/Math.PI), (int)(place.getSpan()*180/Math.PI));
+					else
+						g2d.drawLine(WIDTH + (int)(place.getFirstPosition().x * SCALE), HEIGHT - (int)(place.getFirstPosition().y * SCALE), 
+							WIDTH + (int)(place.getSecondPosition().x * SCALE), HEIGHT - (int)(place.getSecondPosition().y * SCALE));
+					
+					// Display the affordances 
+					if (place == focusPlace)
+					{
+						float absoluteOrientation = - place.getOrientation() ; 
+						AffineTransform ref2 = g2d.getTransform();
+						AffineTransform local = new AffineTransform();
+				        local.rotate(absoluteOrientation, WIDTH + (int)(place.getPosition().x * SCALE),HEIGHT - (int)(place.getPosition().y * SCALE) );
+				        g2d.transform(local);
+	
+						g2d.setStroke(new BasicStroke(SCALE / 10f));
+						AffineTransform or;
+						for (IAffordance affordance : place.getBundle().getAffordanceList())
+						{
+							int x2 = (int)((place.getPosition().x + affordance.getPlace().getPosition().x) * SCALE); 
+							int y2 = (int)((place.getPosition().y + affordance.getPlace().getPosition().y) * SCALE); 
+		 					
+							Shape shape = circle;
+							if (affordance.getPlace().getShape() == Spas.SHAPE_TRIANGLE)
+								shape = triangle;
+							else if (affordance.getPlace().getShape() == Spas.SHAPE_PIE)
+								shape = pie;
+							
+					        ref = g2d.getTransform();
+					        or = new AffineTransform();
+					        or.translate(WIDTH + x2, HEIGHT - y2);
+					        or.scale(( .6f  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION),( .6f  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION));
+					        or.rotate(- affordance.getPlace().getOrientation());
+					        g2d.transform(or);
+							g2d.setColor(new Color(affordance.getValue()));
+							g2d.fill(shape);
+							g2d.setColor(new Color(place.getBundle().getValue()));
+							g2d.draw(shape);
+					        g2d.setTransform(ref);
+							//g2d.fillOval(WIDTH + x2 - 5, HEIGHT - y2 + 5, 10, 10);
+						}
+				        g2d.setTransform(ref2);
+					}
+				}			
+			}
+        }
+		
+		// Display the bump, eat, and cuddle places
+		g2d.setStroke(new BasicStroke(SCALE / 20f));
+		AffineTransform or;
+		for (IPlace place : getErnest().getPlaceList())
+		{
+			if (place.getType() >= Spas.PLACE_FOCUS)// && place.getType() < Spas.PLACE_PERSISTENT)
+			{
+				// The places represented as arcs
+				//g2d.setColor(new Color(place.getBundle().getValue()));		
+				if (place.getType() == Spas.PLACE_BUMP) 
+					g2d.setColor(Color.RED);
+				if (place.getType() == Spas.PLACE_EAT )
+					g2d.setColor(Color.YELLOW);
+				if (place.getType() == Spas.PLACE_CUDDLE) 
+					g2d.setColor(Color.PINK);
+				if (place.getType() == Spas.PLACE_PRIMITIVE) 
+					g2d.setColor(Color.BLUE);
+				if (place.getType() == Spas.PLACE_COMPOSITE) 
+					g2d.setColor(new Color(0, 0, 128));
+				if (place.getType() == Spas.PLACE_INTERMEDIARY) 
+					g2d.setColor(new Color(128, 128, 255));
+				if (place.getType() == Spas.PLACE_FOCUS) 
+					g2d.setColor(Color.MAGENTA);
+				
+				Shape shape = circle;
+				if (place.getShape() == Spas.SHAPE_TRIANGLE)
+					shape = triangle;
+				else if (place.getShape() == Spas.SHAPE_PIE)
+					shape = pie;
+				
+		        ref = g2d.getTransform();
+		        or = new AffineTransform();
+		        or.translate(WIDTH + (int)(place.getFirstPosition().x * SCALE), HEIGHT - (int)(place.getFirstPosition().y * SCALE));
+		        or.scale(( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION),( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION));
+		        or.rotate(- place.getOrientation());
+		        g2d.transform(or);
+				g2d.fill(shape);
+		        g2d.setTransform(ref);
+				//g2d.setStroke(new BasicStroke(Math.max(SCALE / 3f * ( 1  - (spaceMemory.getUpdateCount() - place.getUpdateCount())/15f), 1), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+	
+				//g2d.drawLine(WIDTH + (int)(place.getFirstPosition().x * SCALE), HEIGHT - (int)(place.getFirstPosition().y * SCALE), 
+				//	WIDTH + (int)(place.getSecondPosition().x * SCALE), HEIGHT - (int)(place.getSecondPosition().y * SCALE));
+			}
+		}
+				
+
+		// Display agent
+        g2d.setTransform(ref);
+        AffineTransform placeAgent = new AffineTransform();
+        placeAgent.translate(WIDTH, HEIGHT);
+        placeAgent.rotate(Math.PI/2);
+        placeAgent.scale(SCALE / 100f, SCALE / 100f);
+        g2d.transform(placeAgent);
+		g2d.setColor(Color.gray);
+        g2d.fill(shape(getID()));
+
+	}
+
 }

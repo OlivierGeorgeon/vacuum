@@ -89,7 +89,7 @@ public class ErnestModel extends Model
 	public InnerEar m_ear;
 	public int lastAction;
 	
-	private int m_updateCount;
+	//private int m_updateCount;
 	
 	public Vector3f mSpeedT;    // translation and rotation speed in absolute reference
 	public Vector3f mSpeedR;    // translation and rotation speed in absolute reference
@@ -1333,14 +1333,14 @@ public class ErnestModel extends Model
 		return m_ernest;
 	}
 	
-	protected void count()
-	{
-		m_updateCount++;
-	}
+//	protected void count()
+//	{
+//		m_updateCount++;
+//	}
 
 	public int getUpdateCount()
 	{
-		return m_updateCount;
+		return m_ernest.getUpdateCount();
 	}
 	
 }
