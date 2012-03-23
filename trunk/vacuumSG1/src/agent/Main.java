@@ -697,7 +697,8 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 	 */
 	private void resizeGrid()
 	{
-		m_envPanel.setPreferredSize(new Dimension(40*m_envPanel.m_w,40*m_envPanel.m_h));
+		//m_envPanel.setPreferredSize(new Dimension(40*m_envPanel.m_w,40*m_envPanel.m_h));
+		m_envPanel.setPreferredSize(new Dimension(40 * m_environment.getWidth(),40 * m_environment.getHeight()));
 		
 		if (m_board != null) // Not sure why sometimes m_board is null
 			m_board.add(m_envPanel);

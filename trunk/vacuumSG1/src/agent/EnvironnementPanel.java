@@ -17,8 +17,8 @@ public class EnvironnementPanel extends JPanel implements MouseListener{
 	
 	public Environment m_env;
 	public ArrayList<ErnestModel> m_modelList;
-	public int m_h=1;
-	public int m_w=1;
+	//private int m_h=1;
+	//private int m_w=1;
 	public int m_clicked=0;
 	public int m_clickX;
 	public int m_clickY;
@@ -52,8 +52,8 @@ public class EnvironnementPanel extends JPanel implements MouseListener{
 		m_modelList=modelList;
 		m_env=env;
 		
-		m_h=env.getHeight();
-		m_w=env.getWidth();
+		//m_h=env.getHeight();
+		//m_w=env.getWidth();
 		addMouseListener(this);
 		
 		m_leaf.append(petal1, false);
@@ -95,8 +95,11 @@ public class EnvironnementPanel extends JPanel implements MouseListener{
 	}
 	
 	
-	public void paintComponent(Graphics g){
-
+	public void paintComponent(Graphics g)
+	{
+		int m_w = m_env.getWidth();
+		int m_h = m_env.getHeight();
+		
 		Graphics2D g2d = (Graphics2D)g;
 
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
@@ -167,6 +170,9 @@ public class EnvironnementPanel extends JPanel implements MouseListener{
 
 	public void mouseClicked(MouseEvent e){
 
+		int m_w = m_env.getWidth();
+		int m_h = m_env.getHeight();
+
 		int h=this.getHeight();
 		int w=this.getWidth();
 
@@ -229,6 +235,8 @@ public class EnvironnementPanel extends JPanel implements MouseListener{
 	 */
 	private void drawInformation(Graphics2D g2d){
 		
+		int m_w = m_env.getWidth();
+		int m_h = m_env.getHeight();
 		int h=this.getHeight();
 		int w=this.getWidth();
 		

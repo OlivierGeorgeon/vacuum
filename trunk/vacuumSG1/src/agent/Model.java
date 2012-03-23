@@ -557,4 +557,8 @@ public class Model extends Observable
 	{
 		
 	}
+	
+	public void paintSpaceMemory(Graphics g)
+	{
+	}
 }
