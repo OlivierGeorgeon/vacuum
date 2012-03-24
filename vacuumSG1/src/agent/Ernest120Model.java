@@ -529,8 +529,10 @@ public class Ernest120Model extends ErnestModel
 		g2d.setStroke(new BasicStroke(SCALE / 3f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER));
 
 		Ellipse2D.Double circle = new Ellipse2D.Double(-10, -10, 20, 20); 
-        Arc2D.Double pie = new Arc2D.Double(-10, -10, 20, 20,0, 180, Arc2D.PIE);
+        Arc2D.Double pie = new Arc2D.Double(-10, -10, 20, 20,-90, 180, Arc2D.PIE);
         Polygon triangle = new Polygon();triangle.addPoint(-10,-10);triangle.addPoint(-10,10);triangle.addPoint(10,0);
+        int squareSize = 7;
+        Polygon square = new Polygon();square.addPoint(-squareSize,-squareSize);square.addPoint(-squareSize,squareSize);square.addPoint(squareSize,squareSize);square.addPoint(squareSize,-squareSize);
 
         if (displaySensePlace)
         {
@@ -600,35 +602,22 @@ public class Ernest120Model extends ErnestModel
 			}
         }
 		
-		// Display the bump, eat, and cuddle places
+		// Display the interactions
 		g2d.setStroke(new BasicStroke(SCALE / 20f));
 		AffineTransform or;
 		for (IPlace place : getErnest().getPlaceList())
 		{
-			if (place.getType() >= Spas.PLACE_FOCUS)// && place.getType() < Spas.PLACE_PERSISTENT)
+			if (place.getType() >= Spas.PLACE_FOCUS)
 			{
-				// The places represented as arcs
-				//g2d.setColor(new Color(place.getBundle().getValue()));		
-				if (place.getType() == Spas.PLACE_BUMP) 
-					g2d.setColor(Color.RED);
-				if (place.getType() == Spas.PLACE_EAT )
-					g2d.setColor(Color.YELLOW);
-				if (place.getType() == Spas.PLACE_CUDDLE) 
-					g2d.setColor(Color.PINK);
-				if (place.getType() == Spas.PLACE_PRIMITIVE) 
-					g2d.setColor(Color.BLUE);
-				if (place.getType() == Spas.PLACE_COMPOSITE) 
-					g2d.setColor(new Color(0, 0, 128));
-				if (place.getType() == Spas.PLACE_INTERMEDIARY) 
-					g2d.setColor(new Color(128, 128, 255));
-				if (place.getType() == Spas.PLACE_FOCUS) 
-					g2d.setColor(Color.MAGENTA);
+				g2d.setColor(new Color(place.getValue()));		
 				
 				Shape shape = circle;
 				if (place.getShape() == Spas.SHAPE_TRIANGLE)
 					shape = triangle;
 				else if (place.getShape() == Spas.SHAPE_PIE)
 					shape = pie;
+				else if (place.getShape() == Spas.SHAPE_SQUARE)
+					shape = square;
 				
 		        ref = g2d.getTransform();
 		        or = new AffineTransform();
@@ -637,6 +626,8 @@ public class Ernest120Model extends ErnestModel
 		        or.rotate(- place.getOrientation());
 		        g2d.transform(or);
 				g2d.fill(shape);
+				g2d.setColor(Color.black);
+				g2d.draw(shape);
 		        g2d.setTransform(ref);
 				//g2d.setStroke(new BasicStroke(Math.max(SCALE / 3f * ( 1  - (spaceMemory.getUpdateCount() - place.getUpdateCount())/15f), 1), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 	
