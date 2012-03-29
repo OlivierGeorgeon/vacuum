@@ -127,22 +127,22 @@ public class Ernest120Model extends ErnestModel
         
         // Ernest's inborn primitive interactions
 
-        m_ernest.setParameters(6, 6);
+        m_ernest.setParameters(6, 10);
         m_ernest.setTracer(m_tracer);
         m_ernest.setSensorymotorSystem(new Ernest12SensorimotorSystem());
 
-        m_ernest.addInteraction(">", "t",   20); // Move
-        m_ernest.addInteraction("^", "t",  -10); // Left toward empty
-        m_ernest.addInteraction("v", "t",  -10); // Right toward empty
-        m_ernest.addInteraction("-", "t",  -10); // Touch
-        m_ernest.addInteraction("\\","t",  -10); // Touch right
-        m_ernest.addInteraction("/", "t",  -10); // Touch left
-        m_ernest.addInteraction(">", "f",  -80); // Move
-        m_ernest.addInteraction("^", "f",  -50); // Left toward empty
-        m_ernest.addInteraction("v", "f",  -50); // Right toward empty
-        m_ernest.addInteraction("-", "f",  -10); // Touch
-        m_ernest.addInteraction("\\","f",  -10); // Touch right
-        m_ernest.addInteraction("/", "f",  -10); // Touch left
+        m_ernest.addInteraction("-", "f",  -10); // Touch empty
+        m_ernest.addInteraction("-", "t",  -20); // Touch wall
+        m_ernest.addInteraction("\\","f",  -10); // Touch right empty
+        m_ernest.addInteraction("\\","t",  -20); // Touch right wall
+        m_ernest.addInteraction("/", "f",  -10); // Touch left empty
+        m_ernest.addInteraction("/", "t",  -20); // Touch left wall
+        m_ernest.addInteraction(">", "t",   50); // Move
+        m_ernest.addInteraction(">", "f",  -100); // Move
+        m_ernest.addInteraction("v", "t",  -30); // Right toward empty
+        m_ernest.addInteraction("v", "f",  -30); // Right toward empty
+        m_ernest.addInteraction("^", "t",  -30); // Left toward empty
+        m_ernest.addInteraction("^", "f",  -30); // Left toward empty
 
 		cognitiveMode = AGENT_RUN;
         mTranslation = new Vector3f();
@@ -257,7 +257,8 @@ public class Ernest120Model extends ErnestModel
 	        	if (mOrientation.z < - Math.PI) mOrientation.z += 2 * Math.PI; 
 	        	Vector3f localPoint = new Vector3f(DIRECTION_AHEAD);
 	        	Vector3f point = localToParentRef(localPoint);
-	            m_status = m_env.affordWalk(point);
+	        	m_status = false;
+	            //m_status = m_env.affordWalk(point);
 	        }
 	        else if (schema[0] == '^')
 	        {
@@ -265,7 +266,8 @@ public class Ernest120Model extends ErnestModel
 	        	if (mOrientation.z > Math.PI) mOrientation.z -= 2 * Math.PI; 
 	        	Vector3f localPoint = new Vector3f(DIRECTION_AHEAD);
 	        	Vector3f point = localToParentRef(localPoint);
-	            m_status = m_env.affordWalk(point);
+	        	m_status = false;
+	            //m_status = m_env.affordWalk(point);
 	        }
 	        else if (schema[0] == '>')
 	        {
@@ -468,7 +470,7 @@ public class Ernest120Model extends ErnestModel
 		final int HEIGHT = 250;
 		final int SCALE = 35;//40; 
 
-		boolean displaySensePlace = true;
+		boolean displayPhenomenon = true;
 		
 		Graphics2D g2d = (Graphics2D)g;
 		
@@ -533,81 +535,36 @@ public class Ernest120Model extends ErnestModel
         Polygon triangle = new Polygon();triangle.addPoint(-10,-10);triangle.addPoint(-10,10);triangle.addPoint(10,0);
         int squareSize = 7;
         Polygon square = new Polygon();square.addPoint(-squareSize,-squareSize);square.addPoint(-squareSize,squareSize);square.addPoint(squareSize,squareSize);square.addPoint(squareSize,-squareSize);
+        Polygon tile = new Polygon();tile.addPoint(-SCALE/2,-SCALE/2);tile.addPoint(-SCALE/2,SCALE/2);tile.addPoint(SCALE/2,SCALE/2);tile.addPoint(SCALE/2,-SCALE/2);
 
-        if (displaySensePlace)
-        {
-			// Display the visual and tactile places
-			for (IPlace place : getErnest().getPlaceList())
-			{
-				//if (place.getType() == Spas.PLACE_PERSISTENT)
-				if (place.getType() < Spas.PLACE_FOCUS && place.getType() > Spas.PLACE_BACKGROUND)
-				{
-					d = place.getPosition().length() * SCALE;
-					
-					rad = (float)Math.atan2((double)place.getPosition().y, place.getPosition().x);			
-					//rad = (float)Math.atan2((double)place.getFirstPosition().y, place.getFirstPosition().x);			
-					angle = rad*180/Math.PI;
-								
-					span=place.getSpan()*180/Math.PI;
-					g2d.setColor(new Color(place.getBundle().getValue()));		
-					
-					//g2d.setStroke(new BasicStroke(SCALE / (3f + 2*(spaceMemory.getUpdateCount() - place.getUpdateCount())), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-					g2d.setStroke(new BasicStroke(Math.max(SCALE / 4f * ( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION), 1), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-		
-					if (place.getType() == Spas.PLACE_TOUCH)
-						//g2d.drawArc(WIDTH - (int)d, HEIGHT - (int)d, 2*(int)d, 2*(int)d, (int)(angle), (int)1);
-						g2d.drawArc(WIDTH - (int)d, HEIGHT - (int)d, 2*(int)d, 2*(int)d, (int)(ErnestUtils.polarAngle(place.getFirstPosition())*180/Math.PI), (int)(place.getSpan()*180/Math.PI));
-					else
-						g2d.drawLine(WIDTH + (int)(place.getFirstPosition().x * SCALE), HEIGHT - (int)(place.getFirstPosition().y * SCALE), 
-							WIDTH + (int)(place.getSecondPosition().x * SCALE), HEIGHT - (int)(place.getSecondPosition().y * SCALE));
-					
-					// Display the affordances 
-					if (place == focusPlace)
-					{
-						float absoluteOrientation = - place.getOrientation() ; 
-						AffineTransform ref2 = g2d.getTransform();
-						AffineTransform local = new AffineTransform();
-				        local.rotate(absoluteOrientation, WIDTH + (int)(place.getPosition().x * SCALE),HEIGHT - (int)(place.getPosition().y * SCALE) );
-				        g2d.transform(local);
-	
-						g2d.setStroke(new BasicStroke(SCALE / 10f));
-						AffineTransform or;
-						for (IAffordance affordance : place.getBundle().getAffordanceList())
-						{
-							int x2 = (int)((place.getPosition().x + affordance.getPlace().getPosition().x) * SCALE); 
-							int y2 = (int)((place.getPosition().y + affordance.getPlace().getPosition().y) * SCALE); 
-		 					
-							Shape shape = circle;
-							if (affordance.getPlace().getShape() == Spas.SHAPE_TRIANGLE)
-								shape = triangle;
-							else if (affordance.getPlace().getShape() == Spas.SHAPE_PIE)
-								shape = pie;
-							
-					        ref = g2d.getTransform();
-					        or = new AffineTransform();
-					        or.translate(WIDTH + x2, HEIGHT - y2);
-					        or.scale(( .6f  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION),( .6f  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION));
-					        or.rotate(- affordance.getPlace().getOrientation());
-					        g2d.transform(or);
-							g2d.setColor(new Color(affordance.getValue()));
-							g2d.fill(shape);
-							g2d.setColor(new Color(place.getBundle().getValue()));
-							g2d.draw(shape);
-					        g2d.setTransform(ref);
-							//g2d.fillOval(WIDTH + x2 - 5, HEIGHT - y2 + 5, 10, 10);
-						}
-				        g2d.setTransform(ref2);
-					}
-				}			
-			}
-        }
-		
-		// Display the interactions
+ 		// Display the phenomenon
 		g2d.setStroke(new BasicStroke(SCALE / 20f));
 		AffineTransform or;
 		for (IPlace place : getErnest().getPlaceList())
 		{
-			if (place.getType() >= Spas.PLACE_FOCUS)
+			if (place.getType() == Spas.PLACE_PHENOMENON)
+			{
+				g2d.setColor(new Color(place.getValue()));		
+				
+		        ref = g2d.getTransform();
+		        or = new AffineTransform();
+		        or.translate(WIDTH + (int)(place.getFirstPosition().x * SCALE), HEIGHT - (int)(place.getFirstPosition().y * SCALE));
+		        or.scale(( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION),( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION));
+		        or.rotate(- place.getOrientation());
+		        g2d.transform(or);
+				g2d.fill(tile);
+				g2d.setColor(Color.black);
+				g2d.draw(tile);
+		        g2d.setTransform(ref);
+			}
+		}
+				
+ 		// Display the interactions
+		g2d.setStroke(new BasicStroke(SCALE / 20f));
+		//AffineTransform or;
+		for (IPlace place : getErnest().getPlaceList())
+		{
+			if (place.getType() == Spas.PLACE_EVOKE_PHENOMENON)
 			{
 				g2d.setColor(new Color(place.getValue()));		
 				
@@ -635,7 +592,6 @@ public class Ernest120Model extends ErnestModel
 				//	WIDTH + (int)(place.getSecondPosition().x * SCALE), HEIGHT - (int)(place.getSecondPosition().y * SCALE));
 			}
 		}
-				
 
 		// Display agent
         g2d.setTransform(ref);
