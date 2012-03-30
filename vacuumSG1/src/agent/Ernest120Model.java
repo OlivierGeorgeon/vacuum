@@ -52,7 +52,6 @@ public class Ernest120Model extends ErnestModel
     private static Color UNANIMATED_COLOR = Color.GRAY;
     
     public SpaceMemory m_SpaceMemory;
-    public List<IPlace> placeList;
     
     Color[] pixelColor = new Color[Ernest.RESOLUTION_RETINA];
     Color[][] somatoMapColor = new Color[3][3];
@@ -94,7 +93,6 @@ public class Ernest120Model extends ErnestModel
         notifyObservers2();  
         
         m_SpaceMemory=new SpaceMemory();
-        placeList=new ArrayList<IPlace>();
     }
 
     /**
@@ -377,15 +375,21 @@ public class Ernest120Model extends ErnestModel
             for (int j = 0; j < 3; j++)
             {
                 //g2d.setColor(somatoMapColor[i][j]);
+                g2d.setColor(new Color(Ernest.STIMULATION_TOUCH_SOFT));
+            	if (m_ernest.getValue(i, j) == Ernest.PHENOMENON_EMPTY)
+            		g2d.setColor(new Color(Ernest.STIMULATION_TOUCH_EMPTY));
+            	if (m_ernest.getValue(i, j) == Ernest.PHENOMENON_WALL)
+            		g2d.setColor(new Color(Ernest.STIMULATION_TOUCH_WALL));
                 g2d.fill(somatoMap[i][j]);
             }
         
         // Draw the focus
         
-        //focusColor = new Color(m_ernest.getAttention());
-        g2d.setColor(leftColor);
-        g2d.fill(left);
+    	g2d.setColor(leftColor);
+        if (leftColor != UNANIMATED_COLOR)
+        	g2d.fill(left);
         g2d.setColor(rightColor);
+        if (rightColor != UNANIMATED_COLOR)
         g2d.fill(right);
         if (focusColor != UNANIMATED_COLOR)
         {
