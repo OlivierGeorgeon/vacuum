@@ -118,8 +118,8 @@ public class Ernest120Model extends ErnestModel
         
         // Only trace the first agent.
         
-//        if (ident == 8)
-//       	m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","h-yXVWrEwtYclxuPQUlmTOXprcFzol");
+        //if (ident == 8)
+       	m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","NKmqGfrDVaTZQDSsgKNazjXd-cG-TZ");
                         
         // Initialize the Ernest === 
         
@@ -136,11 +136,11 @@ public class Ernest120Model extends ErnestModel
         m_ernest.addInteraction("/", "f",  -10); // Touch left empty
         m_ernest.addInteraction("/", "t",  -20); // Touch left wall
         m_ernest.addInteraction(">", "t",   50); // Move
-        m_ernest.addInteraction(">", "f",  -100); // Move
-        m_ernest.addInteraction("v", "t",  -30); // Right toward empty
-        m_ernest.addInteraction("v", "f",  -30); // Right toward empty
-        m_ernest.addInteraction("^", "t",  -30); // Left toward empty
-        m_ernest.addInteraction("^", "f",  -30); // Left toward empty
+        m_ernest.addInteraction(">", "f",  -100);// Bump
+        m_ernest.addInteraction("v", "t",  -30); // Right 
+        m_ernest.addInteraction("v", "f",  -30); // Right 
+        m_ernest.addInteraction("^", "t",  -30); // Left 
+        m_ernest.addInteraction("^", "f",  -30); // Left 
 
 		cognitiveMode = AGENT_RUN;
         mTranslation = new Vector3f();
@@ -227,7 +227,8 @@ public class Ernest120Model extends ErnestModel
         if (cognitiveMode == AGENT_STEP)
         	cognitiveMode = AGENT_STOP;
 
-		enactSchema(intention);
+		enactSchema(intention);		
+		
         anim();
     }
     
