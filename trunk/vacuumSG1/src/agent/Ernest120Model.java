@@ -119,13 +119,14 @@ public class Ernest120Model extends ErnestModel
         // Only trace the first agent.
         
         //if (ident == 8)
-       	m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","NKmqGfrDVaTZQDSsgKNazjXd-cG-TZ");
+       //	m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","NKmqGfrDVaTZQDSsgKNazjXd-cG-TZ");
                         
         // Initialize the Ernest === 
         
         // Ernest's inborn primitive interactions
 
-        m_ernest.setParameters(6, 10);
+        //m_ernest.setParameters(4, 3);
+        m_ernest.setParameters(4, 4);
         m_ernest.setTracer(m_tracer);
         m_ernest.setSensorymotorSystem(new Ernest12SensorimotorSystem());
 
@@ -135,7 +136,7 @@ public class Ernest120Model extends ErnestModel
         m_ernest.addInteraction("\\","t",  -20); // Touch right wall
         m_ernest.addInteraction("/", "f",  -10); // Touch left empty
         m_ernest.addInteraction("/", "t",  -20); // Touch left wall
-        m_ernest.addInteraction(">", "t",   50); // Move
+        m_ernest.addInteraction(">", "t",   100); // Move
         m_ernest.addInteraction(">", "f",  -100);// Bump
         m_ernest.addInteraction("v", "t",  -30); // Right 
         m_ernest.addInteraction("v", "f",  -30); // Right 
