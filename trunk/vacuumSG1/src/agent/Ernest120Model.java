@@ -119,7 +119,7 @@ public class Ernest120Model extends ErnestModel
         // Only trace the first agent.
         
         //if (ident == 8)
-       //	m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","NKmqGfrDVaTZQDSsgKNazjXd-cG-TZ");
+       	//m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","NKmqGfrDVaTZQDSsgKNazjXd-cG-TZ");
                         
         // Initialize the Ernest === 
         
@@ -578,18 +578,18 @@ public class Ernest120Model extends ErnestModel
 				Shape shape = circle;
 				float orientation = 0;
 				//if (place.getShape() == Spas.SHAPE_TRIANGLE)
-				if (place.getLabel().indexOf(">") >=0)
+				if (place.getAct().getLabel().indexOf(">") >=0)
 					shape = triangle;
 				//else if (place.getShape() == Spas.SHAPE_PIE)
-				else if (place.getLabel().indexOf("^") >=0 || place.getLabel().indexOf("v") >=0)
+				else if (place.getAct().getLabel().indexOf("^") >=0 || place.getAct().getLabel().indexOf("v") >=0)
 					shape = pie;
 				//else if (place.getShape() == Spas.SHAPE_SQUARE)
-				else if (place.getLabel().indexOf("/") >=0 || place.getLabel().indexOf("-") >=0 || place.getLabel().indexOf("\\") >=0)
+				else if (place.getAct().getLabel().indexOf("/") >=0 || place.getAct().getLabel().indexOf("-") >=0 || place.getAct().getLabel().indexOf("\\") >=0)
 					shape = square;
 				
-				if (place.getLabel().indexOf("^") >=0)
+				if (place.getAct().getLabel().indexOf("^") >=0)
 					orientation = (float) Math.PI / 2;
-				if (place.getLabel().indexOf("v") >=0)
+				if (place.getAct().getLabel().indexOf("v") >=0)
 					orientation = (float) - Math.PI / 2;
 
 				ref = g2d.getTransform();
