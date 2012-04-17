@@ -125,10 +125,11 @@ public class Ernest120Model extends ErnestModel
         
         // Ernest's inborn primitive interactions
 
-        //m_ernest.setParameters(4, 3);
         m_ernest.setParameters(4, 4);
+        //m_ernest.setParameters(6, 10);
         m_ernest.setTracer(m_tracer);
         m_ernest.setSensorymotorSystem(new Ernest12SensorimotorSystem());
+        //m_ernest.setSensorymotorSystem(new BinarySensorymotorSystem());
 
         m_ernest.addInteraction("-", "f",  -10); // Touch empty
         m_ernest.addInteraction("-", "t",  -20); // Touch wall
@@ -484,7 +485,7 @@ public class Ernest120Model extends ErnestModel
 
 		// Display background
 		g2d.setColor(Color.white);
-		//g2d.fillRect(0, 0, 2 * RADIUS * SCALE, 2 * RADIUS * SCALE);
+		g2d.fillRect(0, 0, 2 * WIDTH , 2 * HEIGHT);
 		
         // Display counter
 		String counter = getCounter() + ""; 
@@ -575,18 +576,28 @@ public class Ernest120Model extends ErnestModel
 				g2d.setColor(new Color(place.getValue()));		
 				
 				Shape shape = circle;
-				if (place.getShape() == Spas.SHAPE_TRIANGLE)
+				float orientation = 0;
+				//if (place.getShape() == Spas.SHAPE_TRIANGLE)
+				if (place.getLabel().indexOf(">") >=0)
 					shape = triangle;
-				else if (place.getShape() == Spas.SHAPE_PIE)
+				//else if (place.getShape() == Spas.SHAPE_PIE)
+				else if (place.getLabel().indexOf("^") >=0 || place.getLabel().indexOf("v") >=0)
 					shape = pie;
-				else if (place.getShape() == Spas.SHAPE_SQUARE)
+				//else if (place.getShape() == Spas.SHAPE_SQUARE)
+				else if (place.getLabel().indexOf("/") >=0 || place.getLabel().indexOf("-") >=0 || place.getLabel().indexOf("\\") >=0)
 					shape = square;
 				
-		        ref = g2d.getTransform();
+				if (place.getLabel().indexOf("^") >=0)
+					orientation = (float) Math.PI / 2;
+				if (place.getLabel().indexOf("v") >=0)
+					orientation = (float) - Math.PI / 2;
+
+				ref = g2d.getTransform();
 		        or = new AffineTransform();
 		        or.translate(WIDTH + (int)(place.getFirstPosition().x * SCALE), HEIGHT - (int)(place.getFirstPosition().y * SCALE));
 		        or.scale(( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION),( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION));
-		        or.rotate(- place.getOrientation());
+		        //or.rotate(- place.getOrientation());
+		        or.rotate(orientation);
 		        g2d.transform(or);
 				g2d.fill(shape);
 				g2d.setColor(Color.black);
