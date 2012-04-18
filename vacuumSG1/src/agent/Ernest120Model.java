@@ -31,6 +31,7 @@ import java.util.List;
 import ernest.*;
 import spas.IAffordance;
 import spas.IPlace;
+import imos.IAct;
 import spas.LocalSpaceMemory;
 import spas.Spas;
 import tracing.*;
@@ -119,24 +120,24 @@ public class Ernest120Model extends ErnestModel
         // Only trace the first agent.
         
         //if (ident == 8)
-       	//m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","NKmqGfrDVaTZQDSsgKNazjXd-cG-TZ");
+        //m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","NKmqGfrDVaTZQDSsgKNazjXd-cG-TZ");
                         
         // Initialize the Ernest === 
         
         // Ernest's inborn primitive interactions
 
-        m_ernest.setParameters(4, 4);
-        //m_ernest.setParameters(6, 10);
+        //m_ernest.setParameters(4, 4);
+        m_ernest.setParameters(10, 5);
         m_ernest.setTracer(m_tracer);
         m_ernest.setSensorymotorSystem(new Ernest12SensorimotorSystem());
         //m_ernest.setSensorymotorSystem(new BinarySensorymotorSystem());
 
         m_ernest.addInteraction("-", "f",  -10); // Touch empty
-        m_ernest.addInteraction("-", "t",  -20); // Touch wall
+        m_ernest.addInteraction("-", "t",  -10); // Touch wall
         m_ernest.addInteraction("\\","f",  -10); // Touch right empty
-        m_ernest.addInteraction("\\","t",  -20); // Touch right wall
+        m_ernest.addInteraction("\\","t",  -10); // Touch right wall
         m_ernest.addInteraction("/", "f",  -10); // Touch left empty
-        m_ernest.addInteraction("/", "t",  -20); // Touch left wall
+        m_ernest.addInteraction("/", "t",  -10); // Touch left wall
         m_ernest.addInteraction(">", "t",   100); // Move
         m_ernest.addInteraction(">", "f",  -100);// Bump
         m_ernest.addInteraction("v", "t",  -30); // Right 
@@ -475,7 +476,7 @@ public class Ernest120Model extends ErnestModel
 	{
 		final int WIDTH = 300;
 		final int HEIGHT = 250;
-		final int SCALE = 35;//40; 
+		final int SCALE = 50;//40; 
 
 		boolean displayPhenomenon = true;
 		
@@ -484,8 +485,8 @@ public class Ernest120Model extends ErnestModel
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
 
 		// Display background
-		g2d.setColor(Color.white);
-		g2d.fillRect(0, 0, 2 * WIDTH , 2 * HEIGHT);
+		//g2d.setColor(new Color(200, 200, 200));
+		//g2d.fillRect(0, 0, 2 * WIDTH , 2 * HEIGHT);
 		
         // Display counter
 		String counter = getCounter() + ""; 
@@ -555,14 +556,67 @@ public class Ernest120Model extends ErnestModel
 				
 		        ref = g2d.getTransform();
 		        or = new AffineTransform();
-		        or.translate(WIDTH + (int)(place.getFirstPosition().x * SCALE), HEIGHT - (int)(place.getFirstPosition().y * SCALE));
+		        or.translate(WIDTH + (int)(place.getPosition().x * SCALE), HEIGHT - (int)(place.getPosition().y * SCALE));
 		        or.scale(( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION),( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION));
 		        or.rotate(- place.getOrientation());
 		        g2d.transform(or);
 				g2d.fill(tile);
-				g2d.setColor(Color.black);
-				g2d.draw(tile);
+				g2d.setColor(Color.gray);
+				if (place.getBundle().getValue() == Ernest.PHENOMENON_WALL)
+					g2d.setColor(new Color(place.getValue()));
+				//g2d.draw(tile);
 		        g2d.setTransform(ref);
+		        
+		        for (IAct a : place.getBundle().getActList())
+		        {
+					Shape shape = circle;
+					int offsetx = 0;
+					int offsety = 0;
+					float orientation = 0;
+					if (a.getLabel().indexOf(">") >=0)
+					{
+						shape = triangle;
+						offsetx = - SCALE /2;
+					}
+					else if (a.getLabel().indexOf("^") >=0 || a.getLabel().indexOf("v") >=0)
+						shape = pie;
+					
+					if (a.getLabel().indexOf("/") >=0)
+					{
+						shape = square;
+						offsetx = - SCALE /4;
+						offsety = - SCALE/ 3;
+					}
+					if (a.getLabel().indexOf("\\") >=0)
+					{
+						shape = square;
+						offsetx = - SCALE /4;
+						offsety = SCALE/3;
+					}
+					if (a.getLabel().indexOf("-") >=0)
+					{
+						shape = square;
+						offsetx = - SCALE /3;
+					}
+					
+					if (a.getLabel().indexOf("^") >=0)
+						orientation = (float) Math.PI / 2;
+					if (a.getLabel().indexOf("v") >=0)
+						orientation = (float) - Math.PI / 2;
+
+					ref = g2d.getTransform();
+			        or = new AffineTransform();
+			        or.translate(WIDTH + (int)(place.getPosition().x * SCALE + offsetx), HEIGHT - (int)(place.getPosition().y * SCALE + offsety));
+			        or.scale(( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION),( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION));
+			        //or.rotate(- place.getOrientation());
+			        or.rotate(orientation);
+			        g2d.transform(or);
+					g2d.setColor(new Color(a.getPhenomenon()));		
+					g2d.fill(shape);
+					g2d.setColor(Color.gray);
+					g2d.draw(shape);
+			        g2d.setTransform(ref);
+		        }
 			}
 		}
 				
@@ -594,7 +648,7 @@ public class Ernest120Model extends ErnestModel
 
 				ref = g2d.getTransform();
 		        or = new AffineTransform();
-		        or.translate(WIDTH + (int)(place.getFirstPosition().x * SCALE), HEIGHT - (int)(place.getFirstPosition().y * SCALE));
+		        or.translate(WIDTH + (int)(place.getPosition().x * SCALE), HEIGHT - (int)(place.getPosition().y * SCALE));
 		        or.scale(( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION),( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION));
 		        //or.rotate(- place.getOrientation());
 		        or.rotate(orientation);
@@ -605,8 +659,6 @@ public class Ernest120Model extends ErnestModel
 		        g2d.setTransform(ref);
 				//g2d.setStroke(new BasicStroke(Math.max(SCALE / 3f * ( 1  - (spaceMemory.getUpdateCount() - place.getUpdateCount())/15f), 1), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 	
-				//g2d.drawLine(WIDTH + (int)(place.getFirstPosition().x * SCALE), HEIGHT - (int)(place.getFirstPosition().y * SCALE), 
-				//	WIDTH + (int)(place.getSecondPosition().x * SCALE), HEIGHT - (int)(place.getSecondPosition().y * SCALE));
 			}
 		}
 
