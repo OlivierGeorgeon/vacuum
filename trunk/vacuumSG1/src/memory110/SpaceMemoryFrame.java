@@ -1,25 +1,16 @@
 package memory110;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.swing.JFrame;
 
-import spas.IPlace;
-
-import memory.TactileMap;
-import memory.TactileMapPanel;
-
-
-public class SpaceMemoryFrame extends JFrame{
-
+public class SpaceMemoryFrame extends JFrame
+{
 	private SpaceMemoryPanel panel;
 	
-	public SpaceMemoryFrame(SpaceMemory spaceMemory){
+	public SpaceMemoryFrame(SpaceMemory spaceMemory)
+	{
 		this.setTitle("Space Memory");
-		//int side = 2 * SpaceMemoryPanel.RADIUS * SpaceMemoryPanel.SCALE;
-		//int side = 2 * SpaceMemoryPanel.RADIUS * SpaceMemoryPanel.SCALE;
-    	this.setSize(SpaceMemoryPanel.WIDTH * 2, SpaceMemoryPanel.HEIGHT * 2);
+		
+    	this.setSize(300 * 2, 250 * 2);
     	this.setLocationRelativeTo(null);               
     	this.setVisible(true);
 
@@ -28,15 +19,8 @@ public class SpaceMemoryFrame extends JFrame{
     	this.setContentPane(panel);
 	}
 	
-	public void setMemory(SpaceMemory mem){
+	public void setMemory(SpaceMemory mem)
+	{
 		panel.setMemory(mem);
-	}
-	
-//	public void update(ArrayList<IPlace> list){
-//		panel.update(list);
-//	}
-	
-//	public void paint(){
-//    	panel.repaint();
-//    }
+	}	
 }
