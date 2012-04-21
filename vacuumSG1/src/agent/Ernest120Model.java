@@ -486,7 +486,8 @@ public class Ernest120Model extends ErnestModel
 
 		// Display background
 		//g2d.setColor(new Color(200, 200, 200));
-		//g2d.fillRect(0, 0, 2 * WIDTH , 2 * HEIGHT);
+		g2d.setColor(Color.white);
+		g2d.fillRect(0, 0, 2 * WIDTH , 2 * HEIGHT);
 		
         // Display counter
 		String counter = getCounter() + ""; 
@@ -543,7 +544,8 @@ public class Ernest120Model extends ErnestModel
         Polygon triangle = new Polygon();triangle.addPoint(-10,-10);triangle.addPoint(-10,10);triangle.addPoint(10,0);
         int squareSize = 7;
         Polygon square = new Polygon();square.addPoint(-squareSize,-squareSize);square.addPoint(-squareSize,squareSize);square.addPoint(squareSize,squareSize);square.addPoint(squareSize,-squareSize);
-        Polygon tile = new Polygon();tile.addPoint(-SCALE/2,-SCALE/2);tile.addPoint(-SCALE/2,SCALE/2);tile.addPoint(SCALE/2,SCALE/2);tile.addPoint(SCALE/2,-SCALE/2);
+        //Polygon tile = new Polygon();tile.addPoint(-SCALE/2,-SCALE/2);tile.addPoint(-SCALE/2,SCALE/2);tile.addPoint(SCALE/2,SCALE/2);tile.addPoint(SCALE/2,-SCALE/2);
+		Ellipse2D.Double tile = new Ellipse2D.Double(-SCALE * .4, -SCALE * .4, SCALE * .8, SCALE * .8); 
 
  		// Display the phenomenon
 		g2d.setStroke(new BasicStroke(SCALE / 20f));
@@ -552,23 +554,26 @@ public class Ernest120Model extends ErnestModel
 		{
 			if (place.getType() == Spas.PLACE_PHENOMENON)
 			{
-				g2d.setColor(new Color(place.getValue()));		
+				//g2d.setColor(new Color(place.getValue()));
+				int scale = (int)(127 + 128 * (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION);
+				g2d.setColor(new Color(scale, scale, scale));		
 				
 		        ref = g2d.getTransform();
 		        or = new AffineTransform();
 		        or.translate(WIDTH + (int)(place.getPosition().x * SCALE), HEIGHT - (int)(place.getPosition().y * SCALE));
-		        or.scale(( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION),( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION));
+		        //or.scale(( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION),( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION));
 		        or.rotate(- place.getOrientation());
 		        g2d.transform(or);
-				g2d.fill(tile);
-				g2d.setColor(Color.gray);
-				if (place.getBundle().getValue() == Ernest.PHENOMENON_WALL)
-					g2d.setColor(new Color(place.getValue()));
-				//g2d.draw(tile);
+				//g2d.fill(tile);
+				//g2d.setColor(Color.gray);
+				//if (place.getBundle().getValue() == Ernest.PHENOMENON_WALL)
+				//	g2d.setColor(new Color(place.getValue()));
+				g2d.draw(tile);
 		        g2d.setTransform(ref);
 		        
 		        for (IAct a : place.getBundle().getActList())
 		        {
+					g2d.setColor(new Color(a.getPhenomenon()));		
 					Shape shape = circle;
 					int offsetx = 0;
 					int offsety = 0;
@@ -576,11 +581,21 @@ public class Ernest120Model extends ErnestModel
 					if (a.getLabel().indexOf(">") >=0)
 					{
 						shape = triangle;
-						offsetx = - SCALE /2;
+						if (a.getLabel().equals(">f"))
+							g2d.setColor(new Color(255, 80, 80));
 					}
-					else if (a.getLabel().indexOf("^") >=0 || a.getLabel().indexOf("v") >=0)
+					if (a.getLabel().indexOf("^") >=0)
+					{
 						shape = pie;
-					
+						orientation = (float) - Math.PI / 2;
+						offsety = SCALE/ 4;
+					}
+					if (a.getLabel().indexOf("v") >=0)
+					{
+						shape = pie;
+						orientation = (float) Math.PI / 2;
+						offsety = - SCALE/ 4;
+					}
 					if (a.getLabel().indexOf("/") >=0)
 					{
 						shape = square;
@@ -599,11 +614,6 @@ public class Ernest120Model extends ErnestModel
 						offsetx = - SCALE /3;
 					}
 					
-					if (a.getLabel().indexOf("^") >=0)
-						orientation = (float) Math.PI / 2;
-					if (a.getLabel().indexOf("v") >=0)
-						orientation = (float) - Math.PI / 2;
-
 					ref = g2d.getTransform();
 			        or = new AffineTransform();
 			        or.translate(WIDTH + (int)(place.getPosition().x * SCALE + offsetx), HEIGHT - (int)(place.getPosition().y * SCALE + offsety));
@@ -611,7 +621,6 @@ public class Ernest120Model extends ErnestModel
 			        //or.rotate(- place.getOrientation());
 			        or.rotate(orientation);
 			        g2d.transform(or);
-					g2d.setColor(new Color(a.getPhenomenon()));		
 					g2d.fill(shape);
 					g2d.setColor(Color.gray);
 					g2d.draw(shape);
@@ -620,6 +629,17 @@ public class Ernest120Model extends ErnestModel
 			}
 		}
 				
+		// Display agent
+        g2d.setTransform(ref);
+        AffineTransform placeAgent = new AffineTransform();
+        placeAgent.translate(WIDTH, HEIGHT);
+        placeAgent.rotate(Math.PI/2);
+        placeAgent.scale(SCALE / 100f, SCALE / 100f);
+        g2d.transform(placeAgent);
+		g2d.setColor(Color.gray);
+        g2d.fill(shape(getID()));
+        g2d.setTransform(ref);
+
  		// Display the interactions
 		g2d.setStroke(new BasicStroke(SCALE / 20f));
 		//AffineTransform or;
@@ -631,24 +651,48 @@ public class Ernest120Model extends ErnestModel
 				
 				Shape shape = circle;
 				float orientation = 0;
-				//if (place.getShape() == Spas.SHAPE_TRIANGLE)
-				if (place.getAct().getLabel().indexOf(">") >=0)
+				int offsetx = 0;
+				int offsety = 0;
+				IAct a = place.getAct();
+				if (a.getLabel().indexOf(">") >=0)
+				{
 					shape = triangle;
-				//else if (place.getShape() == Spas.SHAPE_PIE)
-				else if (place.getAct().getLabel().indexOf("^") >=0 || place.getAct().getLabel().indexOf("v") >=0)
+					if (a.getLabel().equals(">f"))
+						g2d.setColor(Color.red);
+				}
+				if (a.getLabel().indexOf("^") >=0)
+				{
 					shape = pie;
-				//else if (place.getShape() == Spas.SHAPE_SQUARE)
-				else if (place.getAct().getLabel().indexOf("/") >=0 || place.getAct().getLabel().indexOf("-") >=0 || place.getAct().getLabel().indexOf("\\") >=0)
-					shape = square;
-				
-				if (place.getAct().getLabel().indexOf("^") >=0)
-					orientation = (float) Math.PI / 2;
-				if (place.getAct().getLabel().indexOf("v") >=0)
 					orientation = (float) - Math.PI / 2;
+					offsety = SCALE/ 4;
+				}
+				if (a.getLabel().indexOf("v") >=0)
+				{
+					shape = pie;
+					orientation = (float) Math.PI / 2;
+					offsety = - SCALE/ 4;
+				}
+				if (a.getLabel().indexOf("/") >=0)
+				{
+					shape = square;
+					offsetx = - SCALE /4;
+					offsety = - SCALE/ 3;
+				}
+				if (a.getLabel().indexOf("\\") >=0)
+				{
+					shape = square;
+					offsetx = - SCALE /4;
+					offsety = SCALE/3;
+				}
+				if (a.getLabel().indexOf("-") >=0)
+				{
+					shape = square;
+					offsetx = - SCALE /3;
+				}
 
 				ref = g2d.getTransform();
 		        or = new AffineTransform();
-		        or.translate(WIDTH + (int)(place.getPosition().x * SCALE), HEIGHT - (int)(place.getPosition().y * SCALE));
+		        or.translate(WIDTH + (int)(place.getPosition().x * SCALE + offsetx), HEIGHT - (int)(place.getPosition().y * SCALE + offsety));
 		        or.scale(( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION),( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION));
 		        //or.rotate(- place.getOrientation());
 		        or.rotate(orientation);
@@ -661,16 +705,6 @@ public class Ernest120Model extends ErnestModel
 	
 			}
 		}
-
-		// Display agent
-        g2d.setTransform(ref);
-        AffineTransform placeAgent = new AffineTransform();
-        placeAgent.translate(WIDTH, HEIGHT);
-        placeAgent.rotate(Math.PI/2);
-        placeAgent.scale(SCALE / 100f, SCALE / 100f);
-        g2d.transform(placeAgent);
-		g2d.setColor(Color.gray);
-        g2d.fill(shape(getID()));
 
 	}
 
