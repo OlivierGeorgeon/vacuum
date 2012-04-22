@@ -546,6 +546,7 @@ public class Ernest120Model extends ErnestModel
         Polygon square = new Polygon();square.addPoint(-squareSize,-squareSize);square.addPoint(-squareSize,squareSize);square.addPoint(squareSize,squareSize);square.addPoint(squareSize,-squareSize);
         //Polygon tile = new Polygon();tile.addPoint(-SCALE/2,-SCALE/2);tile.addPoint(-SCALE/2,SCALE/2);tile.addPoint(SCALE/2,SCALE/2);tile.addPoint(SCALE/2,-SCALE/2);
 		Ellipse2D.Double tile = new Ellipse2D.Double(-SCALE * .4, -SCALE * .4, SCALE * .8, SCALE * .8); 
+        Polygon agent = new Polygon();agent.addPoint(-50,-50);agent.addPoint(-30,0);agent.addPoint(-50,50);agent.addPoint(50,0);
 
  		// Display the phenomenon
 		g2d.setStroke(new BasicStroke(SCALE / 20f));
@@ -616,9 +617,12 @@ public class Ernest120Model extends ErnestModel
 					
 					ref = g2d.getTransform();
 			        or = new AffineTransform();
-			        or.translate(WIDTH + (int)(place.getPosition().x * SCALE + offsetx), HEIGHT - (int)(place.getPosition().y * SCALE + offsety));
+			        float ooffx = offsetx * (float)Math.cos(- place.getOrientation()) + offsety * (float)Math.sin(- place.getOrientation());
+			        float ooffy = - offsetx * (float)Math.sin(- place.getOrientation()) + offsety * (float)Math.cos(- place.getOrientation());
+			        or.translate(WIDTH + (int)(place.getPosition().x * SCALE + ooffx), HEIGHT - (int)(place.getPosition().y * SCALE + ooffy));
+			        //or.translate(WIDTH + (int)(place.getPosition().x * SCALE + offsetx), HEIGHT - (int)(place.getPosition().y * SCALE + offsety));
 			        or.scale(( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION),( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION));
-			        //or.rotate(- place.getOrientation());
+			        or.rotate(- place.getOrientation());
 			        or.rotate(orientation);
 			        g2d.transform(or);
 					g2d.fill(shape);
@@ -630,14 +634,18 @@ public class Ernest120Model extends ErnestModel
 		}
 				
 		// Display agent
+		g2d.setStroke(new BasicStroke(SCALE / 10f));
         g2d.setTransform(ref);
         AffineTransform placeAgent = new AffineTransform();
         placeAgent.translate(WIDTH, HEIGHT);
-        placeAgent.rotate(Math.PI/2);
+        //placeAgent.rotate(Math.PI/2);
         placeAgent.scale(SCALE / 100f, SCALE / 100f);
         g2d.transform(placeAgent);
-		g2d.setColor(Color.gray);
-        g2d.fill(shape(getID()));
+		g2d.setColor(new Color(0xFF8000));
+        //g2d.fill(shape(getID()));
+        g2d.fill(agent);
+		g2d.setColor(Color.black);
+        g2d.draw(agent);
         g2d.setTransform(ref);
 
  		// Display the interactions
@@ -692,9 +700,12 @@ public class Ernest120Model extends ErnestModel
 
 				ref = g2d.getTransform();
 		        or = new AffineTransform();
-		        or.translate(WIDTH + (int)(place.getPosition().x * SCALE + offsetx), HEIGHT - (int)(place.getPosition().y * SCALE + offsety));
-		        or.scale(( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION),( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION));
-		        //or.rotate(- place.getOrientation());
+		        float ooffx = offsetx * (float)Math.cos(- place.getOrientation()) + offsety * (float)Math.sin(- place.getOrientation());
+		        float ooffy = - offsetx * (float)Math.sin(- place.getOrientation()) + offsety * (float)Math.cos(- place.getOrientation());
+		        or.translate(WIDTH + (int)(place.getPosition().x * SCALE + ooffx), HEIGHT - (int)(place.getPosition().y * SCALE + ooffy));
+		        //or.translate(WIDTH + (int)(place.getPosition().x * SCALE + offsetx), HEIGHT - (int)(place.getPosition().y * SCALE + offsety ));
+		        //or.scale(( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION),( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION));
+		        or.rotate(- place.getOrientation());
 		        or.rotate(orientation);
 		        g2d.transform(or);
 				g2d.fill(shape);
