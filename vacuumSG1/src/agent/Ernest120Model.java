@@ -127,7 +127,7 @@ public class Ernest120Model extends ErnestModel
         // Ernest's inborn primitive interactions
 
         //m_ernest.setParameters(4, 4);
-        m_ernest.setParameters(10, 5);
+        m_ernest.setParameters(7, 4);
         m_ernest.setTracer(m_tracer);
         m_ernest.setSensorymotorSystem(new Ernest12SensorimotorSystem());
         //m_ernest.setSensorymotorSystem(new BinarySensorymotorSystem());
