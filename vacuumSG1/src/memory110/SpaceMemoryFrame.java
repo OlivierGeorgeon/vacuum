@@ -1,10 +1,13 @@
 package memory110;
 
-import javax.swing.JFrame;
 
-public class SpaceMemoryFrame extends JFrame
+import javax.swing.JPanel;
+
+import agent.PrintableFrame;
+import agent.PrintablePanel;
+
+public class SpaceMemoryFrame extends PrintableFrame
 {
-	private SpaceMemoryPanel panel;
 	
 	public SpaceMemoryFrame(SpaceMemory spaceMemory)
 	{
@@ -21,6 +24,6 @@ public class SpaceMemoryFrame extends JFrame
 	
 	public void setMemory(SpaceMemory mem)
 	{
-		panel.setMemory(mem);
+		((SpaceMemoryPanel) panel).setMemory(mem);
 	}	
 }

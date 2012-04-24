@@ -34,14 +34,14 @@ import ernest.Ernest;
 
 
 
-public class EnvironnementFrame extends JFrame implements Observer, ActionListener, KeyListener{
+public class EnvironnementFrame extends PrintableFrame implements Observer, ActionListener, KeyListener{
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public EnvironnementPanel m_env;
+	//public EnvironnementPanel m_env;
 	
 	public int indexImage;
 	
@@ -94,8 +94,8 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
     	this.setLocationRelativeTo(null);               
     	this.setVisible(true);
     
-    	m_env = new EnvironnementPanel(modelList,env);
-
+    	//m_env = new EnvironnementPanel(modelList,env);
+    	panel=new EnvironnementPanel(modelList,env);
     	
     	configureMenu(m);
     	
@@ -120,7 +120,8 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
 
 		getContentPane().setLayout(new BorderLayout());
 		
-		getContentPane().add(m_env);
+		//getContentPane().add(m_env);
+		getContentPane().add(panel);
 		//getContentPane().setSize(new Dimension(600,400));
 		
 		JPanel buttonPanel = new JPanel();
@@ -229,7 +230,8 @@ public class EnvironnementFrame extends JFrame implements Observer, ActionListen
 	
 	
     public void repaint(){
-    	m_env.repaint();
+    	//m_env.repaint();
+    	panel.repaint();
     }
 
 

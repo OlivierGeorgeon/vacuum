@@ -24,7 +24,7 @@ import ernest.Ernest;
  * Panel used to display environment on the point of view of the agent
  * @author simon
  */
-public class EyeDisplay extends JPanel {
+public class EyeDisplay extends PrintablePanel {
 
 	/** The radius of the display area in grid units. */
 	public final static int RADIUS = 10;
