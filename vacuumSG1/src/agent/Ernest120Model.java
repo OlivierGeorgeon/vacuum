@@ -120,7 +120,7 @@ public class Ernest120Model extends ErnestModel
         // Only trace the first agent.
         
         //if (ident == 8)
-        //m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","NKmqGfrDVaTZQDSsgKNazjXd-cG-TZ");
+        m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","NKmqGfrDVaTZQDSsgKNazjXd-cG-TZ");
                         
         // Initialize the Ernest === 
         
@@ -344,9 +344,12 @@ public class Ernest120Model extends ErnestModel
         // Retina pixel
         
         //Arc2D.Double pixelIn = new Arc2D.Double(-20, -20, 40, 40,0, 180 / Ernest.RESOLUTION_RETINA + 1, Arc2D.PIE);
-        Arc2D.Double focus = new Arc2D.Double(-10, -35, 20, 20,0, 180, Arc2D.PIE);
-        Arc2D.Double left = new Arc2D.Double(-10, -35, 20, 20,90, 180, Arc2D.PIE);
-        Arc2D.Double right = new Arc2D.Double(-10, -35, 20, 20,-90, 180, Arc2D.PIE);
+//        Arc2D.Double focus = new Arc2D.Double(-10, -35, 20, 20,0, 180, Arc2D.PIE);
+//        Arc2D.Double left = new Arc2D.Double(-10, -35, 20, 20,90, 180, Arc2D.PIE);
+//        Arc2D.Double right = new Arc2D.Double(-10, -35, 20, 20,-90, 180, Arc2D.PIE);
+        Rectangle2D.Double focus = new Rectangle2D.Double(-12, -40, 25, 30);
+        Rectangle2D.Double left = new Rectangle2D.Double(-35, -10, 25, 30);
+        Rectangle2D.Double right = new Rectangle2D.Double(10, -10, 25, 30);
         
         // The tactile matrix
         
@@ -374,31 +377,57 @@ public class Ernest120Model extends ErnestModel
 
         // Draw the body
         
-        g2d.setColor(ErnestModel.AGENT_COLOR);
-        for (int i = 0; i < 3; i++)
-            for (int j = 0; j < 3; j++)
-            {
-                //g2d.setColor(somatoMapColor[i][j]);
-                g2d.setColor(new Color(Ernest.STIMULATION_TOUCH_SOFT));
-            	if (m_ernest.getValue(i, j) == Ernest.PHENOMENON_EMPTY)
-            		g2d.setColor(new Color(Ernest.STIMULATION_TOUCH_EMPTY));
-            	if (m_ernest.getValue(i, j) == Ernest.PHENOMENON_WALL)
-            		g2d.setColor(new Color(Ernest.STIMULATION_TOUCH_WALL));
-                g2d.fill(somatoMap[i][j]);
-            }
+//        g2d.setColor(ErnestModel.AGENT_COLOR);
+//        for (int i = 0; i < 3; i++)
+//            for (int j = 0; j < 3; j++)
+//            {
+//                //g2d.setColor(somatoMapColor[i][j]);
+//                g2d.setColor(new Color(Ernest.STIMULATION_TOUCH_SOFT));
+//            	if (m_ernest.getValue(i, j) == Ernest.PHENOMENON_EMPTY)
+//            		g2d.setColor(new Color(Ernest.STIMULATION_TOUCH_EMPTY));
+//            	if (m_ernest.getValue(i, j) == Ernest.PHENOMENON_WALL)
+//            		g2d.setColor(new Color(Ernest.STIMULATION_TOUCH_WALL));
+//                g2d.fill(somatoMap[i][j]);
+//            }
+        
+		AffineTransform ref0 = g2d.getTransform();
+        AffineTransform r = new AffineTransform();
+        r.rotate(-Math.PI/2);
+        r.scale(.8,.8);
+        g2d.transform(r);
+
+        Polygon agent = new Polygon();agent.addPoint(-50,-50);agent.addPoint(-30,0);agent.addPoint(-50,50);agent.addPoint(50,0);
+		g2d.setColor(new Color(0xFF8000));
+        g2d.fill(agent);
+		g2d.setStroke(new BasicStroke(4f));
+		g2d.setColor(Color.black);
+        g2d.draw(agent);
+        g2d.setTransform(ref0);
+
         
         // Draw the focus
         
+		g2d.setStroke(new BasicStroke(2f));
     	g2d.setColor(leftColor);
         if (leftColor != UNANIMATED_COLOR)
+        {
         	g2d.fill(left);
+        	g2d.setColor(Color.black);
+        	g2d.draw(left);
+        }
         g2d.setColor(rightColor);
         if (rightColor != UNANIMATED_COLOR)
-        g2d.fill(right);
+        {
+        	g2d.fill(right);
+        	g2d.setColor(Color.black);
+        	g2d.draw(right);
+        }
         if (focusColor != UNANIMATED_COLOR)
         {
         	g2d.setColor(focusColor);
         	g2d.fill(focus);
+        	g2d.setColor(Color.black);
+        	g2d.draw(focus);
         }
     }
 

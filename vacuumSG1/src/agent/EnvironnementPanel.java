@@ -249,7 +249,7 @@ public class EnvironnementPanel extends PrintablePanel implements MouseListener{
 		counter = m_env.getCounter() + "";
 		
 		//Font font = new Font("Dialog", Font.BOLD, 10);
-		Font font = new Font("Dialog", Font.BOLD, 18);
+		Font font = new Font("Dialog", Font.BOLD, w /20);
 		g2d.setFont(font);
 		
 		FontMetrics fm = getFontMetrics(font);
@@ -257,7 +257,7 @@ public class EnvironnementPanel extends PrintablePanel implements MouseListener{
 		int width = fm.stringWidth(counter);
 		
 		//g2d.setColor(new Color(200, 255, 200));		
-		g2d.setColor(Color.GRAY);		
+		g2d.setColor(new Color(0xC0C0C0));		
 		g2d.drawString(counter, m_w*c_w - c_w*1.1f - width, c_h*1.5f + 5);	
 	}
 	
