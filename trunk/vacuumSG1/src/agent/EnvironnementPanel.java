@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.awt.Color;
 import javax.swing.JPanel;
 
-public class EnvironnementPanel extends JPanel implements MouseListener{
+public class EnvironnementPanel extends PrintablePanel implements MouseListener{
 
 	/**
 	 * 

@@ -19,23 +19,15 @@ import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JPanel;
-import javax.vecmath.Vector3f;
-
 import agent.Ernest110Model;
+import agent.PrintablePanel;
 
-import ernest.Ernest;
 import ernest.IErnest;
 
-import spas.IAffordance;
-import spas.IPlace;
-import spas.LocalSpaceMemory;
-import spas.Spas;
-import utils.ErnestUtils;
 
 
 
-public class SpaceMemoryPanel extends JPanel
+public class SpaceMemoryPanel extends PrintablePanel
 {
 	private static final long serialVersionUID = 1L;
 	public int index;
@@ -58,6 +50,6 @@ public class SpaceMemoryPanel extends JPanel
 	
 	public void paintComponent(Graphics g)
 	{
-		spaceMemory.m_model.paintSpaceMemory(g);        
+		spaceMemory.m_model.paintSpaceMemory(g);   
 	}
 }
