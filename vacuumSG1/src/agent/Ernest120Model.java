@@ -586,6 +586,7 @@ public class Ernest120Model extends ErnestModel
 			{
 				//g2d.setColor(new Color(place.getValue()));
 				int scale = (int)(127 + 128 * (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION);
+				if (scale > 255) scale = 255;
 				g2d.setColor(new Color(scale, scale, scale));		
 				
 		        ref = g2d.getTransform();
@@ -614,13 +615,13 @@ public class Ernest120Model extends ErnestModel
 						if (a.getLabel().equals(">f"))
 							g2d.setColor(new Color(255, 80, 80));
 					}
-					if (a.getLabel().indexOf("^") >=0)
+					if (a.getLabel().equals("^f"))
 					{
 						shape = pie;
 						orientation = (float) - Math.PI / 2;
 						offsety = SCALE/ 4;
 					}
-					if (a.getLabel().indexOf("v") >=0)
+					if (a.getLabel().equals("vf"))
 					{
 						shape = pie;
 						orientation = (float) Math.PI / 2;
@@ -697,17 +698,17 @@ public class Ernest120Model extends ErnestModel
 					if (a.getLabel().equals(">f"))
 						g2d.setColor(Color.red);
 				}
-				if (a.getLabel().indexOf("^") >=0)
+				if (a.getLabel().equals("^f"))
 				{
 					shape = pie;
-					orientation = (float) - Math.PI / 2;
-					offsety = SCALE/ 4;
+					orientation = 0;//(float) - Math.PI;// / 2;
+					offsetx = SCALE/ 4;
 				}
-				if (a.getLabel().indexOf("v") >=0)
+				if (a.getLabel().equals("vf"))
 				{
 					shape = pie;
-					orientation = (float) Math.PI / 2;
-					offsety = - SCALE/ 4;
+					orientation = 0; //(float) Math.PI / 2;
+					offsetx = SCALE/ 4;
 				}
 				if (a.getLabel().indexOf("/") >=0)
 				{
@@ -725,6 +726,22 @@ public class Ernest120Model extends ErnestModel
 				{
 					shape = square;
 					offsetx = - SCALE /3;
+				}
+				if (a.getLabel().equals("(^f>t)") || a.getLabel().equals("(vf>t)") )
+				{
+					shape = triangle;
+					orientation = 0;
+					offsetx = 0;
+					offsety = 0;
+					g2d.setColor(Color.yellow);
+				}
+				if (a.getLabel().equals("(-f>t)"))
+				{
+					shape = triangle;
+					orientation = 0;
+					offsetx = 0;
+					offsety = 0;
+					g2d.setColor(Color.pink);
 				}
 
 				ref = g2d.getTransform();
