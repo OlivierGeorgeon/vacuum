@@ -681,7 +681,20 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 			}
 			else{
 				if (m_environment.isEmpty(m_envPanel.m_clickX,l_h-1-m_envPanel.m_clickY)){
+					m_environment.setBlock(m_envPanel.m_clickX, l_h-1-m_envPanel.m_clickY, Model.wall2);
 					m_environment.setBlock(m_envPanel.m_clickX, l_h-1-m_envPanel.m_clickY, Model.alga1);
+				}
+			}
+		}
+		// click right + shift : add or remove alga
+		if (c == 7){
+			if (m_environment.isWall(m_envPanel.m_clickX,l_h-1-m_envPanel.m_clickY)){
+				m_environment.setBlock(m_envPanel.m_clickX, l_h-1-m_envPanel.m_clickY, Model.empty);
+				m_environment.traceUserEvent("remove_water", m_envPanel.m_clickX, l_h-1-m_envPanel.m_clickY);
+			}
+			else{
+				if (m_environment.isEmpty(m_envPanel.m_clickX,l_h-1-m_envPanel.m_clickY)){
+					m_environment.setBlock(m_envPanel.m_clickX, l_h-1-m_envPanel.m_clickY, Model.wall2);
 					m_environment.traceUserEvent("add_water", m_envPanel.m_clickX, l_h-1-m_envPanel.m_clickY);
 				}
 			}

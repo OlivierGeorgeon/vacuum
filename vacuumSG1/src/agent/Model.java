@@ -53,7 +53,7 @@ public class Model extends Observable
 	
 	public static Block empty=new Block(EMPTY, FIELD_COLOR,"empty");
 	public static Block wall =new Block(HARD , WALL1,"wall1");
-	public Block wall2=new Block(HARD , WALL2,"wall2");
+	public static Block wall2=new Block(HARD , WALL2,"wall2");
 	public Block wall3=new Block(HARD , WALL3,"wall3");
 	public static Block alga1=new Block(SMOOTH,ALGA1,"alga1");
 	public Block alga2=new Block(SMOOTH,ALGA2,"alga2");
