@@ -190,7 +190,13 @@ public class EnvironnementPanel extends PrintablePanel implements MouseListener{
 				else m_clicked = 2;
 		if (e.getButton() == MouseEvent.BUTTON3)
 		{
-			if (e.isShiftDown()) m_clicked = 6;
+			if (e.isShiftDown()) 
+			{
+				if(e.isControlDown())
+					m_clicked = 7;
+				else	
+					m_clicked = 6;
+			}
 			else m_clicked = 3;
 		}
 	}
