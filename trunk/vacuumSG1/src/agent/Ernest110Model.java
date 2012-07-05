@@ -108,7 +108,7 @@ public class Ernest110Model extends ErnestModel
     {
     	// Instantiate Ernest
         m_ernest = new Ernest();
-        m_sensorymotorSystem = new SpatialSensorimotorSystem();
+        //m_sensorymotorSystem = new SpatialSensorimotorSystem();
         
         // Initialize the visualization.
 		m_SpaceMemory.setModel(this);
