@@ -52,6 +52,8 @@ public class Ernest120Model extends ErnestModel
 
     final static String FEEDBACK_TRUE = "t";
     final static String FEEDBACK_FALSE = "f";
+    final static String FEEDBACK_BRICK = "b";
+    final static String FEEDBACK_ALGA = "a";
     
     private static Color UNANIMATED_COLOR = Color.GRAY;
     
@@ -138,18 +140,20 @@ public class Ernest120Model extends ErnestModel
         m_ernest.setSensorymotorSystem(new Ernest12SensorimotorSystem());
         //m_ernest.setSensorymotorSystem(new BinarySensorymotorSystem());
 
-        m_ernest.addInteraction("-", "f",  -10); // Touch empty
-        m_ernest.addInteraction("-", "t",  -10); // Touch wall
-        m_ernest.addInteraction("\\","f",  -10); // Touch right empty
-        m_ernest.addInteraction("\\","t",  -10); // Touch right wall
-        m_ernest.addInteraction("/", "f",  -10); // Touch left empty
-        m_ernest.addInteraction("/", "t",  -10); // Touch left wall
-        m_ernest.addInteraction(">", "t",   100); // Move
-        m_ernest.addInteraction(">", "f",  -100);// Bump
-        m_ernest.addInteraction("v", "t",  -30); // Right 
-        m_ernest.addInteraction("v", "f",  -30); // Right 
-        m_ernest.addInteraction("^", "t",  -30); // Left 
-        m_ernest.addInteraction("^", "f",  -30); // Left 
+        m_ernest.addInteraction("-", "f",  -1); // Touch empty
+        m_ernest.addInteraction("-", "t",  -1); // Touch wall
+        m_ernest.addInteraction("-", "b",  -1); // Touch brick
+        m_ernest.addInteraction("-", "a",  -1); // Touch alga
+        m_ernest.addInteraction("\\","f",  -1); // Touch right empty
+        m_ernest.addInteraction("\\","t",  -1); // Touch right wall
+        m_ernest.addInteraction("/", "f",  -1); // Touch left empty
+        m_ernest.addInteraction("/", "t",  -1); // Touch left wall
+        m_ernest.addInteraction(">", "t",   5); // Move
+        m_ernest.addInteraction(">", "f",  -10);// Bump
+        m_ernest.addInteraction("v", "t",  -3); // Right 
+        m_ernest.addInteraction("v", "f",  -3); // Right 
+        m_ernest.addInteraction("^", "t",  -3); // Left 
+        m_ernest.addInteraction("^", "f",  -3); // Left 
 
 		cognitiveMode = AGENT_RUN;
         mTranslation = new Vector3f();
@@ -329,16 +333,21 @@ public class Ernest120Model extends ErnestModel
 	        {
 	        	Vector3f localPoint = new Vector3f(DIRECTION_AHEAD);
 	        	Vector3f point = localToParentRef(localPoint);
+            	Color blockColor = m_env.seeBlock(point.x, point.y);
+            	focusColor = blockColor;//Environment.WALL1;
 	            if (m_env.affordWalk(point))
 	            {
-	            	m_status = FEEDBACK_FALSE;
-	            	focusColor = Color.WHITE;
+	            	if (blockColor.equals(m_env.ALGA1))	
+	            		m_status = FEEDBACK_ALGA;
+	            	else
+		            	m_status = FEEDBACK_FALSE;
 	            }
 	            else
 	            {
-	            	m_status = FEEDBACK_TRUE;
-	            	Color blockColor = m_env.seeBlock(point.x, point.y);
-	            	focusColor = blockColor;//Environment.WALL1;
+	            	if (blockColor.equals(m_env.WALL1))	
+	            		m_status = FEEDBACK_TRUE;
+	            	else
+	            		m_status = FEEDBACK_BRICK;
 	            }
         		anim();
         		sleep(delayTouch);
@@ -355,8 +364,9 @@ public class Ernest120Model extends ErnestModel
 	            else
 	            {
 	            	m_status = FEEDBACK_TRUE;
-	            	Color blockColor = m_env.seeBlock(point.x, point.y);
-	            	leftColor = blockColor;//Environment.WALL1;
+	            	leftColor = Environment.WALL1;
+	            	//Color blockColor = m_env.seeBlock(point.x, point.y);
+	            	//leftColor = blockColor;//Environment.WALL1;
 	            }
         		anim();
         		sleep(delayTouch);
@@ -372,9 +382,10 @@ public class Ernest120Model extends ErnestModel
 	            }
 	            else
 	            {
-	            	m_status = FEEDBACK_TRUE;
-	            	Color blockColor = m_env.seeBlock(point.x, point.y);
-	            	rightColor = blockColor;//Environment.WALL1;
+            		m_status = FEEDBACK_TRUE;
+	            	rightColor = Environment.WALL1;
+	            	//Color blockColor = m_env.seeBlock(point.x, point.y);
+	            	//rightColor = blockColor;//Environment.WALL1;
 	            }
         		anim();
         		sleep(delayTouch);
@@ -653,7 +664,7 @@ public class Ernest120Model extends ErnestModel
 		AffineTransform or;
 		for (IPlace place : getErnest().getPlaceList())
 		{
-			if (place.getType() == Spas.PLACE_PHENOMENON)
+			if (place.getType() == Spas.PLACE_PHENOMENON || place.getType() == Spas.PLACE_COPRESENCE)
 			{
 				//g2d.setColor(new Color(place.getValue()));
 				int scale = (int)(127 + 128 * (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION);
@@ -715,6 +726,12 @@ public class Ernest120Model extends ErnestModel
 						shape = square;
 						offsetx = - SCALE /3;
 					}
+					if (a.getLabel().equals("-b"))
+					{
+						shape = square;
+						offsetx = - SCALE /3;
+						offsety = SCALE/6;
+					}
 					
 					if (shape != circle)
 					{
@@ -767,11 +784,14 @@ public class Ernest120Model extends ErnestModel
 				int offsetx = 0;
 				int offsety = 0;
 				IAct a = place.getAct();
-				if (a.getLabel().indexOf(">") >=0)
+				if (a.getLabel().equals(">t"))
 				{
 					shape = triangle;
-					if (a.getLabel().equals(">f"))
-						g2d.setColor(Color.red);
+				}
+				if (a.getLabel().equals(">f"))
+				{
+					shape = triangle;
+					g2d.setColor(Color.red);
 				}
 				if (a.getLabel().equals("^f"))
 				{
@@ -797,10 +817,22 @@ public class Ernest120Model extends ErnestModel
 					offsetx = - SCALE /4;
 					offsety = SCALE/3;
 				}
-				if (a.getLabel().indexOf("-") >=0)
+				if (a.getLabel().equals("-f") || a.getLabel().equals("-t") )
 				{
 					shape = square;
 					offsetx = - SCALE /3;
+				}
+				if (a.getLabel().equals("-b"))
+				{
+					shape = square;
+					offsetx = - SCALE /3;
+					g2d.setColor(Environment.WALL3);		
+				}
+				if (a.getLabel().equals("-a"))
+				{
+					shape = square;
+					offsetx = - SCALE /3;
+					g2d.setColor(Environment.ALGA1);		
 				}
 				if (a.getLabel().equals("(^f>t)") || a.getLabel().equals("(vf>t)") )
 				{
@@ -819,22 +851,24 @@ public class Ernest120Model extends ErnestModel
 					g2d.setColor(Color.pink);
 				}
 
-				ref = g2d.getTransform();
-		        or = new AffineTransform();
-		        float ooffx = offsetx * (float)Math.cos(- place.getOrientation()) + offsety * (float)Math.sin(- place.getOrientation());
-		        float ooffy = - offsetx * (float)Math.sin(- place.getOrientation()) + offsety * (float)Math.cos(- place.getOrientation());
-		        or.translate(WIDTH + (int)(place.getPosition().x * SCALE + ooffx), HEIGHT - (int)(place.getPosition().y * SCALE + ooffy));
-		        //or.translate(WIDTH + (int)(place.getPosition().x * SCALE + offsetx), HEIGHT - (int)(place.getPosition().y * SCALE + offsety ));
-		        //or.scale(( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION),( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION));
-		        or.rotate(- place.getOrientation());
-		        or.rotate(orientation);
-		        g2d.transform(or);
-				g2d.fill(shape);
-				g2d.setColor(Color.black);
-				g2d.draw(shape);
-		        g2d.setTransform(ref);
-				//g2d.setStroke(new BasicStroke(Math.max(SCALE / 3f * ( 1  - (spaceMemory.getUpdateCount() - place.getUpdateCount())/15f), 1), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-	
+				if (shape != circle)
+				{
+					ref = g2d.getTransform();
+			        or = new AffineTransform();
+			        float ooffx = offsetx * (float)Math.cos(- place.getOrientation()) + offsety * (float)Math.sin(- place.getOrientation());
+			        float ooffy = - offsetx * (float)Math.sin(- place.getOrientation()) + offsety * (float)Math.cos(- place.getOrientation());
+			        or.translate(WIDTH + (int)(place.getPosition().x * SCALE + ooffx), HEIGHT - (int)(place.getPosition().y * SCALE + ooffy));
+			        //or.translate(WIDTH + (int)(place.getPosition().x * SCALE + offsetx), HEIGHT - (int)(place.getPosition().y * SCALE + offsety ));
+			        //or.scale(( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION),( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION));
+			        or.rotate(- place.getOrientation());
+			        or.rotate(orientation);
+			        g2d.transform(or);
+					g2d.fill(shape);
+					g2d.setColor(Color.black);
+					g2d.draw(shape);
+			        g2d.setTransform(ref);
+					//g2d.setStroke(new BasicStroke(Math.max(SCALE / 3f * ( 1  - (spaceMemory.getUpdateCount() - place.getUpdateCount())/15f), 1), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+				}	
 			}
 		}
 	}
