@@ -173,10 +173,10 @@ public class ErnestModel extends Model
 		@SuppressWarnings("unchecked")
 		Pair<Integer, Color>[] retina = new Pair[Ernest.RESOLUTION_RETINA];
 		double angle = orientationRad - Math.PI/2;
-		double angleStep = Math.PI / Ernest.RESOLUTION_RETINA;
+		double angleSpan = Math.PI / Ernest.RESOLUTION_RETINA;
 		for (int i = 0; i < Ernest.RESOLUTION_RETINA; i++) {
-			retina[i] = scanArc((float)angle, (float)angleStep);
-			angle += angleStep;
+			retina[i] = scanArc((float)angle, (float)angleSpan);
+			angle += angleSpan;
 		}
 		return retina;
 	}
@@ -184,21 +184,21 @@ public class ErnestModel extends Model
 	/**
 	 * Scan an arc from Ernest's viewpoint, starting from the initial angle position and going through the angular span.
 	 * Stop scanning at the first singularity found.
-	 * @param t The initial angular position (trigonometric/counterclockwise - radian)
-	 * @param a The arc's angular span (trigonometric/counterclockwise)
+	 * @param angleOrigin The initial angular position (trigonometric/counterclockwise - radian)
+	 * @param angleSpan The arc's angular span (trigonometric/counterclockwise)
 	 * @param 20 The arc's diameter (the agent's visual range)
 	 * @return the color detected. 
 	 */
-	protected Pair<Integer, Color> scanArc(float t, float a) {
+	protected Pair<Integer, Color> scanArc(float angleOrigin, float angleSpan) {
 		Pair<Integer, Color> eyeFixation = null;
-		float step = a/2;
-		for (float angle = t; angle <= t + a + .001; angle += step) {
+		float step = angleSpan/10;
+		for (float angle = angleOrigin; angle <= angleOrigin + angleSpan + .001; angle += step) {
 			float x0 = (float) (mPosition.x + 20 * Math.cos(angle));
 			float y0 = (float) (mPosition.y + 20 * Math.sin(angle)); // Y axis is downwards.
 			//float y0 = (float) (m_y + 20 * Math.sin(angle)); // Y axis is upwards.
 			eyeFixation = rayTrace(mPosition.x,mPosition.y, x0, y0);
 			// We stop when we find a singularity.
-			if (eyeFixation.mRight != WALL_COLOR)
+			if (!eyeFixation.mRight.equals(WALL_COLOR))
 				break;
 		}
 		if (eyeFixation==null)
@@ -268,6 +268,9 @@ public class ErnestModel extends Model
 	    	
 	    	// Examine the block on the ray. Return wall or uninhibited dirty squares.
 	    	Color bgc = m_env.m_blocks[i][j].seeBlock();
+	    	if (bgc.equals(WALL_COLOR)) // don't see walls (for Ernest 11.4)
+	    		return Pair.create(Ernest.INFINITE, WALL_COLOR);
+	    	
 	    	if (m_env.isWall(i,j) || m_env.isFood(i,j) || m_env.isAlga(i,j))
 	    	{
 				int dist = (int) Math.sqrt(((i-x0)*(i-x0) + (j-y0)*(j-y0)) * Ernest.INT_FACTOR * Ernest.INT_FACTOR);

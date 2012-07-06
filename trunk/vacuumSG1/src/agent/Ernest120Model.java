@@ -70,6 +70,24 @@ public class Ernest120Model extends ErnestModel
     float m_animOrientation = 0;
     float m_animPosition = 0;
     
+    Pair<Integer, Color>[] eyeFixation = null;
+    /** The values of the pixels */
+    private int m_currentLeftPixel   = Ernest.INFINITE;
+    private int m_currentRightPixel  = Ernest.INFINITE;
+    private int m_previousLeftPixel  = Ernest.INFINITE;
+    private int m_previousRightPixel = Ernest.INFINITE;
+    
+    
+    /** The features that are sensed by the distal system. */
+    private String m_leftFeature = " ";
+    private String m_rightFeature = " ";
+    
+    /** The intrinsic satisfaction of sensing the current features */
+    private int m_satisfaction = 0;
+
+    private String[] stimulus = {" ", "x", "+", "*", "o"};
+    private int[]    value    = { 0,   10,  10,  15, -15};
+    
     /**
      * @param i The agent's numerical id. 
      */
@@ -140,21 +158,40 @@ public class Ernest120Model extends ErnestModel
         m_ernest.setSensorymotorSystem(new Ernest12SensorimotorSystem());
         //m_ernest.setSensorymotorSystem(new BinarySensorymotorSystem());
 
-        m_ernest.addInteraction("-", "f",  -1); // Touch empty
-        m_ernest.addInteraction("-", "t",  -1); // Touch wall
-        m_ernest.addInteraction("-", "b",  -1); // Touch brick
-        m_ernest.addInteraction("-", "a",  -1); // Touch alga
-        m_ernest.addInteraction("\\","f",  -1); // Touch right empty
-        m_ernest.addInteraction("\\","t",  -1); // Touch right wall
-        m_ernest.addInteraction("/", "f",  -1); // Touch left empty
-        m_ernest.addInteraction("/", "t",  -1); // Touch left wall
-        m_ernest.addInteraction(">", "t",   5); // Move
+//        m_ernest.addInteraction("-", "f",  -1); // Touch empty
+//        m_ernest.addInteraction("-", "t",  -1); // Touch wall
+//        m_ernest.addInteraction("-", "b",  -1); // Touch brick
+//        m_ernest.addInteraction("-", "a",  -1); // Touch alga
+//        m_ernest.addInteraction("\\","f",  -1); // Touch right empty
+//        m_ernest.addInteraction("\\","t",  -1); // Touch right wall
+//        m_ernest.addInteraction("/", "f",  -1); // Touch left empty
+//        m_ernest.addInteraction("/", "t",  -1); // Touch left wall
+        m_ernest.addInteraction(">", "t",   0); // 5 Move
         m_ernest.addInteraction(">", "f",  -10);// Bump
-        m_ernest.addInteraction("v", "t",  -3); // Right 
+        m_ernest.addInteraction("v", "t",  0); // Right 
         m_ernest.addInteraction("v", "f",  -3); // Right 
-        m_ernest.addInteraction("^", "t",  -3); // Left 
+        m_ernest.addInteraction("^", "t",  0); // Left 
         m_ernest.addInteraction("^", "f",  -3); // Left 
-
+        
+        for (int i = 0; i <= 4; i++)
+            for (int j = 0; j <= 4; j++)
+            	if ( i != 0 || j!=0)
+			        {
+			//	        m_ernest.addInteraction("-", stimulus[i] + stimulus[j] + "f",  value[i] + value[j] -1); // Touch empty
+			//	        m_ernest.addInteraction("-", stimulus[i] + stimulus[j] + "t",  value[i] + value[j] -1); // Touch wall
+			//	        m_ernest.addInteraction("-", stimulus[i] + stimulus[j] + "b",  value[i] + value[j] -1); // Touch brick
+			//	        m_ernest.addInteraction("-", stimulus[i] + stimulus[j] + "a",  value[i] + value[j] -1); // Touch alga
+			//	        m_ernest.addInteraction("\\",stimulus[i] + stimulus[j] + "f",  value[i] + value[j] -1); // Touch right empty
+			//	        m_ernest.addInteraction("\\",stimulus[i] + stimulus[j] + "t",  value[i] + value[j] -1); // Touch right wall
+			//	        m_ernest.addInteraction("/", stimulus[i] + stimulus[j] + "f",  value[i] + value[j] -1); // Touch left empty
+			//	        m_ernest.addInteraction("/", stimulus[i] + stimulus[j] + "t",  value[i] + value[j] -1); // Touch left wall
+				        m_ernest.addInteraction(">", stimulus[i] + stimulus[j] + "t",  value[i] + value[j] + 0); // Move
+				        m_ernest.addInteraction(">", stimulus[i] + stimulus[j] + "f",  value[i] + value[j] -10);// Bump
+				        m_ernest.addInteraction("v", stimulus[i] + stimulus[j] + "t",  value[i] + value[j] ); // Right 
+				        m_ernest.addInteraction("v", stimulus[i] + stimulus[j] + "f",  value[i] + value[j] -3); // Right 
+				        m_ernest.addInteraction("^", stimulus[i] + stimulus[j] + "t",  value[i] + value[j] ); // Left 
+				        m_ernest.addInteraction("^", stimulus[i] + stimulus[j] + "f",  value[i] + value[j] -3); // Left 
+			        }
 		cognitiveMode = AGENT_RUN;
         mTranslation = new Vector3f();
         mRotation  = new Vector3f();
@@ -251,7 +288,9 @@ public class Ernest120Model extends ErnestModel
      */
     private void enactSchema(int[] schema)
     {
-        focusColor = UNANIMATED_COLOR;
+        
+        // Touch
+    	focusColor = UNANIMATED_COLOR;
         leftColor =  UNANIMATED_COLOR;
         rightColor =  UNANIMATED_COLOR;
 
@@ -391,6 +430,27 @@ public class Ernest120Model extends ErnestModel
         		sleep(delayTouch);
 	        }
 	        
+	    	// Vision
+	        m_previousLeftPixel  = m_currentLeftPixel;
+	        m_previousRightPixel = m_currentRightPixel;
+	        eyeFixation = getRetina(mOrientation.z);
+	        for (int i = 0; i < Ernest.RESOLUTION_RETINA; i++)
+	            pixelColor[i] = eyeFixation[i].mRight;
+	        m_currentRightPixel  = eyeFixation[0].mLeft;
+	        m_currentLeftPixel   = eyeFixation[1].mLeft;
+	        
+	        m_satisfaction = 0;
+	        
+	        // The sensed features correspond to changes in the pixels.
+	        m_leftFeature  = sensePixel(m_previousLeftPixel, m_currentLeftPixel);
+	        m_rightFeature = sensePixel(m_previousRightPixel, m_currentRightPixel);  
+	        if (m_leftFeature.equals(" ") && m_rightFeature.equals(" "))
+	        {
+	        	m_leftFeature = ""; m_rightFeature = "";
+	        }
+	    	
+	        m_status = m_leftFeature + m_rightFeature + m_status;
+	        
 	        // Trace the environmental data
 	        if (m_tracer != null)
 	        {
@@ -402,6 +462,46 @@ public class Ernest120Model extends ErnestModel
     	}
     }
 
+    private String sensePixel(int previousPixel, int currentPixel) 
+    {
+            String feature = " ";
+            int satisfaction = 0;
+            
+            // arrived
+            if (previousPixel > currentPixel && currentPixel == 0)
+            {
+                    feature = "x";
+                    satisfaction = 100;
+            }
+            
+            // closer
+            else if (previousPixel < Ernest.INFINITE && currentPixel < previousPixel)
+            {
+                    feature = "+";
+                    satisfaction = 100;
+            }
+
+            // appear
+            else if (previousPixel == Ernest.INFINITE && currentPixel < Ernest.INFINITE)
+            {
+                    feature = "*";
+                    satisfaction = 150;
+            }
+            
+            // disappear
+            else if (previousPixel < Ernest.INFINITE && currentPixel == Ernest.INFINITE)
+            {
+                    feature = "o";
+                    satisfaction = -150;
+            }
+
+            System.out.println("Sensed " + "prev=" + previousPixel + "cur=" + currentPixel + " feature " + feature);
+            
+            m_satisfaction += satisfaction;
+
+            return feature;
+    }
+    
     /**
      * Paint Ernest as a shark.
      * @param g The graphic object for painting.
@@ -422,7 +522,7 @@ public class Ernest120Model extends ErnestModel
         
         // Retina pixel
         
-        //Arc2D.Double pixelIn = new Arc2D.Double(-20, -20, 40, 40,0, 180 / Ernest.RESOLUTION_RETINA + 1, Arc2D.PIE);
+        Arc2D.Double pixelIn = new Arc2D.Double(-20, -20, 40, 40,0, 180 / Ernest.RESOLUTION_RETINA + 1, Arc2D.PIE);
 //        Arc2D.Double focus = new Arc2D.Double(-10, -35, 20, 20,0, 180, Arc2D.PIE);
 //        Arc2D.Double left = new Arc2D.Double(-10, -35, 20, 20,90, 180, Arc2D.PIE);
 //        Arc2D.Double right = new Arc2D.Double(-10, -35, 20, 20,-90, 180, Arc2D.PIE);
@@ -508,6 +608,27 @@ public class Ernest120Model extends ErnestModel
         	g2d.setColor(Color.black);
         	g2d.draw(focus);
         }
+        
+        // Draw the retina
+        
+        AffineTransform transformColliculus = new AffineTransform();
+        transformColliculus.rotate(0);
+        transformColliculus.translate(0,-22);
+        g2d.transform(transformColliculus);
+        AffineTransform RetinaReference = g2d.getTransform();
+        AffineTransform transformSegment = new AffineTransform();
+        g2d.transform(transformSegment);
+        transformSegment.rotate( - Math.PI / Ernest.RESOLUTION_RETINA);
+        g2d.setColor(Color.BLACK);
+        
+        g2d.setTransform(RetinaReference);
+        for (int i = 0; i < Ernest.RESOLUTION_RETINA; i++)
+        {
+            g2d.setColor(pixelColor[i]);
+            g2d.fill(pixelIn);
+            g2d.transform(transformSegment);
+        }
+
     }
 
     /**
