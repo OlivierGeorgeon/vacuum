@@ -30,7 +30,9 @@ import java.util.List;
 
 import ernest.*;
 import spas.IAffordance;
+import spas.IObservation;
 import spas.IPlace;
+import spas.Observation;
 import imos.IAct;
 import spas.LocalSpaceMemory;
 import spas.Spas;
@@ -59,13 +61,15 @@ public class Ernest120Model extends ErnestModel
     
     public SpaceMemory m_SpaceMemory;
     
-    Color[] pixelColor = new Color[Ernest.RESOLUTION_RETINA];
-    Color[][] somatoMapColor = new Color[3][3];
-    Color focusColor = UNANIMATED_COLOR;
-    Color leftColor = UNANIMATED_COLOR;
-    Color rightColor = UNANIMATED_COLOR;
+    private Color[] pixelColor = new Color[Ernest.RESOLUTION_RETINA];
+    private Color[][] somatoMapColor = new Color[3][3];
+    private Color focusColor = UNANIMATED_COLOR;
+    private Color leftColor = UNANIMATED_COLOR;
+    private Color rightColor = UNANIMATED_COLOR;
     
-    String m_status = FEEDBACK_TRUE;
+    private String m_status = FEEDBACK_TRUE;
+    
+    private IObservation m_observation = new Observation();
     
     float m_animOrientation = 0;
     float m_animPosition = 0;
@@ -142,7 +146,7 @@ public class Ernest120Model extends ErnestModel
         // Initialize the visualization.
 		m_SpaceMemory.setModel(this);
 		m_eye.setModel(this);
-        
+		
         // Only trace the first agent.
         
         //if (ident == 8)
@@ -158,10 +162,10 @@ public class Ernest120Model extends ErnestModel
         m_ernest.setSensorymotorSystem(new Ernest12SensorimotorSystem());
         //m_ernest.setSensorymotorSystem(new BinarySensorymotorSystem());
 
-//        m_ernest.addInteraction("-", "f",  -1); // Touch empty
-//        m_ernest.addInteraction("-", "t",  -1); // Touch wall
-//        m_ernest.addInteraction("-", "b",  -1); // Touch brick
-//        m_ernest.addInteraction("-", "a",  -1); // Touch alga
+        m_ernest.addInteraction("-", "f",  -1); // Touch empty
+        m_ernest.addInteraction("-", "t",  -1); // Touch wall
+        m_ernest.addInteraction("-", "b",  -1); // Touch brick
+        m_ernest.addInteraction("-", "a",  -1); // Touch alga
 //        m_ernest.addInteraction("\\","f",  -1); // Touch right empty
 //        m_ernest.addInteraction("\\","t",  -1); // Touch right wall
 //        m_ernest.addInteraction("/", "f",  -1); // Touch left empty
@@ -173,25 +177,25 @@ public class Ernest120Model extends ErnestModel
         m_ernest.addInteraction("^", "t",  0); // Left 
         m_ernest.addInteraction("^", "f",  -3); // Left 
         
-        for (int i = 0; i <= 4; i++)
-            for (int j = 0; j <= 4; j++)
-            	if ( i != 0 || j!=0)
-			        {
-			//	        m_ernest.addInteraction("-", stimulus[i] + stimulus[j] + "f",  value[i] + value[j] -1); // Touch empty
-			//	        m_ernest.addInteraction("-", stimulus[i] + stimulus[j] + "t",  value[i] + value[j] -1); // Touch wall
-			//	        m_ernest.addInteraction("-", stimulus[i] + stimulus[j] + "b",  value[i] + value[j] -1); // Touch brick
-			//	        m_ernest.addInteraction("-", stimulus[i] + stimulus[j] + "a",  value[i] + value[j] -1); // Touch alga
-			//	        m_ernest.addInteraction("\\",stimulus[i] + stimulus[j] + "f",  value[i] + value[j] -1); // Touch right empty
-			//	        m_ernest.addInteraction("\\",stimulus[i] + stimulus[j] + "t",  value[i] + value[j] -1); // Touch right wall
-			//	        m_ernest.addInteraction("/", stimulus[i] + stimulus[j] + "f",  value[i] + value[j] -1); // Touch left empty
-			//	        m_ernest.addInteraction("/", stimulus[i] + stimulus[j] + "t",  value[i] + value[j] -1); // Touch left wall
-				        m_ernest.addInteraction(">", stimulus[i] + stimulus[j] + "t",  value[i] + value[j] + 0); // Move
-				        m_ernest.addInteraction(">", stimulus[i] + stimulus[j] + "f",  value[i] + value[j] -10);// Bump
-				        m_ernest.addInteraction("v", stimulus[i] + stimulus[j] + "t",  value[i] + value[j] ); // Right 
-				        m_ernest.addInteraction("v", stimulus[i] + stimulus[j] + "f",  value[i] + value[j] -3); // Right 
-				        m_ernest.addInteraction("^", stimulus[i] + stimulus[j] + "t",  value[i] + value[j] ); // Left 
-				        m_ernest.addInteraction("^", stimulus[i] + stimulus[j] + "f",  value[i] + value[j] -3); // Left 
-			        }
+//        for (int i = 0; i <= 4; i++)
+//            for (int j = 0; j <= 4; j++)
+//            	if ( i != 0 || j!=0)
+//			        {
+//				        m_ernest.addInteraction("-", stimulus[i] + stimulus[j] + "f",  value[i] + value[j] -1); // Touch empty
+//				        m_ernest.addInteraction("-", stimulus[i] + stimulus[j] + "t",  value[i] + value[j] -1); // Touch wall
+//				        m_ernest.addInteraction("-", stimulus[i] + stimulus[j] + "b",  value[i] + value[j] -1); // Touch brick
+//				        m_ernest.addInteraction("-", stimulus[i] + stimulus[j] + "a",  value[i] + value[j] -1); // Touch alga
+//			//	        m_ernest.addInteraction("\\",stimulus[i] + stimulus[j] + "f",  value[i] + value[j] -1); // Touch right empty
+//			//	        m_ernest.addInteraction("\\",stimulus[i] + stimulus[j] + "t",  value[i] + value[j] -1); // Touch right wall
+//			//	        m_ernest.addInteraction("/", stimulus[i] + stimulus[j] + "f",  value[i] + value[j] -1); // Touch left empty
+//			//	        m_ernest.addInteraction("/", stimulus[i] + stimulus[j] + "t",  value[i] + value[j] -1); // Touch left wall
+//				        m_ernest.addInteraction(">", stimulus[i] + stimulus[j] + "t",  value[i] + value[j] + 0); // Move
+//				        m_ernest.addInteraction(">", stimulus[i] + stimulus[j] + "f",  value[i] + value[j] -10);// Bump
+//				        m_ernest.addInteraction("v", stimulus[i] + stimulus[j] + "t",  value[i] + value[j] ); // Right 
+//				        m_ernest.addInteraction("v", stimulus[i] + stimulus[j] + "f",  value[i] + value[j] -3); // Right 
+//				        m_ernest.addInteraction("^", stimulus[i] + stimulus[j] + "t",  value[i] + value[j] ); // Left 
+//				        m_ernest.addInteraction("^", stimulus[i] + stimulus[j] + "f",  value[i] + value[j] -3); // Left 
+//			        }
 		cognitiveMode = AGENT_RUN;
         mTranslation = new Vector3f();
         mRotation  = new Vector3f();
@@ -267,9 +271,8 @@ public class Ernest120Model extends ErnestModel
      */
     public void update()
     {
-    	//count();
-
-		String schema = m_ernest.step(m_status);
+		//String schema = m_ernest.step(m_status);
+		String schema = m_ernest.step(m_observation);
 		
 		int[] intention = new int[2]; 
 		intention[0]= schema.toCharArray()[0];
@@ -288,8 +291,13 @@ public class Ernest120Model extends ErnestModel
      */
     private void enactSchema(int[] schema)
     {
+    	m_observation = new Observation();
+    	String status = "";
         
         // Touch
+        if (m_tracer != null)
+			m_tracer.addEventElement("touch_color", ErnestUtils.hexColor(focusColor.getRGB()));
+
     	focusColor = UNANIMATED_COLOR;
         leftColor =  UNANIMATED_COLOR;
         rightColor =  UNANIMATED_COLOR;
@@ -299,7 +307,7 @@ public class Ernest120Model extends ErnestModel
     	m_animOrientation = 0;
     	m_animPosition = 0;
 
-    	if (schema[0] != 0)
+        if (schema[0] != 0)
     	{
     		
 	        m_schema = Character.toString((char)schema[0]);
@@ -319,7 +327,7 @@ public class Ernest120Model extends ErnestModel
 	        		sleep(delayMove);
 	        	}
 	        	if (mOrientation.z < - Math.PI) mOrientation.z += 2 * Math.PI; 
-	        	m_status = FEEDBACK_FALSE;
+	        	status = FEEDBACK_FALSE;
 	        }
 	        else if (schema[0] == '^')
 	        {
@@ -332,7 +340,7 @@ public class Ernest120Model extends ErnestModel
 	        		sleep(delayMove);
 	        	}
 	        	if (mOrientation.z > Math.PI) mOrientation.z -= 2 * Math.PI; 
-	        	m_status = FEEDBACK_FALSE;
+	        	status = FEEDBACK_FALSE;
 	        }
 	        else if (schema[0] == '>')
 	        {
@@ -348,7 +356,7 @@ public class Ernest120Model extends ErnestModel
 		        		anim();
 		        		sleep(delayMove);
 		        	}
-	            	m_status = FEEDBACK_TRUE;
+		        	status = FEEDBACK_TRUE;
 	            }
 	            else
 	            {
@@ -365,7 +373,40 @@ public class Ernest120Model extends ErnestModel
 		        		anim();
 		        		sleep(20);
 		        	}
-	            	m_status = FEEDBACK_FALSE;
+		        	status = FEEDBACK_FALSE;
+	            }
+	        }
+	        else if (schema[0] == '<')
+	        {
+	        	Vector3f localPoint = new Vector3f(DIRECTION_BEHIND);
+	        	Vector3f point = localToParentRef(localPoint);
+	            if (m_env.affordWalk(point))
+	            {
+		        	for (int i = 0; i < 20; i++ )
+		        	{
+		            	mPosition.set(localToParentRef(new Vector3f(-.05f,0,0)));
+		            	m_animPosition -= .05;
+		        		anim();
+		        		sleep(delayMove);
+		        	}
+		        	status = FEEDBACK_TRUE;
+	            }
+	            else
+	            {
+	            	focusColor = Color.RED;
+		        	for (int i = 0; i < 5; i++ )
+		        	{
+		            	mPosition.set(localToParentRef(new Vector3f(-.05f,0,0)));
+		        		anim();
+		        		sleep(20);
+		        	}
+		        	for (int i = 0; i < 5; i++ )
+		        	{
+		            	mPosition.set(localToParentRef(new Vector3f(.05f,0,0)));
+		        		anim();
+		        		sleep(20);
+		        	}
+		        	status = FEEDBACK_FALSE;
 	            }
 	        }
 	        else if (schema[0] == '-')
@@ -374,19 +415,25 @@ public class Ernest120Model extends ErnestModel
 	        	Vector3f point = localToParentRef(localPoint);
             	Color blockColor = m_env.seeBlock(point.x, point.y);
             	focusColor = blockColor;//Environment.WALL1;
+    	    	ErnestModel entity = m_env.getEntity(point, mName);
 	            if (m_env.affordWalk(point))
 	            {
-	            	if (blockColor.equals(m_env.ALGA1))	
-	            		m_status = FEEDBACK_ALGA;
+	            	if (blockColor.equals(m_env.FIELD_COLOR))	
+	            		status = FEEDBACK_FALSE;
 	            	else
-		            	m_status = FEEDBACK_FALSE;
+	            		status = FEEDBACK_ALGA;
+	            	if (entity != null)
+	            	{
+	            		status = FEEDBACK_ALGA;
+	                	focusColor = entity.getColor();	            		
+	            	}
 	            }
 	            else
 	            {
 	            	if (blockColor.equals(m_env.WALL1))	
-	            		m_status = FEEDBACK_TRUE;
+	            		status = FEEDBACK_TRUE;
 	            	else
-	            		m_status = FEEDBACK_BRICK;
+	            		status = FEEDBACK_BRICK;
 	            }
         		anim();
         		sleep(delayTouch);
@@ -397,12 +444,12 @@ public class Ernest120Model extends ErnestModel
 	        	Vector3f point = localToParentRef(localPoint);
 	            if (m_env.affordWalk(point))
 	            {
-	            	m_status = FEEDBACK_FALSE;
+	            	status = FEEDBACK_FALSE;
 	            	leftColor = Color.WHITE;
 	            }
 	            else
 	            {
-	            	m_status = FEEDBACK_TRUE;
+	            	status = FEEDBACK_TRUE;
 	            	leftColor = Environment.WALL1;
 	            	//Color blockColor = m_env.seeBlock(point.x, point.y);
 	            	//leftColor = blockColor;//Environment.WALL1;
@@ -416,12 +463,12 @@ public class Ernest120Model extends ErnestModel
 	        	Vector3f point = localToParentRef(localPoint);
 	            if (m_env.affordWalk(point))
 	            {
-	            	m_status = FEEDBACK_FALSE;
+	            	status = FEEDBACK_FALSE;
 	            	rightColor = Color.WHITE;
 	            }
 	            else
 	            {
-            		m_status = FEEDBACK_TRUE;
+	            	status = FEEDBACK_TRUE;
 	            	rightColor = Environment.WALL1;
 	            	//Color blockColor = m_env.seeBlock(point.x, point.y);
 	            	//rightColor = blockColor;//Environment.WALL1;
@@ -431,30 +478,40 @@ public class Ernest120Model extends ErnestModel
 	        }
 	        
 	    	// Vision
-	        m_previousLeftPixel  = m_currentLeftPixel;
+//	        if (m_tracer != null)
+//	        {
+//	        	Object retina = m_tracer.addEventElement("retina");
+//				m_tracer.addSubelement(retina, "pixel_0", ErnestUtils.hexColor(pixelColor[0].getRGB()));
+//				m_tracer.addSubelement(retina, "pixel_1", ErnestUtils.hexColor(pixelColor[1].getRGB()));
+//	        }
+	        
+			m_previousLeftPixel  = m_currentLeftPixel;
 	        m_previousRightPixel = m_currentRightPixel;
 	        eyeFixation = getRetina(mOrientation.z);
+	        
+	        m_observation.setVisualStimuli(0, eyeFixation[0].mRight.getRGB());
+	        m_observation.setVisualStimuli(1, eyeFixation[1].mRight.getRGB());
+	        m_observation.setVisualDistance(0, eyeFixation[0].mLeft);
+	        m_observation.setVisualDistance(1, eyeFixation[1].mLeft);
 	        for (int i = 0; i < Ernest.RESOLUTION_RETINA; i++)
 	            pixelColor[i] = eyeFixation[i].mRight;
-	        m_currentRightPixel  = eyeFixation[0].mLeft;
-	        m_currentLeftPixel   = eyeFixation[1].mLeft;
-	        
-	        m_satisfaction = 0;
-	        
-	        // The sensed features correspond to changes in the pixels.
-	        m_leftFeature  = sensePixel(m_previousLeftPixel, m_currentLeftPixel);
-	        m_rightFeature = sensePixel(m_previousRightPixel, m_currentRightPixel);  
-	        if (m_leftFeature.equals(" ") && m_rightFeature.equals(" "))
-	        {
-	        	m_leftFeature = ""; m_rightFeature = "";
-	        }
-	    	
-	        m_status = m_leftFeature + m_rightFeature + m_status;
+//	        m_currentRightPixel  = eyeFixation[0].mLeft;
+//	        m_currentLeftPixel   = eyeFixation[1].mLeft;
+//	        
+//	        m_satisfaction = 0;
+//	        
+//	        // The sensed features correspond to changes in the pixels.
+//	        m_leftFeature  = sensePixel(m_previousLeftPixel, m_currentLeftPixel);
+//	        m_rightFeature = sensePixel(m_previousRightPixel, m_currentRightPixel);  
+//	        if (m_leftFeature.equals(" ") && m_rightFeature.equals(" "))
+//	        	{m_leftFeature = ""; m_rightFeature = "";}
+//	    	
+//	        m_observation.setStimuli(m_leftFeature + m_rightFeature + status);
+	        m_observation.setStimuli(status);
 	        
 	        // Trace the environmental data
 	        if (m_tracer != null)
 	        {
-				//Object environment = m_tracer.newEvent("environment", "position", m_counter);
 				m_tracer.addEventElement("x", mPosition.x + "");
 				m_tracer.addEventElement("y", mPosition.y + "");
 				m_tracer.addEventElement("orientation", mOrientation.z + "");
@@ -613,7 +670,7 @@ public class Ernest120Model extends ErnestModel
         
         AffineTransform transformColliculus = new AffineTransform();
         transformColliculus.rotate(0);
-        transformColliculus.translate(0,-22);
+        transformColliculus.translate(0,0);
         g2d.transform(transformColliculus);
         AffineTransform RetinaReference = g2d.getTransform();
         AffineTransform transformSegment = new AffineTransform();
@@ -914,13 +971,40 @@ public class Ernest120Model extends ErnestModel
 					shape = triangle;
 					g2d.setColor(Color.red);
 				}
+				if (a.getLabel().equals(">++t"))
+				{
+					shape = triangle;
+					//g2d.setColor(Color.red);
+				}
+				if (a.getLabel().equals("> +t"))
+				{
+					shape = triangle;
+					//g2d.setColor(Color.red);
+				}
+				if (a.getLabel().equals(">+ t"))
+				{
+					shape = triangle;
+					//g2d.setColor(Color.red);
+				}
 				if (a.getLabel().equals("^f"))
 				{
 					shape = pie;
 					orientation = 0;//(float) - Math.PI;// / 2;
 					offsetx = SCALE/ 4;
 				}
+				if (a.getLabel().equals("^* f"))
+				{
+					shape = pie;
+					orientation = 0;//(float) - Math.PI;// / 2;
+					offsetx = SCALE/ 4;
+				}
 				if (a.getLabel().equals("vf"))
+				{
+					shape = pie;
+					orientation = 0; //(float) Math.PI / 2;
+					offsetx = SCALE/ 4;
+				}
+				if (a.getLabel().equals("v *f"))
 				{
 					shape = pie;
 					orientation = 0; //(float) Math.PI / 2;
@@ -953,7 +1037,7 @@ public class Ernest120Model extends ErnestModel
 				{
 					shape = square;
 					offsetx = - SCALE /3;
-					g2d.setColor(Environment.ALGA1);		
+					//g2d.setColor(Environment.ALGA1);		
 				}
 				if (a.getLabel().equals("(^f>t)") || a.getLabel().equals("(vf>t)") )
 				{
