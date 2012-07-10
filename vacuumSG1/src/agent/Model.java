@@ -31,7 +31,7 @@ public class Model extends Observable
 {
 	public static final long serialVersionUID = 1;
 
-	public static final float BOUNDING_RADIUS = .4f; // the agent's physical diameter (for collision)
+	public static final float BOUNDING_RADIUS = .6f; // the agent's physical diameter (for collision) .4f
 	
 	// tactile properties
 	public static final int EMPTY         = 0;
