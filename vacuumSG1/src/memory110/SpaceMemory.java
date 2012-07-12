@@ -67,8 +67,8 @@ public class SpaceMemory
 		return m_model.getPreviousOrientation();
 	}
 	
-	public IPlace getFocusPlace()
-	{
-		return m_model.getErnest().getFocusPlace();
-	}	
+//	public IPlace getFocusPlace()
+//	{
+//		return m_model.getErnest().getFocusPlace();
+//	}	
 }

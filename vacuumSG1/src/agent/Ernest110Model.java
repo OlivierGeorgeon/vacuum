@@ -646,7 +646,7 @@ public class Ernest110Model extends ErnestModel
 //			}
 //		}
 
-		IPlace focusPlace = getErnest().getFocusPlace();
+		//IPlace focusPlace = getErnest().getFocusPlace();
 		agentOrientation = getOrientation();
 		
 		//float baseOrientation = - agentOrientation + focusPlace.getOrientation();
@@ -716,42 +716,42 @@ public class Ernest110Model extends ErnestModel
 							WIDTH + (int)(place.getSecondPosition().x * SCALE), HEIGHT - (int)(place.getSecondPosition().y * SCALE));
 					
 					// Display the affordances 
-					if (place == focusPlace)
-					{
-						float absoluteOrientation = - place.getOrientation() ; 
-						AffineTransform ref2 = g2d.getTransform();
-						AffineTransform local = new AffineTransform();
-				        local.rotate(absoluteOrientation, WIDTH + (int)(place.getPosition().x * SCALE),HEIGHT - (int)(place.getPosition().y * SCALE) );
-				        g2d.transform(local);
-	
-						g2d.setStroke(new BasicStroke(SCALE / 10f));
-						AffineTransform or;
-						for (IAffordance affordance : place.getBundle().getAffordanceList())
-						{
-							int x2 = (int)((place.getPosition().x + affordance.getPlace().getPosition().x) * SCALE); 
-							int y2 = (int)((place.getPosition().y + affordance.getPlace().getPosition().y) * SCALE); 
-		 					
-							Shape shape = circle;
-							if (affordance.getPlace().getShape() == Spas.SHAPE_TRIANGLE)
-								shape = triangle;
-							else if (affordance.getPlace().getShape() == Spas.SHAPE_PIE)
-								shape = pie;
-							
-					        ref = g2d.getTransform();
-					        or = new AffineTransform();
-					        or.translate(WIDTH + x2, HEIGHT - y2);
-					        or.scale(( .6f  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION),( .6f  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION));
-					        or.rotate(- affordance.getPlace().getOrientation());
-					        g2d.transform(or);
-							g2d.setColor(new Color(affordance.getValue()));
-							g2d.fill(shape);
-							g2d.setColor(new Color(place.getBundle().getValue()));
-							g2d.draw(shape);
-					        g2d.setTransform(ref);
-							//g2d.fillOval(WIDTH + x2 - 5, HEIGHT - y2 + 5, 10, 10);
-						}
-				        g2d.setTransform(ref2);
-					}
+//					if (place == focusPlace)
+//					{
+//						float absoluteOrientation = - place.getOrientation() ; 
+//						AffineTransform ref2 = g2d.getTransform();
+//						AffineTransform local = new AffineTransform();
+//				        local.rotate(absoluteOrientation, WIDTH + (int)(place.getPosition().x * SCALE),HEIGHT - (int)(place.getPosition().y * SCALE) );
+//				        g2d.transform(local);
+//	
+//						g2d.setStroke(new BasicStroke(SCALE / 10f));
+//						AffineTransform or;
+//						for (IAffordance affordance : place.getBundle().getAffordanceList())
+//						{
+//							int x2 = (int)((place.getPosition().x + affordance.getPlace().getPosition().x) * SCALE); 
+//							int y2 = (int)((place.getPosition().y + affordance.getPlace().getPosition().y) * SCALE); 
+//		 					
+//							Shape shape = circle;
+//							if (affordance.getPlace().getShape() == Spas.SHAPE_TRIANGLE)
+//								shape = triangle;
+//							else if (affordance.getPlace().getShape() == Spas.SHAPE_PIE)
+//								shape = pie;
+//							
+//					        ref = g2d.getTransform();
+//					        or = new AffineTransform();
+//					        or.translate(WIDTH + x2, HEIGHT - y2);
+//					        or.scale(( .6f  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION),( .6f  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION));
+//					        or.rotate(- affordance.getPlace().getOrientation());
+//					        g2d.transform(or);
+//							g2d.setColor(new Color(affordance.getValue()));
+//							g2d.fill(shape);
+//							g2d.setColor(new Color(place.getBundle().getValue()));
+//							g2d.draw(shape);
+//					        g2d.setTransform(ref);
+//							//g2d.fillOval(WIDTH + x2 - 5, HEIGHT - y2 + 5, 10, 10);
+//						}
+//				        g2d.setTransform(ref2);
+//					}
 				}			
 			}
         }
@@ -801,27 +801,27 @@ public class Ernest110Model extends ErnestModel
 			}
 		}
 				
-		// Display the focus
-		int focusRadius = SCALE / 5;
-		g2d.setStroke(new BasicStroke(SCALE / 10f));
-
-		d = focusPlace.getPosition().length() * SCALE;
-		rad = (float)Math.atan2((double)focusPlace.getPosition().y, focusPlace.getPosition().x);			
-		g2d.setColor(new Color(focusPlace.getBundle().getValue()));		
-		int x0 = WIDTH + (int) (d * Math.cos(rad));
-		int y0 = HEIGHT - (int) (d * Math.sin(rad));
-		//g2d.fillOval(x0 - focusRadius, y0 - focusRadius, 2 * focusRadius, 2 * focusRadius);
-		
-		g2d.setColor(Color.MAGENTA);	
-		//g2d.setColor(new Color(focusPlace.getBundle().getValue()));
-		if (focusPlace.getSpeed() != null)
-			g2d.drawLine(x0, y0, x0 + (int)(focusPlace.getSpeed().x * SCALE), y0 - (int)(focusPlace.getSpeed().y * SCALE));
-		g2d.setStroke(new BasicStroke(SCALE / 20f));
-		g2d.drawOval(x0 - focusRadius, y0 - focusRadius, 2 * focusRadius, 2 * focusRadius);
-		//g2d.fillOval(x0 - focusRadius, y0 - focusRadius, 2 * focusRadius, 2 * focusRadius);
-		//g2d.setColor(Color.BLUE);	
-		float absoluteOrientation = focusPlace.getOrientation();// + agentOrientation; 
-		//g2d.drawLine(x0 - (int)(Math.cos(absoluteOrientation) * focusRadius), y0 + (int)(Math.sin(absoluteOrientation) * focusRadius), x0 + (int)(Math.cos(absoluteOrientation) * focusRadius *2), y0 - (int)(Math.sin(absoluteOrientation) * focusRadius *2));
+//		// Display the focus
+//		int focusRadius = SCALE / 5;
+//		g2d.setStroke(new BasicStroke(SCALE / 10f));
+//
+//		d = focusPlace.getPosition().length() * SCALE;
+//		rad = (float)Math.atan2((double)focusPlace.getPosition().y, focusPlace.getPosition().x);			
+//		g2d.setColor(new Color(focusPlace.getBundle().getValue()));		
+//		int x0 = WIDTH + (int) (d * Math.cos(rad));
+//		int y0 = HEIGHT - (int) (d * Math.sin(rad));
+//		//g2d.fillOval(x0 - focusRadius, y0 - focusRadius, 2 * focusRadius, 2 * focusRadius);
+//		
+//		g2d.setColor(Color.MAGENTA);	
+//		//g2d.setColor(new Color(focusPlace.getBundle().getValue()));
+//		if (focusPlace.getSpeed() != null)
+//			g2d.drawLine(x0, y0, x0 + (int)(focusPlace.getSpeed().x * SCALE), y0 - (int)(focusPlace.getSpeed().y * SCALE));
+//		g2d.setStroke(new BasicStroke(SCALE / 20f));
+//		g2d.drawOval(x0 - focusRadius, y0 - focusRadius, 2 * focusRadius, 2 * focusRadius);
+//		//g2d.fillOval(x0 - focusRadius, y0 - focusRadius, 2 * focusRadius, 2 * focusRadius);
+//		//g2d.setColor(Color.BLUE);	
+//		float absoluteOrientation = focusPlace.getOrientation();// + agentOrientation; 
+//		//g2d.drawLine(x0 - (int)(Math.cos(absoluteOrientation) * focusRadius), y0 + (int)(Math.sin(absoluteOrientation) * focusRadius), x0 + (int)(Math.cos(absoluteOrientation) * focusRadius *2), y0 - (int)(Math.sin(absoluteOrientation) * focusRadius *2));
 
 		// Display agent
         //AffineTransform ref = g2d.getTransform();
