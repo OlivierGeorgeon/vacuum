@@ -271,11 +271,11 @@ public class ErnestModel extends Model
 	    	if (bgc.equals(WALL_COLOR)) // don't see walls (for Ernest 11.4)
 	    		return Pair.create(Ernest.INFINITE, WALL_COLOR);
 	    	
-	    	if (m_env.isWall(i,j) || m_env.isFood(i,j) || m_env.isAlga(i,j))
-	    	{
-				int dist = (int) Math.sqrt(((i-x0)*(i-x0) + (j-y0)*(j-y0)) * Ernest.INT_FACTOR * Ernest.INT_FACTOR);
-				return Pair.create(dist, bgc);
-    		}
+//	    	if (m_env.isWall(i,j) || m_env.isFood(i,j) || m_env.isAlga(i,j))
+//	    	{
+//				int dist = (int) Math.sqrt(((i-x0)*(i-x0) + (j-y0)*(j-y0)) * Ernest.INT_FACTOR * Ernest.INT_FACTOR);
+//				return Pair.create(dist, bgc);
+//    		}
 	    	//if (m_env.isAgent(i, j, mName))
 	    	ErnestModel entity = m_env.getEntity(new Vector3f(i,j,0), mName);
 	    	if (entity != null)

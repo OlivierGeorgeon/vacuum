@@ -89,9 +89,6 @@ public class Ernest120Model extends ErnestModel
     /** The intrinsic satisfaction of sensing the current features */
     private int m_satisfaction = 0;
 
-    private String[] stimulus = {" ", "x", "+", "*", "o"};
-    private int[]    value    = { 0,   10,  10,  15, -15};
-    
     /**
      * @param i The agent's numerical id. 
      */
@@ -150,7 +147,7 @@ public class Ernest120Model extends ErnestModel
         // Only trace the first agent.
         
         //if (ident == 8)
-        m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","NKmqGfrDVaTZQDSsgKNazjXd-cG-TZ");
+        //m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","NKmqGfrDVaTZQDSsgKNazjXd-cG-TZ");
                         
         // Initialize the Ernest === 
         
@@ -162,40 +159,35 @@ public class Ernest120Model extends ErnestModel
         m_ernest.setSensorymotorSystem(new Ernest12SensorimotorSystem());
         //m_ernest.setSensorymotorSystem(new BinarySensorymotorSystem());
 
+        // For the small loop
         m_ernest.addInteraction("-", "f",  -1); // Touch empty
         m_ernest.addInteraction("-", "t",  -1); // Touch wall
         m_ernest.addInteraction("-", "b",  -1); // Touch brick
         m_ernest.addInteraction("-", "a",  -1); // Touch alga
-//        m_ernest.addInteraction("\\","f",  -1); // Touch right empty
-//        m_ernest.addInteraction("\\","t",  -1); // Touch right wall
-//        m_ernest.addInteraction("/", "f",  -1); // Touch left empty
-//        m_ernest.addInteraction("/", "t",  -1); // Touch left wall
-        m_ernest.addInteraction(">", "t",   0); // 5 Move
+        m_ernest.addInteraction("\\","f",  -1); // Touch right empty
+        m_ernest.addInteraction("\\","t",  -1); // Touch right wall
+        m_ernest.addInteraction("/", "f",  -1); // Touch left empty
+        m_ernest.addInteraction("/", "t",  -1); // Touch left wall
+        m_ernest.addInteraction(">", "t",   5); // Move
         m_ernest.addInteraction(">", "f",  -10);// Bump
-        m_ernest.addInteraction("v", "t",  0); // Right 
+//        m_ernest.addInteraction("<", "t",  -10); // Move backward
+//        m_ernest.addInteraction("<", "f",  -10);// Bump backward
+        m_ernest.addInteraction(">", "a",  10);//  Move to alga
+        m_ernest.addInteraction("v", "t",  -3); // Right
         m_ernest.addInteraction("v", "f",  -3); // Right 
-        m_ernest.addInteraction("^", "t",  0); // Left 
+        m_ernest.addInteraction("^", "t",  -3); // Left
         m_ernest.addInteraction("^", "f",  -3); // Left 
+
+        // With vision 
+//        m_ernest.addInteraction("-", "f",  -1); // Touch empty
+//        m_ernest.addInteraction("-", "t",  -1); // Touch wall
+//        m_ernest.addInteraction("-", "b",  -1); // Touch brick
+//        m_ernest.addInteraction("-", "a",  -1); // Touch alga
+//        m_ernest.addInteraction(">", "t",   0); // 5 Move 0
+//        m_ernest.addInteraction(">", "f",  -10);// Bump
+//        m_ernest.addInteraction("v", "f",  -3); // Right 
+//        m_ernest.addInteraction("^", "f",  -3); // Left 
         
-//        for (int i = 0; i <= 4; i++)
-//            for (int j = 0; j <= 4; j++)
-//            	if ( i != 0 || j!=0)
-//			        {
-//				        m_ernest.addInteraction("-", stimulus[i] + stimulus[j] + "f",  value[i] + value[j] -1); // Touch empty
-//				        m_ernest.addInteraction("-", stimulus[i] + stimulus[j] + "t",  value[i] + value[j] -1); // Touch wall
-//				        m_ernest.addInteraction("-", stimulus[i] + stimulus[j] + "b",  value[i] + value[j] -1); // Touch brick
-//				        m_ernest.addInteraction("-", stimulus[i] + stimulus[j] + "a",  value[i] + value[j] -1); // Touch alga
-//			//	        m_ernest.addInteraction("\\",stimulus[i] + stimulus[j] + "f",  value[i] + value[j] -1); // Touch right empty
-//			//	        m_ernest.addInteraction("\\",stimulus[i] + stimulus[j] + "t",  value[i] + value[j] -1); // Touch right wall
-//			//	        m_ernest.addInteraction("/", stimulus[i] + stimulus[j] + "f",  value[i] + value[j] -1); // Touch left empty
-//			//	        m_ernest.addInteraction("/", stimulus[i] + stimulus[j] + "t",  value[i] + value[j] -1); // Touch left wall
-//				        m_ernest.addInteraction(">", stimulus[i] + stimulus[j] + "t",  value[i] + value[j] + 0); // Move
-//				        m_ernest.addInteraction(">", stimulus[i] + stimulus[j] + "f",  value[i] + value[j] -10);// Bump
-//				        m_ernest.addInteraction("v", stimulus[i] + stimulus[j] + "t",  value[i] + value[j] ); // Right 
-//				        m_ernest.addInteraction("v", stimulus[i] + stimulus[j] + "f",  value[i] + value[j] -3); // Right 
-//				        m_ernest.addInteraction("^", stimulus[i] + stimulus[j] + "t",  value[i] + value[j] ); // Left 
-//				        m_ernest.addInteraction("^", stimulus[i] + stimulus[j] + "f",  value[i] + value[j] -3); // Left 
-//			        }
 		cognitiveMode = AGENT_RUN;
         mTranslation = new Vector3f();
         mRotation  = new Vector3f();
@@ -794,7 +786,7 @@ public class Ernest120Model extends ErnestModel
 //			}
 //		}
 
-		IPlace focusPlace = getErnest().getFocusPlace();
+		//IPlace focusPlace = getErnest().getFocusPlace();
 		agentOrientation = getOrientation();
 		
 		//float baseOrientation = - agentOrientation + focusPlace.getOrientation();
