@@ -1,5 +1,6 @@
 package agent;
 
+import javax.swing.JFrame;
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Vector3f;
 
@@ -8,6 +9,7 @@ import memory.TactileMapFrame;
 import memory.VisualMapFrame;
 import memory110.SpaceMemory;
 import memory110.SpaceMemoryFrame;
+import memory110.SpaceMemorySimulationFrame;
 
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
@@ -212,7 +214,7 @@ public class Ernest120Model extends ErnestModel
 		int i;
 		boolean found;
 		
-		//////////////////////
+		// Set the Spatial memory display
 		if (dispSpaceMemory){
 			size=m_env.frameList.size();
 			i=0;
@@ -227,7 +229,32 @@ public class Ernest120Model extends ErnestModel
 				((SpaceMemoryFrame)m_env.frameList.get(i-1)).setMemory(m_SpaceMemory);
 		}
 		
-		///////////////////
+		// Set the Spatial memory simulation display
+		if (dispSpaceMemory){
+			size=m_env.frameList.size();
+			i=0;
+			found=false; 
+			while (i<size && !found){
+				System.out.println(m_env.frameList.get(i).getClass().getName());
+				if (m_env.frameList.get(i).getClass().getName().equals("memory110.SpaceMemorySimulationFrame")) found=true;
+				i++;
+			}
+			if (!found) 
+			{
+				JFrame simulationFrame = new SpaceMemorySimulationFrame(m_SpaceMemory);
+				//if (getErnest() != null)
+					//getErnest().setFrame(simulationFrame);
+				//m_env.frameList.add(new SpaceMemorySimulationFrame(m_SpaceMemory));
+				m_env.frameList.add(simulationFrame);
+			}
+			else        
+			{
+				//((SpaceMemorySimulationFrame)m_env.frameList.get(i-1)).setMemory(m_SpaceMemory);
+				//if (getErnest() != null) getErnest().setFrame(m_env.frameList.get(i-1));
+			}
+		}
+		
+		// Set the vision display
 		if (dispEyeView){
 			size=m_env.frameList.size();
 			i=0;
@@ -241,7 +268,7 @@ public class Ernest120Model extends ErnestModel
 			else        ((EyeView) m_env.frameList.get(i-1)).setEye(m_eye);
 		}
 		
-		///////////////////
+		// Set the inner ear display
 		if (dispInnerEar){
 			size=m_env.frameList.size();
 			i=0;
@@ -750,8 +777,12 @@ public class Ernest120Model extends ErnestModel
 		}
     }
     
-	public void paintSpaceMemory(Graphics g)
+	public void paintSpaceMemory(Graphics g, ArrayList<IPlace> placeList)
 	{
+		//ArrayList<IPlace> placeList = new ArrayList<IPlace>();
+
+		//placeList = getErnest().getPlaceList();
+		
 		final int WIDTH = 300;
 		final int HEIGHT = 250;
 		final int SCALE = 50;//40; 
@@ -832,7 +863,8 @@ public class Ernest120Model extends ErnestModel
  		// Display the phenomenon
 		g2d.setStroke(new BasicStroke(SCALE / 20f));
 		AffineTransform or;
-		for (IPlace place : getErnest().getPlaceList())
+		//for (IPlace place : getErnest().getPlaceList())
+		for (IPlace place : placeList)
 		{
 			if (place.getType() == Spas.PLACE_PHENOMENON || place.getType() == Spas.PLACE_COPRESENCE)
 			{
@@ -943,7 +975,8 @@ public class Ernest120Model extends ErnestModel
  		// Display the interactions
 		g2d.setStroke(new BasicStroke(SCALE / 20f));
 		//AffineTransform or;
-		for (IPlace place : getErnest().getPlaceList())
+		//for (IPlace place : getErnest().getPlaceList())
+		for (IPlace place : placeList)
 		{
 			if (place.getType() == Spas.PLACE_EVOKE_PHENOMENON)
 			{

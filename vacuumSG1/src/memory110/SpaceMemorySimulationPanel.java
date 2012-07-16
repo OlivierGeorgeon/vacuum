@@ -19,6 +19,8 @@ import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
 import java.util.List;
 
+import spas.ISpatialMemory;
+
 import agent.Ernest110Model;
 import agent.PrintablePanel;
 
@@ -27,7 +29,7 @@ import ernest.IErnest;
 
 
 
-public class SpaceMemoryPanel extends PrintablePanel
+public class SpaceMemorySimulationPanel extends PrintablePanel
 {
 	private static final long serialVersionUID = 1L;
 	
@@ -36,19 +38,20 @@ public class SpaceMemoryPanel extends PrintablePanel
 	
 	public SpaceMemory spaceMemory;
 	
-	public SpaceMemoryPanel(SpaceMemory mem){
+	public SpaceMemorySimulationPanel(SpaceMemory mem){
 		//index=0;
 		
 		spaceMemory = mem;
 	}
 	
-	public void setMemory(SpaceMemory mem){
-		spaceMemory = mem;
-	}
+//	public void setMemory(SpaceMemory mem){
+//		spaceMemory = mem;
+//	}
 	
 	public void paintComponent(Graphics g)
 	{
-//		spaceMemory.m_model.paintSpaceMemory(g);   
-		spaceMemory.m_model.paintSpaceMemory(g, spaceMemory.m_model.getErnest().getPlaceList());   
+		ISpatialMemory ss =spaceMemory.m_model.getErnest().getSpatialSimulation();
+		if (ss != null)
+			spaceMemory.m_model.paintSpaceMemory(g, ss.getPlaceList());   
 	}
 }

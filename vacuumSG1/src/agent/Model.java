@@ -18,6 +18,8 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.vecmath.Vector3f;
 
+import spas.IPlace;
+
 import java.lang.reflect.InvocationTargetException;
 
 
@@ -558,7 +560,7 @@ public class Model extends Observable
 		
 	}
 	
-	public void paintSpaceMemory(Graphics g)
+	public void paintSpaceMemory(Graphics g, ArrayList<IPlace> placeList)
 	{
 	}
 }

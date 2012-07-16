@@ -2,7 +2,6 @@ package memory110;
 
 
 import javax.swing.JPanel;
-
 import agent.PrintableFrame;
 import agent.PrintablePanel;
 
