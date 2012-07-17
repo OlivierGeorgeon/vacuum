@@ -90,6 +90,8 @@ public class Ernest120Model extends ErnestModel
     
     /** The intrinsic satisfaction of sensing the current features */
     private int m_satisfaction = 0;
+    
+    private JFrame m_simulationFrame;
 
     /**
      * @param i The agent's numerical id. 
@@ -160,6 +162,7 @@ public class Ernest120Model extends ErnestModel
         m_ernest.setTracer(m_tracer);
         m_ernest.setSensorymotorSystem(new Ernest12SensorimotorSystem());
         //m_ernest.setSensorymotorSystem(new BinarySensorymotorSystem());
+        m_ernest.setFrame(m_simulationFrame);
 
         // For the small loop
         m_ernest.addInteraction("-", "f",  -1); // Touch empty
@@ -242,10 +245,9 @@ public class Ernest120Model extends ErnestModel
 			if (!found) 
 			{
 				JFrame simulationFrame = new SpaceMemorySimulationFrame(m_SpaceMemory);
-				//if (getErnest() != null)
-					//getErnest().setFrame(simulationFrame);
 				//m_env.frameList.add(new SpaceMemorySimulationFrame(m_SpaceMemory));
 				m_env.frameList.add(simulationFrame);
+				m_simulationFrame = simulationFrame;
 			}
 			else        
 			{
@@ -786,6 +788,7 @@ public class Ernest120Model extends ErnestModel
 		final int WIDTH = 300;
 		final int HEIGHT = 250;
 		final int SCALE = 50;//40; 
+		Color agentColor = new Color(0xFF8000);
 
 		boolean displayPhenomenon = true;
 		
@@ -965,7 +968,7 @@ public class Ernest120Model extends ErnestModel
         placeAgent.scale(SCALE / 100f, SCALE / 100f);
         placeAgent.rotate(- m_animOrientation);
         g2d.transform(placeAgent);
-		g2d.setColor(new Color(0xFF8000));
+		g2d.setColor(agentColor);
         //g2d.fill(shape(getID()));
         g2d.fill(agent);
 		g2d.setColor(Color.black);
@@ -978,109 +981,112 @@ public class Ernest120Model extends ErnestModel
 		//for (IPlace place : getErnest().getPlaceList())
 		for (IPlace place : placeList)
 		{
-			if (place.getType() == Spas.PLACE_EVOKE_PHENOMENON)
+			if (place.getType() == Spas.PLACE_EVOKE_PHENOMENON || place.getType() == Spas.PLACE_SIMULATION)
 			{
 				g2d.setColor(new Color(place.getValue()));		
-				
+								
 				Shape shape = circle;
 				float orientation = 0;
 				int offsetx = 0;
 				int offsety = 0;
+				float scale = 1;
 				IAct a = place.getAct();
-				if (a.getLabel().equals(">t"))
+				if (a != null)
 				{
-					shape = triangle;
+					if (a.getLabel().equals(">t"))
+					{
+						shape = triangle;
+					}
+					if (a.getLabel().equals(">f"))
+					{
+						shape = triangle;
+						g2d.setColor(Color.red);
+					}
+					if (a.getLabel().equals(">++t"))
+					{
+						shape = triangle;
+						//g2d.setColor(Color.red);
+					}
+					if (a.getLabel().equals("> +t"))
+					{
+						shape = triangle;
+						//g2d.setColor(Color.red);
+					}
+					if (a.getLabel().equals(">+ t"))
+					{
+						shape = triangle;
+						//g2d.setColor(Color.red);
+					}
+					if (a.getLabel().equals("^f"))
+					{
+						shape = pie;
+						orientation = 0;//(float) - Math.PI;// / 2;
+						offsetx = SCALE/ 4;
+					}
+					if (a.getLabel().equals("^* f"))
+					{
+						shape = pie;
+						orientation = 0;//(float) - Math.PI;// / 2;
+						offsetx = SCALE/ 4;
+					}
+					if (a.getLabel().equals("vf"))
+					{
+						shape = pie;
+						orientation = 0; //(float) Math.PI / 2;
+						offsetx = SCALE/ 4;
+					}
+					if (a.getLabel().equals("v *f"))
+					{
+						shape = pie;
+						orientation = 0; //(float) Math.PI / 2;
+						offsetx = SCALE/ 4;
+					}
+					if (a.getLabel().indexOf("/") >=0)
+					{
+						shape = square;
+						offsetx = - SCALE /4;
+						offsety = - SCALE/ 3;
+					}
+					if (a.getLabel().indexOf("\\") >=0)
+					{
+						shape = square;
+						offsetx = - SCALE /4;
+						offsety = SCALE/3;
+					}
+					if (a.getLabel().equals("-f") || a.getLabel().equals("-t") )
+					{
+						shape = square;
+						offsetx = - SCALE /3;
+					}
+					if (a.getLabel().equals("-b"))
+					{
+						shape = square;
+						offsetx = - SCALE /3;
+						g2d.setColor(Environment.WALL3);		
+					}
+					if (a.getLabel().equals("-a"))
+					{
+						shape = square;
+						offsetx = - SCALE /3;
+						//g2d.setColor(Environment.ALGA1);		
+					}
+					if (a.getLabel().equals("(^f>t)") || a.getLabel().equals("(vf>t)") )
+					{
+						shape = triangle;
+						orientation = 0;
+						offsetx = 0;
+						offsety = 0;
+						g2d.setColor(Color.yellow);
+					}
+					if (a.getLabel().equals("(-f>t)"))
+					{
+						shape = triangle;
+						orientation = 0;
+						offsetx = 0;
+						offsety = 0;
+						g2d.setColor(Color.pink);
+					}
 				}
-				if (a.getLabel().equals(">f"))
-				{
-					shape = triangle;
-					g2d.setColor(Color.red);
-				}
-				if (a.getLabel().equals(">++t"))
-				{
-					shape = triangle;
-					//g2d.setColor(Color.red);
-				}
-				if (a.getLabel().equals("> +t"))
-				{
-					shape = triangle;
-					//g2d.setColor(Color.red);
-				}
-				if (a.getLabel().equals(">+ t"))
-				{
-					shape = triangle;
-					//g2d.setColor(Color.red);
-				}
-				if (a.getLabel().equals("^f"))
-				{
-					shape = pie;
-					orientation = 0;//(float) - Math.PI;// / 2;
-					offsetx = SCALE/ 4;
-				}
-				if (a.getLabel().equals("^* f"))
-				{
-					shape = pie;
-					orientation = 0;//(float) - Math.PI;// / 2;
-					offsetx = SCALE/ 4;
-				}
-				if (a.getLabel().equals("vf"))
-				{
-					shape = pie;
-					orientation = 0; //(float) Math.PI / 2;
-					offsetx = SCALE/ 4;
-				}
-				if (a.getLabel().equals("v *f"))
-				{
-					shape = pie;
-					orientation = 0; //(float) Math.PI / 2;
-					offsetx = SCALE/ 4;
-				}
-				if (a.getLabel().indexOf("/") >=0)
-				{
-					shape = square;
-					offsetx = - SCALE /4;
-					offsety = - SCALE/ 3;
-				}
-				if (a.getLabel().indexOf("\\") >=0)
-				{
-					shape = square;
-					offsetx = - SCALE /4;
-					offsety = SCALE/3;
-				}
-				if (a.getLabel().equals("-f") || a.getLabel().equals("-t") )
-				{
-					shape = square;
-					offsetx = - SCALE /3;
-				}
-				if (a.getLabel().equals("-b"))
-				{
-					shape = square;
-					offsetx = - SCALE /3;
-					g2d.setColor(Environment.WALL3);		
-				}
-				if (a.getLabel().equals("-a"))
-				{
-					shape = square;
-					offsetx = - SCALE /3;
-					//g2d.setColor(Environment.ALGA1);		
-				}
-				if (a.getLabel().equals("(^f>t)") || a.getLabel().equals("(vf>t)") )
-				{
-					shape = triangle;
-					orientation = 0;
-					offsetx = 0;
-					offsety = 0;
-					g2d.setColor(Color.yellow);
-				}
-				if (a.getLabel().equals("(-f>t)"))
-				{
-					shape = triangle;
-					orientation = 0;
-					offsetx = 0;
-					offsety = 0;
-					g2d.setColor(Color.pink);
-				}
-
 				if (shape != circle)
 				{
 					ref = g2d.getTransform();
@@ -1092,14 +1098,46 @@ public class Ernest120Model extends ErnestModel
 			        //or.scale(( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION),( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION));
 			        or.rotate(- place.getOrientation());
 			        or.rotate(orientation);
+			        or.scale(scale, scale);
 			        g2d.transform(or);
 					g2d.fill(shape);
-					g2d.setColor(Color.black);
+					if (place.getType() == Spas.PLACE_SIMULATION)
+						g2d.setColor(agentColor);
+					else
+						g2d.setColor(Color.black);
 					g2d.draw(shape);
 			        g2d.setTransform(ref);
 					//g2d.setStroke(new BasicStroke(Math.max(SCALE / 3f * ( 1  - (spaceMemory.getUpdateCount() - place.getUpdateCount())/15f), 1), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 				}	
 			}
 		}
+//		for (IPlace place : placeList)
+//		{
+//			if (place.getType() == Spas.PLACE_SIMULATION && place.getAct() == null)
+//			{
+//				g2d.setColor(Color.red);		
+//				
+//				Shape shape = circle;
+//				float orientation = 0;
+//				int offsetx = 0;
+//				int offsety = 0;
+//
+//				ref = g2d.getTransform();
+//		        or = new AffineTransform();
+//		        float ooffx = offsetx * (float)Math.cos(- place.getOrientation()) + offsety * (float)Math.sin(- place.getOrientation());
+//		        float ooffy = - offsetx * (float)Math.sin(- place.getOrientation()) + offsety * (float)Math.cos(- place.getOrientation());
+//		        or.translate(WIDTH + (int)(place.getPosition().x * SCALE + ooffx), HEIGHT - (int)(place.getPosition().y * SCALE + ooffy));
+//		        //or.translate(WIDTH + (int)(place.getPosition().x * SCALE + offsetx), HEIGHT - (int)(place.getPosition().y * SCALE + offsety ));
+//		        //or.scale(( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION),( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION));
+//		        or.rotate(- place.getOrientation());
+//		        or.rotate(orientation);
+//		        g2d.transform(or);
+//				g2d.fill(shape);
+//				g2d.setColor(Color.black);
+//				g2d.draw(shape);
+//		        g2d.setTransform(ref);
+//				//g2d.setStroke(new BasicStroke(Math.max(SCALE / 3f * ( 1  - (spaceMemory.getUpdateCount() - place.getUpdateCount())/15f), 1), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+//			}
+//		}
 	}
 }
