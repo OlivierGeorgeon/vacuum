@@ -388,18 +388,6 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 			//setChanged();
 			//notifyObservers2();
 			
-			// Initialize the display index to the first Ernest agent.
-			int index=0;
-			boolean found=false;
-			while (index<m_modelList.size() && !found){
-				if (m_modelList.get(index).isAgent()) found=true;
-				else index++;
-			}
-			
-			if (found) m_environment.setDisplay(index);
-			
-			// Force the display index
-			m_environment.setDisplay(8);
 		}
 		catch (Exception e)
 		{
@@ -410,11 +398,17 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 			try { br.close(); } catch (Exception e) {}
 		}	
 		
-		// start simulation
-//		for (int i=0;i<m_modelList.size();i++)
-//		{
-//			m_modelList.get(i).initErnest();
-//		}
+		// Initialize the display index to the first Ernest agent.
+		int index=0;
+		boolean found=false;
+		while (index<m_modelList.size() && !found){
+			if (m_modelList.get(index).isAgent()) found=true;
+			else index++;
+		}
+		if (found) m_environment.setDisplay(index);
+		
+		// Force the display index
+		//m_environment.setDisplay(8);
 		
 		
 		System.out.println("initialized ") ;
