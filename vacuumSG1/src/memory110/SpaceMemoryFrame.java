@@ -10,7 +10,7 @@ public class SpaceMemoryFrame extends PrintableFrame
 	
 	public SpaceMemoryFrame(SpaceMemory spaceMemory)
 	{
-		this.setTitle("Space Memory");
+		this.setTitle("Spatial Memory");
 		
     	this.setSize(300 * 2, 250 * 2);
     	this.setLocationRelativeTo(null);               
