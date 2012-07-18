@@ -44,9 +44,9 @@ public class SpaceMemorySimulationPanel extends PrintablePanel
 		spaceMemory = mem;
 	}
 	
-//	public void setMemory(SpaceMemory mem){
-//		spaceMemory = mem;
-//	}
+	public void setMemory(SpaceMemory mem){
+		spaceMemory = mem;
+	}
 	
 	public void paintComponent(Graphics g)
 	{

@@ -91,7 +91,7 @@ public class Ernest120Model extends ErnestModel
     /** The intrinsic satisfaction of sensing the current features */
     private int m_satisfaction = 0;
     
-    private JFrame m_simulationFrame;
+    //private JFrame m_simulationFrame;
 
     /**
      * @param i The agent's numerical id. 
@@ -162,7 +162,7 @@ public class Ernest120Model extends ErnestModel
         m_ernest.setTracer(m_tracer);
         m_ernest.setSensorymotorSystem(new Ernest12SensorimotorSystem());
         //m_ernest.setSensorymotorSystem(new BinarySensorymotorSystem());
-        m_ernest.setFrame(m_simulationFrame);
+        //m_ernest.setFrame(m_simulationFrame);
 
         // For the small loop
         m_ernest.addInteraction("-", "f",  -1); // Touch empty
@@ -227,34 +227,43 @@ public class Ernest120Model extends ErnestModel
 				if (m_env.frameList.get(i).getClass().getName().equals("memory110.SpaceMemoryFrame")) found=true;
 				i++;
 			}
-			if (!found) m_env.frameList.add(new SpaceMemoryFrame(m_SpaceMemory));
-			else        
+			if (!found) 
+				{
+				 	JFrame simulationFrame = new SpaceMemoryFrame(m_SpaceMemory);
+					m_env.frameList.add(simulationFrame);
+					//m_simulationFrame = simulationFrame;					 
+				}
+			else  
+			{
 				((SpaceMemoryFrame)m_env.frameList.get(i-1)).setMemory(m_SpaceMemory);
+				//m_simulationFrame = (SpaceMemoryFrame)m_env.frameList.get(i-1);
+			}
 		}
 		
-		// Set the Spatial memory simulation display
-		if (dispSpaceMemory){
-			size=m_env.frameList.size();
-			i=0;
-			found=false; 
-			while (i<size && !found){
-				System.out.println(m_env.frameList.get(i).getClass().getName());
-				if (m_env.frameList.get(i).getClass().getName().equals("memory110.SpaceMemorySimulationFrame")) found=true;
-				i++;
-			}
-			if (!found) 
-			{
-				JFrame simulationFrame = new SpaceMemorySimulationFrame(m_SpaceMemory);
-				//m_env.frameList.add(new SpaceMemorySimulationFrame(m_SpaceMemory));
-				m_env.frameList.add(simulationFrame);
-				m_simulationFrame = simulationFrame;
-			}
-			else        
-			{
-				//((SpaceMemorySimulationFrame)m_env.frameList.get(i-1)).setMemory(m_SpaceMemory);
-				//if (getErnest() != null) getErnest().setFrame(m_env.frameList.get(i-1));
-			}
-		}
+//		// Set the Spatial memory simulation display
+//		if (dispSpaceMemory){
+//			size=m_env.frameList.size();
+//			i=0;
+//			found=false; 
+//			while (i<size && !found){
+//				System.out.println(m_env.frameList.get(i).getClass().getName());
+//				if (m_env.frameList.get(i).getClass().getName().equals("memory110.SpaceMemorySimulationFrame")) found=true;
+//				i++;
+//			}
+//			if (!found) 
+//			{
+//				JFrame simulationFrame = new SpaceMemorySimulationFrame(m_SpaceMemory);
+//				//m_env.frameList.add(new SpaceMemorySimulationFrame(m_SpaceMemory));
+//				m_env.frameList.add(simulationFrame);
+//				//m_simulationFrame = simulationFrame;
+//			}
+//			else        
+//			{
+//				((SpaceMemorySimulationFrame)m_env.frameList.get(i-1)).setMemory(m_SpaceMemory);
+//				//m_simulationFrame = (SpaceMemorySimulationFrame)m_env.frameList.get(i-1);
+//				//if (getErnest() != null) getErnest().setFrame(m_env.frameList.get(i-1));
+//			}
+//		}
 		
 		// Set the vision display
 		if (dispEyeView){
@@ -283,8 +292,6 @@ public class Ernest120Model extends ErnestModel
 			else        ((InnerEarFrame) m_env.frameList.get(i-1)).setInnerEar(m_ear);
 		}
 	}
-    
-    
     
     /**
      * Update the agent when the environment is refreshed.
@@ -891,7 +898,7 @@ public class Ernest120Model extends ErnestModel
 		        
 		        for (IAct a : place.getBundle().getActList())
 		        {
-					g2d.setColor(new Color(a.getPhenomenon()));		
+					g2d.setColor(new Color(a.getColor()));		
 					Shape shape = circle;
 					int offsetx = 0;
 					int offsety = 0;
@@ -899,8 +906,8 @@ public class Ernest120Model extends ErnestModel
 					if (a.getLabel().indexOf(">") >=0)
 					{
 						shape = triangle;
-						if (a.getLabel().equals(">f"))
-							g2d.setColor(new Color(255, 80, 80));
+						//if (a.getLabel().equals(">f"))
+							//g2d.setColor(new Color(255, 80, 80));
 					}
 					if (a.getLabel().equals("^f"))
 					{
@@ -950,9 +957,9 @@ public class Ernest120Model extends ErnestModel
 				        or.rotate(- place.getOrientation());
 				        or.rotate(orientation);
 				        g2d.transform(or);
-						g2d.fill(shape);
+						//g2d.fill(shape);
 						g2d.setColor(Color.gray);
-						g2d.draw(shape);
+						//g2d.draw(shape);
 				        g2d.setTransform(ref);
 					}
 		        }
@@ -1000,7 +1007,7 @@ public class Ernest120Model extends ErnestModel
 					if (a.getLabel().equals(">f"))
 					{
 						shape = triangle;
-						g2d.setColor(Color.red);
+						//g2d.setColor(Color.red);
 					}
 					if (a.getLabel().equals(">++t"))
 					{

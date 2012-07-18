@@ -21,8 +21,8 @@ public class SpaceMemorySimulationFrame extends PrintableFrame
     	this.setContentPane(panel);
 	}
 	
-//	public void setMemory(SpaceMemory mem)
-//	{
-//		((SpaceMemoryPanel) panel).setMemory(mem);
-//	}	
+	public void setMemory(SpaceMemory mem)
+	{
+		((SpaceMemorySimulationPanel) panel).setMemory(mem);
+	}	
 }
