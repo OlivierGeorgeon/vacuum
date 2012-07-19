@@ -988,7 +988,7 @@ public class Ernest120Model extends ErnestModel
 		//for (IPlace place : getErnest().getPlaceList())
 		for (IPlace place : placeList)
 		{
-			if (place.getType() == Spas.PLACE_EVOKE_PHENOMENON || place.getType() == Spas.PLACE_SIMULATION)
+			if (place.getType() == Spas.PLACE_EVOKE_PHENOMENON || place.getType() == Spas.PLACE_SIMULATION  || place.getType() == Spas.PLACE_UNKNOWN)
 			{
 				g2d.setColor(new Color(place.getValue()));		
 								
@@ -1110,6 +1110,8 @@ public class Ernest120Model extends ErnestModel
 					g2d.fill(shape);
 					if (place.getType() == Spas.PLACE_SIMULATION)
 						g2d.setColor(agentColor);
+					else if (place.getType() == Spas.PLACE_UNKNOWN)
+						g2d.setColor(new Color(0x8080FF));
 					else
 						g2d.setColor(Color.black);
 					g2d.draw(shape);
