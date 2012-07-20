@@ -165,10 +165,10 @@ public class Ernest120Model extends ErnestModel
         //m_ernest.setFrame(m_simulationFrame);
 
         // For the small loop
-        m_ernest.addInteraction("-", "f",  -1); // Touch empty
-        m_ernest.addInteraction("-", "t",  -1); // Touch wall
         m_ernest.addInteraction("-", "b",  -1); // Touch brick
         m_ernest.addInteraction("-", "a",  -1); // Touch alga
+        m_ernest.addInteraction("-", "t",  -1); // Touch wall
+        m_ernest.addInteraction("-", "f",  -1); // Touch empty
         m_ernest.addInteraction("\\","f",  -1); // Touch right empty
         m_ernest.addInteraction("\\","t",  -1); // Touch right wall
         m_ernest.addInteraction("/", "f",  -1); // Touch left empty
@@ -988,7 +988,7 @@ public class Ernest120Model extends ErnestModel
 		//for (IPlace place : getErnest().getPlaceList())
 		for (IPlace place : placeList)
 		{
-			if (place.getType() == Spas.PLACE_EVOKE_PHENOMENON || place.getType() == Spas.PLACE_SIMULATION  || place.getType() == Spas.PLACE_UNKNOWN)
+			if (place.getType() == Spas.PLACE_EVOKE_PHENOMENON || place.getType() == Spas.PLACE_AFFORD  || place.getType() == Spas.PLACE_UNKNOWN)
 			{
 				g2d.setColor(new Color(place.getValue()));		
 								
@@ -1069,7 +1069,7 @@ public class Ernest120Model extends ErnestModel
 					{
 						shape = square;
 						offsetx = - SCALE /3;
-						g2d.setColor(Environment.WALL3);		
+						//g2d.setColor(Environment.WALL3);		
 					}
 					if (a.getLabel().equals("-a"))
 					{
@@ -1108,7 +1108,7 @@ public class Ernest120Model extends ErnestModel
 			        or.scale(scale, scale);
 			        g2d.transform(or);
 					g2d.fill(shape);
-					if (place.getType() == Spas.PLACE_SIMULATION)
+					if (place.getType() == Spas.PLACE_AFFORD)
 						g2d.setColor(agentColor);
 					else if (place.getType() == Spas.PLACE_UNKNOWN)
 						g2d.setColor(new Color(0x8080FF));
