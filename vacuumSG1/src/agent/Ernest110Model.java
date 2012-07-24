@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ernest.*;
-import spas.IAffordance;
 import spas.IPlace;
 import spas.LocalSpaceMemory;
 import spas.Spas;
@@ -688,118 +687,81 @@ public class Ernest110Model extends ErnestModel
         Arc2D.Double pie = new Arc2D.Double(-10, -10, 20, 20,0, 180, Arc2D.PIE);
         Polygon triangle = new Polygon();triangle.addPoint(-10,-10);triangle.addPoint(-10,10);triangle.addPoint(10,0);
 
-        if (displaySensePlace)
-        {
-			// Display the visual and tactile places
-			for (IPlace place : getErnest().getPlaceList())
-			{
-				//if (place.getType() == Spas.PLACE_PERSISTENT)
-				if (place.getType() < Spas.PLACE_FOCUS && place.getType() > Spas.PLACE_BACKGROUND)
-				{
-					d = place.getPosition().length() * SCALE;
-					
-					rad = (float)Math.atan2((double)place.getPosition().y, place.getPosition().x);			
-					//rad = (float)Math.atan2((double)place.getFirstPosition().y, place.getFirstPosition().x);			
-					angle = rad*180/Math.PI;
-								
-					span=place.getSpan()*180/Math.PI;
-					g2d.setColor(new Color(place.getBundle().getValue()));		
-					
-					//g2d.setStroke(new BasicStroke(SCALE / (3f + 2*(spaceMemory.getUpdateCount() - place.getUpdateCount())), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-					g2d.setStroke(new BasicStroke(Math.max(SCALE / 4f * ( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION), 1), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-		
-					if (place.getType() == Spas.PLACE_TOUCH)
-						//g2d.drawArc(WIDTH - (int)d, HEIGHT - (int)d, 2*(int)d, 2*(int)d, (int)(angle), (int)1);
-						g2d.drawArc(WIDTH - (int)d, HEIGHT - (int)d, 2*(int)d, 2*(int)d, (int)(ErnestUtils.polarAngle(place.getFirstPosition())*180/Math.PI), (int)(place.getSpan()*180/Math.PI));
-					else
-						g2d.drawLine(WIDTH + (int)(place.getFirstPosition().x * SCALE), HEIGHT - (int)(place.getFirstPosition().y * SCALE), 
-							WIDTH + (int)(place.getSecondPosition().x * SCALE), HEIGHT - (int)(place.getSecondPosition().y * SCALE));
-					
-					// Display the affordances 
-//					if (place == focusPlace)
-//					{
-//						float absoluteOrientation = - place.getOrientation() ; 
-//						AffineTransform ref2 = g2d.getTransform();
-//						AffineTransform local = new AffineTransform();
-//				        local.rotate(absoluteOrientation, WIDTH + (int)(place.getPosition().x * SCALE),HEIGHT - (int)(place.getPosition().y * SCALE) );
-//				        g2d.transform(local);
+//        if (displaySensePlace)
+//        {
+//			// Display the visual and tactile places
+//			for (IPlace place : getErnest().getPlaceList())
+//			{
+//				//if (place.getType() == Spas.PLACE_PERSISTENT)
+//				if (place.getType() < Spas.PLACE_FOCUS && place.getType() > Spas.PLACE_BACKGROUND)
+//				{
+//					d = place.getPosition().length() * SCALE;
+//					
+//					rad = (float)Math.atan2((double)place.getPosition().y, place.getPosition().x);			
+//					//rad = (float)Math.atan2((double)place.getFirstPosition().y, place.getFirstPosition().x);			
+//					angle = rad*180/Math.PI;
+//								
+//					span=place.getSpan()*180/Math.PI;
+//					g2d.setColor(new Color(place.getBundle().getValue()));		
+//					
+//					//g2d.setStroke(new BasicStroke(SCALE / (3f + 2*(spaceMemory.getUpdateCount() - place.getUpdateCount())), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+//					g2d.setStroke(new BasicStroke(Math.max(SCALE / 4f * ( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION), 1), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+//		
+//					if (place.getType() == Spas.PLACE_TOUCH)
+//						//g2d.drawArc(WIDTH - (int)d, HEIGHT - (int)d, 2*(int)d, 2*(int)d, (int)(angle), (int)1);
+//						g2d.drawArc(WIDTH - (int)d, HEIGHT - (int)d, 2*(int)d, 2*(int)d, (int)(ErnestUtils.polarAngle(place.getFirstPosition())*180/Math.PI), (int)(place.getSpan()*180/Math.PI));
+//					else
+//						g2d.drawLine(WIDTH + (int)(place.getFirstPosition().x * SCALE), HEIGHT - (int)(place.getFirstPosition().y * SCALE), 
+//							WIDTH + (int)(place.getSecondPosition().x * SCALE), HEIGHT - (int)(place.getSecondPosition().y * SCALE));
+//					
+//				}			
+//			}
+//        }
+//		
+//		// Display the bump, eat, and cuddle places
+//		g2d.setStroke(new BasicStroke(SCALE / 20f));
+//		AffineTransform or;
+//		for (IPlace place : getErnest().getPlaceList())
+//		{
+//			if (place.getType() >= Spas.PLACE_FOCUS)// && place.getType() < Spas.PLACE_PERSISTENT)
+//			{
+//				// The places represented as arcs
+//				//g2d.setColor(new Color(place.getBundle().getValue()));		
+//				if (place.getType() == Spas.PLACE_BUMP) 
+//					g2d.setColor(Color.RED);
+//				if (place.getType() == Spas.PLACE_EAT )
+//					g2d.setColor(Color.YELLOW);
+//				if (place.getType() == Spas.PLACE_CUDDLE) 
+//					g2d.setColor(Color.PINK);
+//				if (place.getType() == Spas.PLACE_PRIMITIVE) 
+//					g2d.setColor(Color.BLUE);
+//				if (place.getType() == Spas.PLACE_COMPOSITE) 
+//					g2d.setColor(new Color(0, 0, 128));
+//				if (place.getType() == Spas.PLACE_INTERMEDIARY) 
+//					g2d.setColor(new Color(128, 128, 255));
+//				if (place.getType() == Spas.PLACE_FOCUS) 
+//					g2d.setColor(Color.MAGENTA);
+//				
+//				Shape shape = circle;
+//				if (place.getShape() == Spas.SHAPE_TRIANGLE)
+//					shape = triangle;
+//				else if (place.getShape() == Spas.SHAPE_PIE)
+//					shape = pie;
+//				
+//		        ref = g2d.getTransform();
+//		        or = new AffineTransform();
+//		        or.translate(WIDTH + (int)(place.getFirstPosition().x * SCALE), HEIGHT - (int)(place.getFirstPosition().y * SCALE));
+//		        or.scale(( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION),( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION));
+//		        or.rotate(- place.getOrientation());
+//		        g2d.transform(or);
+//				g2d.fill(shape);
+//		        g2d.setTransform(ref);
+//				//g2d.setStroke(new BasicStroke(Math.max(SCALE / 3f * ( 1  - (spaceMemory.getUpdateCount() - place.getUpdateCount())/15f), 1), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 //	
-//						g2d.setStroke(new BasicStroke(SCALE / 10f));
-//						AffineTransform or;
-//						for (IAffordance affordance : place.getBundle().getAffordanceList())
-//						{
-//							int x2 = (int)((place.getPosition().x + affordance.getPlace().getPosition().x) * SCALE); 
-//							int y2 = (int)((place.getPosition().y + affordance.getPlace().getPosition().y) * SCALE); 
-//		 					
-//							Shape shape = circle;
-//							if (affordance.getPlace().getShape() == Spas.SHAPE_TRIANGLE)
-//								shape = triangle;
-//							else if (affordance.getPlace().getShape() == Spas.SHAPE_PIE)
-//								shape = pie;
-//							
-//					        ref = g2d.getTransform();
-//					        or = new AffineTransform();
-//					        or.translate(WIDTH + x2, HEIGHT - y2);
-//					        or.scale(( .6f  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION),( .6f  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION));
-//					        or.rotate(- affordance.getPlace().getOrientation());
-//					        g2d.transform(or);
-//							g2d.setColor(new Color(affordance.getValue()));
-//							g2d.fill(shape);
-//							g2d.setColor(new Color(place.getBundle().getValue()));
-//							g2d.draw(shape);
-//					        g2d.setTransform(ref);
-//							//g2d.fillOval(WIDTH + x2 - 5, HEIGHT - y2 + 5, 10, 10);
-//						}
-//				        g2d.setTransform(ref2);
-//					}
-				}			
-			}
-        }
-		
-		// Display the bump, eat, and cuddle places
-		g2d.setStroke(new BasicStroke(SCALE / 20f));
-		AffineTransform or;
-		for (IPlace place : getErnest().getPlaceList())
-		{
-			if (place.getType() >= Spas.PLACE_FOCUS)// && place.getType() < Spas.PLACE_PERSISTENT)
-			{
-				// The places represented as arcs
-				//g2d.setColor(new Color(place.getBundle().getValue()));		
-				if (place.getType() == Spas.PLACE_BUMP) 
-					g2d.setColor(Color.RED);
-				if (place.getType() == Spas.PLACE_EAT )
-					g2d.setColor(Color.YELLOW);
-				if (place.getType() == Spas.PLACE_CUDDLE) 
-					g2d.setColor(Color.PINK);
-				if (place.getType() == Spas.PLACE_PRIMITIVE) 
-					g2d.setColor(Color.BLUE);
-				if (place.getType() == Spas.PLACE_COMPOSITE) 
-					g2d.setColor(new Color(0, 0, 128));
-				if (place.getType() == Spas.PLACE_INTERMEDIARY) 
-					g2d.setColor(new Color(128, 128, 255));
-				if (place.getType() == Spas.PLACE_FOCUS) 
-					g2d.setColor(Color.MAGENTA);
-				
-				Shape shape = circle;
-				if (place.getShape() == Spas.SHAPE_TRIANGLE)
-					shape = triangle;
-				else if (place.getShape() == Spas.SHAPE_PIE)
-					shape = pie;
-				
-		        ref = g2d.getTransform();
-		        or = new AffineTransform();
-		        or.translate(WIDTH + (int)(place.getFirstPosition().x * SCALE), HEIGHT - (int)(place.getFirstPosition().y * SCALE));
-		        or.scale(( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION),( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION));
-		        or.rotate(- place.getOrientation());
-		        g2d.transform(or);
-				g2d.fill(shape);
-		        g2d.setTransform(ref);
-				//g2d.setStroke(new BasicStroke(Math.max(SCALE / 3f * ( 1  - (spaceMemory.getUpdateCount() - place.getUpdateCount())/15f), 1), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-	
-				//g2d.drawLine(WIDTH + (int)(place.getFirstPosition().x * SCALE), HEIGHT - (int)(place.getFirstPosition().y * SCALE), 
-				//	WIDTH + (int)(place.getSecondPosition().x * SCALE), HEIGHT - (int)(place.getSecondPosition().y * SCALE));
-			}
-		}
+//				//g2d.drawLine(WIDTH + (int)(place.getFirstPosition().x * SCALE), HEIGHT - (int)(place.getFirstPosition().y * SCALE), 
+//				//	WIDTH + (int)(place.getSecondPosition().x * SCALE), HEIGHT - (int)(place.getSecondPosition().y * SCALE));
+//			}
+//		}
 				
 //		// Display the focus
 //		int focusRadius = SCALE / 5;
