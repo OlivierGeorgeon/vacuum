@@ -31,10 +31,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ernest.*;
-import spas.IAffordance;
 import spas.IObservation;
 import spas.IPlace;
 import spas.Observation;
+import spas.Place;
 import imos.IAct;
 import spas.LocalSpaceMemory;
 import spas.Spas;
@@ -173,8 +173,8 @@ public class Ernest120Model extends ErnestModel
         m_ernest.addInteraction("\\","t",  -1); // Touch right wall
         m_ernest.addInteraction("/", "f",  -1); // Touch left empty
         m_ernest.addInteraction("/", "t",  -1); // Touch left wall
-        m_ernest.addInteraction(">", "t",   5); // Move
         m_ernest.addInteraction(">", "f",  -10);// Bump
+        m_ernest.addInteraction(">", "t",   5); // Move
 //        m_ernest.addInteraction("<", "t",  -10); // Move backward
 //        m_ernest.addInteraction("<", "f",  -10);// Bump backward
         m_ernest.addInteraction(">", "a",  10);//  Move to alga
@@ -874,97 +874,97 @@ public class Ernest120Model extends ErnestModel
 		g2d.setStroke(new BasicStroke(SCALE / 20f));
 		AffineTransform or;
 		//for (IPlace place : getErnest().getPlaceList())
-		for (IPlace place : placeList)
-		{
-			if (place.getType() == Spas.PLACE_PHENOMENON || place.getType() == Spas.PLACE_COPRESENCE)
-			{
-				//g2d.setColor(new Color(place.getValue()));
-				int scale = (int)(127 + 128 * (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION);
-				if (scale > 255) scale = 255;
-				g2d.setColor(new Color(scale, scale, scale));		
-				
-		        ref = g2d.getTransform();
-		        or = new AffineTransform();
-		        or.translate(WIDTH + (int)(place.getPosition().x * SCALE), HEIGHT - (int)(place.getPosition().y * SCALE));
-		        //or.scale(( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION),( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION));
-		        or.rotate(- place.getOrientation());
-		        g2d.transform(or);
-				//g2d.fill(tile);
-				//g2d.setColor(Color.gray);
-				//if (place.getBundle().getValue() == Ernest.PHENOMENON_WALL)
-				//	g2d.setColor(new Color(place.getValue()));
-				g2d.draw(tile);
-		        g2d.setTransform(ref);
-		        
-		        for (IAct a : place.getBundle().getActList())
-		        {
-					g2d.setColor(new Color(a.getColor()));		
-					Shape shape = circle;
-					int offsetx = 0;
-					int offsety = 0;
-					float orientation = 0;
-					if (a.getLabel().indexOf(">") >=0)
-					{
-						shape = triangle;
-						//if (a.getLabel().equals(">f"))
-							//g2d.setColor(new Color(255, 80, 80));
-					}
-					if (a.getLabel().equals("^f"))
-					{
-						shape = pie;
-						orientation = (float) - Math.PI / 2;
-						offsety = SCALE/ 4;
-					}
-					if (a.getLabel().equals("vf"))
-					{
-						shape = pie;
-						orientation = (float) Math.PI / 2;
-						offsety = - SCALE/ 4;
-					}
-					if (a.getLabel().equals("/f") || a.getLabel().equals("/t"))
-					{
-						shape = square;
-						offsetx = - SCALE /4;
-						offsety = - SCALE/ 3;
-					}
-					if (a.getLabel().equals("\\f") || a.getLabel().equals("\\t"))
-					{
-						shape = square;
-						offsetx = - SCALE /4;
-						offsety = SCALE/3;
-					}
-					if (a.getLabel().equals("-f") || a.getLabel().equals("-t"))
-					{
-						shape = square;
-						offsetx = - SCALE /3;
-					}
-					if (a.getLabel().equals("-b"))
-					{
-						shape = square;
-						offsetx = - SCALE /3;
-						offsety = SCALE/6;
-					}
-					
-					if (shape != circle)
-					{
-						ref = g2d.getTransform();
-				        or = new AffineTransform();
-				        float ooffx = offsetx * (float)Math.cos(- place.getOrientation()) + offsety * (float)Math.sin(- place.getOrientation());
-				        float ooffy = - offsetx * (float)Math.sin(- place.getOrientation()) + offsety * (float)Math.cos(- place.getOrientation());
-				        or.translate(WIDTH + (int)(place.getPosition().x * SCALE + ooffx), HEIGHT - (int)(place.getPosition().y * SCALE + ooffy));
-				        //or.translate(WIDTH + (int)(place.getPosition().x * SCALE + offsetx), HEIGHT - (int)(place.getPosition().y * SCALE + offsety));
-				        or.scale(( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION),( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION));
-				        or.rotate(- place.getOrientation());
-				        or.rotate(orientation);
-				        g2d.transform(or);
-						//g2d.fill(shape);
-						g2d.setColor(Color.gray);
-						//g2d.draw(shape);
-				        g2d.setTransform(ref);
-					}
-		        }
-			}
-		}
+//		for (IPlace place : placeList)
+//		{
+//			if (place.getType() == Spas.PLACE_PHENOMENON || place.getType() == Spas.PLACE_COPRESENCE)
+//			{
+//				//g2d.setColor(new Color(place.getValue()));
+//				int scale = (int)(127 + 128 * (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION);
+//				if (scale > 255) scale = 255;
+//				g2d.setColor(new Color(scale, scale, scale));		
+//				
+//		        ref = g2d.getTransform();
+//		        or = new AffineTransform();
+//		        or.translate(WIDTH + (int)(place.getPosition().x * SCALE), HEIGHT - (int)(place.getPosition().y * SCALE));
+//		        //or.scale(( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION),( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION));
+//		        //or.rotate(- place.getOrientation());
+//		        g2d.transform(or);
+//				//g2d.fill(tile);
+//				g2d.setColor(new Color(0xC0C0C0));
+//				//if (place.getBundle().getValue() == Ernest.PHENOMENON_WALL)
+//				//	g2d.setColor(new Color(place.getValue()));
+//				g2d.draw(tile);
+//		        g2d.setTransform(ref);
+//		        
+//		        for (IAct a : place.getBundle().getActList())
+//		        {
+//					g2d.setColor(new Color(a.getColor()));		
+//					Shape shape = circle;
+//					int offsetx = 0;
+//					int offsety = 0;
+//					float orientation = 0;
+//					if (a.getLabel().indexOf(">") >=0)
+//					{
+//						shape = triangle;
+//						//if (a.getLabel().equals(">f"))
+//							//g2d.setColor(new Color(255, 80, 80));
+//					}
+//					if (a.getLabel().equals("^f"))
+//					{
+//						shape = pie;
+//						orientation = (float) - Math.PI / 2;
+//						offsety = SCALE/ 4;
+//					}
+//					if (a.getLabel().equals("vf"))
+//					{
+//						shape = pie;
+//						orientation = (float) Math.PI / 2;
+//						offsety = - SCALE/ 4;
+//					}
+//					if (a.getLabel().equals("/f") || a.getLabel().equals("/t"))
+//					{
+//						shape = square;
+//						offsetx = - SCALE /4;
+//						offsety = - SCALE/ 3;
+//					}
+//					if (a.getLabel().equals("\\f") || a.getLabel().equals("\\t"))
+//					{
+//						shape = square;
+//						offsetx = - SCALE /4;
+//						offsety = SCALE/3;
+//					}
+//					if (a.getLabel().equals("-f") || a.getLabel().equals("-t"))
+//					{
+//						shape = square;
+//						offsetx = - SCALE /3;
+//					}
+//					if (a.getLabel().equals("-b"))
+//					{
+//						shape = square;
+//						offsetx = - SCALE /3;
+//						offsety = SCALE/6;
+//					}
+//					
+//					if (shape != circle)
+//					{
+//						ref = g2d.getTransform();
+//				        or = new AffineTransform();
+//				        float ooffx = offsetx * (float)Math.cos(- place.getOrientation()) + offsety * (float)Math.sin(- place.getOrientation());
+//				        float ooffy = - offsetx * (float)Math.sin(- place.getOrientation()) + offsety * (float)Math.cos(- place.getOrientation());
+//				        or.translate(WIDTH + (int)(place.getPosition().x * SCALE + ooffx), HEIGHT - (int)(place.getPosition().y * SCALE + ooffy));
+//				        //or.translate(WIDTH + (int)(place.getPosition().x * SCALE + offsetx), HEIGHT - (int)(place.getPosition().y * SCALE + offsety));
+//				        or.scale(( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION),( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION));
+//				        or.rotate(- place.getOrientation());
+//				        or.rotate(orientation);
+//				        g2d.transform(or);
+//						//g2d.fill(shape);
+//						g2d.setColor(Color.gray);
+//						//g2d.draw(shape);
+//				        g2d.setTransform(ref);
+//					}
+//		        }
+//			}
+//		}
 				
 		// Display agent
 		g2d.setStroke(new BasicStroke(SCALE / 10f));
@@ -988,9 +988,9 @@ public class Ernest120Model extends ErnestModel
 		//for (IPlace place : getErnest().getPlaceList())
 		for (IPlace place : placeList)
 		{
-			if (place.getType() == Spas.PLACE_EVOKE_PHENOMENON || place.getType() == Spas.PLACE_AFFORD  || place.getType() == Spas.PLACE_UNKNOWN)
-			{
-				g2d.setColor(new Color(place.getValue()));		
+			if (place.getType() == Place.EVOKE_PHENOMENON || place.getType() == Place.AFFORD  || place.getType() == Place.UNKNOWN)
+			{		        
+		        g2d.setColor(new Color(place.getValue()));		
 								
 				Shape shape = circle;
 				float orientation = 0;
@@ -1108,9 +1108,9 @@ public class Ernest120Model extends ErnestModel
 			        or.scale(scale, scale);
 			        g2d.transform(or);
 					g2d.fill(shape);
-					if (place.getType() == Spas.PLACE_AFFORD)
+					if (place.getType() == Place.AFFORD)
 						g2d.setColor(agentColor);
-					else if (place.getType() == Spas.PLACE_UNKNOWN)
+					else if (place.getType() == Place.UNKNOWN)
 						g2d.setColor(new Color(0x8080FF));
 					else
 						g2d.setColor(Color.black);
