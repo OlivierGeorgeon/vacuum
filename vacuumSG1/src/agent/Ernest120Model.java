@@ -151,7 +151,7 @@ public class Ernest120Model extends ErnestModel
         // Only trace the first agent.
         
         //if (ident == 8)
-        //m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","NKmqGfrDVaTZQDSsgKNazjXd-cG-TZ");
+        m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","NKmqGfrDVaTZQDSsgKNazjXd-cG-TZ");
                         
         // Initialize the Ernest === 
         
@@ -1098,12 +1098,12 @@ public class Ernest120Model extends ErnestModel
 				{
 					ref = g2d.getTransform();
 			        or = new AffineTransform();
-			        float ooffx = offsetx * (float)Math.cos(- place.getOrientation()) + offsety * (float)Math.sin(- place.getOrientation());
-			        float ooffy = - offsetx * (float)Math.sin(- place.getOrientation()) + offsety * (float)Math.cos(- place.getOrientation());
+			        float ooffx = offsetx * (float)Math.cos(- place.getOrientationAngle()) + offsety * (float)Math.sin(- place.getOrientationAngle());
+			        float ooffy = - offsetx * (float)Math.sin(- place.getOrientationAngle()) + offsety * (float)Math.cos(- place.getOrientationAngle());
 			        or.translate(WIDTH + (int)(place.getPosition().x * SCALE + ooffx), HEIGHT - (int)(place.getPosition().y * SCALE + ooffy));
 			        //or.translate(WIDTH + (int)(place.getPosition().x * SCALE + offsetx), HEIGHT - (int)(place.getPosition().y * SCALE + offsety ));
 			        //or.scale(( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION),( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION));
-			        or.rotate(- place.getOrientation());
+			        or.rotate(- place.getOrientationAngle());
 			        or.rotate(orientation);
 			        or.scale(scale, scale);
 			        g2d.transform(or);
