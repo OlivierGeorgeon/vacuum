@@ -173,11 +173,11 @@ public class Ernest120Model extends ErnestModel
         m_ernest.addInteraction("\\","t",  -1); // Touch right wall
         m_ernest.addInteraction("/", "f",  -1); // Touch left empty
         m_ernest.addInteraction("/", "t",  -1); // Touch left wall
+        m_ernest.addInteraction(">", "a",  30);//  Move to alga
         m_ernest.addInteraction(">", "f",  -10);// Bump
         m_ernest.addInteraction(">", "t",   5); // Move
 //        m_ernest.addInteraction("<", "t",  -10); // Move backward
 //        m_ernest.addInteraction("<", "f",  -10);// Bump backward
-        m_ernest.addInteraction(">", "a",  10);//  Move to alga
         m_ernest.addInteraction("v", "t",  -3); // Right
         m_ernest.addInteraction("v", "f",  -3); // Right 
         m_ernest.addInteraction("^", "t",  -3); // Left
@@ -374,6 +374,7 @@ public class Ernest120Model extends ErnestModel
 	        {
 	        	Vector3f localPoint = new Vector3f(DIRECTION_AHEAD);
 	        	Vector3f point = localToParentRef(localPoint);
+            	Color blockColor = m_env.seeBlock(point.x, point.y);
 	            if (m_env.affordWalk(point))
 	            {
 	            	//mPosition.set(localToParentRef(new Vector3f(DIRECTION_AHEAD)));
@@ -384,7 +385,11 @@ public class Ernest120Model extends ErnestModel
 		        		anim();
 		        		sleep(delayMove);
 		        	}
-		        	status = FEEDBACK_TRUE;
+		        	//status = FEEDBACK_TRUE;
+	            	if (blockColor.equals(m_env.FIELD_COLOR))	
+	            		status = FEEDBACK_TRUE;
+	            	else
+	            		status = FEEDBACK_ALGA;
 	            }
 	            else
 	            {
@@ -1000,30 +1005,9 @@ public class Ernest120Model extends ErnestModel
 				IAct a = place.getAct();
 				if (a != null)
 				{
-					if (a.getLabel().equals(">t"))
-					{
+					if (a.getLabel().indexOf(">") >= 0)
 						shape = triangle;
-					}
-					if (a.getLabel().equals(">f"))
-					{
-						shape = triangle;
-						//g2d.setColor(Color.red);
-					}
-					if (a.getLabel().equals(">++t"))
-					{
-						shape = triangle;
-						//g2d.setColor(Color.red);
-					}
-					if (a.getLabel().equals("> +t"))
-					{
-						shape = triangle;
-						//g2d.setColor(Color.red);
-					}
-					if (a.getLabel().equals(">+ t"))
-					{
-						shape = triangle;
-						//g2d.setColor(Color.red);
-					}
+					
 					if (a.getLabel().equals("^f"))
 					{
 						shape = pie;
@@ -1069,13 +1053,11 @@ public class Ernest120Model extends ErnestModel
 					{
 						shape = square;
 						offsetx = - SCALE /3;
-						//g2d.setColor(Environment.WALL3);		
 					}
 					if (a.getLabel().equals("-a"))
 					{
 						shape = square;
 						offsetx = - SCALE /3;
-						//g2d.setColor(Environment.ALGA1);		
 					}
 					if (a.getLabel().equals("(^f>t)") || a.getLabel().equals("(vf>t)") )
 					{
