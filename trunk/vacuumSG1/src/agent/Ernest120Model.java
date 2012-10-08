@@ -2,7 +2,7 @@ package agent;
 
 import javax.swing.JFrame;
 import javax.vecmath.Matrix3f;
-import javax.vecmath.Point3d;
+import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
 import memory.ColliculusFrame;
@@ -32,9 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ernest.*;
-import spas.IObservation;
 import spas.IPlace;
-import spas.Observation;
 import spas.Place;
 import imos.IAct;
 import spas.LocalSpaceMemory;
@@ -152,7 +150,7 @@ public class Ernest120Model extends ErnestModel
         // Only trace the first agent.
         
         //if (ident == 8)
-        m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","NKmqGfrDVaTZQDSsgKNazjXd-cG-TZ");
+        //m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","NKmqGfrDVaTZQDSsgKNazjXd-cG-TZ");
                         
         // Initialize the Ernest === 
         
@@ -172,10 +170,10 @@ public class Ernest120Model extends ErnestModel
         m_ernest.addInteraction("-", "f",  -1); // Touch empty
         m_ernest.addInteraction("\\","f",  -1); // Touch right empty
         m_ernest.addInteraction("\\","t",  -1); // Touch right wall
-        m_ernest.addInteraction("\\","a",  -1); // Touch right wall
+        //m_ernest.addInteraction("\\","a",  -1); // Touch right wall
         m_ernest.addInteraction("/", "f",  -1); // Touch left empty
         m_ernest.addInteraction("/", "t",  -1); // Touch left wall
-        m_ernest.addInteraction("/", "a",  -1); // Touch left empty
+        //m_ernest.addInteraction("/", "a",  -1); // Touch left empty
         m_ernest.addInteraction(">", "a",  30);//  Move to alga
         m_ernest.addInteraction(">", "f",  -10);// Bump
         m_ernest.addInteraction(">", "t",   5); // Move
@@ -323,11 +321,10 @@ public class Ernest120Model extends ErnestModel
     private void enactSchema(int[] schema)
     {
     	m_effect = new Effect();
-    	//String status = "";
         
         // Touch
-        if (m_tracer != null)
-			m_tracer.addEventElement("touch_color", ErnestUtils.hexColor(focusColor.getRGB()));
+        //if (m_tracer != null)
+		//	m_tracer.addEventElement("touch_color", ErnestUtils.hexColor(focusColor.getRGB()));
 
     	focusColor = UNANIMATED_COLOR;
         leftColor =  UNANIMATED_COLOR;
@@ -359,7 +356,7 @@ public class Ernest120Model extends ErnestModel
 	        	}
 	        	if (mOrientation.z < - Math.PI) mOrientation.z += 2 * Math.PI; 
 	        	//status = FEEDBACK_FALSE;
-	        	m_effect.setEffect(FEEDBACK_FALSE);
+	        	m_effect.setLabel(FEEDBACK_FALSE);
 	        	m_effect.setTransformation((float) Math.PI/2, 0);
 	        }
 	        else if (schema[0] == '^')
@@ -374,7 +371,7 @@ public class Ernest120Model extends ErnestModel
 	        	}
 	        	if (mOrientation.z > Math.PI) mOrientation.z -= 2 * Math.PI; 
 	        	//status = FEEDBACK_FALSE;
-	        	m_effect.setEffect(FEEDBACK_FALSE);
+	        	m_effect.setLabel(FEEDBACK_FALSE);
 	        	m_effect.setTransformation((float) - Math.PI/2, 0);
 	        }
 	        else if (schema[0] == '>')
@@ -382,7 +379,8 @@ public class Ernest120Model extends ErnestModel
 	        	Vector3f localPoint = new Vector3f(DIRECTION_AHEAD);
 	        	Vector3f point = localToParentRef(localPoint);
             	Color blockColor = m_env.seeBlock(point.x, point.y);
-	        	m_effect.setLocation(new Point3d(1,0,0));
+	        	m_effect.setLocation(new Point3f(1,0,0));
+	        	m_effect.setColor(blockColor.getRGB());
 	            if (m_env.affordWalk(point))
 	            {
 	            	//mPosition.set(localToParentRef(new Vector3f(DIRECTION_AHEAD)));
@@ -397,13 +395,13 @@ public class Ernest120Model extends ErnestModel
 	            	if (blockColor.equals(m_env.FIELD_COLOR))	
 	            	{
 	            		//status = FEEDBACK_TRUE;
-	    	        	m_effect.setEffect(FEEDBACK_TRUE);
+	    	        	m_effect.setLabel(FEEDBACK_TRUE);
 	    	        	m_effect.setTransformation(0, -1);
 	            	}
 	            	else
 	            	{
 	            		//status = FEEDBACK_ALGA;
-	    	        	m_effect.setEffect(FEEDBACK_ALGA);
+	    	        	m_effect.setLabel(FEEDBACK_ALGA);
 	    	        	m_effect.setTransformation(0, -1);
 	            	}
 	            }
@@ -423,14 +421,14 @@ public class Ernest120Model extends ErnestModel
 		        		sleep(20);
 		        	}
 		        	//status = FEEDBACK_FALSE;
-    	        	m_effect.setEffect(FEEDBACK_FALSE);
+    	        	m_effect.setLabel(FEEDBACK_FALSE);
 	            }
 	        }
 	        else if (schema[0] == '<')
 	        {
 	        	Vector3f localPoint = new Vector3f(DIRECTION_BEHIND);
 	        	Vector3f point = localToParentRef(localPoint);
-	        	m_effect.setLocation(new Point3d(-1,0,0));
+	        	m_effect.setLocation(new Point3f(-1,0,0));
 	            if (m_env.affordWalk(point))
 	            {
 		        	for (int i = 0; i < 20; i++ )
@@ -441,7 +439,7 @@ public class Ernest120Model extends ErnestModel
 		        		sleep(delayMove);
 		        	}
 		        	//status = FEEDBACK_TRUE;
-    	        	m_effect.setEffect(FEEDBACK_TRUE);
+    	        	m_effect.setLabel(FEEDBACK_TRUE);
     	        	m_effect.setTransformation(0,1);
 	            }
 	            else
@@ -460,7 +458,7 @@ public class Ernest120Model extends ErnestModel
 		        		sleep(20);
 		        	}
 		        	//status = FEEDBACK_FALSE;
-    	        	m_effect.setEffect(FEEDBACK_FALSE);
+    	        	m_effect.setLabel(FEEDBACK_FALSE);
 	            }
 	        }
 	        else if (schema[0] == '-')
@@ -470,19 +468,20 @@ public class Ernest120Model extends ErnestModel
             	Color blockColor = m_env.seeBlock(point.x, point.y);
             	focusColor = blockColor;//Environment.WALL1;
     	    	ErnestModel entity = m_env.getEntity(point, mName);
-	        	m_effect.setLocation(new Point3d(1,0,0));
+	        	m_effect.setLocation(new Point3f(1,0,0));
+	        	m_effect.setColor(blockColor.getRGB());
 	            if (m_env.affordWalk(point))
 	            {
 	            	if (blockColor.equals(m_env.FIELD_COLOR))	
 	            		//status = FEEDBACK_FALSE;
-	    	        	m_effect.setEffect(FEEDBACK_FALSE);
+	    	        	m_effect.setLabel(FEEDBACK_FALSE);
 	            	else
-	    	        	m_effect.setEffect(FEEDBACK_ALGA);
+	    	        	m_effect.setLabel(FEEDBACK_ALGA);
 	            		//status = FEEDBACK_ALGA;
 	            	if (entity != null)
 	            	{
 	            		//status = FEEDBACK_ALGA;
-	    	        	m_effect.setEffect(FEEDBACK_ALGA);
+	    	        	m_effect.setLabel(FEEDBACK_ALGA);
 	                	focusColor = entity.getColor();	            		
 	            	}
 	            }
@@ -490,9 +489,9 @@ public class Ernest120Model extends ErnestModel
 	            {
 	            	if (blockColor.equals(m_env.WALL1))	
 	            		//status = FEEDBACK_TRUE;
-	            		m_effect.setEffect(FEEDBACK_TRUE);
+	            		m_effect.setLabel(FEEDBACK_TRUE);
 	            	else
-	            		m_effect.setEffect(FEEDBACK_BRICK);
+	            		m_effect.setLabel(FEEDBACK_BRICK);
 	            		//status = FEEDBACK_BRICK;
 	            }
         		anim();
@@ -504,21 +503,19 @@ public class Ernest120Model extends ErnestModel
 	        	Vector3f point = localToParentRef(localPoint);
             	Color blockColor = m_env.seeBlock(point.x, point.y);
             	leftColor = blockColor;
-	        	m_effect.setLocation(new Point3d(0,1,0));
+	        	m_effect.setLocation(new Point3f(0,1,0));
+	        	m_effect.setColor(blockColor.getRGB());
 	            if (m_env.affordWalk(point))
 	            {
 	            	if (blockColor.equals(m_env.FIELD_COLOR))	
-	            		m_effect.setEffect(FEEDBACK_FALSE);
+	            		m_effect.setLabel(FEEDBACK_FALSE);
 	            		//status = FEEDBACK_FALSE;
 	            	else
-	            		m_effect.setEffect(FEEDBACK_ALGA);
+	            		m_effect.setLabel(FEEDBACK_ALGA);
 	            		//status = FEEDBACK_ALGA;
 	            }
 	            else
-        		m_effect.setEffect(FEEDBACK_TRUE);
-//	            {
-//	            	status = FEEDBACK_TRUE;
-//	            }
+	            	m_effect.setLabel(FEEDBACK_TRUE);
         		anim();
         		sleep(delayTouch);
 	        }
@@ -528,21 +525,19 @@ public class Ernest120Model extends ErnestModel
 	        	Vector3f point = localToParentRef(localPoint);
             	Color blockColor = m_env.seeBlock(point.x, point.y);
             	rightColor = blockColor;
-	        	m_effect.setLocation(new Point3d(0,-1,0));
+	        	m_effect.setLocation(new Point3f(0,-1,0));
+	        	m_effect.setColor(blockColor.getRGB());
 	            if (m_env.affordWalk(point))
 	            {
 	            	if (blockColor.equals(m_env.FIELD_COLOR))	
-	            		m_effect.setEffect(FEEDBACK_FALSE);
+	            		m_effect.setLabel(FEEDBACK_FALSE);
 	            		//status = FEEDBACK_FALSE;
 	            	else
-	            		m_effect.setEffect(FEEDBACK_ALGA);
+	            		m_effect.setLabel(FEEDBACK_ALGA);
 	            		//status = FEEDBACK_ALGA;
 	            }
 	            else
-            		m_effect.setEffect(FEEDBACK_TRUE);
-//	            {
-//	            	status = FEEDBACK_TRUE;
-//	            }
+            		m_effect.setLabel(FEEDBACK_TRUE);
         		anim();
         		sleep(delayTouch);
 	        }
@@ -1031,7 +1026,7 @@ public class Ernest120Model extends ErnestModel
 		//for (IPlace place : getErnest().getPlaceList())
 		for (IPlace place : placeList)
 		{
-			if (place.getType() == Place.EVOKE_PHENOMENON || place.getType() == Place.AFFORD  || place.getType() == Place.UNKNOWN)
+			if (place.getType() == Place.ENACTION_PLACE || place.getType() == Place.AFFORD  || place.getType() == Place.UNKNOWN)
 			{		        
 		        g2d.setColor(new Color(place.getValue()));		
 								

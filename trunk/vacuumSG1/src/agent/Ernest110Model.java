@@ -555,7 +555,7 @@ public class Ernest110Model extends ErnestModel
         
         // Draw the focus
         
-        focusColor = new Color(m_ernest.getAttention());
+        //focusColor = new Color(m_ernest.getAttention());
         g2d.setColor(focusColor);
         g2d.fill(focus);
     }
