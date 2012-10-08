@@ -76,10 +76,10 @@ public class InternalView {
 		return m_model.getErnest().getCounter();
 	}
 	
-	public int getFocus()
-	{
-		return m_model.getErnest().getAttention();
-	}
+//	public int getFocus()
+//	{
+//		return m_model.getErnest().getAttention();
+//	}
 	
 	public int getID()
 	{	
