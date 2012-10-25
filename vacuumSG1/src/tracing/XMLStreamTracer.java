@@ -275,7 +275,6 @@ public class XMLStreamTracer implements ITracer<Element>
 		m_last_t = t;
 		m_eventStarted = true;
 		
-		m_id++;
 		m_currentEvent = m_document.createElement("event");
 		m_currentEvent.setAttribute("id", Integer.toString(m_id));
 		m_currentEvent.setAttribute("source", source);
@@ -284,6 +283,7 @@ public class XMLStreamTracer implements ITracer<Element>
 		typeElement.setTextContent(type);
 		m_currentEvent.appendChild(typeElement);
 		m_root.appendChild(m_currentEvent);
+		m_id++;
 
 		return m_currentEvent;
 	}
