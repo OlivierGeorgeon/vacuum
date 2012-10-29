@@ -159,7 +159,7 @@ public class Ernest120Model extends ErnestModel
         //m_ernest.setParameters(4, 4);
         m_ernest.setParameters(6, 10);
         m_ernest.setTracer(m_tracer);
-        m_ernest.setSensorymotorSystem(new Ernest12SensorimotorSystem());
+        //m_ernest.setSensorymotorSystem(new Ernest12SensorimotorSystem());
         //m_ernest.setSensorymotorSystem(new BinarySensorymotorSystem());
         //m_ernest.setFrame(m_simulationFrame);
 

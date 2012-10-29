@@ -21,7 +21,7 @@ import java.util.List;
 
 import spas.ISpatialMemory;
 
-import agent.Ernest110Model;
+//import agent.Ernest110Model;
 import agent.PrintablePanel;
 
 import ernest.IErnest;

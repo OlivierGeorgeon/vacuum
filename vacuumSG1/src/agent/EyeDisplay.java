@@ -91,7 +91,7 @@ public class EyeDisplay extends PrintablePanel {
 			g2d.setColor(Color.PINK);
 		if (eye.m_model.getEat())
 			g2d.setColor(Color.YELLOW);
-        g2d.fill(Ernest110Model.shape(eye.getID()));
+        //g2d.fill(Ernest110Model.shape(eye.getID()));
         g2d.setTransform(ref);
 
         // Display counter
