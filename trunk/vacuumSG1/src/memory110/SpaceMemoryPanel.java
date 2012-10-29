@@ -19,7 +19,7 @@ import java.awt.geom.GeneralPath;
 import java.util.ArrayList;
 import java.util.List;
 
-import agent.Ernest110Model;
+//import agent.Ernest110Model;
 import agent.PrintablePanel;
 
 import ernest.IErnest;
