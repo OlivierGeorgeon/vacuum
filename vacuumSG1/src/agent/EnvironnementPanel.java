@@ -241,13 +241,8 @@ public class EnvironnementPanel extends PrintablePanel implements MouseListener{
 	 */
 	private void drawInformation(Graphics2D g2d){
 		
-		int m_w = m_env.getWidth();
-		int m_h = m_env.getHeight();
-		int h=this.getHeight();
-		int w=this.getWidth();
-		
-		int c_w=w/m_w;
-		int c_h=h/m_h;
+		int c_w = this.getWidth() /m_env.getWidth();
+		int c_h = this.getHeight() /m_env.getHeight();
 		
 		String counter ="0";
 		
@@ -255,7 +250,7 @@ public class EnvironnementPanel extends PrintablePanel implements MouseListener{
 		counter = m_env.getCounter() + "";
 		
 		//Font font = new Font("Dialog", Font.BOLD, 10);
-		Font font = new Font("Dialog", Font.BOLD, w /20);
+		Font font = new Font("Dialog", Font.BOLD, this.getWidth() /m_env.getWidth() /2);
 		g2d.setFont(font);
 		
 		FontMetrics fm = getFontMetrics(font);
@@ -264,7 +259,7 @@ public class EnvironnementPanel extends PrintablePanel implements MouseListener{
 		
 		//g2d.setColor(new Color(200, 255, 200));		
 		g2d.setColor(new Color(0xC0C0C0));		
-		g2d.drawString(counter, m_w*c_w - c_w*1.1f - width, c_h*1.5f + 5);	
+		g2d.drawString(counter, this.getWidth() - c_w*1.2f - width, c_h*1.6f + 5);	
 	}
 	
 }

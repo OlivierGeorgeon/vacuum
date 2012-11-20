@@ -164,25 +164,25 @@ public class Ernest120Model extends ErnestModel
         //m_ernest.setFrame(m_simulationFrame);
 
         // For the small loop
-        //m_ernest.addInteraction("-", "b",  -1); // Touch brick
-        //m_ernest.addInteraction("-", "a",  -1); // Touch alga
-        m_ernest.addInteraction("-", "t",  -1); // Touch wall
+        m_ernest.addInteraction("-", "t",  -2); // Touch wall
         m_ernest.addInteraction("-", "f",  -1); // Touch empty
+        m_ernest.addInteraction("\\","t",  -2); // Touch right wall
         m_ernest.addInteraction("\\","f",  -1); // Touch right empty
-        m_ernest.addInteraction("\\","t",  -1); // Touch right wall
-        //m_ernest.addInteraction("\\","a",  -1); // Touch right wall
+        m_ernest.addInteraction("/", "t",  -2); // Touch left wall
         m_ernest.addInteraction("/", "f",  -1); // Touch left empty
-        m_ernest.addInteraction("/", "t",  -1); // Touch left wall
-        //m_ernest.addInteraction("/", "a",  -1); // Touch left empty
-        //m_ernest.addInteraction(">", "a",  30);//  Move to alga
-        m_ernest.addInteraction(">", "f",  -10);// Bump
         m_ernest.addInteraction(">", "t",   5); // Move
-//        m_ernest.addInteraction("<", "t",  -10); // Move backward
-//        m_ernest.addInteraction("<", "f",  -10);// Bump backward
+        m_ernest.addInteraction(">", "f",  -10);// Bump
         m_ernest.addInteraction("v", "t",  -3); // Right
         m_ernest.addInteraction("v", "f",  -3); // Right 
         m_ernest.addInteraction("^", "t",  -3); // Left
         m_ernest.addInteraction("^", "f",  -3); // Left 
+        //m_ernest.addInteraction("-", "b",  -1); // Touch brick
+        //m_ernest.addInteraction("-", "a",  -1); // Touch alga
+        //m_ernest.addInteraction("\\","a",  -1); // Touch right wall
+        //m_ernest.addInteraction("/", "a",  -1); // Touch left empty
+        //m_ernest.addInteraction(">", "a",  30);//  Move to alga
+//        m_ernest.addInteraction("<", "t",  -10); // Move backward
+//        m_ernest.addInteraction("<", "f",  -10);// Bump backward
 
         // With vision 
 //        m_ernest.addInteraction("-", "f",  -1); // Touch empty
@@ -330,8 +330,8 @@ public class Ernest120Model extends ErnestModel
         leftColor =  UNANIMATED_COLOR;
         rightColor =  UNANIMATED_COLOR;
 
-        int delayMove = 10;
-        int delayTouch = 100;
+        int delayMove = 5;//10;
+        int delayTouch = 50;//100;
     	m_animOrientation = 0;
     	m_animPosition = 0;
 

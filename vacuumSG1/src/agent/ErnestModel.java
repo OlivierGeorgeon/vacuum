@@ -52,7 +52,7 @@ public class ErnestModel extends Model
 	
 	/** Ernest's sensorymotor system. */
 	protected IErnest m_ernest;
-	protected ISensorymotorSystem m_sensorymotorSystem;
+	//protected ISensorymotorSystem m_sensorymotorSystem;
 	protected ITracer m_tracer;
 
 	/**
