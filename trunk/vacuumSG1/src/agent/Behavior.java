@@ -247,7 +247,7 @@ public class Behavior {
 				this.effect.setLabel( Stimuli.FALSE.getLabel() ) ;
 				this.leftColor = Environment.FIELD_COLOR ;
 		}
-		else
+		else{
 			if ( blockColor.equals( Environment.WALL1 ) || blockColor.equals( Environment.WALL2 ) || blockColor.equals( Environment.WALL3 ) ) {
 				this.leftColor = Environment.WALL1 ;
 			} else {
@@ -255,6 +255,8 @@ public class Behavior {
 			}
 				
 			this.effect.setLabel( Stimuli.TRUE.getLabel() ) ;
+		}
+		
 		this.anim() ;
 		this.model.sleep( this.delayTouch ) ;
 	}
@@ -278,7 +280,7 @@ public class Behavior {
 			this.effect.setLabel( Stimuli.FALSE.getLabel() ) ;
 			this.rightColor = Environment.FIELD_COLOR ;
 		}
-		else
+		else{
 			if ( blockColor.equals( Environment.WALL1 ) || blockColor.equals( Environment.WALL2 ) || blockColor.equals( Environment.WALL3 ) ) {
 				this.rightColor = Environment.WALL1 ;
 			} else {
@@ -286,6 +288,8 @@ public class Behavior {
 			}
 				
 			this.effect.setLabel( Stimuli.TRUE.getLabel() ) ;
+		}
+		
 		this.anim() ;
 		this.model.sleep( delayTouch ) ;
 	}
