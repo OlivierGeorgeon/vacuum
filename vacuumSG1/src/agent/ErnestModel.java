@@ -51,9 +51,9 @@ public class ErnestModel extends Model
 	protected double getEyeAngle() {return m_eyeAngle;}
 	
 	/** Ernest's sensorymotor system. */
-	protected IErnest m_ernest;
+	protected IErnest ernest;
 	//protected ISensorymotorSystem m_sensorymotorSystem;
-	protected ITracer m_tracer;
+	protected ITracer tracer;
 
 	/**
 	 * Value of the diagonal projection in 2D:
@@ -85,7 +85,7 @@ public class ErnestModel extends Model
 	final protected Vector3f DIRECTION_WEST = new Vector3f(-1, 0, 0);
 	final protected Vector3f DIRECTION_NORTHWEST = new Vector3f(-1, 1, 0);
 	
-	public InternalView m_eye;
+	public InternalView eye;
 	public InnerEar m_ear;
 	public int lastAction;
 	
@@ -99,7 +99,7 @@ public class ErnestModel extends Model
 	public ErnestModel(int i) 
 	{
 		super(i);
-		m_eye=new InternalView();
+		eye=new InternalView();
 		mSpeedT=new Vector3f(0f,0f,0f);
 		mSpeedR=new Vector3f(0f,0f,0f);
 		
@@ -120,7 +120,7 @@ public class ErnestModel extends Model
 	{
 		//m_tracer.close();
 		mOrientation.z=(float) (Math.PI/2);
-		m_ernest = null;
+		ernest = null;
 	}
 	
 	/**
@@ -1289,7 +1289,7 @@ public class ErnestModel extends Model
 		}
 		
 		// update display
-		m_eye.updateRetine(rv2,colorMap2,cornerV2,rt2,tactileMap2,cornerT2,cornersPoints,segments);
+		eye.updateRetine(rv2,colorMap2,cornerV2,rt2,tactileMap2,cornerT2,cornersPoints,segments);
 		/**/
 		return retina;
 	}
@@ -1315,8 +1315,8 @@ public class ErnestModel extends Model
 	
 	public int getCounter()
 	{
-		if (m_ernest != null)
-			return m_ernest.getCounter();
+		if (ernest != null)
+			return ernest.getCounter();
 		else
 			return 0;
 	}
@@ -1333,7 +1333,7 @@ public class ErnestModel extends Model
 	
 	public IErnest getErnest()
 	{
-		return m_ernest;
+		return ernest;
 	}
 	
 //	protected void count()
@@ -1343,7 +1343,7 @@ public class ErnestModel extends Model
 
 	public int getUpdateCount()
 	{
-		return m_ernest.getUpdateCount();
+		return ernest.getUpdateCount();
 	}
 	
 }
