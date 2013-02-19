@@ -1,0 +1,10 @@
+w w w w w w w w w w w w w w w w
+w - g - - - - w g - - - - - w w
+w - - w 4 4 - - - - w - h - - w
+w - - - - - w - w w i - - - w w
+w w w w - - w - - - - - h - - w
+w - - - w - - - w - - w - w - w
+w - w - - w 4 w - w - - - w - w
+w - w w - w - - - w - w - w - w
+w ^ - - - w - - w - - w - - ^ w
+w w w w w w w w w w w w w w w w
