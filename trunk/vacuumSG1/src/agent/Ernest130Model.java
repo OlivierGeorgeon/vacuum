@@ -112,7 +112,8 @@ public class Ernest130Model extends ErnestModel {
 		this.m_eye.setModel( this ) ;
 
 		// Only trace the first agent.
-		this.m_tracer = new XMLStreamTracer( "http://134.214.128.53/abstract/lite/php/stream/" , "dvlgOqZqFcyVWdrRdJisCAqXYsttqQ" ) ;
+		this.m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","NKmqGfrDVaTZQDSsgKNazjXd-cG-TZ");
+		//this.m_tracer = new XMLStreamTracer( "http://134.214.128.53/abstract/lite/php/stream/" , "dvlgOqZqFcyVWdrRdJisCAqXYsttqQ" ) ;
 
 		// Initialize the Ernest
 		// Ernest's inborn primitive interactions
