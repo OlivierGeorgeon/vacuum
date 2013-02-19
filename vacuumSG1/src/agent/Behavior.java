@@ -213,12 +213,16 @@ public class Behavior {
 		}
 		else if ( this.model.getEnvironment().affordWalk( point ) ) {
 			this.effect.setLabel( Stimuli.FALSE.getLabel() ) ;
+			this.focusColor = Environment.FIELD_COLOR ;
 		}
 		else {
-			if ( blockColor.equals( Environment.WALL1 ) )
-				this.effect.setLabel( Stimuli.TRUE.getLabel() ) ;
-			else
-				this.effect.setLabel( Stimuli.TRUE.getLabel() ) ;
+			if ( blockColor.equals( Environment.WALL1 ) || blockColor.equals( Environment.WALL2 ) || blockColor.equals( Environment.WALL3 ) ) {
+				this.focusColor = Environment.WALL1 ;
+			} else {
+				this.focusColor = Environment.FIELD_COLOR ;
+			}
+				
+			this.effect.setLabel( Stimuli.TRUE.getLabel() ) ;
 		}
 		this.anim() ;
 		this.model.sleep( this.delayTouch ) ;
@@ -241,8 +245,15 @@ public class Behavior {
 		}
 		else if ( this.model.getEnvironment().affordWalk( point ) ) {
 				this.effect.setLabel( Stimuli.FALSE.getLabel() ) ;
+				this.leftColor = Environment.FIELD_COLOR ;
 		}
 		else
+			if ( blockColor.equals( Environment.WALL1 ) || blockColor.equals( Environment.WALL2 ) || blockColor.equals( Environment.WALL3 ) ) {
+				this.leftColor = Environment.WALL1 ;
+			} else {
+				this.leftColor = Environment.FIELD_COLOR ;
+			}
+				
 			this.effect.setLabel( Stimuli.TRUE.getLabel() ) ;
 		this.anim() ;
 		this.model.sleep( this.delayTouch ) ;
@@ -265,8 +276,15 @@ public class Behavior {
 		}
 		else if ( this.model.getEnvironment().affordWalk( point ) ) {
 			this.effect.setLabel( Stimuli.FALSE.getLabel() ) ;
+			this.rightColor = Environment.FIELD_COLOR ;
 		}
 		else
+			if ( blockColor.equals( Environment.WALL1 ) || blockColor.equals( Environment.WALL2 ) || blockColor.equals( Environment.WALL3 ) ) {
+				this.rightColor = Environment.WALL1 ;
+			} else {
+				this.rightColor = Environment.FIELD_COLOR ;
+			}
+				
 			this.effect.setLabel( Stimuli.TRUE.getLabel() ) ;
 		this.anim() ;
 		this.model.sleep( delayTouch ) ;
