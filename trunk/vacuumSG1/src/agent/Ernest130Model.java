@@ -105,22 +105,22 @@ public class Ernest130Model extends ErnestModel {
 
 	public void initErnest() {
 		// Instantiate Ernest
-		this.ernest = new Ernest() ;
+		this.m_ernest = new Ernest() ;
 
 		// Initialize the visualization.
 		this.spaceMemory.setModel( this ) ;
-		this.eye.setModel( this ) ;
+		this.m_eye.setModel( this ) ;
 
 		// Only trace the first agent.
-		this.tracer = new XMLStreamTracer( "http://134.214.128.53/abstract/lite/php/stream/" , "dvlgOqZqFcyVWdrRdJisCAqXYsttqQ" ) ;
+		this.m_tracer = new XMLStreamTracer( "http://134.214.128.53/abstract/lite/php/stream/" , "dvlgOqZqFcyVWdrRdJisCAqXYsttqQ" ) ;
 
 		// Initialize the Ernest
 		// Ernest's inborn primitive interactions
-		this.ernest.setParameters( 6 , 10 ) ;
+		this.m_ernest.setParameters( 6 , 10 ) ;
 
-		this.ernest.setTracer( this.tracer ) ;
+		this.m_ernest.setTracer( this.m_tracer ) ;
 
-		this.motivation.putMotivation( this.ernest ) ;
+		this.motivation.putMotivation( this.m_ernest ) ;
 
 		this.cognitiveMode = ErnestModel.AGENT_RUN ;
 
@@ -143,9 +143,9 @@ public class Ernest130Model extends ErnestModel {
 
 	private void setDisplayEyeView() {
 		if ( !isExistFrame( Ernest130Model.EYE_VIEW_FRAME_CLASS_NAME ) )
-			this.m_env.frameList.add( new EyeView( this.eye ) ) ;
+			this.m_env.frameList.add( new EyeView( this.m_eye ) ) ;
 		else
-			( (EyeView) this.m_env.frameList.get( this.indexOfFrame( Ernest130Model.EYE_VIEW_FRAME_CLASS_NAME ) ) ).setEye( this.eye ) ;
+			( (EyeView) this.m_env.frameList.get( this.indexOfFrame( Ernest130Model.EYE_VIEW_FRAME_CLASS_NAME ) ) ).setEye( this.m_eye ) ;
 	}
 
 	private void setDisplayInnerEar() {
@@ -183,7 +183,7 @@ public class Ernest130Model extends ErnestModel {
 	}
 
 	public void update() {
-		Schema schema = Schema.valueOfByLabel( this.ernest.step( this.behavior.getEffect() ) ) ;
+		Schema schema = Schema.valueOfByLabel( this.m_ernest.step( this.behavior.getEffect() ) ) ;
 
 		if ( this.cognitiveMode == ErnestModel.AGENT_STEP )
 			this.cognitiveMode = ErnestModel.AGENT_STOP ;

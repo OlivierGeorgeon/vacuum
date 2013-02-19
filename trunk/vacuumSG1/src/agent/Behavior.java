@@ -93,11 +93,11 @@ public class Behavior {
 			this.pixelColor[i] = this.eyeFixation[i].mRight ;
 
 		// Trace the environmental data
-		if ( this.model.tracer != null ) {
-			Object e = this.model.tracer.addEventElement( "environment" ) ;
-			this.model.tracer.addSubelement( e , "x" , ErnestUtils.format( this.model.getmPosition().x , 0 ) ) ;
-			this.model.tracer.addSubelement( e , "y" , ErnestUtils.format( this.model.getmPosition().y , 0 ) ) ;
-			this.model.tracer.addSubelement( e , "orientation" , ErnestUtils.format( this.model.getmOrientation().z , 2 ) ) ;
+		if ( this.model.m_tracer != null ) {
+			Object e = this.model.m_tracer.addEventElement( "environment" ) ;
+			this.model.m_tracer.addSubelement( e , "x" , ErnestUtils.format( this.model.getmPosition().x , 0 ) ) ;
+			this.model.m_tracer.addSubelement( e , "y" , ErnestUtils.format( this.model.getmPosition().y , 0 ) ) ;
+			this.model.m_tracer.addSubelement( e , "orientation" , ErnestUtils.format( this.model.getmOrientation().z , 2 ) ) ;
 		}
 
 		return new BehaviorState( this.animOrientation , this.animPosition , this.focusColor , this.leftColor , this.rightColor , this.pixelColor ) ;
