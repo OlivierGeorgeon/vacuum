@@ -280,7 +280,7 @@ public class Environment extends Observable {
 	
 	/**
 	 * @param pos The position to test in Cartesian coordinates.
-	 * @return true if this position is a wall 
+	 * @return true if this position is afford walking, or false if pos is a wall 
 	 */
 	protected boolean affordWalk(Vector3f pos) 
 	{

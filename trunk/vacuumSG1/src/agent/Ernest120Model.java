@@ -140,42 +140,42 @@ public class Ernest120Model extends ErnestModel
     public void initErnest()
     {
     	// Instantiate Ernest
-        m_ernest = new Ernest();
+        ernest = new Ernest();
         //m_sensorymotorSystem = new SpatialSensorimotorSystem();
         
         // Initialize the visualization.
 		m_SpaceMemory.setModel(this);
-		m_eye.setModel(this);
+		eye.setModel(this);
 		
         // Only trace the first agent.
         
         //if (ident == 8)
-        m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","NKmqGfrDVaTZQDSsgKNazjXd-cG-TZ");
+        tracer = new XMLStreamTracer("http://134.214.128.53/abstract/lite/php/stream/" , "dvlgOqZqFcyVWdrRdJisCAqXYsttqQ");
                         
         // Initialize the Ernest === 
         
         // Ernest's inborn primitive interactions
 
         //m_ernest.setParameters(4, 4);
-        m_ernest.setParameters(6, 10);
-        m_ernest.setTracer(m_tracer);
+        ernest.setParameters(6, 10);
+        ernest.setTracer(tracer);
         //m_ernest.setSensorymotorSystem(new Ernest12SensorimotorSystem());
         //m_ernest.setSensorymotorSystem(new BinarySensorymotorSystem());
         //m_ernest.setFrame(m_simulationFrame);
 
         // For the small loop
-        m_ernest.addInteraction("-", "t",  -2); // Touch wall
-        m_ernest.addInteraction("-", "f",  -1); // Touch empty
-        m_ernest.addInteraction("\\","t",  -2); // Touch right wall
-        m_ernest.addInteraction("\\","f",  -1); // Touch right empty
-        m_ernest.addInteraction("/", "t",  -2); // Touch left wall
-        m_ernest.addInteraction("/", "f",  -1); // Touch left empty
-        m_ernest.addInteraction(">", "t",   5); // Move
-        m_ernest.addInteraction(">", "f",  -10);// Bump
-        m_ernest.addInteraction("v", "t",  -3); // Right
-        m_ernest.addInteraction("v", "f",  -3); // Right 
-        m_ernest.addInteraction("^", "t",  -3); // Left
-        m_ernest.addInteraction("^", "f",  -3); // Left 
+        ernest.addInteraction("-", "t",  -2); // Touch wall
+        ernest.addInteraction("-", "f",  -1); // Touch empty
+        ernest.addInteraction("\\","t",  -2); // Touch right wall
+        ernest.addInteraction("\\","f",  -1); // Touch right empty
+        ernest.addInteraction("/", "t",  -2); // Touch left wall
+        ernest.addInteraction("/", "f",  -1); // Touch left empty
+        ernest.addInteraction(">", "t",   5); // Move
+        ernest.addInteraction(">", "f",  -10);// Bump
+        ernest.addInteraction("v", "t",  -3); // Right
+        ernest.addInteraction("v", "f",  -3); // Right 
+        ernest.addInteraction("^", "t",  -3); // Left
+        ernest.addInteraction("^", "f",  -3); // Left 
         //m_ernest.addInteraction("-", "b",  -1); // Touch brick
         //m_ernest.addInteraction("-", "a",  -1); // Touch alga
         //m_ernest.addInteraction("\\","a",  -1); // Touch right wall
@@ -276,8 +276,8 @@ public class Ernest120Model extends ErnestModel
 				i++;
 			}
 		
-			if (!found) m_env.frameList.add(new EyeView(m_eye)); 
-			else        ((EyeView) m_env.frameList.get(i-1)).setEye(m_eye);
+			if (!found) m_env.frameList.add(new EyeView(eye)); 
+			else        ((EyeView) m_env.frameList.get(i-1)).setEye(eye);
 		}
 		
 		// Set the inner ear display
@@ -301,7 +301,7 @@ public class Ernest120Model extends ErnestModel
     public void update()
     {
 		//String schema = m_ernest.step(m_status);
-		String schema = m_ernest.step(m_effect);
+		String schema = ernest.step(m_effect);
 		
 		int[] intention = new int[2]; 
 		intention[0]= schema.toCharArray()[0];
@@ -561,6 +561,7 @@ public class Ernest120Model extends ErnestModel
 //	        m_observation.setVisualDistance(1, eyeFixation[1].mLeft);
 	        for (int i = 0; i < Ernest.RESOLUTION_RETINA; i++)
 	            pixelColor[i] = eyeFixation[i].mRight;
+	        
 //	        m_currentRightPixel  = eyeFixation[0].mLeft;
 //	        m_currentLeftPixel   = eyeFixation[1].mLeft;
 //	        
@@ -577,12 +578,12 @@ public class Ernest120Model extends ErnestModel
 //	        m_effect.setEffect(status);
 	        
 	        // Trace the environmental data
-	        if (m_tracer != null)
+	        if (tracer != null)
 	        {
-				Object e = m_tracer.addEventElement("environment");
-				m_tracer.addSubelement(e, "x", ErnestUtils.format(mPosition.x, 0));
-				m_tracer.addSubelement(e, "y", ErnestUtils.format(mPosition.y, 0));
-				m_tracer.addSubelement(e, "orientation", ErnestUtils.format(mOrientation.z,2));
+				Object e = tracer.addEventElement("environment");
+				tracer.addSubelement(e, "x", ErnestUtils.format(mPosition.x, 0));
+				tracer.addSubelement(e, "y", ErnestUtils.format(mPosition.y, 0));
+				tracer.addSubelement(e, "orientation", ErnestUtils.format(mOrientation.z,2));
 	        }               
     	}
     }

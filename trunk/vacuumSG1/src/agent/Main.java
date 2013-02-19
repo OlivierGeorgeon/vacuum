@@ -11,6 +11,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.vecmath.Vector3f;
 
+
 import ernest.Ernest;
 
 import java.io.*;
@@ -115,6 +116,9 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 			}
 			else if (args[0].equals("Ernest120")){
 				version=120;
+			}
+			else if (args[0].equals("Ernest130")){
+				version=130;
 			}
 			else version=100;
 		}
@@ -310,6 +314,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 						//if (version==110)      m_modelList.add(new Ernest110Model(index));
 						if (version==120)      m_modelList.add(new Ernest120Model(index));
 						else if (version==0)   m_modelList.add(new FishModel(index));
+						else if (version==130)   m_modelList.add(new Ernest130Model(index));
 						else                   m_modelList.add(new Ernest120Model(index));
 						m_modelList.get(index).init(l_w, l_h);
 						m_modelList.get(index).setFrame(this);
