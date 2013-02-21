@@ -6,15 +6,15 @@ public class Motivation {
 
 	public void putMotivation( IErnest ernest ){
 		// Touch wall
-		ernest.addInteraction( Schema.TOUCH.getLabel() , Stimuli.TRUE.getLabel() , -2 ) ;
+		ernest.addInteraction( Schema.TOUCH.getLabel() , Stimuli.TRUE.getLabel() , -1 ) ;
 		// Touch empty
 		ernest.addInteraction( Schema.TOUCH.getLabel() , Stimuli.FALSE.getLabel() , -1 ) ;
 		// Touch right wall
-		ernest.addInteraction( Schema.TOUCH_RIGHT.getLabel() , Stimuli.TRUE.getLabel() , -2 ) ;
+		ernest.addInteraction( Schema.TOUCH_RIGHT.getLabel() , Stimuli.TRUE.getLabel() , -1 ) ;
 		// Touch right empty
 		ernest.addInteraction( Schema.TOUCH_RIGHT.getLabel() , Stimuli.FALSE.getLabel() , -1 ) ;
 		// Touch left wall
-		ernest.addInteraction( Schema.TOUCH_LEFT.getLabel() , Stimuli.TRUE.getLabel() , -2 ) ;
+		ernest.addInteraction( Schema.TOUCH_LEFT.getLabel() , Stimuli.TRUE.getLabel() , -1 ) ;
 		// Touch left empty
 		ernest.addInteraction( Schema.TOUCH_LEFT.getLabel() , Stimuli.FALSE.getLabel() , -1 ) ;
 		// Move
@@ -22,11 +22,11 @@ public class Motivation {
 		// Bump
 		ernest.addInteraction( Schema.MOVE.getLabel() , Stimuli.FALSE.getLabel() , -10 ) ;
 		// Right
-		ernest.addInteraction( Schema.RIGHT.getLabel() , Stimuli.TRUE.getLabel() , -3 ) ;
+		//ernest.addInteraction( Schema.RIGHT.getLabel() , Stimuli.TRUE.getLabel() , -3 ) ;
 		// Right
 		ernest.addInteraction( Schema.RIGHT.getLabel() , Stimuli.FALSE.getLabel() , -3 ) ;
 		// Left
-		ernest.addInteraction( Schema.LEFT.getLabel() , Stimuli.TRUE.getLabel() , -3 ) ;
+		//ernest.addInteraction( Schema.LEFT.getLabel() , Stimuli.TRUE.getLabel() , -3 ) ;
 		// Left
 		ernest.addInteraction( Schema.LEFT.getLabel() , Stimuli.FALSE.getLabel() , -3 ) ;
 

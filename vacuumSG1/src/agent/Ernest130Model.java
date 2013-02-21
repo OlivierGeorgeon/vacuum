@@ -117,7 +117,8 @@ public class Ernest130Model extends ErnestModel {
 
 		// Initialize the Ernest
 		// Ernest's inborn primitive interactions
-		this.m_ernest.setParameters( 6 , 10 ) ;
+		//this.m_ernest.setParameters( 6 , 10 ) ;
+		this.m_ernest.setParameters( 5 , 10 ) ;
 
 		this.m_ernest.setTracer( this.m_tracer ) ;
 
