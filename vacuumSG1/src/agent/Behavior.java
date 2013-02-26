@@ -26,8 +26,8 @@ public class Behavior {
 
 	private float animOrientation = 0 ;
 	private float animPosition = 0 ;
-	private int delayMove = 4 ; //2
-	private int delayTouch = 40 ; //50
+	private int delayMove = 8 ; //2
+	private int delayTouch = 80 ; //50
 
 	public Behavior( Ernest130Model model ) {
 		this.model = model ;

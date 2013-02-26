@@ -250,7 +250,7 @@ public class EnvironnementPanel extends PrintablePanel implements MouseListener{
 		counter = m_env.getCounter() + "";
 		
 		//Font font = new Font("Dialog", Font.BOLD, 10);
-		Font font = new Font("Dialog", Font.BOLD, this.getWidth() /m_env.getWidth() /2);
+		Font font = new Font("Dialog", Font.BOLD, this.getWidth() /m_env.getWidth() /3);
 		g2d.setFont(font);
 		
 		FontMetrics fm = getFontMetrics(font);
