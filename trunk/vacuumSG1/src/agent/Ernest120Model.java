@@ -35,6 +35,7 @@ import ernest.*;
 import spas.IPlace;
 import spas.Place;
 import imos.IAct;
+import imos2.IInteraction;
 import spas.LocalSpaceMemory;
 import spas.Spas;
 import tracing.*;
@@ -940,9 +941,11 @@ public class Ernest120Model extends ErnestModel
 		        g2d.setTransform(ref);
 		        
 		        //for (IAct a : place.getBundle().getActList())
-		        IAct a = place.getAct();
+		        //IAct a = place.getAct();
+		        IInteraction a = place.getInteraction();
 		        {
-					g2d.setColor(new Color(a.getColor()));		
+					//g2d.setColor(new Color(a.getColor()));		
+					g2d.setColor(new Color(place.getValue()));		
 					Shape shape = circle;
 					int offsetx = 0;
 					int offsety = 0;
@@ -1042,7 +1045,8 @@ public class Ernest120Model extends ErnestModel
 				int offsetx = 0;
 				int offsety = 0;
 				float scale = 1;
-				IAct a = place.getAct();
+				//IAct a = place.getAct();
+				IInteraction a = place.getInteraction();
 				if (a != null)
 				{
 					if (a.getLabel().indexOf(">") >= 0)

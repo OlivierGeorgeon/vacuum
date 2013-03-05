@@ -1,6 +1,7 @@
 package agent ;
 
 import imos.IAct ;
+import imos2.IInteraction;
 
 import java.awt.BasicStroke ;
 import java.awt.Color ;
@@ -154,9 +155,11 @@ public class SpaceMemoryDesigner {
 				g2d.setTransform( ref ) ;
 
 				// for (IAct a : place.getBundle().getActList())
-				IAct a = place.getAct() ;
+				//IAct a = place.getAct() ;
+				IInteraction a = place.getInteraction() ;
 				{
-					g2d.setColor( new Color( a.getColor() ) ) ;
+					//g2d.setColor( new Color( a.getColor() ) ) ;
+					g2d.setColor( new Color( place.getValue() ) ) ;
 					Shape shape = circle ;
 					int offsetx = 0 ;
 					int offsety = 0 ;
@@ -267,7 +270,8 @@ public class SpaceMemoryDesigner {
 				int offsetx = 0 ;
 				int offsety = 0 ;
 				float scale = 1 ;
-				IAct a = place.getAct() ;
+				//IAct a = place.getAct() ;
+				IInteraction a = place.getInteraction() ;
 				if ( a != null )
 				{
 					if ( a.getLabel().indexOf( ">" ) >= 0 )
