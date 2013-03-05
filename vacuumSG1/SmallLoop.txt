@@ -2,5 +2,5 @@ w w w w w w
 w - - - w w
 w - w - - w
 w - w w - w
-w ^ - - - w
-w w w w w w
+w ^ - 4 - w
+w w w w g w
