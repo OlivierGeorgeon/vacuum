@@ -11,6 +11,19 @@ import memory110.SpaceMemory ;
 import memory110.SpaceMemoryFrame ;
 import spas.IPlace ;
 import tracing.XMLStreamTracer ;
+import utils.ErnestUtils ;
+import agent.model.AgentDesigner ;
+import agent.model.Behavior ;
+import agent.model.BehaviorErnest7 ;
+import agent.model.BehaviorErnest8 ;
+import agent.model.BehaviorState ;
+import agent.model.GraphicProperties ;
+import agent.model.GraphicPropertiesChangeEvent ;
+import agent.model.GraphicPropertiesListener ;
+import agent.model.Motivation ;
+import agent.model.MotivationErnest7 ;
+import agent.model.Schema ;
+import agent.model.SpaceMemoryDesigner ;
 import ernest.Ernest ;
 
 /**************************************
@@ -18,8 +31,13 @@ import ernest.Ernest ;
  * 
  * @author ogeorgeon
  **************************************/
-public class Ernest130Model extends ErnestModel {
+public class Ernest130Model extends ErnestModel implements GraphicPropertiesListener {
 
+	private enum Version {
+		ERNEST7() , ERNEST8() ;
+	}
+
+	private final static Ernest130Model.Version CURRENT_VERSION = Ernest130Model.Version.ERNEST8 ;
 	private final static String SPACE_MEMORY_FRAME_CLASS_NAME = "memory110.SpaceMemoryFrame" ;
 	private final static String EYE_VIEW_FRAME_CLASS_NAME = "agent.EyeView" ;
 	private final static String INNER_EAR_FRAME_CLASS_NAME = "InnerEar" ;
@@ -35,28 +53,16 @@ public class Ernest130Model extends ErnestModel {
 		super( agentNumericalID ) ;
 	}
 
-	public Vector3f getmPosition() {
-		return this.mPosition ;
-	}
-
-	public Vector3f getmOrientation() {
-		return this.mOrientation ;
-	}
-
-	public Vector3f getmTranslation() {
-		return this.mTranslation ;
-	}
-
-	public Vector3f getmRotation() {
-		return this.mRotation ;
-	}
-
-	public Vector3f getmPreviousPosition() {
-		return this.mPreviousPosition ;
-	}
-
-	public Vector3f getmPreviousOrientation() {
-		return this.mPreviousOrientation ;
+	public GraphicProperties getCopyOfGraphicProperties() {
+		return new GraphicProperties(
+				(Vector3f) this.mPosition.clone() ,
+				(Vector3f) this.mOrientation.clone() ,
+				(Vector3f) this.mTranslation.clone() ,
+				(Vector3f) this.mRotation.clone() ,
+				(Vector3f) this.mPreviousPosition.clone() ,
+				(Vector3f) this.mPreviousOrientation.clone() ,
+				this.animPosition ,
+				this.animOrientation ) ;
 	}
 
 	public Main getMainFrame() {
@@ -69,6 +75,11 @@ public class Ernest130Model extends ErnestModel {
 
 	public void sleep( int millis ) {
 		super.sleep( millis ) ;
+	}
+
+	@Override
+	public boolean affordCuddle( Vector3f pos ) {
+		return super.affordCuddle( pos ) ;
 	}
 
 	public void init( int gridWeight , int gridHeight ) throws Exception {
@@ -91,11 +102,23 @@ public class Ernest130Model extends ErnestModel {
 				break ;
 		}
 
-		this.agentDesigner = new AgentDesigner( this , agentColor ) ;
+		switch ( Ernest130Model.CURRENT_VERSION ) {
+			case ERNEST7:
+				this.behavior = new BehaviorErnest7( this , this ) ;
+				this.motivation = new MotivationErnest7() ;
+				this.agentDesigner = new AgentDesigner( this , agentColor , false , false ) ;
+				break ;
+			case ERNEST8:
+				this.behavior = new BehaviorErnest8( this , this ) ;
+				this.motivation = new MotivationErnest7() ;
+				this.agentDesigner = new AgentDesigner( this , agentColor , false , false ) ;
+				break ;
+			default:
+				break ;
+		}
+
 		this.spaceMemoryDesigner = new SpaceMemoryDesigner( this ) ;
-		this.behavior = new Behavior( this ) ;
 		this.behaviorState = this.behavior.getCurrentBehaviorState() ;
-		this.motivation = new Motivation() ;
 		this.spaceMemory = new SpaceMemory() ;
 	}
 
@@ -112,25 +135,24 @@ public class Ernest130Model extends ErnestModel {
 		this.m_eye.setModel( this ) ;
 
 		// Only trace the first agent.
-		this.m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","NKmqGfrDVaTZQDSsgKNazjXd-cG-TZ");
-		//this.m_tracer = new XMLStreamTracer( "http://134.214.128.53/abstract/lite/php/stream/" , "dvlgOqZqFcyVWdrRdJisCAqXYsttqQ" ) ;
+		// this.m_tracer = new
+		// XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","NKmqGfrDVaTZQDSsgKNazjXd-cG-TZ");
+		this.m_tracer = new XMLStreamTracer(
+				"http://134.214.128.53/abstract/lite/php/stream/" ,
+				"dvlgOqZqFcyVWdrRdJisCAqXYsttqQ" ) ;
 
 		// Initialize the Ernest
 		// Ernest's inborn primitive interactions
-		//this.m_ernest.setParameters( 6 , 10 ) ;
-		this.m_ernest.setParameters( 5 , 10 ) ;
-
+		this.m_ernest.setParameters( 6 , 10 ) ;
 		this.m_ernest.setTracer( this.m_tracer ) ;
-
 		this.motivation.putMotivation( this.m_ernest ) ;
-
 		this.cognitiveMode = ErnestModel.AGENT_RUN ;
 
 		System.out.println( "Ernest initialized" ) ;
 	}
 
 	public void setDisplay() {
-		// this.setDisplaySpaceMemory() ;
+		this.setDisplaySpaceMemory() ;
 		// this.setDisplayEyeView() ;
 		// this.setDisplayInnerEar() ;
 	}
@@ -139,7 +161,8 @@ public class Ernest130Model extends ErnestModel {
 		if ( !isExistFrame( Ernest130Model.SPACE_MEMORY_FRAME_CLASS_NAME ) )
 			this.m_env.frameList.add( new SpaceMemoryFrame( this.spaceMemory ) ) ;
 		else
-			( (SpaceMemoryFrame) this.m_env.frameList.get( this.indexOfFrame( Ernest130Model.SPACE_MEMORY_FRAME_CLASS_NAME ) ) )
+			( (SpaceMemoryFrame) this.m_env.frameList.get( this
+					.indexOfFrame( Ernest130Model.SPACE_MEMORY_FRAME_CLASS_NAME ) ) )
 					.setMemory( this.spaceMemory ) ;
 	}
 
@@ -147,14 +170,18 @@ public class Ernest130Model extends ErnestModel {
 		if ( !isExistFrame( Ernest130Model.EYE_VIEW_FRAME_CLASS_NAME ) )
 			this.m_env.frameList.add( new EyeView( this.m_eye ) ) ;
 		else
-			( (EyeView) this.m_env.frameList.get( this.indexOfFrame( Ernest130Model.EYE_VIEW_FRAME_CLASS_NAME ) ) ).setEye( this.m_eye ) ;
+			( (EyeView) this.m_env.frameList.get( this
+					.indexOfFrame( Ernest130Model.EYE_VIEW_FRAME_CLASS_NAME ) ) )
+					.setEye( this.m_eye ) ;
 	}
 
 	private void setDisplayInnerEar() {
 		if ( !isExistFrame( Ernest130Model.INNER_EAR_FRAME_CLASS_NAME ) )
 			this.m_env.frameList.add( new InnerEarFrame( this.m_ear ) ) ;
 		else
-			( (InnerEarFrame) this.m_env.frameList.get( this.indexOfFrame( Ernest130Model.INNER_EAR_FRAME_CLASS_NAME ) ) ).setInnerEar( this.m_ear ) ;
+			( (InnerEarFrame) this.m_env.frameList.get( this
+					.indexOfFrame( Ernest130Model.INNER_EAR_FRAME_CLASS_NAME ) ) )
+					.setInnerEar( this.m_ear ) ;
 	}
 
 	private boolean isExistFrame( String frameClassName ) {
@@ -163,7 +190,8 @@ public class Ernest130Model extends ErnestModel {
 
 		while ( frameIndex < this.m_env.frameList.size() && !isExist ) {
 			System.out.println( this.m_env.frameList.get( frameIndex ).getClass().getName() ) ;
-			if ( this.m_env.frameList.get( frameIndex ).getClass().getName().equals( frameClassName ) )
+			if ( this.m_env.frameList.get( frameIndex ).getClass().getName()
+					.equals( frameClassName ) )
 				isExist = true ;
 			frameIndex++ ;
 		}
@@ -176,7 +204,8 @@ public class Ernest130Model extends ErnestModel {
 		boolean isExist = false ;
 
 		while ( frameIndex < this.m_env.frameList.size() && !isExist ) {
-			if ( this.m_env.frameList.get( frameIndex ).getClass().getName().equals( frameClassName ) )
+			if ( this.m_env.frameList.get( frameIndex ).getClass().getName()
+					.equals( frameClassName ) )
 				isExist = true ;
 			frameIndex++ ;
 		}
@@ -185,13 +214,26 @@ public class Ernest130Model extends ErnestModel {
 	}
 
 	public void update() {
-		Schema schema = Schema.valueOfByLabel( this.m_ernest.step( this.behavior.getEffect() ) ) ;
+		Schema schema = Schema.getBySign( this.m_ernest.step( this.behavior.getEffect() ) ) ;
 
 		if ( this.cognitiveMode == ErnestModel.AGENT_STEP )
 			this.cognitiveMode = ErnestModel.AGENT_STOP ;
 
 		this.behaviorState = this.behavior.doMovement( schema ) ;
+		this.traceEnvironmentalData() ;
 		this.behavior.anim() ;
+	}
+
+	private void traceEnvironmentalData() {
+		if ( this.m_tracer != null ) {
+			Object e = this.m_tracer.addEventElement( "environment" ) ;
+			this.m_tracer.addSubelement( e , "x" , ErnestUtils.format( this.mPosition.x , 0 ) ) ;
+			this.m_tracer.addSubelement( e , "y" , ErnestUtils.format( this.mPosition.y , 0 ) ) ;
+			this.m_tracer.addSubelement(
+					e ,
+					"orientation" ,
+					ErnestUtils.format( this.mOrientation.z , 2 ) ) ;
+		}
 	}
 
 	public void paintAgent( Graphics2D g2d , int x , int y , double sx , double sy ) {
@@ -200,5 +242,17 @@ public class Ernest130Model extends ErnestModel {
 
 	public void paintSpaceMemory( Graphics g , ArrayList<IPlace> placeList ) {
 		this.spaceMemoryDesigner.paintSpaceMemory( g , placeList , this.behaviorState ) ;
+	}
+
+	@Override
+	public void notifyGraphicPropertiesChanged( GraphicPropertiesChangeEvent properties ) {
+		this.mPosition = properties.getmPosition() ;
+		this.mOrientation = properties.getmOrientation() ;
+		this.mTranslation = properties.getmTranslation() ;
+		this.mRotation = properties.getmRotation() ;
+		this.mPreviousPosition = properties.getmPreviousPosition() ;
+		this.mPreviousOrientation = properties.getmPreviousOrientation() ;
+		this.animPosition = properties.getAnimPosition() ;
+		this.animOrientation = properties.getAnimOrientation() ;
 	}
 }

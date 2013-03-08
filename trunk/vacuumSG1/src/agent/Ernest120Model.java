@@ -151,8 +151,8 @@ public class Ernest120Model extends ErnestModel
         // Only trace the first agent.
         
         //if (ident == 8)
-        m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","NKmqGfrDVaTZQDSsgKNazjXd-cG-TZ");
-        //m_tracer = new XMLStreamTracer("http://134.214.128.53/abstract/lite/php/stream/" , "dvlgOqZqFcyVWdrRdJisCAqXYsttqQ");
+//        m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","NKmqGfrDVaTZQDSsgKNazjXd-cG-TZ");
+        m_tracer = new XMLStreamTracer("http://134.214.128.53/abstract/lite/php/stream/" , "dvlgOqZqFcyVWdrRdJisCAqXYsttqQ");
                         
         // Initialize the Ernest === 
         
@@ -886,7 +886,6 @@ public class Ernest120Model extends ErnestModel
         //ref1.rotate(- baseOrientation, WIDTH, HEIGHT);
 		ref1.translate( - m_animPosition * SCALE,  0);
         ref1.rotate(m_animOrientation, WIDTH, HEIGHT);
-
         g2d.transform(ref1);
         //g2d.setTransform(ref0);
 		
