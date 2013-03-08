@@ -126,6 +126,9 @@ public class Model extends Observable
 	/** The previous orientation */
 	protected Vector3f mPreviousOrientation = new Vector3f(mOrientation);
 	
+	protected float animOrientation = 0 ;
+	protected float animPosition = 0 ;
+	
 	public Environment m_env;
 
 	private static final Random m_rand = new Random();
