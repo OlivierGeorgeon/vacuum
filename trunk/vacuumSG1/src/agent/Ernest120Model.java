@@ -151,8 +151,8 @@ public class Ernest120Model extends ErnestModel
         // Only trace the first agent.
         
         //if (ident == 8)
-//        m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","NKmqGfrDVaTZQDSsgKNazjXd-cG-TZ");
-        m_tracer = new XMLStreamTracer("http://134.214.128.53/abstract/lite/php/stream/" , "dvlgOqZqFcyVWdrRdJisCAqXYsttqQ");
+        // m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","NKmqGfrDVaTZQDSsgKNazjXd-cG-TZ");
+        //m_tracer = new XMLStreamTracer("http://134.214.128.53/abstract/lite/php/stream/" , "dvlgOqZqFcyVWdrRdJisCAqXYsttqQ");
                         
         // Initialize the Ernest === 
         
@@ -178,11 +178,14 @@ public class Ernest120Model extends ErnestModel
         m_ernest.addInteraction("v", "f",  -3); // Right 
         m_ernest.addInteraction("^", "t",  -3); // Left
         m_ernest.addInteraction("^", "f",  -3); // Left 
-        //m_ernest.addInteraction("-", "b",  -1); // Touch brick
-        //m_ernest.addInteraction("-", "a",  -1); // Touch alga
-        //m_ernest.addInteraction("\\","a",  -1); // Touch right wall
-        //m_ernest.addInteraction("/", "a",  -1); // Touch left empty
-        //m_ernest.addInteraction(">", "a",  30);//  Move to alga
+        m_ernest.addInteraction("-", "b",  -1); // Touch brick
+        m_ernest.addInteraction("\\","b",  -1); // Touch right wall
+        m_ernest.addInteraction("/", "b",  -1); // Touch left empty
+        m_ernest.addInteraction(">", "b",  -10);//  Move to alga
+        m_ernest.addInteraction("-", "a",  -1); // Touch alga
+        m_ernest.addInteraction("\\","a",  -1); // Touch right wall
+        m_ernest.addInteraction("/", "a",  -1); // Touch left empty
+        m_ernest.addInteraction(">", "a",   5);//  Move to alga
 //        m_ernest.addInteraction("<", "t",  -10); // Move backward
 //        m_ernest.addInteraction("<", "f",  -10);// Bump backward
 

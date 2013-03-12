@@ -36,6 +36,6 @@ public class MotivationErnest7 implements Motivation{
 		// Touch left alga
 		ernest.addInteraction( Schema.TOUCH_LEFT.getSign() , Stimuli.ALGA.getLabel() , -1 ) ;
 		// Move to alga
-		ernest.addInteraction( Schema.MOVE.getSign() , Stimuli.ALGA.getLabel() , 30 ) ;
+		ernest.addInteraction( Schema.MOVE.getSign() , Stimuli.ALGA.getLabel() , 5 ) ;
 	}
 }
