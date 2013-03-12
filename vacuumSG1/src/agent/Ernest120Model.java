@@ -34,7 +34,6 @@ import java.util.List;
 import ernest.*;
 import spas.IPlace;
 import spas.Place;
-import imos.IAct;
 import imos2.IInteraction;
 import spas.LocalSpaceMemory;
 import spas.Spas;
