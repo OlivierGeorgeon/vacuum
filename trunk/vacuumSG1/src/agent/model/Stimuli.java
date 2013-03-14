@@ -3,8 +3,8 @@ package agent.model ;
 public enum Stimuli {
 	FALSE( "f" ) ,
 	TRUE( "t" ) ,
-	BRICK( "b" ),
-	ALGA( "a" );
+	BRICK( "b" ) ,
+	ALGA( "a" ) ;
 
 	private String label ;
 

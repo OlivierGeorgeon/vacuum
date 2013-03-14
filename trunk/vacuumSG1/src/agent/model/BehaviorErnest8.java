@@ -8,7 +8,6 @@ import javax.vecmath.Vector3f ;
 import agent.Environment ;
 import agent.Ernest130Model ;
 import agent.ErnestModel ;
-import ernest.Effect ;
 
 public class BehaviorErnest8 extends AbstractBehavior {
 
@@ -16,72 +15,19 @@ public class BehaviorErnest8 extends AbstractBehavior {
 		super( model , listener ) ;
 	}
 
-	public BehaviorState doMovement( Schema schema ) {
-		this.effect = new Effect() ;
-		this.focusColor = AbstractBehavior.UNANIMATED_COLOR ;
-		this.leftColor = AbstractBehavior.UNANIMATED_COLOR ;
-		this.rightColor = AbstractBehavior.UNANIMATED_COLOR ;
-
-		GraphicProperties ernestGraphicProperties = this.model.getCopyOfGraphicProperties() ;
-		GraphicPropertiesChangeEvent event = new GraphicPropertiesChangeEvent(
-				this ,
-				ernestGraphicProperties ) ;
-		event.setAnimOrientation( 0 ) ;
-		event.setAnimPosition( 0 ) ;
-		this.notifyGraphicPropertiesChange( event ) ;
-
-		System.out.println( "Agent #" +
-				this.model.getID() +
-				", Step #" +
-				this.model.getCounter() +
-				"=======" ) ;
-
-		switch ( schema ) {
-			case MOVE:
-				this.moveForward() ;
-				break ;
-			case BACKWARD:
-				this.moveBackward() ;
-				break ;
-			case RIGHT:
-				this.turnRight() ;
-				break ;
-			case LEFT:
-				this.turnLeft() ;
-				break ;
-			case TOUCH:
-				this.touch() ;
-				break ;
-			case TOUCH_LEFT:
-				this.touchLeft() ;
-				break ;
-			case TOUCH_RIGHT:
-				this.touchRight() ;
-				break ;
-			default:
-				break ;
-		}
-
-		return new BehaviorState(
-				this.focusColor ,
-				this.leftColor ,
-				this.rightColor ,
-				this.retinaPixelsColors ) ;
-	}
-
-	private void turnRight() {
+	protected void turnRight() {
 		this.turnRightAnim() ;
 		this.effect.setLabel( Stimuli.FALSE.getLabel() ) ;
 		this.effect.setTransformation( (float) Math.PI / 2 , 0 ) ;
 	}
 
-	private void turnLeft() {
+	protected void turnLeft() {
 		this.turnLeftAnim() ;
 		this.effect.setLabel( Stimuli.FALSE.getLabel() ) ;
 		this.effect.setTransformation( (float) -Math.PI / 2 , 0 ) ;
 	}
 
-	private void moveForward() {
+	protected void moveForward() {
 		Vector3f localPoint = new Vector3f( this.model.DIRECTION_AHEAD ) ;
 		Vector3f point = this.model.localToParentRef( localPoint ) ;
 		Color blockColor = this.model.getEnvironment().seeBlock( point.x , point.y ) ;
@@ -109,7 +55,7 @@ public class BehaviorErnest8 extends AbstractBehavior {
 		}
 	}
 
-	private void moveBackward() {
+	protected void moveBackward() {
 		Vector3f localPoint = new Vector3f( this.model.DIRECTION_BEHIND ) ;
 		Vector3f point = this.model.localToParentRef( localPoint ) ;
 		this.effect.setLocation( new Point3f( -1 , 0 , 0 ) ) ;
@@ -126,7 +72,7 @@ public class BehaviorErnest8 extends AbstractBehavior {
 		}
 	}
 
-	private void touch() {
+	protected void touch() {
 		Vector3f localPoint = new Vector3f( this.model.DIRECTION_AHEAD ) ;
 		Vector3f aheadPoint = this.model.localToParentRef( localPoint ) ;
 		Color blockColor = this.model.getEnvironment().seeBlock( aheadPoint.x , aheadPoint.y ) ;
@@ -164,7 +110,7 @@ public class BehaviorErnest8 extends AbstractBehavior {
 		this.touchAnim() ;
 	}
 
-	private void touchLeft() {
+	protected void touchLeft() {
 		Vector3f localPoint = new Vector3f( this.model.DIRECTION_LEFT ) ;
 		Vector3f leftPoint = this.model.localToParentRef( localPoint ) ;
 		Color blockColor = this.model.getEnvironment().seeBlock( leftPoint.x , leftPoint.y ) ;
@@ -203,7 +149,7 @@ public class BehaviorErnest8 extends AbstractBehavior {
 		this.touchAnim() ;
 	}
 
-	private void touchRight() {
+	protected void touchRight() {
 		Vector3f localPoint = new Vector3f( this.model.DIRECTION_RIGHT ) ;
 		Vector3f rightPoint = this.model.localToParentRef( localPoint ) ;
 		Color blockColor = this.model.getEnvironment().seeBlock( rightPoint.x , rightPoint.y ) ;
