@@ -16,12 +16,14 @@ import agent.model.AgentDesigner ;
 import agent.model.Behavior ;
 import agent.model.BehaviorErnest7 ;
 import agent.model.BehaviorErnest8 ;
+import agent.model.BehaviorErnest9 ;
 import agent.model.BehaviorState ;
 import agent.model.GraphicProperties ;
 import agent.model.GraphicPropertiesChangeEvent ;
 import agent.model.GraphicPropertiesListener ;
 import agent.model.Motivation ;
 import agent.model.MotivationErnest7 ;
+import agent.model.MotivationErnest8 ;
 import agent.model.Schema ;
 import agent.model.SpaceMemoryDesigner ;
 import ernest.Ernest ;
@@ -34,10 +36,12 @@ import ernest.Ernest ;
 public class Ernest130Model extends ErnestModel implements GraphicPropertiesListener {
 
 	private enum Version {
-		ERNEST7() , ERNEST8() ;
+		ERNEST7() ,
+		ERNEST8() ,
+		ERNEST9() ;
 	}
 
-	private final static Ernest130Model.Version CURRENT_VERSION = Ernest130Model.Version.ERNEST8 ;
+	private final static Ernest130Model.Version CURRENT_VERSION = Ernest130Model.Version.ERNEST9 ;
 	private final static String SPACE_MEMORY_FRAME_CLASS_NAME = "memory110.SpaceMemoryFrame" ;
 	private final static String EYE_VIEW_FRAME_CLASS_NAME = "agent.EyeView" ;
 	private final static String INNER_EAR_FRAME_CLASS_NAME = "InnerEar" ;
@@ -113,6 +117,11 @@ public class Ernest130Model extends ErnestModel implements GraphicPropertiesList
 				this.motivation = new MotivationErnest7() ;
 				this.agentDesigner = new AgentDesigner( this , agentColor , false , false ) ;
 				break ;
+			case ERNEST9:
+				this.behavior = new BehaviorErnest9( this , this ) ;
+				this.motivation = new MotivationErnest8() ;
+				this.agentDesigner = new AgentDesigner( this , agentColor , true , false ) ;
+				break ;
 			default:
 				break ;
 		}
@@ -135,11 +144,11 @@ public class Ernest130Model extends ErnestModel implements GraphicPropertiesList
 		this.m_eye.setModel( this ) ;
 
 		// Only trace the first agent.
-		 this.m_tracer = new
-		  XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","NKmqGfrDVaTZQDSsgKNazjXd-cG-TZ");
-		//this.m_tracer = new XMLStreamTracer(
-		//		"http://134.214.128.53/abstract/lite/php/stream/" ,
-		//		"dvlgOqZqFcyVWdrRdJisCAqXYsttqQ" ) ;
+		// this.m_tracer = new
+		// XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","NKmqGfrDVaTZQDSsgKNazjXd-cG-TZ");
+		this.m_tracer = new XMLStreamTracer(
+				"http://134.214.128.53/abstract/lite/php/stream/" ,
+				"dvlgOqZqFcyVWdrRdJisCAqXYsttqQ" ) ;
 
 		// Initialize the Ernest
 		// Ernest's inborn primitive interactions
