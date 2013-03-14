@@ -12,14 +12,16 @@ import java.awt.geom.Line2D ;
 import java.awt.geom.Rectangle2D ;
 
 import agent.Ernest130Model ;
-import ernest.Ernest ;
 
 public class AgentDesigner {
 
+	public static Color UNANIMATED_COLOR = Color.GRAY ;
+	
 	private Ernest130Model model ;
 	private Color agentColor ;
 	private boolean useRetina ;
 	private boolean useSharkBody ;
+	
 	
 	public AgentDesigner( Ernest130Model model , Color agentColor , boolean useRetina , boolean useSharkBody ) {
 		this.model = model;
@@ -31,8 +33,10 @@ public class AgentDesigner {
 	public void paintAgent( Graphics2D g2d , int x , int y , double sx , double sy , BehaviorState behaviorState )	{
 		GraphicProperties ernestGraphicProperties = this.model.getCopyOfGraphicProperties() ;
 
-		this.drawAgentOrientation( g2d , x , y , sx , sy , ernestGraphicProperties ) ;
-
+		AffineTransform initialPosition = g2d.getTransform() ;
+		
+		this.fixAgentPosition( g2d , x , y , sx , sy , ernestGraphicProperties ) ;
+//		AgentDesigner.displayAxis( g2d );
 		if ( this.useSharkBody ) {
 			this.drawAgentSharkBody( g2d );
 		} else {
@@ -45,53 +49,49 @@ public class AgentDesigner {
 		else{
 			this.drawAgentFocus( g2d , behaviorState ) ;
 		}
+		
+		g2d.setTransform( initialPosition );
 	}
 
-	private void drawAgentRetina( Graphics2D g2d , BehaviorState behaviorState ) {
-		Arc2D.Double pixelIn = new Arc2D.Double(-20, -20, 40, 40,0, 180 / Ernest.RESOLUTION_RETINA + 1, Arc2D.PIE);
-		AffineTransform transformColliculus = new AffineTransform() ;
-		transformColliculus.rotate( 0 ) ;
-		transformColliculus.translate( 0 , 0 ) ;
-		g2d.transform( transformColliculus ) ;
-		AffineTransform RetinaReference = g2d.getTransform() ;
-		AffineTransform transformSegment = new AffineTransform() ;
-		g2d.transform( transformSegment ) ;
-		transformSegment.rotate( -Math.PI / Ernest.RESOLUTION_RETINA ) ;
-		g2d.setColor( Color.BLACK ) ;
-
-		g2d.setTransform( RetinaReference ) ;
-		for ( int i = 0; i < Ernest.RESOLUTION_RETINA; i++ ){
-			g2d.setColor( behaviorState.getRetinaPixelsColors()[i] ) ;
-			g2d.fill(pixelIn);
-			g2d.transform( transformSegment ) ;
-		}
+	private static void displayAxis( Graphics2D g2d ){
+		g2d.setStroke( new BasicStroke( 4f ) ) ;
+		g2d.setColor( Color.CYAN ) ;
+		g2d.fill( new Rectangle2D.Double( -47 , -47 , 1 , 1 ) ) ;
+		g2d.setColor( Color.CYAN ) ;
+		g2d.draw( new Rectangle2D.Double( -47 , -47 , 1 , 1 ) ) ;
+		g2d.setColor( Color.GRAY ) ;
+		g2d.fill( new Rectangle2D.Double( -47 , 47 , 1 , 1 ) ) ;
+		g2d.setColor( Color.GRAY ) ;
+		g2d.draw( new Rectangle2D.Double( -47 , 47 , 1 , 1 ) ) ;
+		g2d.setColor( Color.GREEN ) ;
+		g2d.fill( new Rectangle2D.Double( 47 , -47 , 1 , 1 ) ) ;
+		g2d.setColor( Color.GREEN ) ;
+		g2d.draw( new Rectangle2D.Double( 47 , -47 , 1 , 1 ) ) ;
+		g2d.setColor( Color.RED ) ;
+		g2d.fill( new Rectangle2D.Double( 47 , 47 , 1 , 1 ) ) ;
+		g2d.setColor( Color.RED ) ;
+		g2d.draw( new Rectangle2D.Double( 47 , 47 , 1 , 1 ) ) ;
 	}
-
-	private void drawAgentFocus( Graphics2D g2d , BehaviorState behaviorState ) {
-		Rectangle2D.Double focus = new Rectangle2D.Double( -12 , -40 , 25 , 30 ) ;
-		Rectangle2D.Double left = new Rectangle2D.Double( -35 , -10 , 25 , 30 ) ;
-		Rectangle2D.Double right = new Rectangle2D.Double( 10 , -10 , 25 , 30 ) ;
-		g2d.setStroke( new BasicStroke( 2f ) ) ;
-		g2d.setColor( behaviorState.getLeftColor() ) ;
-		if ( behaviorState.getLeftColor() != BehaviorErnest7.UNANIMATED_COLOR ){
-			g2d.fill( left ) ;
-			g2d.setColor( Color.black ) ;
-			g2d.draw( left ) ;
-		}
-		g2d.setColor( behaviorState.getRightColor() ) ;
-		if ( behaviorState.getRightColor() != BehaviorErnest7.UNANIMATED_COLOR ){
-			g2d.fill( right ) ;
-			g2d.setColor( Color.black ) ;
-			g2d.draw( right ) ;
-		}
-		if ( behaviorState.getFocusColor() != BehaviorErnest7.UNANIMATED_COLOR ){
-			g2d.setColor( behaviorState.getFocusColor() ) ;
-			g2d.fill( focus ) ;
-			g2d.setColor( Color.black ) ;
-			g2d.draw( focus ) ;
-		}
+	
+	private void fixAgentPosition( Graphics2D g2d , int x , int y , double sx , double sy , GraphicProperties ernestGraphicProperties ) {
+		AffineTransform orientation = new AffineTransform() ;
+		orientation.translate( x , y ) ;
+		orientation.rotate( -ernestGraphicProperties.getmOrientation().z + Math.PI / 2 ) ;
+		orientation.scale( sx , sy ) ;
+		orientation.scale( 1 , -1 );
+		orientation.scale( 0.8 , 0.8 );
+		g2d.transform( orientation ) ;
 	}
-
+	
+	private void drawAgentArrowBody( Graphics2D g2d ) {	
+		Area agent = AgentDesigner.arrowBodyShape() ;
+		g2d.setColor( this.agentColor ) ;
+		g2d.fill( agent ) ;
+		g2d.setStroke( new BasicStroke( 4f ) ) ;
+		g2d.setColor( Color.black ) ;
+		g2d.draw( agent ) ;
+	}
+	
 	private void drawAgentSharkBody( Graphics2D g2d ){
 		Area agent = AgentDesigner.sharkBodyShape();
         g2d.setColor( this.agentColor );
@@ -101,35 +101,11 @@ public class AgentDesigner {
         g2d.draw( agent );
 	}
 	
-	private void drawAgentArrowBody( Graphics2D g2d ) {
-		AffineTransform ref0 = g2d.getTransform() ;
-		AffineTransform r = new AffineTransform() ;
-		r.rotate( -Math.PI / 2 ) ;
-		r.scale( .8 , .8 ) ;
-		g2d.transform( r ) ;
-
-		Area agent = AgentDesigner.arrowBodyShape() ;
-		g2d.setColor( this.agentColor ) ;
-		g2d.fill( agent ) ;
-		g2d.setStroke( new BasicStroke( 4f ) ) ;
-		g2d.setColor( Color.black ) ;
-		g2d.draw( agent ) ;
-		g2d.setTransform( ref0 ) ;
-	}
-
-	private void drawAgentOrientation( Graphics2D g2d , int x , int y , double sx , double sy , GraphicProperties ernestGraphicProperties ) {
-		AffineTransform orientation = new AffineTransform() ;
-		orientation.translate( x , y ) ;
-		orientation.rotate( -ernestGraphicProperties.getmOrientation().z + Math.PI / 2 ) ;
-		orientation.scale( sx , sy ) ;
-		g2d.transform( orientation ) ;
-	}
-	
 	private static Area arrowBodyShape(){
 		GeneralPath body = new GeneralPath() ;
-		body.append( new Line2D.Double( -50 , -40 , -30 , 0 ) , false );
-		body.append( new Line2D.Double( -30 , 0 , -50 , 40 ) , true );
-		body.append( new Line2D.Double( -50 , 40 , 50 , 0 ) , true );
+		body.append( new Line2D.Double( -40 , -50 , 0 , -30 ) , false );
+		body.append( new Line2D.Double( 0 , -30 , 40 , -50 ) , true );
+		body.append( new Line2D.Double( 40 , -50 , 0 , 50 ) , true );
 		
 		return new Area( body );
 	}
@@ -167,4 +143,48 @@ public class AgentDesigner {
 
 		return shark ;
 	}
+	
+	private void drawAgentRetina( Graphics2D g2d , BehaviorState behaviorState ) {
+		GeneralPath rightEye = new GeneralPath() ;
+		rightEye.append( new Arc2D.Double( -15 , 10 , 40 , 40 , 270 , 90 , Arc2D.PIE ), false ) ;
+		GeneralPath leftEye = new GeneralPath() ;
+		leftEye.append( new Arc2D.Double( -25 , 10 , 40 , 40 , 180 , 90 , Arc2D.PIE ), false ) ;
+		
+		g2d.setStroke( new BasicStroke( 2f ) ) ;
+		g2d.setColor( behaviorState.getRightEyeColor() ) ;
+		g2d.fill( rightEye ) ;
+		g2d.setColor( Color.black ) ;
+		g2d.draw( rightEye ) ;
+		g2d.setColor( behaviorState.getLeftEyeColor() ) ;
+		g2d.fill( leftEye ) ;
+		g2d.setColor( Color.black ) ;
+		g2d.draw( leftEye ) ;
+	}
+
+	private void drawAgentFocus( Graphics2D g2d , BehaviorState behaviorState ) {
+		Rectangle2D.Double focus = new Rectangle2D.Double( -12 , 20 , 25 , 30 ) ;
+		Rectangle2D.Double left = new Rectangle2D.Double( -35 , -10 , 25 , 30 ) ;
+		Rectangle2D.Double right = new Rectangle2D.Double( 10 , -10 , 25 , 30 ) ;
+		g2d.setStroke( new BasicStroke( 2f ) ) ;
+
+		if ( behaviorState.getLeftColor() != AgentDesigner.UNANIMATED_COLOR ){
+			g2d.setColor( behaviorState.getLeftColor() ) ;
+			g2d.fill( left ) ;
+			g2d.setColor( Color.BLACK ) ;
+			g2d.draw( left ) ;
+		}
+		if ( behaviorState.getRightColor() != AgentDesigner.UNANIMATED_COLOR ){
+			g2d.setColor( behaviorState.getRightColor() ) ;
+			g2d.fill( right ) ;
+			g2d.setColor( Color.BLACK ) ;
+			g2d.draw( right ) ;
+		}
+		if ( behaviorState.getFocusColor() != AgentDesigner.UNANIMATED_COLOR ){
+			g2d.setColor( behaviorState.getFocusColor() ) ;
+			g2d.fill( focus ) ;
+			g2d.setColor( Color.BLACK ) ;
+			g2d.draw( focus ) ;
+		}
+	}
+
 }

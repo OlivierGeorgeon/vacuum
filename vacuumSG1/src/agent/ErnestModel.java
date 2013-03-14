@@ -166,7 +166,7 @@ public class ErnestModel extends Model
 	 * (Uses Ernest's orientationRad value, trigonometric, counterclockwise, radius).
 	 * @return The array of colors projected onto the retina.
 	 */ 
-	protected Pair<Integer, Color>[] getRetina(double orientationRad) {
+	public Pair<Integer, Color>[] getRetina(double orientationRad) {
 		@SuppressWarnings("unchecked")
 		Pair<Integer, Color>[] retina = new Pair[Ernest.RESOLUTION_RETINA];
 		double angle = orientationRad - Math.PI/2;
@@ -268,11 +268,11 @@ public class ErnestModel extends Model
 	    	if (bgc.equals(WALL_COLOR)) // don't see walls (for Ernest 11.4)
 	    		return Pair.create(Ernest.INFINITE, WALL_COLOR);
 	    	
-//	    	if (m_env.isWall(i,j) || m_env.isFood(i,j) || m_env.isAlga(i,j))
-//	    	{
-//				int dist = (int) Math.sqrt(((i-x0)*(i-x0) + (j-y0)*(j-y0)) * Ernest.INT_FACTOR * Ernest.INT_FACTOR);
-//				return Pair.create(dist, bgc);
-//    		}
+	    	if (m_env.isWall(i,j) || m_env.isFood(i,j) || m_env.isAlga(i,j))
+	    	{
+				int dist = (int) Math.sqrt(((i-x0)*(i-x0) + (j-y0)*(j-y0)) * Ernest.INT_FACTOR * Ernest.INT_FACTOR);
+				return Pair.create(dist, bgc);
+    		}
 	    	//if (m_env.isAgent(i, j, mName))
 	    	ErnestModel entity = m_env.getEntity(new Vector3f(i,j,0), mName);
 	    	if (entity != null)
@@ -289,7 +289,7 @@ public class ErnestModel extends Model
 	 * Compute the tactile stimuli 
 	 * @return The matrix of tactile stimuli. 
 	 */
-	protected int[] somatoMap() {
+	public int[] somatoMap() {
 		int[] somatoMap = new int[9];
 		somatoMap[0] = soma(DIRECTION_BEHIND_RIGHT);
 		somatoMap[1] = soma(DIRECTION_RIGHT);
@@ -308,7 +308,7 @@ public class ErnestModel extends Model
 	 * @param direction The direction of the touch in Ernest's referential.
 	 * @return The tactile stimulus in this direction. 
 	 */
-	protected int soma(Vector3f direction) {
+	public int soma(Vector3f direction) {
 		int soma = Ernest.STIMULATION_TOUCH_EMPTY;
 		Vector3f localPoint = new Vector3f(direction);
 		localPoint.scale(SOMATO_RADIUS);

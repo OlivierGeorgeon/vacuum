@@ -2,22 +2,21 @@ package agent.model;
 
 import java.awt.Color ;
 
-
-import ernest.Ernest ;
-
 public class BehaviorState {
 
-	private Color focusColor = BehaviorErnest7.UNANIMATED_COLOR ;
-	private Color leftColor = BehaviorErnest7.UNANIMATED_COLOR ;
-	private Color rightColor = BehaviorErnest7.UNANIMATED_COLOR ;
-	private Color[] retinaPixelsColors = new Color[Ernest.RESOLUTION_RETINA] ;
+	private Color focusColor = AgentDesigner.UNANIMATED_COLOR ;
+	private Color leftColor = AgentDesigner.UNANIMATED_COLOR ;
+	private Color rightColor = AgentDesigner.UNANIMATED_COLOR ;
+	private Color rightEyeColor = AgentDesigner.UNANIMATED_COLOR ;
+	private Color leftEyeColor = AgentDesigner.UNANIMATED_COLOR ;
 	
-	public BehaviorState( Color focusColor , Color leftColor , Color rightColor , Color[] retinaPixelsColors ) {
+	public BehaviorState( Color focusColor , Color leftColor , Color rightColor , Color rightEyeColor , Color leftEyeColor ) {
 		super() ;
 		this.focusColor = focusColor ;
 		this.leftColor = leftColor ;
 		this.rightColor = rightColor ;
-		this.retinaPixelsColors = retinaPixelsColors ;
+		this.rightEyeColor = rightEyeColor ;
+		this.leftEyeColor = leftEyeColor ;
 	}
 
 	public Color getFocusColor() {
@@ -32,7 +31,11 @@ public class BehaviorState {
 		return this.rightColor ;
 	}
 
-	public Color[] getRetinaPixelsColors() {
-		return this.retinaPixelsColors ;
+	public Color getRightEyeColor() {
+		return this.rightEyeColor ;
+	}
+	
+	public Color getLeftEyeColor() {
+		return this.leftEyeColor ;
 	}
 }

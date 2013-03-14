@@ -8,20 +8,18 @@ import javax.vecmath.Vector3f ;
 
 import agent.Ernest130Model ;
 import ernest.Effect ;
-import ernest.Ernest ;
 import ernest.IEffect ;
 
 public abstract class AbstractBehavior implements Behavior {
 
-	public static Color UNANIMATED_COLOR = Color.GRAY ;
-	
 	protected int delayMove = 5 ; // 2
 	protected int delayTouch = 50 ; // 50
 	
-	protected Color focusColor = UNANIMATED_COLOR ;
-	protected Color leftColor = UNANIMATED_COLOR ;
-	protected Color rightColor = UNANIMATED_COLOR ;
-	protected Color[] retinaPixelsColors = new Color[Ernest.RESOLUTION_RETINA] ;
+	protected Color focusColor;
+	protected Color leftColor;
+	protected Color rightColor;
+	protected Color rightEyeColor;
+	protected Color leftEyeColor;
 	
 	protected Ernest130Model model ;
 	protected IEffect effect ;
@@ -33,14 +31,17 @@ public abstract class AbstractBehavior implements Behavior {
 		this.effect = new Effect() ;
 		this.listeners = new EventListenerList();
 		this.listeners.add( GraphicPropertiesListener .class, listener);
-		this.focusColor = BehaviorErnest7.UNANIMATED_COLOR ;
-		this.leftColor = BehaviorErnest7.UNANIMATED_COLOR ;
-		this.rightColor = BehaviorErnest7.UNANIMATED_COLOR ;
+		
+		this.focusColor = AgentDesigner.UNANIMATED_COLOR ;
+		this.leftColor = AgentDesigner.UNANIMATED_COLOR ;
+		this.rightColor = AgentDesigner.UNANIMATED_COLOR ;
+		this.rightEyeColor = AgentDesigner.UNANIMATED_COLOR ;
+		this.leftEyeColor = AgentDesigner.UNANIMATED_COLOR ;
 	}
 	
 	@Override
 	public final BehaviorState getCurrentBehaviorState() {
-		return new BehaviorState( this.focusColor , this.leftColor , this.rightColor , this.retinaPixelsColors ) ;
+		return new BehaviorState( this.focusColor , this.leftColor , this.rightColor , this.rightEyeColor , this.leftEyeColor ) ;
 	}
 
 	@Override
@@ -52,6 +53,62 @@ public abstract class AbstractBehavior implements Behavior {
 		for ( GraphicPropertiesListener listener : this.listeners.getListeners( GraphicPropertiesListener.class ) ) {
 			listener.notifyGraphicPropertiesChanged( event );
 		}
+	}
+	
+	public BehaviorState doMovement( Schema schema ) {
+		this.effect = new Effect() ;
+		this.focusColor = AgentDesigner.UNANIMATED_COLOR ;
+		this.leftColor = AgentDesigner.UNANIMATED_COLOR ;
+		this.rightColor = AgentDesigner.UNANIMATED_COLOR ;
+		this.rightEyeColor = AgentDesigner.UNANIMATED_COLOR ;
+		this.leftEyeColor = AgentDesigner.UNANIMATED_COLOR ;
+	
+		GraphicProperties ernestGraphicProperties = this.model.getCopyOfGraphicProperties() ;
+		GraphicPropertiesChangeEvent event = new GraphicPropertiesChangeEvent(
+				this ,
+				ernestGraphicProperties ) ;
+		event.setAnimOrientation( 0 ) ;
+		event.setAnimPosition( 0 ) ;
+		this.notifyGraphicPropertiesChange( event ) ;
+	
+		System.out.println( "Agent #" +
+				this.model.getID() +
+				", Step #" +
+				this.model.getCounter() +
+				"=======" ) ;
+	
+		switch ( schema ) {
+			case MOVE:
+				this.moveForward() ;
+				break ;
+			case BACKWARD:
+				this.moveBackward() ;
+				break ;
+			case RIGHT:
+				this.turnRight() ;
+				break ;
+			case LEFT:
+				this.turnLeft() ;
+				break ;
+			case TOUCH:
+				this.touch() ;
+				break ;
+			case TOUCH_LEFT:
+				this.touchLeft() ;
+				break ;
+			case TOUCH_RIGHT:
+				this.touchRight() ;
+				break ;
+			default:
+				break ;
+		}
+	
+		return new BehaviorState(
+				this.focusColor ,
+				this.leftColor ,
+				this.rightColor ,
+				this.rightEyeColor ,
+				this.leftEyeColor ) ;
 	}
 	
 	@Override
@@ -199,4 +256,11 @@ public abstract class AbstractBehavior implements Behavior {
 		this.model.sleep( this.delayTouch ) ;
 	}
 
+	protected abstract void turnRight();
+	protected abstract void turnLeft();
+	protected abstract void moveForward();
+	protected abstract void moveBackward();
+	protected abstract void touch();
+	protected abstract void touchLeft();
+	protected abstract void touchRight();
 }
