@@ -49,6 +49,7 @@ public class SpaceMemoryPanel extends PrintablePanel
 	public void paintComponent(Graphics g)
 	{
 //		spaceMemory.m_model.paintSpaceMemory(g);   
-		spaceMemory.m_model.paintSpaceMemory(g, spaceMemory.m_model.getErnest().getPlaceList());   
+		if( this.spaceMemory != null && this.spaceMemory.m_model != null )
+			spaceMemory.m_model.paintSpaceMemory(g, spaceMemory.m_model.getErnest().getPlaceList());
 	}
 }
