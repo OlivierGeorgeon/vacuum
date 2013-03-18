@@ -822,7 +822,7 @@ public class Ernest120Model extends ErnestModel
 		if (mSpeedR.z > Math.PI) mSpeedR.z-=2*Math.PI;
 		if (mSpeedR.z<=-Math.PI) mSpeedR.z+=2*Math.PI;
 		
-        //if (cognitiveMode!=AGENT_STOP) rendu();
+        if (cognitiveMode!=AGENT_STOP) rendu();
         
         mainFrame.drawGrid();
         

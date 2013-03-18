@@ -143,12 +143,12 @@ public class Ernest130Model extends ErnestModel implements GraphicPropertiesList
 		this.spaceMemory.setModel( this ) ;
 		this.m_eye.setModel( this ) ;
 
-		// Only trace the first agent.
-		// this.m_tracer = new
-		// XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","NKmqGfrDVaTZQDSsgKNazjXd-cG-TZ");
-		this.m_tracer = new XMLStreamTracer(
-				"http://134.214.128.53/abstract/lite/php/stream/" ,
-				"juIQzDzdCtBSpmNnJNkzdtTTajfsXe" ) ;
+		 //Only trace the first agent.
+		 this.m_tracer = new
+		 XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","dlsQKeaXlclGbzRTN--ZLWajTDyGpr");
+		//this.m_tracer = new XMLStreamTracer(
+		//		"http://134.214.128.53/abstract/lite/php/stream/" ,
+		//		"juIQzDzdCtBSpmNnJNkzdtTTajfsXe" ) ;
 
 		// Initialize the Ernest
 		// Ernest's inborn primitive interactions
@@ -162,7 +162,7 @@ public class Ernest130Model extends ErnestModel implements GraphicPropertiesList
 
 	public void setDisplay() {
 		this.setDisplaySpaceMemory() ;
-		// this.setDisplayEyeView() ;
+		this.setDisplayEyeView() ;
 		// this.setDisplayInnerEar() ;
 	}
 
@@ -230,6 +230,8 @@ public class Ernest130Model extends ErnestModel implements GraphicPropertiesList
 
 		this.behaviorState = this.behavior.doMovement( schema ) ;
 		this.traceEnvironmentalData() ;
+		if (m_tracer != null)
+			m_tracer.finishEvent();
 		this.behavior.anim() ;
 	}
 
