@@ -18,8 +18,7 @@ public abstract class AbstractBehavior implements Behavior {
 	protected Color focusColor;
 	protected Color leftColor;
 	protected Color rightColor;
-	protected Color rightEyeColor;
-	protected Color leftEyeColor;
+	protected Eyes eyes;
 	
 	protected Ernest130Model model ;
 	protected IEffect effect ;
@@ -35,13 +34,12 @@ public abstract class AbstractBehavior implements Behavior {
 		this.focusColor = AgentDesigner.UNANIMATED_COLOR ;
 		this.leftColor = AgentDesigner.UNANIMATED_COLOR ;
 		this.rightColor = AgentDesigner.UNANIMATED_COLOR ;
-		this.rightEyeColor = AgentDesigner.UNANIMATED_COLOR ;
-		this.leftEyeColor = AgentDesigner.UNANIMATED_COLOR ;
+		this.eyes = new Eyes();
 	}
 	
 	@Override
 	public final BehaviorState getCurrentBehaviorState() {
-		return new BehaviorState( this.focusColor , this.leftColor , this.rightColor , this.rightEyeColor , this.leftEyeColor ) ;
+		return new BehaviorState( this.focusColor , this.leftColor , this.rightColor , this.eyes ) ;
 	}
 
 	@Override
@@ -60,8 +58,6 @@ public abstract class AbstractBehavior implements Behavior {
 		this.focusColor = AgentDesigner.UNANIMATED_COLOR ;
 		this.leftColor = AgentDesigner.UNANIMATED_COLOR ;
 		this.rightColor = AgentDesigner.UNANIMATED_COLOR ;
-		this.rightEyeColor = AgentDesigner.UNANIMATED_COLOR ;
-		this.leftEyeColor = AgentDesigner.UNANIMATED_COLOR ;
 	
 		GraphicProperties ernestGraphicProperties = this.model.getCopyOfGraphicProperties() ;
 		GraphicPropertiesChangeEvent event = new GraphicPropertiesChangeEvent(
@@ -78,16 +74,16 @@ public abstract class AbstractBehavior implements Behavior {
 				"=======" ) ;
 	
 		switch ( schema ) {
-			case MOVE:
+			case MOVE_FORWARD:
 				this.moveForward() ;
 				break ;
-			case BACKWARD:
+			case MOVE_BACKWARD:
 				this.moveBackward() ;
 				break ;
-			case RIGHT:
+			case TURN_RIGHT:
 				this.turnRight() ;
 				break ;
-			case LEFT:
+			case TURN_LEFT:
 				this.turnLeft() ;
 				break ;
 			case TOUCH:
@@ -107,8 +103,7 @@ public abstract class AbstractBehavior implements Behavior {
 				this.focusColor ,
 				this.leftColor ,
 				this.rightColor ,
-				this.rightEyeColor ,
-				this.leftEyeColor ) ;
+				this.eyes ) ;
 	}
 	
 	@Override

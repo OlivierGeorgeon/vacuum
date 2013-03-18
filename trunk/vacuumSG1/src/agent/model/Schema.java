@@ -4,10 +4,10 @@ import java.util.HashMap ;
 import java.util.Map ;
 
 public enum Schema {
-	MOVE( ">" ) ,
-	BACKWARD( "<" ),
-	LEFT( "^" ) ,
-	RIGHT( "v" ) ,
+	MOVE_FORWARD( ">" ) ,
+	MOVE_BACKWARD( "<" ),
+	TURN_LEFT( "^" ) ,
+	TURN_RIGHT( "v" ) ,
 	TOUCH( "-" ) ,
 	TOUCH_RIGHT( "\\" ) ,
 	TOUCH_LEFT( "/" ) ;
