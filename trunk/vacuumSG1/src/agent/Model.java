@@ -76,7 +76,9 @@ public class Model extends Observable
 	public static final int ANIM_TOUCH    = 3;
 	
 	//public static final Color FIELD_COLOR = Color.white; //new Color(150, 255, 150);
-	public static final Color WALL_COLOR  = new Color(0, 128, 0); // Color.getHSBColor(1/3f, 1f, 0.5f)
+	//public static final Color WALL_COLOR  = new Color(0, 128, 0); // Color.getHSBColor(1/3f, 1f, 0.5f)
+	public static final Color WALL_COLOR  = Environment.WALL1; // Color.getHSBColor(1/3f, 1f, 0.5f)
+	
 	public static final Color WATER_COLOR = new Color(150, 128, 255); // Color.getHSBColor(1/3f, 1f, 0.5f)
 	//public static final Color WATER_COLOR = new Color(0,0,255); // Color.getHSBColor(1/3f, 1f, 0.5f)
 	public static final Color FOOD_COLOR  = new Color(227, 124, 255); // Color.getHSBColor(1/3f, 1f, 0.5f)
