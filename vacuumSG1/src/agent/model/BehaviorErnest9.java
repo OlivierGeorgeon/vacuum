@@ -8,6 +8,7 @@ import javax.vecmath.Vector3f ;
 import ernest.Ernest ;
 
 import utils.Pair ;
+import agent.Block ;
 import agent.Environment ;
 import agent.Ernest130Model ;
 
@@ -86,17 +87,20 @@ public class BehaviorErnest9 extends AbstractBehavior {
 		if ( this.model.getEnvironment().affordWalk( point ) && !this.model.affordCuddle( point ) ) {
 			this.moveForwardAnim() ;
 			this.seeTheWorld() ;
-//			if ( blockColor.equals( Environment.ALGA1 ) ||
-//					blockColor.equals( Environment.ALGA2 ) ||
-//					blockColor.equals( Environment.ALGA1 ) ||
-//					blockColor.equals( Environment.ALGA3 ) ||
-//					blockColor.equals( Environment.ALGA4 ) ||
-//					blockColor.equals( Environment.ALGA5 ) ) {
-//				this.effect.setLabel( Stimuli.ALGA.getLabel() ) ;
-//			} else {
+			if ( blockColor.equals( Environment.ALGA1 ) ||
+					blockColor.equals( Environment.ALGA2 ) ||
+					blockColor.equals( Environment.ALGA1 ) ||
+					blockColor.equals( Environment.ALGA3 ) ||
+					blockColor.equals( Environment.ALGA4 ) ||
+					blockColor.equals( Environment.ALGA5 ) ) {
+				GraphicProperties ernestGraphicProperties = this.model.getCopyOfGraphicProperties() ;
+				
+				this.model.getEnvironment().setBlock( (int) ernestGraphicProperties.getmPosition().x , (int) ernestGraphicProperties.getmPosition().y , Environment.empty );
+				this.effect.setLabel( Stimuli.ALGA.getLabel() ) ;
+			} else {
 				String tactileStimuli = this.allEyesStimuli( snapshot , this.eyes ) + Stimuli.TRUE.getLabel();
 				this.effect.setLabel( tactileStimuli ) ;
-//			}
+			}
 			this.effect.setTransformation( 0 , -1 ) ;
 		} else {
 			this.bumpAheadAnim() ;
