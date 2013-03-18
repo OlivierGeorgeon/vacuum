@@ -146,9 +146,16 @@ public class AgentDesigner {
 	
 	private void drawAgentRetina( Graphics2D g2d , BehaviorState behaviorState ) {
 		GeneralPath rightEye = new GeneralPath() ;
-		rightEye.append( new Arc2D.Double( -15 , 10 , 40 , 40 , 270 , 90 , Arc2D.PIE ), false ) ;
+		//rightEye.append( new Arc2D.Double( -15 , 10 , 40 , 40 , 270 , 90 , Arc2D.PIE ), false ) ;
+		rightEye.append( new Arc2D.Double( -25 , -40 , 70 , 90 , 270 , 90 , Arc2D.PIE ), false ) ;
+		//rightEye.append( new Line2D.Double( 5 , 5 , 5 , 50 ) , false );
+		//rightEye.append( new Line2D.Double( 5 , 50 , 30 , 5 ) , true );
+
 		GeneralPath leftEye = new GeneralPath() ;
-		leftEye.append( new Arc2D.Double( -25 , 10 , 40 , 40 , 180 , 90 , Arc2D.PIE ), false ) ;
+		//leftEye.append( new Arc2D.Double( -25 , 10 , 40 , 40 , 180 , 90 , Arc2D.PIE ), false ) ;
+		leftEye.append( new Arc2D.Double( -40 , -40 , 70 , 90 , 180 , 90 , Arc2D.PIE ), false ) ;
+		//leftEye.append( new Line2D.Double( -5 , 5 , -5 , 50 ) , false );
+		//leftEye.append( new Line2D.Double( -5 , 50 , -30 , 5 ) , true );
 		
 		g2d.setStroke( new BasicStroke( 2f ) ) ;
 		g2d.setColor( behaviorState.getEyes().getRightEyeLookedBlock() ) ;
