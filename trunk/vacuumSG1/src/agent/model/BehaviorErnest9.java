@@ -80,18 +80,17 @@ public class BehaviorErnest9 extends AbstractBehavior {
 	protected void moveForward() {
 		Eyes snapshot = this.eyes.takeSnapshot() ;
 		Vector3f localPoint = new Vector3f( this.model.DIRECTION_AHEAD ) ;
-		Vector3f point = this.model.localToParentRef( localPoint ) ;
-		Color blockColor = this.model.getEnvironment().seeBlock( point.x , point.y ) ;
+		Vector3f aheadPoint = this.model.localToParentRef( localPoint ) ;
+		Color blockColor = this.model.getEnvironment().seeBlock( aheadPoint.x , aheadPoint.y ) ;
 		this.effect.setLocation( new Point3f( 1 , 0 , 0 ) ) ;
 
-		if ( this.model.getEnvironment().affordWalk( point ) && !this.model.affordCuddle( point ) ) {
+		if ( this.model.getEnvironment().affordWalk( aheadPoint ) && !this.model.affordCuddle( aheadPoint ) ) {
 			this.moveForwardAnim() ;
 			this.seeTheWorld() ;
-			if ( this.model.getEnvironment().isFood( point.x , point.y ) ) {
-				GraphicProperties ernestGraphicProperties = this.model.getCopyOfGraphicProperties() ;
-				this.model.getEnvironment().eatFood( point );
-				
-				this.effect.setLabel( Stimuli.ALGA.getLabel() ) ;
+			if ( this.model.getEnvironment().isFood( aheadPoint.x , aheadPoint.y ) ) {
+				this.model.getEnvironment().eatFood( aheadPoint );
+				this.effect.setLabel( Stimuli.FOOD.getLabel() ) ;
+				this.effect.setColor( blockColor.getRGB() );
 			} else {
 				String tactileStimuli = this.allEyesStimuli( snapshot , this.eyes ) + Stimuli.TRUE.getLabel();
 				this.effect.setLabel( tactileStimuli ) ;

@@ -29,12 +29,12 @@ public class BehaviorErnest8 extends AbstractBehavior {
 
 	protected void moveForward() {
 		Vector3f localPoint = new Vector3f( this.model.DIRECTION_AHEAD ) ;
-		Vector3f point = this.model.localToParentRef( localPoint ) ;
-		Color blockColor = this.model.getEnvironment().seeBlock( point.x , point.y ) ;
+		Vector3f aheadPoint = this.model.localToParentRef( localPoint ) ;
+		Color blockColor = this.model.getEnvironment().seeBlock( aheadPoint.x , aheadPoint.y ) ;
 		this.effect.setLocation( new Point3f( 1 , 0 , 0 ) ) ;
 		this.effect.setColor( blockColor.getRGB() ) ;
 
-		if ( this.model.getEnvironment().affordWalk( point ) && !this.model.affordCuddle( point ) ) {
+		if ( this.model.getEnvironment().affordWalk( aheadPoint ) && !this.model.affordCuddle( aheadPoint ) ) {
 			this.moveForwardAnim() ;
 			if ( blockColor.equals( Environment.ALGA1 ) ||
 					blockColor.equals( Environment.ALGA2 ) ||
@@ -56,20 +56,6 @@ public class BehaviorErnest8 extends AbstractBehavior {
 	}
 
 	protected void moveBackward() {
-		Vector3f localPoint = new Vector3f( this.model.DIRECTION_BEHIND ) ;
-		Vector3f point = this.model.localToParentRef( localPoint ) ;
-		this.effect.setLocation( new Point3f( -1 , 0 , 0 ) ) ;
-
-		if ( this.model.getEnvironment().affordWalk( point ) && !this.model.affordCuddle( point ) ) {
-			this.moveBackwardAnim() ;
-			this.effect.setLabel( Stimuli.TRUE.getLabel() ) ;
-			this.effect.setTransformation( 0 , 1 ) ;
-		} else {
-			this.effect.setLabel( Stimuli.FALSE.getLabel() ) ;
-			this.effect.setColor( Color.RED.getRGB() ) ;
-			this.focusColor = Color.RED ;
-			this.bumpBehindAnim() ;
-		}
 	}
 
 	protected void touch() {
