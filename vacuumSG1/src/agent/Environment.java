@@ -304,6 +304,17 @@ public class Environment extends Observable {
 			afford = false;
 		return afford;
 	}
+	
+	/**
+	 * Eat an alga food
+	 * @param pos The position to eat the food in Cartesian coordinates
+	 */
+	public void eatFood( Vector3f pos){
+		if( this.affordEat( pos ) ){
+			this.setBlock( (int) pos.x , (int) pos.y , Environment.empty );
+		}
+	}
+	
 	/**
 	 * @param pos The position to test in Cartesian coordinates.
 	 * @return true if this position is food. 
