@@ -4,7 +4,11 @@ public enum Stimuli {
 	FALSE( "f" ) ,
 	TRUE( "t" ) ,
 	BRICK( "b" ) ,
-	ALGA( "a" ) ;
+	ALGA( "a" ) ,
+	APPEAR( "*" ) ,
+	CLOSER( "+" ) ,
+	DISAPPEAR( "o" ) ,
+	UNCHANGED( " " ) ;
 
 	private String label ;
 

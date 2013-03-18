@@ -188,7 +188,7 @@ public class ErnestModel extends Model
 	 */
 	protected Pair<Integer, Color> scanArc(float angleOrigin, float angleSpan) {
 		Pair<Integer, Color> eyeFixation = null;
-		float step = angleSpan/10;
+		float step = angleSpan/20;
 		for (float angle = angleOrigin; angle <= angleOrigin + angleSpan + .001; angle += step) {
 			float x0 = (float) (mPosition.x + 20 * Math.cos(angle));
 			float y0 = (float) (mPosition.y + 20 * Math.sin(angle)); // Y axis is downwards.

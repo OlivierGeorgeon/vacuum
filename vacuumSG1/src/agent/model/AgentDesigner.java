@@ -151,11 +151,11 @@ public class AgentDesigner {
 		leftEye.append( new Arc2D.Double( -25 , 10 , 40 , 40 , 180 , 90 , Arc2D.PIE ), false ) ;
 		
 		g2d.setStroke( new BasicStroke( 2f ) ) ;
-		g2d.setColor( behaviorState.getRightEyeColor() ) ;
+		g2d.setColor( behaviorState.getEyes().getRightEyeLookedBlock() ) ;
 		g2d.fill( rightEye ) ;
 		g2d.setColor( Color.black ) ;
 		g2d.draw( rightEye ) ;
-		g2d.setColor( behaviorState.getLeftEyeColor() ) ;
+		g2d.setColor( behaviorState.getEyes().getLeftEyeLookedBlock() ) ;
 		g2d.fill( leftEye ) ;
 		g2d.setColor( Color.black ) ;
 		g2d.draw( leftEye ) ;
