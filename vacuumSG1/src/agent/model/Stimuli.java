@@ -5,6 +5,7 @@ public enum Stimuli {
 	TRUE( "t" ) ,
 	BRICK( "b" ) ,
 	ALGA( "a" ) ,
+	FOOD( "a" ) ,
 	APPEAR( "*" ) ,
 	CLOSER( "+" ) ,
 	DISAPPEAR( "o" ) ,
