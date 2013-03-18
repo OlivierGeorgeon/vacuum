@@ -151,7 +151,7 @@ public class Ernest120Model extends ErnestModel
         
         //if (ident == 8)
         // m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","NKmqGfrDVaTZQDSsgKNazjXd-cG-TZ");
-        //m_tracer = new XMLStreamTracer("http://134.214.128.53/abstract/lite/php/stream/" , "dvlgOqZqFcyVWdrRdJisCAqXYsttqQ");
+        m_tracer = new XMLStreamTracer("http://134.214.128.53/abstract/lite/php/stream/" , "dvlgOqZqFcyVWdrRdJisCAqXYsttqQ");
                         
         // Initialize the Ernest === 
         

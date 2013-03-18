@@ -31,11 +31,11 @@ public class BehaviorErnest9 extends AbstractBehavior {
 		
 		if ( previousDistance == currentDistance ) {
 			stimuli = Stimuli.UNCHANGED ;
-		}else if ( previousDistance < Ernest.INFINITE && currentDistance < previousDistance && colorSeen == Environment.ALGA1 ) {
+		}else if ( previousDistance < Ernest.INFINITE && currentDistance < previousDistance  ) {
 			stimuli = Stimuli.CLOSER ;
-		}else if ( previousDistance == Ernest.INFINITE && currentDistance < Ernest.INFINITE  && colorSeen == Environment.ALGA1 ) {
+		}else if ( previousDistance == Ernest.INFINITE && currentDistance < Ernest.INFINITE   ) {
 			stimuli = Stimuli.APPEAR ;
-		}else if ( previousDistance < Ernest.INFINITE && currentDistance == Ernest.INFINITE  && colorSeen != Environment.ALGA1 ) {
+		}else if ( previousDistance < Ernest.INFINITE && currentDistance == Ernest.INFINITE   ) {
 			stimuli = Stimuli.DISAPPEAR ;
 		}
 
@@ -96,6 +96,7 @@ public class BehaviorErnest9 extends AbstractBehavior {
 				GraphicProperties ernestGraphicProperties = this.model.getCopyOfGraphicProperties() ;
 				
 				this.model.getEnvironment().setBlock( (int) ernestGraphicProperties.getmPosition().x , (int) ernestGraphicProperties.getmPosition().y , Environment.empty );
+				
 				this.effect.setLabel( Stimuli.ALGA.getLabel() ) ;
 			} else {
 				String tactileStimuli = this.allEyesStimuli( snapshot , this.eyes ) + Stimuli.TRUE.getLabel();
