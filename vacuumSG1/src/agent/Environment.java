@@ -311,7 +311,7 @@ public class Environment extends Observable {
 	 */
 	public void eatFood( Vector3f pos){
 		if( this.affordEat( pos ) ){
-			this.setBlock( (int) pos.x , (int) pos.y , Environment.empty );
+			this.m_blocks[Math.round(pos.x)][Math.round(pos.y)] = Environment.empty;
 		}
 	}
 	

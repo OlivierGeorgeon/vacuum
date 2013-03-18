@@ -87,15 +87,9 @@ public class BehaviorErnest9 extends AbstractBehavior {
 		if ( this.model.getEnvironment().affordWalk( point ) && !this.model.affordCuddle( point ) ) {
 			this.moveForwardAnim() ;
 			this.seeTheWorld() ;
-			if ( blockColor.equals( Environment.ALGA1 ) ||
-					blockColor.equals( Environment.ALGA2 ) ||
-					blockColor.equals( Environment.ALGA1 ) ||
-					blockColor.equals( Environment.ALGA3 ) ||
-					blockColor.equals( Environment.ALGA4 ) ||
-					blockColor.equals( Environment.ALGA5 ) ) {
+			if ( this.model.getEnvironment().isFood( point.x , point.y ) ) {
 				GraphicProperties ernestGraphicProperties = this.model.getCopyOfGraphicProperties() ;
-				
-				this.model.getEnvironment().setBlock( (int) ernestGraphicProperties.getmPosition().x , (int) ernestGraphicProperties.getmPosition().y , Environment.empty );
+				this.model.getEnvironment().eatFood( point );
 				
 				this.effect.setLabel( Stimuli.ALGA.getLabel() ) ;
 			} else {
