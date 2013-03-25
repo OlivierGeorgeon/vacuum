@@ -126,7 +126,7 @@ public class Ernest130Model extends ErnestModel implements GraphicPropertiesList
 				break ;
 		}
 
-		this.spaceMemoryDesigner = new SpaceMemoryDesigner( this ) ;
+		this.spaceMemoryDesigner = new SpaceMemoryDesigner( this , agentColor ) ;
 		this.behaviorState = this.behavior.getCurrentBehaviorState() ;
 		this.spaceMemory = new SpaceMemory() ;
 	}
@@ -144,11 +144,11 @@ public class Ernest130Model extends ErnestModel implements GraphicPropertiesList
 		this.m_eye.setModel( this ) ;
 
 		 //Only trace the first agent.
-		 this.m_tracer = new
-		 XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","dlsQKeaXlclGbzRTN--ZLWajTDyGpr");
-		//this.m_tracer = new XMLStreamTracer(
-		//		"http://134.214.128.53/abstract/lite/php/stream/" ,
-		//		"juIQzDzdCtBSpmNnJNkzdtTTajfsXe" ) ;
+//		 this.m_tracer = new
+//		 XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","dlsQKeaXlclGbzRTN--ZLWajTDyGpr");
+		this.m_tracer = new XMLStreamTracer(
+				"http://134.214.128.53/abstract/lite/php/stream/" ,
+				"juIQzDzdCtBSpmNnJNkzdtTTajfsXe" ) ;
 
 		// Initialize the Ernest
 		// Ernest's inborn primitive interactions
@@ -162,8 +162,8 @@ public class Ernest130Model extends ErnestModel implements GraphicPropertiesList
 
 	public void setDisplay() {
 		this.setDisplaySpaceMemory() ;
-		this.setDisplayEyeView() ;
-		// this.setDisplayInnerEar() ;
+//		this.setDisplayEyeView() ;
+//		this.setDisplayInnerEar() ;
 	}
 
 	private void setDisplaySpaceMemory() {
@@ -252,7 +252,7 @@ public class Ernest130Model extends ErnestModel implements GraphicPropertiesList
 	}
 
 	public void paintSpaceMemory( Graphics g , ArrayList<IPlace> placeList ) {
-		this.spaceMemoryDesigner.paintSpaceMemory( g , placeList , this.behaviorState ) ;
+		this.spaceMemoryDesigner.paintSpaceMemory( (Graphics2D) g , placeList , this.behaviorState ) ;
 	}
 
 	@Override
