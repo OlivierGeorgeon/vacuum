@@ -1,4 +1,4 @@
-package agent.model ;
+package agent.model.behavior ;
 
 import java.awt.Color ;
 
@@ -8,6 +8,8 @@ import javax.vecmath.Vector3f ;
 import agent.Environment ;
 import agent.Ernest130Model ;
 import agent.ErnestModel ;
+import agent.model.GraphicPropertiesListener ;
+import agent.model.TactileStimuli ;
 
 public class BehaviorErnest8 extends AbstractBehavior {
 
@@ -17,13 +19,13 @@ public class BehaviorErnest8 extends AbstractBehavior {
 
 	protected void turnRight() {
 		this.turnRightAnim() ;
-		this.effect.setLabel( Stimuli.FALSE.getLabel() ) ;
+		this.effect.setLabel( TactileStimuli.FALSE.getLabel() ) ;
 		this.effect.setTransformation( (float) Math.PI / 2 , 0 ) ;
 	}
 
 	protected void turnLeft() {
 		this.turnLeftAnim() ;
-		this.effect.setLabel( Stimuli.FALSE.getLabel() ) ;
+		this.effect.setLabel( TactileStimuli.FALSE.getLabel() ) ;
 		this.effect.setTransformation( (float) -Math.PI / 2 , 0 ) ;
 	}
 
@@ -42,14 +44,14 @@ public class BehaviorErnest8 extends AbstractBehavior {
 					blockColor.equals( Environment.ALGA3 ) ||
 					blockColor.equals( Environment.ALGA4 ) ||
 					blockColor.equals( Environment.ALGA5 ) ) {
-				this.effect.setLabel( Stimuli.ALGA.getLabel() ) ;
+				this.effect.setLabel( TactileStimuli.ALGA.getLabel() ) ;
 			} else {
-				this.effect.setLabel( Stimuli.TRUE.getLabel() ) ;
+				this.effect.setLabel( TactileStimuli.TRUE.getLabel() ) ;
 			}
 			this.effect.setTransformation( 0 , -1 ) ;
 		} else {
 			this.effect.setColor( Color.RED.getRGB() ) ;
-			this.effect.setLabel( Stimuli.FALSE.getLabel() ) ;
+			this.effect.setLabel( TactileStimuli.FALSE.getLabel() ) ;
 			this.focusColor = Color.RED ;
 			this.bumpAheadAnim() ;
 		}
@@ -67,7 +69,7 @@ public class BehaviorErnest8 extends AbstractBehavior {
 		this.effect.setColor( blockColor.getRGB() ) ;
 
 		if ( this.model.affordCuddle( aheadPoint ) ) {
-			this.effect.setLabel( Stimuli.TRUE.getLabel() ) ;
+			this.effect.setLabel( TactileStimuli.TRUE.getLabel() ) ;
 			ErnestModel entity = this.model.getEnvironment().getEntity(
 					aheadPoint ,
 					this.model.getName() ) ;
@@ -80,17 +82,17 @@ public class BehaviorErnest8 extends AbstractBehavior {
 					blockColor.equals( Environment.ALGA3 ) ||
 					blockColor.equals( Environment.ALGA4 ) ||
 					blockColor.equals( Environment.ALGA5 ) ) {
-				this.effect.setLabel( Stimuli.ALGA.getLabel() ) ;
+				this.effect.setLabel( TactileStimuli.ALGA.getLabel() ) ;
 			} else {
-				this.effect.setLabel( Stimuli.FALSE.getLabel() ) ;
+				this.effect.setLabel( TactileStimuli.FALSE.getLabel() ) ;
 			}
 		} else {
 			if ( blockColor.equals( Environment.WALL1 ) ||
 					blockColor.equals( Environment.WALL2 ) ||
 					blockColor.equals( Environment.WALL3 ) ) {
-				this.effect.setLabel( Stimuli.TRUE.getLabel() ) ;
+				this.effect.setLabel( TactileStimuli.TRUE.getLabel() ) ;
 			} else {
-				this.effect.setLabel( Stimuli.BRICK.getLabel() ) ;
+				this.effect.setLabel( TactileStimuli.BRICK.getLabel() ) ;
 			}
 		}
 		this.touchAnim() ;
@@ -105,7 +107,7 @@ public class BehaviorErnest8 extends AbstractBehavior {
 		this.effect.setColor( blockColor.getRGB() ) ;
 
 		if ( this.model.affordCuddle( leftPoint ) ) {
-			this.effect.setLabel( Stimuli.TRUE.getLabel() ) ;
+			this.effect.setLabel( TactileStimuli.TRUE.getLabel() ) ;
 			ErnestModel entity = this.model.getEnvironment().getEntity(
 					leftPoint ,
 					this.model.getName() ) ;
@@ -118,17 +120,17 @@ public class BehaviorErnest8 extends AbstractBehavior {
 					blockColor.equals( Environment.ALGA3 ) ||
 					blockColor.equals( Environment.ALGA4 ) ||
 					blockColor.equals( Environment.ALGA5 ) ) {
-				this.effect.setLabel( Stimuli.ALGA.getLabel() ) ;
+				this.effect.setLabel( TactileStimuli.ALGA.getLabel() ) ;
 			} else {
-				this.effect.setLabel( Stimuli.FALSE.getLabel() ) ;
+				this.effect.setLabel( TactileStimuli.FALSE.getLabel() ) ;
 			}
 		} else {
 			if ( blockColor.equals( Environment.WALL1 ) ||
 					blockColor.equals( Environment.WALL2 ) ||
 					blockColor.equals( Environment.WALL3 ) ) {
-				this.effect.setLabel( Stimuli.TRUE.getLabel() ) ;
+				this.effect.setLabel( TactileStimuli.TRUE.getLabel() ) ;
 			} else {
-				this.effect.setLabel( Stimuli.BRICK.getLabel() ) ;
+				this.effect.setLabel( TactileStimuli.BRICK.getLabel() ) ;
 			}
 		}
 
@@ -144,7 +146,7 @@ public class BehaviorErnest8 extends AbstractBehavior {
 		this.effect.setColor( blockColor.getRGB() ) ;
 
 		if ( this.model.affordCuddle( rightPoint ) ) {
-			this.effect.setLabel( Stimuli.TRUE.getLabel() ) ;
+			this.effect.setLabel( TactileStimuli.TRUE.getLabel() ) ;
 			ErnestModel entity = this.model.getEnvironment().getEntity(
 					rightPoint ,
 					this.model.getName() ) ;
@@ -157,17 +159,17 @@ public class BehaviorErnest8 extends AbstractBehavior {
 					blockColor.equals( Environment.ALGA3 ) ||
 					blockColor.equals( Environment.ALGA4 ) ||
 					blockColor.equals( Environment.ALGA5 ) ) {
-				this.effect.setLabel( Stimuli.ALGA.getLabel() ) ;
+				this.effect.setLabel( TactileStimuli.ALGA.getLabel() ) ;
 			} else {
-				this.effect.setLabel( Stimuli.FALSE.getLabel() ) ;
+				this.effect.setLabel( TactileStimuli.FALSE.getLabel() ) ;
 			}
 		} else {
 			if ( blockColor.equals( Environment.WALL1 ) ||
 					blockColor.equals( Environment.WALL2 ) ||
 					blockColor.equals( Environment.WALL3 ) ) {
-				this.effect.setLabel( Stimuli.TRUE.getLabel() ) ;
+				this.effect.setLabel( TactileStimuli.TRUE.getLabel() ) ;
 			} else {
-				this.effect.setLabel( Stimuli.BRICK.getLabel() ) ;
+				this.effect.setLabel( TactileStimuli.BRICK.getLabel() ) ;
 			}
 		}
 

@@ -5,35 +5,39 @@ import java.util.Map ;
 
 public enum Schema {
 	MOVE_FORWARD( ">" ) ,
-	MOVE_BACKWARD( "<" ),
+	MOVE_BACKWARD( "<" ) ,
 	TURN_LEFT( "^" ) ,
 	TURN_RIGHT( "v" ) ,
 	TOUCH( "-" ) ,
 	TOUCH_RIGHT( "\\" ) ,
 	TOUCH_LEFT( "/" ) ;
 
-	private final static Map<String, Schema> BY_SIGN = new HashMap<String , Schema>();
-	private final String sign ;
+	private final static Map<String , Schema> BY_LABEL = new HashMap<String , Schema>() ;
+	private final String label ;
 
 	static {
-        for (Schema schema : Schema.values()) {
-        	Schema.BY_SIGN.put(schema.sign, schema);
-        }
-    }
-	
-	private Schema( String sign ) {
-		this.sign = sign ;
+		for ( Schema schema : Schema.values() ) {
+			BY_LABEL.put( schema.label , schema ) ;
+		}
 	}
 
-	public String getSign() {
-		return this.sign ;
+	private Schema( String label ) {
+		this.label = label ;
 	}
-	
-	public static Schema getBySign( String sign ) throws IllegalArgumentException{
-		if( Schema.BY_SIGN.containsKey( sign ) ){
-			return Schema.BY_SIGN.get( sign );
+
+	public String getLabel() {
+		return this.label ;
+	}
+
+	public static boolean isExist( String label ) {
+		return BY_LABEL.containsKey( label ) ;
+	}
+
+	public static Schema getByLabel( String label ) throws IllegalArgumentException {
+		if ( BY_LABEL.containsKey( label ) ) {
+			return BY_LABEL.get( label ) ;
 		}
-		
-		throw new IllegalArgumentException();
+
+		throw new IllegalArgumentException() ;
 	}
 }

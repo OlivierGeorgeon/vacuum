@@ -1,4 +1,4 @@
-package agent.model;
+package agent.model.behavior;
 
 import java.awt.Color ;
 
@@ -7,13 +7,17 @@ import javax.vecmath.Matrix3f ;
 import javax.vecmath.Vector3f ;
 
 import agent.Ernest130Model ;
+import agent.model.AgentDesigner ;
+import agent.model.GraphicProperties ;
+import agent.model.GraphicPropertiesChangeEvent ;
+import agent.model.GraphicPropertiesListener ;
+import agent.model.Schema ;
 import ernest.Effect ;
 import ernest.IEffect ;
 
 public abstract class AbstractBehavior implements Behavior {
 
-	protected int delayMove = 4 ; // 2
-	protected int stepAnimMove = 25;
+	protected int delayMove = 10 ; // 2
 	protected int delayTouch = 50 ; // 50
 	
 	protected Color focusColor;
@@ -109,7 +113,6 @@ public abstract class AbstractBehavior implements Behavior {
 	
 	@Override
 	public final void anim() {
-		// compute absolute movements
 		GraphicProperties ernestGraphicProperties = this.model.getCopyOfGraphicProperties() ;
 		this.computeAbsoluteSpeedTranslation( ernestGraphicProperties ) ;
 		this.computeAbsoluteSpeedRotation( ernestGraphicProperties ) ;
@@ -141,11 +144,11 @@ public abstract class AbstractBehavior implements Behavior {
 	}
 
 	protected final void turnRightAnim() {
-		for ( int i = 0; i < stepAnimMove ; i++ ) {
+		for ( int i = 0; i < 20; i++ ) {
 			GraphicProperties ernestGraphicProperties = this.model.getCopyOfGraphicProperties() ;
 			GraphicPropertiesChangeEvent event = new GraphicPropertiesChangeEvent( this , ernestGraphicProperties ) ;
-			event.getmOrientation().z -= Math.PI / 2/ stepAnimMove ;
-			event.setAnimOrientation( (float) ( ernestGraphicProperties.getAnimOrientation() - ( Math.PI / 2 / stepAnimMove ) ) );
+			event.getmOrientation().z -= Math.PI / 40 ;
+			event.setAnimOrientation( (float) ( ernestGraphicProperties.getAnimOrientation() - ( Math.PI / 40 ) ) );
 			this.notifyGraphicPropertiesChange( event );
 			
 			this.anim() ;
@@ -160,11 +163,11 @@ public abstract class AbstractBehavior implements Behavior {
 	}
 
 	protected final void turnLeftAnim() {
-		for ( int i = 0; i < stepAnimMove; i++ ) {
+		for ( int i = 0; i < 20; i++ ) {
 			GraphicProperties ernestGraphicProperties = this.model.getCopyOfGraphicProperties() ;
 			GraphicPropertiesChangeEvent event = new GraphicPropertiesChangeEvent( this , ernestGraphicProperties ) ;
-			event.getmOrientation().z += Math.PI / 2 / stepAnimMove ;
-			event.setAnimOrientation( (float) ( ernestGraphicProperties.getAnimOrientation() + ( Math.PI / 2 / stepAnimMove ) ) );
+			event.getmOrientation().z += Math.PI / 40 ;
+			event.setAnimOrientation( (float) ( ernestGraphicProperties.getAnimOrientation() + ( Math.PI / 40 ) ) );
 			this.notifyGraphicPropertiesChange( event );
 			
 			this.anim() ;
@@ -201,11 +204,11 @@ public abstract class AbstractBehavior implements Behavior {
 	}
 
 	protected final void moveForwardAnim() {
-		for ( int i = 0; i < stepAnimMove; i++ ) {
+		for ( int i = 0; i < 20; i++ ) {
 			GraphicProperties ernestGraphicProperties = this.model.getCopyOfGraphicProperties() ;
 			GraphicPropertiesChangeEvent event = new GraphicPropertiesChangeEvent( this , ernestGraphicProperties ) ;
-			event.getmPosition().set( this.model.localToParentRef( new Vector3f( 1f / stepAnimMove , 0 , 0 ) ) );
-			event.setAnimPosition( (float) ( ernestGraphicProperties.getAnimPosition() + 1f / stepAnimMove ) );
+			event.getmPosition().set( this.model.localToParentRef( new Vector3f( .05f , 0 , 0 ) ) );
+			event.setAnimPosition( (float) ( ernestGraphicProperties.getAnimPosition() + .05 ) );
 			this.notifyGraphicPropertiesChange( event );
 			
 			this.anim() ;
@@ -235,11 +238,11 @@ public abstract class AbstractBehavior implements Behavior {
 	}
 
 	protected final void moveBackwardAnim() {
-		for ( int i = 0; i < stepAnimMove; i++ ) {
+		for ( int i = 0; i < 20; i++ ) {
 			GraphicProperties ernestGraphicProperties = this.model.getCopyOfGraphicProperties() ;
 			GraphicPropertiesChangeEvent event = new GraphicPropertiesChangeEvent( this , ernestGraphicProperties ) ;
-			event.getmPosition().set( this.model.localToParentRef( new Vector3f( 1f /stepAnimMove , 0 , 0 ) ) );
-			event.setAnimPosition( (float) ( ernestGraphicProperties.getAnimPosition() - 1f /stepAnimMove ) );
+			event.getmPosition().set( this.model.localToParentRef( new Vector3f( -.05f , 0 , 0 ) ) );
+			event.setAnimPosition( (float) ( ernestGraphicProperties.getAnimPosition() - .05 ) );
 			this.notifyGraphicPropertiesChange( event );
 			
 			this.anim() ;

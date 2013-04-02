@@ -1,5 +1,6 @@
-package agent.model;
+package agent.model.behavior;
 
+import agent.model.Schema ;
 import ernest.IEffect ;
 
 public interface Behavior {

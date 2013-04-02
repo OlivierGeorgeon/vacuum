@@ -1,4 +1,4 @@
-package agent.model;
+package agent.model.motivation;
 
 import ernest.IErnest ;
 
