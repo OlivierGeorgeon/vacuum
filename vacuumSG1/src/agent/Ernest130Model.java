@@ -15,7 +15,7 @@ import agent.model.AgentDesigner ;
 import agent.model.GraphicProperties ;
 import agent.model.GraphicPropertiesChangeEvent ;
 import agent.model.GraphicPropertiesListener ;
-import agent.model.Schema ;
+import agent.model.Move ;
 import agent.model.behavior.Behavior ;
 import agent.model.behavior.BehaviorErnest7 ;
 import agent.model.behavior.BehaviorErnest8 ;
@@ -222,7 +222,7 @@ public class Ernest130Model extends ErnestModel implements GraphicPropertiesList
 	}
 
 	public void update() {
-		Schema schema = Schema.getByLabel( this.m_ernest.step( this.behavior.getEffect() ) ) ;
+		Move schema = Move.getByLabel( this.m_ernest.step( this.behavior.getEffect() ) ) ;
 
 		if ( this.cognitiveMode == ErnestModel.AGENT_STEP )
 			this.cognitiveMode = ErnestModel.AGENT_STOP ;

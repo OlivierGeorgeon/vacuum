@@ -3,7 +3,7 @@ package agent.model ;
 import java.util.HashMap ;
 import java.util.Map ;
 
-public enum Schema {
+public enum Move {
 	MOVE_FORWARD( ">" ) ,
 	MOVE_BACKWARD( "<" ) ,
 	TURN_LEFT( "^" ) ,
@@ -12,16 +12,16 @@ public enum Schema {
 	TOUCH_RIGHT( "\\" ) ,
 	TOUCH_LEFT( "/" ) ;
 
-	private final static Map<String , Schema> BY_LABEL = new HashMap<String , Schema>() ;
+	private final static Map<String , Move> BY_LABEL = new HashMap<String , Move>() ;
 	private final String label ;
 
 	static {
-		for ( Schema schema : Schema.values() ) {
+		for ( Move schema : Move.values() ) {
 			BY_LABEL.put( schema.label , schema ) ;
 		}
 	}
 
-	private Schema( String label ) {
+	private Move( String label ) {
 		this.label = label ;
 	}
 
@@ -33,7 +33,7 @@ public enum Schema {
 		return BY_LABEL.containsKey( label ) ;
 	}
 
-	public static Schema getByLabel( String label ) throws IllegalArgumentException {
+	public static Move getByLabel( String label ) throws IllegalArgumentException {
 		if ( BY_LABEL.containsKey( label ) ) {
 			return BY_LABEL.get( label ) ;
 		}

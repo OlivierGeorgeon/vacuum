@@ -1,8 +1,8 @@
 package agent.model.motivation;
 
-import agent.model.Schema ;
-import agent.model.TactileStimuli ;
-import agent.model.VisualStimuli ;
+import agent.model.Move ;
+import agent.model.TactileEffect ;
+import agent.model.VisualEffect ;
 import utils.Pair ;
 import ernest.IErnest ;
 
@@ -19,37 +19,37 @@ public class MotivationErnest8 implements Motivation{
 //		- [Disappear, -15] Ernest hates blue squares disappearing from an eye's visual field.
 		
 		// r(u)
-		Pair<Schema , Integer>[] moves = new Pair[3];
-		moves[0] = Pair.create( Schema.MOVE_FORWARD , -1 );
-		moves[1] = Pair.create( Schema.TURN_RIGHT , 0 );
-		moves[2] = Pair.create( Schema.TURN_LEFT , 0 );
+		Pair<Move , Integer>[] moves = new Pair[3];
+		moves[0] = Pair.create( Move.MOVE_FORWARD , -1 );
+		moves[1] = Pair.create( Move.TURN_RIGHT , 0 );
+		moves[2] = Pair.create( Move.TURN_LEFT , 0 );
 		
 		// r(e)
-		Pair<VisualStimuli , Integer>[] eyesEffects = new Pair[4];
-		eyesEffects[0] = Pair.create( VisualStimuli.APPEAR , 15 );
-		eyesEffects[1] = Pair.create( VisualStimuli.CLOSER , 10 );
-		eyesEffects[2] = Pair.create( VisualStimuli.UNCHANGED , 0 );
-		eyesEffects[3] = Pair.create( VisualStimuli.DISAPPEAR , -15 );
+		Pair<VisualEffect , Integer>[] eyesEffects = new Pair[4];
+		eyesEffects[0] = Pair.create( VisualEffect.APPEAR , 15 );
+		eyesEffects[1] = Pair.create( VisualEffect.CLOSER , 10 );
+		eyesEffects[2] = Pair.create( VisualEffect.UNCHANGED , 0 );
+		eyesEffects[3] = Pair.create( VisualEffect.DISAPPEAR , -15 );
 		
 		// r(f)
-		Pair<TactileStimuli , Integer>[] tactileEffects = new Pair[2];
-		tactileEffects[0] = Pair.create( TactileStimuli.TRUE , 0 );
-		tactileEffects[1] = Pair.create( TactileStimuli.FALSE , -10 );
+		Pair<TactileEffect , Integer>[] tactileEffects = new Pair[2];
+		tactileEffects[0] = Pair.create( TactileEffect.TRUE , 0 );
+		tactileEffects[1] = Pair.create( TactileEffect.FALSE , -10 );
 		
 		
-		for ( Pair<TactileStimuli , Integer> tactileEffect : tactileEffects ) {
-			for ( Pair<VisualStimuli , Integer> leftEyeEffect : eyesEffects ) {
-				for ( Pair<VisualStimuli , Integer> rightEyeEffect : eyesEffects ) {
-					for ( Pair<Schema , Integer> move : moves ) {
+		for ( Pair<TactileEffect , Integer> tactileEffect : tactileEffects ) {
+			for ( Pair<VisualEffect , Integer> leftEyeEffect : eyesEffects ) {
+				for ( Pair<VisualEffect , Integer> rightEyeEffect : eyesEffects ) {
+					for ( Pair<Move , Integer> move : moves ) {
 						// r(u,y) = r(u) + r(f) + r(e_left) + r(e_right)
 						int satisfaction = move.getRight() + tactileEffect.getRight() + leftEyeEffect.getRight() + rightEyeEffect.getRight();
 						// y = (e_left,e_right,f)
 						String stimuli = leftEyeEffect.getLeft().getLabel() + rightEyeEffect.getLeft().getLabel() + tactileEffect.getLeft().getLabel() ;
 						
-						if( move.getLeft().equals( Schema.MOVE_FORWARD ) && tactileEffect.getLeft().equals( TactileStimuli.TRUE ) ){
+						if( move.getLeft().equals( Move.MOVE_FORWARD ) && tactileEffect.getLeft().equals( TactileEffect.TRUE ) ){
 							satisfaction = 0 + leftEyeEffect.getRight() + rightEyeEffect.getRight();
 						}
-						if( move.getLeft().equals( Schema.MOVE_FORWARD ) && tactileEffect.getLeft().equals( TactileStimuli.FALSE ) ){
+						if( move.getLeft().equals( Move.MOVE_FORWARD ) && tactileEffect.getLeft().equals( TactileEffect.FALSE ) ){
 							satisfaction = -8 + leftEyeEffect.getRight() + rightEyeEffect.getRight();
 						}
 						

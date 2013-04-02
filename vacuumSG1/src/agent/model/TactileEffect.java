@@ -3,22 +3,23 @@ package agent.model ;
 import java.util.HashMap ;
 import java.util.Map ;
 
-public enum VisualStimuli {
-	APPEAR( "*" ) ,
-	CLOSER( "+" ) ,
-	DISAPPEAR( "o" ) ,
-	UNCHANGED( " " ) ;
+public enum TactileEffect {
+	FALSE( "f" ) ,
+	TRUE( "t" ) ,
+	BRICK( "b" ) ,
+	ALGA( "a" ) ,
+	FOOD( "a" ) ;
 
-	private final static Map<String , VisualStimuli> BY_LABEL = new HashMap<String , VisualStimuli>() ;
+	private final static Map<String , TactileEffect> BY_LABEL = new HashMap<String , TactileEffect>() ;
 	private final String label ;
 
 	static {
-		for ( VisualStimuli stimuli : VisualStimuli.values() ) {
+		for ( TactileEffect stimuli : TactileEffect.values() ) {
 			BY_LABEL.put( stimuli.label , stimuli ) ;
 		}
 	}
 
-	private VisualStimuli( String label ) {
+	private TactileEffect( String label ) {
 		this.label = label ;
 	}
 
@@ -30,7 +31,7 @@ public enum VisualStimuli {
 		return BY_LABEL.containsKey( label ) ;
 	}
 
-	public static VisualStimuli getByLabel( String label ) throws IllegalArgumentException {
+	public static TactileEffect getByLabel( String label ) throws IllegalArgumentException {
 		if ( BY_LABEL.containsKey( label ) ) {
 			return BY_LABEL.get( label ) ;
 		}

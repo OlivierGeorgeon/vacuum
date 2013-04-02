@@ -8,7 +8,7 @@ import javax.vecmath.Vector3f ;
 import agent.Environment ;
 import agent.Ernest130Model ;
 import agent.model.GraphicPropertiesListener ;
-import agent.model.TactileStimuli ;
+import agent.model.TactileEffect ;
 
 public class BehaviorErnest7 extends AbstractBehavior {
 
@@ -18,13 +18,13 @@ public class BehaviorErnest7 extends AbstractBehavior {
 
 	protected void turnRight() {
 		this.turnRightAnim() ;
-		this.effect.setLabel( TactileStimuli.FALSE.getLabel() ) ;
+		this.effect.setLabel( TactileEffect.FALSE.getLabel() ) ;
 		this.effect.setTransformation( (float) Math.PI / 2 , 0 ) ;
 	}
 
 	protected void turnLeft() {
 		this.turnLeftAnim() ;
-		this.effect.setLabel( TactileStimuli.FALSE.getLabel() ) ;
+		this.effect.setLabel( TactileEffect.FALSE.getLabel() ) ;
 		this.effect.setTransformation( (float) -Math.PI / 2 , 0 ) ;
 	}
 
@@ -37,11 +37,11 @@ public class BehaviorErnest7 extends AbstractBehavior {
 
 		if ( this.model.getEnvironment().affordWalk( aheadPoint ) && !this.model.affordCuddle( aheadPoint ) ) {
 			this.moveForwardAnim() ;
-			this.effect.setLabel( TactileStimuli.TRUE.getLabel() ) ;
+			this.effect.setLabel( TactileEffect.TRUE.getLabel() ) ;
 			this.effect.setTransformation( 0 , -1 ) ;
 		} else {
 			this.effect.setColor( Color.RED.getRGB() ) ;
-			this.effect.setLabel( TactileStimuli.FALSE.getLabel() ) ;
+			this.effect.setLabel( TactileEffect.FALSE.getLabel() ) ;
 			this.focusColor = Color.RED ;
 			this.bumpAheadAnim() ;
 		}
@@ -59,11 +59,11 @@ public class BehaviorErnest7 extends AbstractBehavior {
 		this.effect.setColor( blockColor.getRGB() ) ;
 
 		if ( this.model.affordCuddle( aheadPoint ) ) {
-			this.effect.setLabel( TactileStimuli.TRUE.getLabel() ) ;
+			this.effect.setLabel( TactileEffect.TRUE.getLabel() ) ;
 			this.focusColor = Environment.WALL1 ;
 			this.effect.setColor( Environment.WALL1.getRGB() ) ;
 		} else if ( this.model.getEnvironment().affordWalk( aheadPoint ) ) {
-			this.effect.setLabel( TactileStimuli.FALSE.getLabel() ) ;
+			this.effect.setLabel( TactileEffect.FALSE.getLabel() ) ;
 			this.focusColor = Environment.FIELD_COLOR ;
 		} else {
 			if ( blockColor.equals( Environment.WALL1 ) ||
@@ -74,7 +74,7 @@ public class BehaviorErnest7 extends AbstractBehavior {
 				this.focusColor = Environment.FIELD_COLOR ;
 			}
 
-			this.effect.setLabel( TactileStimuli.TRUE.getLabel() ) ;
+			this.effect.setLabel( TactileEffect.TRUE.getLabel() ) ;
 		}
 		this.touchAnim() ;
 	}
@@ -88,11 +88,11 @@ public class BehaviorErnest7 extends AbstractBehavior {
 		this.effect.setColor( blockColor.getRGB() ) ;
 
 		if ( this.model.affordCuddle( leftPoint ) ) {
-			this.effect.setLabel( TactileStimuli.TRUE.getLabel() ) ;
+			this.effect.setLabel( TactileEffect.TRUE.getLabel() ) ;
 			this.leftColor = Environment.WALL1 ;
 			this.effect.setColor( Environment.WALL1.getRGB() ) ;
 		} else if ( this.model.getEnvironment().affordWalk( leftPoint ) ) {
-			this.effect.setLabel( TactileStimuli.FALSE.getLabel() ) ;
+			this.effect.setLabel( TactileEffect.FALSE.getLabel() ) ;
 			this.leftColor = Environment.FIELD_COLOR ;
 		} else {
 			if ( blockColor.equals( Environment.WALL1 ) ||
@@ -103,7 +103,7 @@ public class BehaviorErnest7 extends AbstractBehavior {
 				this.leftColor = Environment.FIELD_COLOR ;
 			}
 
-			this.effect.setLabel( TactileStimuli.TRUE.getLabel() ) ;
+			this.effect.setLabel( TactileEffect.TRUE.getLabel() ) ;
 		}
 
 		this.touchAnim() ;
@@ -118,11 +118,11 @@ public class BehaviorErnest7 extends AbstractBehavior {
 		this.effect.setColor( blockColor.getRGB() ) ;
 
 		if ( this.model.affordCuddle( rightPoint ) ) {
-			this.effect.setLabel( TactileStimuli.TRUE.getLabel() ) ;
+			this.effect.setLabel( TactileEffect.TRUE.getLabel() ) ;
 			this.rightColor = Environment.WALL1 ;
 			this.effect.setColor( Environment.WALL1.getRGB() ) ;
 		} else if ( this.model.getEnvironment().affordWalk( rightPoint ) ) {
-			this.effect.setLabel( TactileStimuli.FALSE.getLabel() ) ;
+			this.effect.setLabel( TactileEffect.FALSE.getLabel() ) ;
 			this.rightColor = Environment.FIELD_COLOR ;
 		} else {
 			if ( blockColor.equals( Environment.WALL1 ) ||
@@ -133,7 +133,7 @@ public class BehaviorErnest7 extends AbstractBehavior {
 				this.rightColor = Environment.FIELD_COLOR ;
 			}
 
-			this.effect.setLabel( TactileStimuli.TRUE.getLabel() ) ;
+			this.effect.setLabel( TactileEffect.TRUE.getLabel() ) ;
 		}
 
 		this.touchAnim() ;
