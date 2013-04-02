@@ -55,15 +55,15 @@ public class SpaceMemoryDesigner {
 		g2d.setTransform( centerLocation ) ;
 
 		this.orienteAndTranslateOrginForInteractions( g2d , ernestGraphicProperties ) ;
-		this.displayPhysicalsInteractions( g2d , placeList , behaviorState ) ;
-		g2d.setTransform( centerLocation ) ;
-
-		if ( !placeList.isEmpty() )
-			this.displayVisualsInteractions(
-					g2d ,
-					ernestGraphicProperties ,
-					placeList.get( placeList.size() - 1 ) ,
-					behaviorState.getEyes() ) ;
+		this.displayInteractions( g2d , placeList , behaviorState ) ;
+//		g2d.setTransform( centerLocation ) ;
+//
+//		if ( !placeList.isEmpty() )
+//			this.displayVisualsInteractions(
+//					g2d ,
+//					ernestGraphicProperties ,
+//					placeList.get( placeList.size() - 1 ) ,
+//					behaviorState.getEyes() ) ;
 		g2d.setTransform( originLocation ) ;
 
 		System.out.println( "----------------------------------" ) ;
@@ -141,45 +141,40 @@ public class SpaceMemoryDesigner {
 		g2d.transform( interactionsLocation ) ;
 	}
 
-	private void displayPhysicalsInteractions( Graphics2D g2d , ArrayList<IPlace> placeList ,
+	private void displayInteractions( Graphics2D g2d , ArrayList<IPlace> placeList ,
 			BehaviorState behaviorState ) {
 		for ( IPlace place : placeList ) {
 			if ( place.getType() == Place.ENACTION_PLACE ) {
 				AffineTransform originLocation = g2d.getTransform() ;
-				this.displayEnactedPhysicalInteraction( g2d , place ) ;
+				this.displayEnactedInteractions( g2d , place ) ;
 				g2d.setTransform( originLocation ) ;
 			}
 		}
 	}
 
-	private void displayEnactedPhysicalInteraction( Graphics2D g2d , IPlace place ) {
-		String physicalInteraction = SpaceMemoryPhysicalInteraction
-				.extractPhysicalInteraction( place.getInteraction().getLabel() ) ;
-		SpaceMemoryPhysicalInteraction smInteraction = SpaceMemoryPhysicalInteraction
-				.getSpaceMemoryPhysicalInteraction( physicalInteraction ) ;
+	private void displayEnactedInteractions( Graphics2D g2d , IPlace place ) {
+		String move = SpaceMemoryMove
+				.extractMoveInInteraction( place.getInteraction().getLabel() ) ;
+		SpaceMemoryMove smMove = SpaceMemoryMove
+				.getSpaceMemoryMove( move ) ;
 
-		Shape shape = smInteraction.getShape() ;
+		Shape shape = smMove.getShape() ;
 		int overlapOffsetX = 0 ;
 		int overlapOffsetY = 0 ;
 
-		switch ( smInteraction ) {
-			case TURN_LEFT_WALL:
-			case TURN_LEFT_EMPTY:
-			case TURN_RIGHT_WALL:
-			case TURN_RIGHT_EMPTY:
+		switch ( smMove ) {
+			case TURN_LEFT:
+			case TURN_RIGHT:
 				overlapOffsetX = SCALE / 4 ;
 				break ;
-			case TOUCH_WALL:
-			case TOUCH_EMPTY:
+			case TOUCH:
 				overlapOffsetX = -SCALE / 3 ;
 				break ;
-			case TOUCH_LEFT_WALL:
-			case TOUCH_LEFT_EMPTY:
+			case TOUCH_LEFT:
 				overlapOffsetX = -SCALE / 4 ;
 				overlapOffsetY = -SCALE / 3 ;
 				break ;
-			case TOUCH_RIGHT_WALL:
-			case TOUCH_RIGHT_EMPTY:
+			case TOUCH_RIGHT:
 				overlapOffsetX = -SCALE / 4 ;
 				overlapOffsetY = SCALE / 3 ;
 				break ;

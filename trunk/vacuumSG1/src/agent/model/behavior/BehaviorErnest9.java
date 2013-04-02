@@ -9,8 +9,8 @@ import utils.Pair ;
 import agent.Ernest130Model ;
 import agent.model.GraphicProperties ;
 import agent.model.GraphicPropertiesListener ;
-import agent.model.TactileStimuli ;
-import agent.model.VisualStimuli ;
+import agent.model.TactileEffect ;
+import agent.model.VisualEffect ;
 import ernest.Ernest ;
 
 public class BehaviorErnest9 extends AbstractBehavior {
@@ -27,17 +27,17 @@ public class BehaviorErnest9 extends AbstractBehavior {
 		this.eyes.updateLeftEye( retina[1].getRight() , retina[1].getLeft() ) ;
 	}
 
-	private VisualStimuli oneEyeStimuli( int previousDistance , int currentDistance ){
-		VisualStimuli stimuli = VisualStimuli.UNCHANGED ;
+	private VisualEffect oneEyeStimuli( int previousDistance , int currentDistance ){
+		VisualEffect stimuli = VisualEffect.UNCHANGED ;
 		
 		if ( previousDistance == currentDistance ) {
-			stimuli = VisualStimuli.UNCHANGED ;
+			stimuli = VisualEffect.UNCHANGED ;
 		}else if ( previousDistance < Ernest.INFINITE && currentDistance < previousDistance  ) {
-			stimuli = VisualStimuli.CLOSER ;
+			stimuli = VisualEffect.CLOSER ;
 		}else if ( previousDistance == Ernest.INFINITE && currentDistance < Ernest.INFINITE   ) {
-			stimuli = VisualStimuli.APPEAR ;
+			stimuli = VisualEffect.APPEAR ;
 		}else if ( previousDistance < Ernest.INFINITE && currentDistance == Ernest.INFINITE   ) {
-			stimuli = VisualStimuli.DISAPPEAR ;
+			stimuli = VisualEffect.DISAPPEAR ;
 		}
 
 		System.out.println( "Sensed " +
@@ -63,7 +63,7 @@ public class BehaviorErnest9 extends AbstractBehavior {
 		this.turnRightAnim() ;
 		this.seeTheWorld() ;
 		
-		String tactileStimuli = this.allEyesStimuli( snapshot , this.eyes ) + TactileStimuli.TRUE.getLabel();
+		String tactileStimuli = this.allEyesStimuli( snapshot , this.eyes ) + TactileEffect.TRUE.getLabel();
 		this.effect.setLabel( tactileStimuli ) ;
 		this.effect.setTransformation( (float) Math.PI / 2 , 0 ) ;
 	}
@@ -73,7 +73,7 @@ public class BehaviorErnest9 extends AbstractBehavior {
 		this.turnLeftAnim() ;
 		this.seeTheWorld() ;
 		
-		String tactileStimuli = this.allEyesStimuli( snapshot , this.eyes ) + TactileStimuli.TRUE.getLabel();
+		String tactileStimuli = this.allEyesStimuli( snapshot , this.eyes ) + TactileEffect.TRUE.getLabel();
 		this.effect.setLabel( tactileStimuli ) ;
 		this.effect.setTransformation( (float) -Math.PI / 2 , 0 ) ;
 	}
@@ -90,17 +90,17 @@ public class BehaviorErnest9 extends AbstractBehavior {
 			this.seeTheWorld() ;
 			if ( this.model.getEnvironment().isFood( aheadPoint.x , aheadPoint.y ) ) {
 				this.model.getEnvironment().eatFood( aheadPoint );
-				this.effect.setLabel( TactileStimuli.FOOD.getLabel() ) ;
+				this.effect.setLabel( TactileEffect.FOOD.getLabel() ) ;
 				this.effect.setColor( blockColor.getRGB() );
 			} else {
-				String tactileStimuli = this.allEyesStimuli( snapshot , this.eyes ) + TactileStimuli.TRUE.getLabel();
+				String tactileStimuli = this.allEyesStimuli( snapshot , this.eyes ) + TactileEffect.TRUE.getLabel();
 				this.effect.setLabel( tactileStimuli ) ;
 			}
 			this.effect.setTransformation( 0 , -1 ) ;
 		} else {
 			this.bumpAheadAnim() ;
 			this.seeTheWorld() ;
-			String tactileStimuli = this.allEyesStimuli( snapshot , this.eyes ) + TactileStimuli.FALSE.getLabel();
+			String tactileStimuli = this.allEyesStimuli( snapshot , this.eyes ) + TactileEffect.FALSE.getLabel();
 			this.effect.setLabel( tactileStimuli ) ;
 		}
 	}

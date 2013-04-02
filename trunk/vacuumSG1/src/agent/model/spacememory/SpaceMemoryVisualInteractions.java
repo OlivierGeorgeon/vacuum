@@ -6,48 +6,48 @@ import java.awt.geom.GeneralPath ;
 import java.util.HashMap ;
 import java.util.Map ;
 
-import agent.model.VisualStimuli ;
+import agent.model.VisualEffect ;
 import ernest.Ernest ;
 
 public enum SpaceMemoryVisualInteractions {
 	DEFAULT( "" ) ,
-	APPEAR_APPEAR( VisualStimuli.APPEAR.getLabel() + VisualStimuli.APPEAR.getLabel() ) ,
-	APPEAR_CLOSER( VisualStimuli.APPEAR.getLabel() + VisualStimuli.CLOSER.getLabel() ) ,
+	APPEAR_APPEAR( VisualEffect.APPEAR.getLabel() + VisualEffect.APPEAR.getLabel() ) ,
+	APPEAR_CLOSER( VisualEffect.APPEAR.getLabel() + VisualEffect.CLOSER.getLabel() ) ,
 	APPEAR_DISAPPEAR(
-			VisualStimuli.APPEAR.getLabel() + VisualStimuli.DISAPPEAR.getLabel() ,
+			VisualEffect.APPEAR.getLabel() + VisualEffect.DISAPPEAR.getLabel() ,
 			0 ,
 			Ernest.INFINITE ) ,
-	APPEAR_UNCHANGED( VisualStimuli.APPEAR.getLabel() + VisualStimuli.UNCHANGED.getLabel() ) ,
-	CLOSER_APPEAR( VisualStimuli.CLOSER.getLabel() + VisualStimuli.APPEAR.getLabel() ) ,
-	CLOSER_CLOSER( VisualStimuli.CLOSER.getLabel() + VisualStimuli.CLOSER.getLabel() ) ,
+	APPEAR_UNCHANGED( VisualEffect.APPEAR.getLabel() + VisualEffect.UNCHANGED.getLabel() ) ,
+	CLOSER_APPEAR( VisualEffect.CLOSER.getLabel() + VisualEffect.APPEAR.getLabel() ) ,
+	CLOSER_CLOSER( VisualEffect.CLOSER.getLabel() + VisualEffect.CLOSER.getLabel() ) ,
 	CLOSER_DISAPPEAR(
-			VisualStimuli.CLOSER.getLabel() + VisualStimuli.DISAPPEAR.getLabel() ,
+			VisualEffect.CLOSER.getLabel() + VisualEffect.DISAPPEAR.getLabel() ,
 			0 ,
 			Ernest.INFINITE ) ,
-	CLOSER_UNCHANGED( VisualStimuli.CLOSER.getLabel() + VisualStimuli.UNCHANGED.getLabel() ) ,
+	CLOSER_UNCHANGED( VisualEffect.CLOSER.getLabel() + VisualEffect.UNCHANGED.getLabel() ) ,
 	DISAPPEAR_APPEAR(
-			VisualStimuli.DISAPPEAR.getLabel() + VisualStimuli.APPEAR.getLabel() ,
+			VisualEffect.DISAPPEAR.getLabel() + VisualEffect.APPEAR.getLabel() ,
 			Ernest.INFINITE ,
 			0 ) ,
 	DISAPPEAR_CLOSER(
-			VisualStimuli.DISAPPEAR.getLabel() + VisualStimuli.CLOSER.getLabel() ,
+			VisualEffect.DISAPPEAR.getLabel() + VisualEffect.CLOSER.getLabel() ,
 			Ernest.INFINITE ,
 			0 ) ,
 	DISAPPEAR_DISAPPEAR(
-			VisualStimuli.DISAPPEAR.getLabel() + VisualStimuli.DISAPPEAR.getLabel() ,
+			VisualEffect.DISAPPEAR.getLabel() + VisualEffect.DISAPPEAR.getLabel() ,
 			Ernest.INFINITE ,
 			Ernest.INFINITE ) ,
 	DISAPPEAR_UNCHANGED(
-			VisualStimuli.DISAPPEAR.getLabel() + VisualStimuli.UNCHANGED.getLabel() ,
+			VisualEffect.DISAPPEAR.getLabel() + VisualEffect.UNCHANGED.getLabel() ,
 			Ernest.INFINITE ,
 			0 ) ,
-	UNCHANGED_APPEAR( VisualStimuli.UNCHANGED.getLabel() + VisualStimuli.APPEAR.getLabel() ) ,
-	UNCHANGED_CLOSER( VisualStimuli.UNCHANGED.getLabel() + VisualStimuli.CLOSER.getLabel() ) ,
+	UNCHANGED_APPEAR( VisualEffect.UNCHANGED.getLabel() + VisualEffect.APPEAR.getLabel() ) ,
+	UNCHANGED_CLOSER( VisualEffect.UNCHANGED.getLabel() + VisualEffect.CLOSER.getLabel() ) ,
 	UNCHANGED_DISAPPEAR(
-			VisualStimuli.UNCHANGED.getLabel() + VisualStimuli.DISAPPEAR.getLabel() ,
+			VisualEffect.UNCHANGED.getLabel() + VisualEffect.DISAPPEAR.getLabel() ,
 			0 ,
 			Ernest.INFINITE ) ,
-	UNCHANGED_UNCHANGED( VisualStimuli.UNCHANGED.getLabel() + VisualStimuli.UNCHANGED.getLabel() ) ;
+	UNCHANGED_UNCHANGED( VisualEffect.UNCHANGED.getLabel() + VisualEffect.UNCHANGED.getLabel() ) ;
 
 	private final String interaction ;
 	private Area leftEyeShape ;
@@ -120,16 +120,16 @@ public enum SpaceMemoryVisualInteractions {
 	}
 
 	public static boolean containVisualInteraction( String interaction ) {
-		return interaction.contains( VisualStimuli.APPEAR.getLabel() ) ||
-				interaction.contains( VisualStimuli.DISAPPEAR.getLabel() ) ||
-				interaction.contains( VisualStimuli.CLOSER.getLabel() ) ||
-				interaction.contains( VisualStimuli.UNCHANGED.getLabel() ) ;
+		return interaction.contains( VisualEffect.APPEAR.getLabel() ) ||
+				interaction.contains( VisualEffect.DISAPPEAR.getLabel() ) ||
+				interaction.contains( VisualEffect.CLOSER.getLabel() ) ||
+				interaction.contains( VisualEffect.UNCHANGED.getLabel() ) ;
 	}
 
 	public static String extractVisualInteraction( String interaction ) {
 		String visualInteraction = "" ;
 		for ( char inter : interaction.toCharArray() ) {
-			if ( VisualStimuli.isExist( String.valueOf( inter ) ) ) {
+			if ( VisualEffect.isExist( String.valueOf( inter ) ) ) {
 				visualInteraction += inter ;
 			}
 		}

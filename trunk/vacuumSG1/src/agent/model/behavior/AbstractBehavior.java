@@ -11,7 +11,7 @@ import agent.model.AgentDesigner ;
 import agent.model.GraphicProperties ;
 import agent.model.GraphicPropertiesChangeEvent ;
 import agent.model.GraphicPropertiesListener ;
-import agent.model.Schema ;
+import agent.model.Move ;
 import ernest.Effect ;
 import ernest.IEffect ;
 
@@ -58,7 +58,7 @@ public abstract class AbstractBehavior implements Behavior {
 		}
 	}
 	
-	public BehaviorState doMovement( Schema schema ) {
+	public BehaviorState doMovement( Move schema ) {
 		this.effect = new Effect() ;
 		this.focusColor = AgentDesigner.UNANIMATED_COLOR ;
 		this.leftColor = AgentDesigner.UNANIMATED_COLOR ;
