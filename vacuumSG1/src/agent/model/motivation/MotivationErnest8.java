@@ -1,5 +1,8 @@
-package agent.model;
+package agent.model.motivation;
 
+import agent.model.Schema ;
+import agent.model.TactileStimuli ;
+import agent.model.VisualStimuli ;
 import utils.Pair ;
 import ernest.IErnest ;
 
@@ -22,35 +25,35 @@ public class MotivationErnest8 implements Motivation{
 		moves[2] = Pair.create( Schema.TURN_LEFT , 0 );
 		
 		// r(e)
-		Pair<Stimuli , Integer>[] eyesEffects = new Pair[4];
-		eyesEffects[0] = Pair.create( Stimuli.APPEAR , 15 );
-		eyesEffects[1] = Pair.create( Stimuli.CLOSER , 10 );
-		eyesEffects[2] = Pair.create( Stimuli.UNCHANGED , 0 );
-		eyesEffects[3] = Pair.create( Stimuli.DISAPPEAR , -15 );
+		Pair<VisualStimuli , Integer>[] eyesEffects = new Pair[4];
+		eyesEffects[0] = Pair.create( VisualStimuli.APPEAR , 15 );
+		eyesEffects[1] = Pair.create( VisualStimuli.CLOSER , 10 );
+		eyesEffects[2] = Pair.create( VisualStimuli.UNCHANGED , 0 );
+		eyesEffects[3] = Pair.create( VisualStimuli.DISAPPEAR , -15 );
 		
 		// r(f)
-		Pair<Stimuli , Integer>[] tactileEffects = new Pair[2];
-		tactileEffects[0] = Pair.create( Stimuli.TRUE , 0 );
-		tactileEffects[1] = Pair.create( Stimuli.FALSE , -10 );
+		Pair<TactileStimuli , Integer>[] tactileEffects = new Pair[2];
+		tactileEffects[0] = Pair.create( TactileStimuli.TRUE , 0 );
+		tactileEffects[1] = Pair.create( TactileStimuli.FALSE , -10 );
 		
 		
-		for ( Pair<Stimuli , Integer> tactileEffect : tactileEffects ) {
-			for ( Pair<Stimuli , Integer> leftEyeEffect : eyesEffects ) {
-				for ( Pair<Stimuli , Integer> rightEyeEffect : eyesEffects ) {
+		for ( Pair<TactileStimuli , Integer> tactileEffect : tactileEffects ) {
+			for ( Pair<VisualStimuli , Integer> leftEyeEffect : eyesEffects ) {
+				for ( Pair<VisualStimuli , Integer> rightEyeEffect : eyesEffects ) {
 					for ( Pair<Schema , Integer> move : moves ) {
 						// r(u,y) = r(u) + r(f) + r(e_left) + r(e_right)
 						int satisfaction = move.getRight() + tactileEffect.getRight() + leftEyeEffect.getRight() + rightEyeEffect.getRight();
 						// y = (e_left,e_right,f)
 						String stimuli = leftEyeEffect.getLeft().getLabel() + rightEyeEffect.getLeft().getLabel() + tactileEffect.getLeft().getLabel() ;
 						
-						if( move.getLeft().equals( Schema.MOVE_FORWARD ) && tactileEffect.getLeft().equals( Stimuli.TRUE ) ){
-							satisfaction = -1 + leftEyeEffect.getRight() + rightEyeEffect.getRight();
+						if( move.getLeft().equals( Schema.MOVE_FORWARD ) && tactileEffect.getLeft().equals( TactileStimuli.TRUE ) ){
+							satisfaction = 0 + leftEyeEffect.getRight() + rightEyeEffect.getRight();
 						}
-						if( move.getLeft().equals( Schema.MOVE_FORWARD ) && tactileEffect.getLeft().equals( Stimuli.FALSE ) ){
+						if( move.getLeft().equals( Schema.MOVE_FORWARD ) && tactileEffect.getLeft().equals( TactileStimuli.FALSE ) ){
 							satisfaction = -8 + leftEyeEffect.getRight() + rightEyeEffect.getRight();
 						}
 						
-						ernest.addInteraction( move.getLeft().getSign() , stimuli , satisfaction );
+						ernest.addInteraction( move.getLeft().getLabel() , stimuli , satisfaction );
 					}
 				}
 			}

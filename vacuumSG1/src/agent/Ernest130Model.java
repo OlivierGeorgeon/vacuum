@@ -10,22 +10,21 @@ import javax.vecmath.Vector3f ;
 import memory110.SpaceMemory ;
 import memory110.SpaceMemoryFrame ;
 import spas.IPlace ;
-import tracing.XMLStreamTracer ;
 import utils.ErnestUtils ;
 import agent.model.AgentDesigner ;
-import agent.model.Behavior ;
-import agent.model.BehaviorErnest7 ;
-import agent.model.BehaviorErnest8 ;
-import agent.model.BehaviorErnest9 ;
-import agent.model.BehaviorState ;
 import agent.model.GraphicProperties ;
 import agent.model.GraphicPropertiesChangeEvent ;
 import agent.model.GraphicPropertiesListener ;
-import agent.model.Motivation ;
-import agent.model.MotivationErnest7 ;
-import agent.model.MotivationErnest8 ;
 import agent.model.Schema ;
-import agent.model.SpaceMemoryDesigner ;
+import agent.model.behavior.Behavior ;
+import agent.model.behavior.BehaviorErnest7 ;
+import agent.model.behavior.BehaviorErnest8 ;
+import agent.model.behavior.BehaviorErnest9 ;
+import agent.model.behavior.BehaviorState ;
+import agent.model.motivation.Motivation ;
+import agent.model.motivation.MotivationErnest7 ;
+import agent.model.motivation.MotivationErnest8 ;
+import agent.model.spacememory.SpaceMemoryDesigner ;
 import ernest.Ernest ;
 
 /**************************************
@@ -146,10 +145,10 @@ public class Ernest130Model extends ErnestModel implements GraphicPropertiesList
 		 //Only trace the first agent.
 //		 this.m_tracer = new
 //		 XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","dlsQKeaXlclGbzRTN--ZLWajTDyGpr");
-		this.m_tracer = new XMLStreamTracer(
-				"http://134.214.128.53/abstract/lite/php/stream/" ,
-				"juIQzDzdCtBSpmNnJNkzdtTTajfsXe" ) ;
-
+//		this.m_tracer = new XMLStreamTracer(
+//				"http://134.214.128.53/abstract/lite/php/stream/" ,
+//				"juIQzDzdCtBSpmNnJNkzdtTTajfsXe" ) ;
+		this.m_tracer = null;
 		// Initialize the Ernest
 		// Ernest's inborn primitive interactions
 		this.m_ernest.setParameters( 6 , 10 ) ;
@@ -223,15 +222,15 @@ public class Ernest130Model extends ErnestModel implements GraphicPropertiesList
 	}
 
 	public void update() {
-		Schema schema = Schema.getBySign( this.m_ernest.step( this.behavior.getEffect() ) ) ;
+		Schema schema = Schema.getByLabel( this.m_ernest.step( this.behavior.getEffect() ) ) ;
 
 		if ( this.cognitiveMode == ErnestModel.AGENT_STEP )
 			this.cognitiveMode = ErnestModel.AGENT_STOP ;
 
 		this.behaviorState = this.behavior.doMovement( schema ) ;
 		this.traceEnvironmentalData() ;
-		if (m_tracer != null)
-			m_tracer.finishEvent();
+		if (this.m_tracer != null)
+			this.m_tracer.finishEvent();
 		this.behavior.anim() ;
 	}
 

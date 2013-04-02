@@ -1,6 +1,8 @@
-package agent.model;
+package agent.model.behavior;
 
 import java.awt.Color ;
+
+import agent.model.AgentDesigner ;
 
 public class BehaviorState {
 

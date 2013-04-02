@@ -1,16 +1,17 @@
-package agent.model ;
+package agent.model.behavior ;
 
 import java.awt.Color ;
 
 import javax.vecmath.Point3f ;
 import javax.vecmath.Vector3f ;
 
-import ernest.Ernest ;
-
 import utils.Pair ;
-import agent.Block ;
-import agent.Environment ;
 import agent.Ernest130Model ;
+import agent.model.GraphicProperties ;
+import agent.model.GraphicPropertiesListener ;
+import agent.model.TactileStimuli ;
+import agent.model.VisualStimuli ;
+import ernest.Ernest ;
 
 public class BehaviorErnest9 extends AbstractBehavior {
 
@@ -26,17 +27,17 @@ public class BehaviorErnest9 extends AbstractBehavior {
 		this.eyes.updateLeftEye( retina[1].getRight() , retina[1].getLeft() ) ;
 	}
 
-	private Stimuli oneEyeStimuli( int previousDistance , int currentDistance , Color colorSeen ){
-		Stimuli stimuli = Stimuli.UNCHANGED ;
+	private VisualStimuli oneEyeStimuli( int previousDistance , int currentDistance ){
+		VisualStimuli stimuli = VisualStimuli.UNCHANGED ;
 		
 		if ( previousDistance == currentDistance ) {
-			stimuli = Stimuli.UNCHANGED ;
+			stimuli = VisualStimuli.UNCHANGED ;
 		}else if ( previousDistance < Ernest.INFINITE && currentDistance < previousDistance  ) {
-			stimuli = Stimuli.CLOSER ;
+			stimuli = VisualStimuli.CLOSER ;
 		}else if ( previousDistance == Ernest.INFINITE && currentDistance < Ernest.INFINITE   ) {
-			stimuli = Stimuli.APPEAR ;
+			stimuli = VisualStimuli.APPEAR ;
 		}else if ( previousDistance < Ernest.INFINITE && currentDistance == Ernest.INFINITE   ) {
-			stimuli = Stimuli.DISAPPEAR ;
+			stimuli = VisualStimuli.DISAPPEAR ;
 		}
 
 		System.out.println( "Sensed " +
@@ -51,8 +52,8 @@ public class BehaviorErnest9 extends AbstractBehavior {
 	}
 	
 	private String allEyesStimuli( Eyes previousSnapshot , Eyes currentSnapshot ) {
-		String eyesStimuli = this.oneEyeStimuli( previousSnapshot.getLeftEyeDistanceToTheblock() , currentSnapshot.getLeftEyeDistanceToTheblock() , currentSnapshot.getLeftEyeLookedBlock() ).getLabel();
-		eyesStimuli += this.oneEyeStimuli( previousSnapshot.getRightEyeDistanceToTheblock() , currentSnapshot.getRightEyeDistanceToTheblock() , currentSnapshot.getRightEyeLookedBlock() ).getLabel();
+		String eyesStimuli = this.oneEyeStimuli( previousSnapshot.getLeftEyeDistanceToTheblock() , currentSnapshot.getLeftEyeDistanceToTheblock() ).getLabel();
+		eyesStimuli += this.oneEyeStimuli( previousSnapshot.getRightEyeDistanceToTheblock() , currentSnapshot.getRightEyeDistanceToTheblock() ).getLabel();
 		
 		return eyesStimuli;
 	}
@@ -62,7 +63,7 @@ public class BehaviorErnest9 extends AbstractBehavior {
 		this.turnRightAnim() ;
 		this.seeTheWorld() ;
 		
-		String tactileStimuli = this.allEyesStimuli( snapshot , this.eyes ) + Stimuli.TRUE.getLabel();
+		String tactileStimuli = this.allEyesStimuli( snapshot , this.eyes ) + TactileStimuli.TRUE.getLabel();
 		this.effect.setLabel( tactileStimuli ) ;
 		this.effect.setTransformation( (float) Math.PI / 2 , 0 ) ;
 	}
@@ -72,7 +73,7 @@ public class BehaviorErnest9 extends AbstractBehavior {
 		this.turnLeftAnim() ;
 		this.seeTheWorld() ;
 		
-		String tactileStimuli = this.allEyesStimuli( snapshot , this.eyes ) + Stimuli.TRUE.getLabel();
+		String tactileStimuli = this.allEyesStimuli( snapshot , this.eyes ) + TactileStimuli.TRUE.getLabel();
 		this.effect.setLabel( tactileStimuli ) ;
 		this.effect.setTransformation( (float) -Math.PI / 2 , 0 ) ;
 	}
@@ -89,17 +90,17 @@ public class BehaviorErnest9 extends AbstractBehavior {
 			this.seeTheWorld() ;
 			if ( this.model.getEnvironment().isFood( aheadPoint.x , aheadPoint.y ) ) {
 				this.model.getEnvironment().eatFood( aheadPoint );
-				this.effect.setLabel( Stimuli.FOOD.getLabel() ) ;
+				this.effect.setLabel( TactileStimuli.FOOD.getLabel() ) ;
 				this.effect.setColor( blockColor.getRGB() );
 			} else {
-				String tactileStimuli = this.allEyesStimuli( snapshot , this.eyes ) + Stimuli.TRUE.getLabel();
+				String tactileStimuli = this.allEyesStimuli( snapshot , this.eyes ) + TactileStimuli.TRUE.getLabel();
 				this.effect.setLabel( tactileStimuli ) ;
 			}
 			this.effect.setTransformation( 0 , -1 ) ;
 		} else {
 			this.bumpAheadAnim() ;
 			this.seeTheWorld() ;
-			String tactileStimuli = this.allEyesStimuli( snapshot , this.eyes ) + Stimuli.FALSE.getLabel();
+			String tactileStimuli = this.allEyesStimuli( snapshot , this.eyes ) + TactileStimuli.FALSE.getLabel();
 			this.effect.setLabel( tactileStimuli ) ;
 		}
 	}
