@@ -6,8 +6,20 @@ import ernest.Ernest ;
 
 import agent.Environment ;
 
+/**
+ * 
+ * @author Joseph GARNIER
+ * @version $Revision$
+ */
 public class Eyes implements Cloneable{
 
+	public enum ActifEye{
+		NONE,
+		LEFT,
+		RIGHT,
+		BOTH;
+	}
+	
 	private Eye rightEye;
 	private Eye leftEye;
 	
@@ -48,6 +60,19 @@ public class Eyes implements Cloneable{
 			e.printStackTrace();
 		}
 		return null ;
+	}
+	
+	public Eyes.ActifEye getActifEye() {
+		if ( this.leftEye.distanceToTheblock == Ernest.INFINITE && this.rightEye.distanceToTheblock == Ernest.INFINITE ) {
+			return Eyes.ActifEye.NONE;
+		}
+		if ( this.leftEye.distanceToTheblock != Ernest.INFINITE && this.rightEye.distanceToTheblock == Ernest.INFINITE ) {
+			return Eyes.ActifEye.LEFT;
+		}
+		if ( this.leftEye.distanceToTheblock == Ernest.INFINITE && this.rightEye.distanceToTheblock != Ernest.INFINITE ) {
+			return Eyes.ActifEye.RIGHT;
+		}
+		return Eyes.ActifEye.BOTH;
 	}
 	
 	@Override
