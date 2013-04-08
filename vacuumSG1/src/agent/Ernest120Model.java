@@ -151,8 +151,8 @@ public class Ernest120Model extends ErnestModel
         
         //if (ident == 8)
         // m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","NKmqGfrDVaTZQDSsgKNazjXd-cG-TZ");
-        m_tracer = new XMLStreamTracer("http://134.214.128.53/abstract/lite/php/stream/" , "dvlgOqZqFcyVWdrRdJisCAqXYsttqQ");
-                        
+//        m_tracer = new XMLStreamTracer("http://134.214.128.53/abstract/lite/php/stream/" , "dvlgOqZqFcyVWdrRdJisCAqXYsttqQ");
+        m_tracer = null;
         // Initialize the Ernest === 
         
         // Ernest's inborn primitive interactions
@@ -1128,6 +1128,7 @@ public class Ernest120Model extends ErnestModel
 			        float ooffx = offsetx * (float)Math.cos(- place.getOrientationAngle()) + offsety * (float)Math.sin(- place.getOrientationAngle());
 			        float ooffy = - offsetx * (float)Math.sin(- place.getOrientationAngle()) + offsety * (float)Math.cos(- place.getOrientationAngle());
 			        or.translate(WIDTH + (int)(place.getPosition().x * SCALE + ooffx), HEIGHT - (int)(place.getPosition().y * SCALE + ooffy));
+			        System.out.println( "position : " + (int)(place.getPosition().x * SCALE + ooffx) + " ; " + (int)(place.getPosition().y * SCALE + ooffy)) ;
 			        //or.translate(WIDTH + (int)(place.getPosition().x * SCALE + offsetx), HEIGHT - (int)(place.getPosition().y * SCALE + offsety ));
 			        //or.scale(( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION),( 1  - (getUpdateCount() - place.getUpdateCount())/(float)LocalSpaceMemory.PERSISTENCE_DURATION));
 			        or.rotate(- place.getOrientationAngle());
