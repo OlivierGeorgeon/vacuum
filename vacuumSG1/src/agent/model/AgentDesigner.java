@@ -14,6 +14,11 @@ import java.awt.geom.Rectangle2D ;
 import agent.Ernest130Model ;
 import agent.model.behavior.BehaviorState ;
 
+/**
+ * 
+ * @author Joseph GARNIER
+ *
+ */
 public class AgentDesigner {
 
 	public static Color UNANIMATED_COLOR = Color.GRAY ;
