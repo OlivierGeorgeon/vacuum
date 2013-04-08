@@ -3,6 +3,11 @@ package agent.model ;
 import java.util.HashMap ;
 import java.util.Map ;
 
+/**
+ * 
+ * @author Joseph GARNIER
+ * @version $Revision$
+ */
 public enum VisualEffect {
 	APPEAR( "*" ) ,
 	CLOSER( "+" ) ,

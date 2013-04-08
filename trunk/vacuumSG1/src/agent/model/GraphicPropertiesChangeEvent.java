@@ -4,6 +4,11 @@ import java.util.EventObject ;
 
 import javax.vecmath.Vector3f ;
 
+/**
+ * 
+ * @author Joseph GARNIER
+ * @version $Revision$
+ */
 public class GraphicPropertiesChangeEvent extends EventObject {
 
 	private GraphicProperties graphicProperties ;
