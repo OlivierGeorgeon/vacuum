@@ -17,7 +17,7 @@ import agent.model.behavior.BehaviorState ;
 /**
  * 
  * @author Joseph GARNIER
- *
+ * @version $Revision$
  */
 public class AgentDesigner {
 
