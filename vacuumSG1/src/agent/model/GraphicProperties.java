@@ -2,6 +2,11 @@ package agent.model ;
 
 import javax.vecmath.Vector3f ;
 
+/**
+ * 
+ * @author Joseph GARNIER
+ * @version $Revision$
+ */
 public class GraphicProperties implements Cloneable{
 	private Vector3f mPosition ;
 	private Vector3f mOrientation ;
