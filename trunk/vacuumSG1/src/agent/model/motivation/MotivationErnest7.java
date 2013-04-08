@@ -4,6 +4,11 @@ import agent.model.Move ;
 import agent.model.TactileEffect ;
 import ernest.IErnest ;
 
+/**
+ * 
+ * @author Joseph GARNIER
+ * @version $Revision$
+ */
 public class MotivationErnest7 implements Motivation{
 
 	public void putMotivation( IErnest ernest ){
