@@ -13,13 +13,18 @@ import agent.model.TactileEffect ;
 import agent.model.VisualEffect ;
 import ernest.Ernest ;
 
+/**
+ * 
+ * @author Joseph GARNIER
+ * @version $Revision$
+ */
 public class BehaviorErnest9 extends AbstractBehavior {
 
 	public BehaviorErnest9( Ernest130Model model , GraphicPropertiesListener listener ) {
 		super( model , listener ) ;
 	}
 
-	private void seeTheWorld() {
+	private void lookTheWorld() {
 		GraphicProperties ernestGraphicProperties = this.model.getCopyOfGraphicProperties() ;
 		Pair<Integer , Color>[] retina = this.model.getRetina( ernestGraphicProperties
 				.getmOrientation().z ) ;
@@ -58,40 +63,57 @@ public class BehaviorErnest9 extends AbstractBehavior {
 		return eyesStimuli;
 	}
 
+	private void setLocationFromEyes() {
+		switch ( this.eyes.getActifEye() ) {
+			case LEFT:
+				this.effect.setLocation( new Point3f( 4 , 4 , 0 ) );
+				break ;
+			case RIGHT:
+				this.effect.setLocation( new Point3f( 4 , -4 , 0 ) );
+				break;
+			case BOTH:
+				this.effect.setLocation( new Point3f( 4 , 0 , 0 ) );
+				break;
+			case NONE:
+				break;
+			default:
+				break ;
+		}
+	}
+	
 	protected void turnRight() {
 		Eyes snapshot = this.eyes.takeSnapshot() ;
 		this.turnRightAnim() ;
-		this.seeTheWorld() ;
+		this.lookTheWorld() ;
 		
 		String tactileStimuli = this.allEyesStimuli( snapshot , this.eyes ) + TactileEffect.TRUE.getLabel();
 		this.effect.setLabel( tactileStimuli ) ;
 		this.effect.setTransformation( (float) Math.PI / 2 , 0 ) ;
+		this.setLocationFromEyes() ;
 	}
 
 	protected void turnLeft() {
 		Eyes snapshot = this.eyes.takeSnapshot() ;
 		this.turnLeftAnim() ;
-		this.seeTheWorld() ;
+		this.lookTheWorld() ;
 		
 		String tactileStimuli = this.allEyesStimuli( snapshot , this.eyes ) + TactileEffect.TRUE.getLabel();
 		this.effect.setLabel( tactileStimuli ) ;
 		this.effect.setTransformation( (float) -Math.PI / 2 , 0 ) ;
+		this.setLocationFromEyes() ;
 	}
 
 	protected void moveForward() {
 		Eyes snapshot = this.eyes.takeSnapshot() ;
 		Vector3f localPoint = new Vector3f( this.model.DIRECTION_AHEAD ) ;
 		Vector3f aheadPoint = this.model.localToParentRef( localPoint ) ;
-		Color blockColor = this.model.getEnvironment().seeBlock( aheadPoint.x , aheadPoint.y ) ;
-		this.effect.setLocation( new Point3f( 1 , 0 , 0 ) ) ;
-
+		this.setLocationFromEyes() ;
 		if ( this.model.getEnvironment().affordWalk( aheadPoint ) && !this.model.affordCuddle( aheadPoint ) ) {
 			this.moveForwardAnim() ;
-			this.seeTheWorld() ;
+			this.lookTheWorld() ;
 			if ( this.model.getEnvironment().isFood( aheadPoint.x , aheadPoint.y ) ) {
 				this.model.getEnvironment().eatFood( aheadPoint );
 				this.effect.setLabel( TactileEffect.FOOD.getLabel() ) ;
-				this.effect.setColor( blockColor.getRGB() );
 			} else {
 				String tactileStimuli = this.allEyesStimuli( snapshot , this.eyes ) + TactileEffect.TRUE.getLabel();
 				this.effect.setLabel( tactileStimuli ) ;
@@ -99,7 +121,7 @@ public class BehaviorErnest9 extends AbstractBehavior {
 			this.effect.setTransformation( 0 , -1 ) ;
 		} else {
 			this.bumpAheadAnim() ;
-			this.seeTheWorld() ;
+			this.lookTheWorld() ;
 			String tactileStimuli = this.allEyesStimuli( snapshot , this.eyes ) + TactileEffect.FALSE.getLabel();
 			this.effect.setLabel( tactileStimuli ) ;
 		}

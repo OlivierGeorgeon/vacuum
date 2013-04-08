@@ -15,9 +15,14 @@ import agent.model.Move ;
 import ernest.Effect ;
 import ernest.IEffect ;
 
+/**
+ * 
+ * @author Joseph GARNIER
+ * @version $Revision$
+ */
 public abstract class AbstractBehavior implements Behavior {
 
-	protected int delayMove = 10 ; // 2
+	protected int delayMove = 40 ; // 2
 	protected int delayTouch = 50 ; // 50
 	
 	protected Color focusColor;

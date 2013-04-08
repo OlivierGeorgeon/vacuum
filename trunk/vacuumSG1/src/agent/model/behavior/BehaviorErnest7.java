@@ -10,6 +10,11 @@ import agent.Ernest130Model ;
 import agent.model.GraphicPropertiesListener ;
 import agent.model.TactileEffect ;
 
+/**
+ * 
+ * @author Joseph GARNIER
+ * @version $Revision$
+ */
 public class BehaviorErnest7 extends AbstractBehavior {
 
 	public BehaviorErnest7( Ernest130Model model , GraphicPropertiesListener listener ) {

@@ -4,6 +4,11 @@ import java.awt.Color ;
 
 import agent.model.AgentDesigner ;
 
+/**
+ * 
+ * @author Joseph GARNIER
+ * @version $Revision$
+ */
 public class BehaviorState {
 
 	private Color focusColor = AgentDesigner.UNANIMATED_COLOR ;
