@@ -27,11 +27,11 @@ import agent.model.motivation.MotivationErnest8 ;
 import agent.model.spacememory.SpaceMemoryDesigner ;
 import ernest.Ernest ;
 
-/**************************************
- * A Model for a fish that moves in the environment
+/**
  * 
- * @author ogeorgeon
- **************************************/
+ * @author Joseph GARNIER
+ * @version $Revision$
+ */
 public class Ernest130Model extends ErnestModel implements GraphicPropertiesListener {
 
 	private enum Version {
