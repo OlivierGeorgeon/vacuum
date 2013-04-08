@@ -11,29 +11,38 @@ import java.util.Map ;
 
 import agent.model.Move ;
 
+/**
+ * 
+ * @author Joseph GARNIER
+ * @version $Revision$
+ */
 public enum SpaceMemoryMove {
-	DEFAULT( "" , circleShape() ) ,
-	MOVE_FORWARD( Move.MOVE_FORWARD.getLabel() , triangleShape() ) ,
-	TURN_LEFT( Move.TURN_LEFT.getLabel() , arcShape() ) ,
-	TURN_RIGHT( Move.TURN_RIGHT.getLabel() , arcShape() ) ,
-	TOUCH( Move.TOUCH.getLabel() , squareShape() ) ,
-	TOUCH_RIGHT( Move.TOUCH_LEFT.getLabel() , squareShape() ) ,
-	TOUCH_LEFT( Move.TOUCH_RIGHT.getLabel() , squareShape() ) ;
-	
+	DEFAULT( "" , circleShape() , leftHalfCircleShape() , rightHalfCircleShape() ) ,
+	MOVE_FORWARD( Move.MOVE_FORWARD.getLabel() , triangleShape() , leftHalfTriangleShape() , rightHalfTriangleShape()) ,
+	TURN_LEFT( Move.TURN_LEFT.getLabel() , arcShape() , leftHalfArcShape() , rightHalfArcShape()) ,
+	TURN_RIGHT( Move.TURN_RIGHT.getLabel() , arcShape() , leftHalfArcShape() , rightHalfArcShape()) ,
+	TOUCH( Move.TOUCH.getLabel() , squareShape() , leftHalfSquareShape() , rightHalfSquareShape() ) ,
+	TOUCH_RIGHT( Move.TOUCH_RIGHT.getLabel() , squareShape() , leftHalfSquareShape() , rightHalfSquareShape() ) ,
+	TOUCH_LEFT( Move.TOUCH_LEFT.getLabel() , squareShape() , leftHalfSquareShape() , rightHalfSquareShape() ) ;
+
 	private final String moveLabel ;
 	private final Area shape ;
-
-	private final static Map<String , SpaceMemoryMove> BY_MOVELABEL = new HashMap<String , SpaceMemoryMove>() ;
+	private final Area leftHalfShape ;
+	private final Area rightHalfShape ;
+	
+	private final static Map<String , SpaceMemoryMove> BY_MOVE_LABEL = new HashMap<String , SpaceMemoryMove>() ;
 
 	static {
 		for ( SpaceMemoryMove smInteractions : SpaceMemoryMove.values() ) {
-			BY_MOVELABEL.put( smInteractions.moveLabel , smInteractions ) ;
+			BY_MOVE_LABEL.put( smInteractions.moveLabel , smInteractions ) ;
 		}
 	}
 
-	private SpaceMemoryMove( String moveLabel , Area shape ) {
+	private SpaceMemoryMove( String moveLabel , Area shape , Area leftHalfShape , Area rightHalfShape ) {
 		this.moveLabel = moveLabel ;
 		this.shape = shape ;
+		this.leftHalfShape = leftHalfShape;
+		this.rightHalfShape = rightHalfShape;
 	}
 
 	private static Area circleShape() {
@@ -42,52 +51,108 @@ public enum SpaceMemoryMove {
 		return new Area( shape ) ;
 	}
 
+	private static Area leftHalfCircleShape() {
+		GeneralPath shape = new GeneralPath() ;
+		shape.append( new Arc2D.Double( -10 , -10 , 20 , 20 , 0 , 180 , Arc2D.PIE ) , true ) ;
+		return new Area( shape ) ;
+	}
+	
+	private static Area rightHalfCircleShape() {
+		GeneralPath shape = new GeneralPath() ;
+		shape.append( new Arc2D.Double( -10 , -10 , 20 , 20 , 180 , 180 , Arc2D.PIE ) , true ) ;
+		return new Area( shape ) ;
+	}
+	
 	private static Area arcShape() {
 		GeneralPath shape = new GeneralPath() ;
 		shape.append( new Arc2D.Double( -10 , -10 , 20 , 20 , -90 , 180 , Arc2D.PIE ) , true ) ;
 		return new Area( shape ) ;
 	}
+	
+	private static Area leftHalfArcShape() {
+		GeneralPath shape = new GeneralPath() ;
+		shape.append( new Arc2D.Double( -10 , -10 , 20 , 20 , 0 , 90 , Arc2D.PIE ) , true ) ;
+		return new Area( shape ) ;
+	}
+	
+	private static Area rightHalfArcShape() {
+		GeneralPath shape = new GeneralPath() ;
+		shape.append( new Arc2D.Double( -10 , -10 , 20 , 20 , -90 , 90 , Arc2D.PIE ) , true ) ;
+		return new Area( shape ) ;
+	}
 
 	private static Area triangleShape() {
 		GeneralPath shape = new GeneralPath() ;
-		shape.append( new Line2D.Double( -10 , -10 , -10 , 10 ) , false ) ;
-		shape.append( new Line2D.Double( -10 , 10 , 10 , 0 ) , true ) ;
+		shape.append( new Line2D.Double( -10 , -10 , 10 , 0 ) , false ) ;
+		shape.append( new Line2D.Double( 10 , 0 , -10 , 10 ) , true ) ;
+		return new Area( shape ) ;
+	}
+	
+	private static Area leftHalfTriangleShape() {
+		GeneralPath shape = new GeneralPath() ;
+		shape.append( new Line2D.Double( -10 , -10 , 10 , 0 ) , false ) ;
+		shape.append( new Line2D.Double( 10 , 0 , -10 , 0 ) , true ) ;
 		return new Area( shape ) ;
 
 	}
+	
+	private static Area rightHalfTriangleShape() {
+		GeneralPath shape = new GeneralPath() ;
+		shape.append( new Line2D.Double( -10 , 0 , 10 , 0 ) , false ) ;
+		shape.append( new Line2D.Double( 10 , 0 , -10 , 10 ) , true ) ;
+		return new Area( shape ) ;
 
+	}
+	
 	private static Area squareShape() {
 		GeneralPath shape = new GeneralPath() ;
 		shape.append( new Rectangle2D.Double( -7 , -7 , 14 , 14 ) , true ) ;
 		return new Area( shape ) ;
 	}
 
+	private static Area leftHalfSquareShape() {
+		GeneralPath shape = new GeneralPath() ;
+		shape.append( new Rectangle2D.Double( -7 , -7 , 14 , 7 ) , true ) ;
+		return new Area( shape ) ;
+	}
+	
+	private static Area rightHalfSquareShape() {
+		GeneralPath shape = new GeneralPath() ;
+		shape.append( new Rectangle2D.Double( -7 , 0 , 14 , 7 ) , true ) ;
+		return new Area( shape ) ;
+	}
+	
 	public static SpaceMemoryMove getSpaceMemoryMove( String moveLabel ) {
-		if( BY_MOVELABEL.containsKey( moveLabel ) ){
-			return BY_MOVELABEL.get( moveLabel ) ;
-		}else {
-			return SpaceMemoryMove.DEFAULT;
+		if ( BY_MOVE_LABEL.containsKey( moveLabel ) ) {
+			return BY_MOVE_LABEL.get( moveLabel ) ;
+		} else {
+			return SpaceMemoryMove.DEFAULT ;
 		}
 	}
 
 	public static String extractMoveInInteraction( String interaction ) {
-		String move = "";
 		for ( char inter : interaction.toCharArray() ) {
-			if ( Move.isExist( String.valueOf( inter ) ) ){
-				move += inter;
-				break;
+			if ( Move.isExist( String.valueOf( inter ) ) ) {
+				return String.valueOf( inter );
 			}
 		}
-		
-		if (move.length() != 1) throw new RuntimeException( "Can't extract the move in interaction" ); 
-		return move;
+
+		throw new RuntimeException( "Can't extract the move in interaction" ) ;
 	}
-	
+
 	public String getMoveLabel() {
 		return this.moveLabel ;
 	}
 
 	public Area getShape() {
 		return this.shape ;
+	}
+	
+	public Area getLeftHalfShape() {
+		return this.leftHalfShape ;
+	}
+	
+	public Area getRightHalfShape() {
+		return this.rightHalfShape ;
 	}
 }
