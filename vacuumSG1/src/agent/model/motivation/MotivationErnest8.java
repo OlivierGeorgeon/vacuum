@@ -6,6 +6,11 @@ import agent.model.VisualEffect ;
 import utils.Pair ;
 import ernest.IErnest ;
 
+/**
+ * 
+ * @author Joseph GARNIER
+ * @version $Revision$
+ */
 public class MotivationErnest8 implements Motivation{
 
 	public void putMotivation( IErnest ernest ){
