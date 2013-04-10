@@ -9,7 +9,7 @@ import agent.model.TactileEffect ;
 /**
  * 
  * @author Joseph GARNIER
- * @version $Revision: 260 $
+ * @version $Revision$
  */
 public enum SpaceMemoryTactileEffect {
 	DEFAULT( "" , Color.WHITE ) ,
