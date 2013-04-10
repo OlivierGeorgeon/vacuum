@@ -65,19 +65,19 @@ public enum SpaceMemoryMove {
 	
 	private static Area arcShape() {
 		GeneralPath shape = new GeneralPath() ;
-		shape.append( new Arc2D.Double( -10 , -10 , 20 , 20 , -90 , 180 , Arc2D.PIE ) , true ) ;
+		shape.append( new Arc2D.Double( -10 , -10 , 20 , 20 , -180 , 180 , Arc2D.PIE ) , true ) ;
 		return new Area( shape ) ;
 	}
 	
 	private static Area leftHalfArcShape() {
 		GeneralPath shape = new GeneralPath() ;
-		shape.append( new Arc2D.Double( -10 , -10 , 20 , 20 , 0 , 90 , Arc2D.PIE ) , true ) ;
+		shape.append( new Arc2D.Double( -10 , -10 , 20 , 20 , -90 , 90 , Arc2D.PIE ) , true ) ;
 		return new Area( shape ) ;
 	}
 	
 	private static Area rightHalfArcShape() {
 		GeneralPath shape = new GeneralPath() ;
-		shape.append( new Arc2D.Double( -10 , -10 , 20 , 20 , -90 , 90 , Arc2D.PIE ) , true ) ;
+		shape.append( new Arc2D.Double( -10 , -10 , 20 , 20 , -180 , 90 , Arc2D.PIE ) , true ) ;
 		return new Area( shape ) ;
 	}
 
@@ -130,7 +130,7 @@ public enum SpaceMemoryMove {
 		}
 	}
 
-	public static String extractMoveInInteraction( String interaction ) {
+	public static String extractMoveLabel( String interaction ) {
 		for ( char inter : interaction.toCharArray() ) {
 			if ( Move.isExist( String.valueOf( inter ) ) ) {
 				return String.valueOf( inter );

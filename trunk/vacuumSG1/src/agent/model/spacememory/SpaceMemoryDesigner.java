@@ -4,14 +4,8 @@ import java.awt.BasicStroke ;
 import java.awt.Color ;
 import java.awt.Font ;
 import java.awt.Graphics2D ;
-import java.awt.Point ;
 import java.awt.RenderingHints ;
-import java.awt.Shape ;
 import java.awt.geom.AffineTransform ;
-import java.awt.geom.Area ;
-import java.awt.geom.GeneralPath ;
-import java.awt.geom.Line2D ;
-import java.awt.geom.Point2D ;
 import java.awt.geom.Rectangle2D ;
 import java.util.ArrayList ;
 
@@ -28,18 +22,18 @@ import agent.model.behavior.BehaviorState ;
  */
 public class SpaceMemoryDesigner {
 
-	private final int WIDTH = 300 ;
-	private final int HEIGHT = 250 ;
-	private final int WIDTH_REAL = WIDTH * 2 ;
-	private final int HEIGHT_REAL = HEIGHT * 2 ;
-	private final int SCALE = 50 ;// 50;
+	protected final static int WIDTH = 300 ;
+	protected final static int HEIGHT = 250 ;
+	protected final static int WIDTH_REAL = WIDTH * 2 ;
+	protected final static int HEIGHT_REAL = HEIGHT * 2 ;
+	protected final static int SCALE = 50 ;// 50;
 
 	private Ernest130Model model ;
 	private Color agentColor ;
 
 	public SpaceMemoryDesigner( Ernest130Model model , Color agentColor ) {
 		this.model = model ;
-		this.agentColor = agentColor ;
+		this.agentColor = agentColor;
 	}
 
 	public void paintSpaceMemory( Graphics2D g2d , ArrayList<IPlace> placeList ,
@@ -58,7 +52,7 @@ public class SpaceMemoryDesigner {
 		
 		AffineTransform centerLocation = g2d.getTransform() ;
 //		this.displayAxisTransformed( g2d );
-		this.displayAgentArrowBody( g2d ) ;
+		new AgentArrowDesigner().addAgent( g2d , this.agentColor ) ;
 		g2d.setTransform( centerLocation ) ;
 
 		this.moveOrginForInteractions( g2d , ernestGraphicProperties ) ;
@@ -134,27 +128,6 @@ public class SpaceMemoryDesigner {
 		g2d.transform( centerLocation ) ;
 	}
 
-	private void displayAgentArrowBody( Graphics2D g2d ) {
-		AffineTransform agentLocation = new AffineTransform() ;
-		agentLocation.scale( SCALE / 100f , SCALE / 100f ) ;
-		g2d.transform( agentLocation ) ;
-
-		Area agent = SpaceMemoryDesigner.arrowBodyShape() ;
-		g2d.setColor( this.agentColor ) ;
-		g2d.fill( agent ) ;
-		g2d.setStroke( new BasicStroke( SCALE / 10f ) ) ;
-		g2d.setColor( Color.black ) ;
-		g2d.draw( agent ) ;
-	}
-
-	private static Area arrowBodyShape() {
-		GeneralPath body = new GeneralPath() ;
-		body.append( new Line2D.Double( -50 , -50 , -30 , 0 ) , false ) ;
-		body.append( new Line2D.Double( -30 , 0 , -50 , 50 ) , true ) ;
-		body.append( new Line2D.Double( -50 , 50 , 50 , 0 ) , true ) ;
-		return new Area( body ) ;
-	}
-
 	private void moveOrginForInteractions( Graphics2D g2d ,
 			GraphicProperties ernestGraphicProperties ) {
 		AffineTransform interactionsLocation = new AffineTransform() ;
@@ -176,82 +149,11 @@ public class SpaceMemoryDesigner {
 
 	private void displayEnactedInteraction( Graphics2D g2d , IPlace place , BehaviorState behaviorState ) {
 		String interactionLabel = place.getInteraction().getLabel() ;
-		String move = SpaceMemoryMove.extractMoveInInteraction( interactionLabel ) ;
-		SpaceMemoryMove smMove = SpaceMemoryMove.getSpaceMemoryMove( move ) ;
 
-		Color leftInteractionColor = new Color(place.getValue());
-		Color rightInteractionColor = new Color(place.getValue());
-		
 		if ( SpaceMemoryVisualEffect.containVisualEffect( interactionLabel ) ) {
-			String leftVisualEffectLabel = SpaceMemoryVisualEffect.extractLeftVisualEffectLabel( interactionLabel ) ;
-			String rightVisualEffectLabel = SpaceMemoryVisualEffect.extractRightVisualEffectLabel( interactionLabel ) ;
-			leftInteractionColor = SpaceMemoryVisualEffect.getSpaceMemoryVisualEffect( leftVisualEffectLabel ).getEffectColor();
-			rightInteractionColor = SpaceMemoryVisualEffect.getSpaceMemoryVisualEffect( rightVisualEffectLabel ).getEffectColor();
+			new VisualInteractionDesigner().addInteraction( g2d , place );
+		}else{
+			new SimpleInteractionDesigner().addInteraction( g2d , place );
 		}
-		
-		this.drawInteraction( g2d , place , smMove ,leftInteractionColor , rightInteractionColor ) ;
-	}
-
-	private void drawInteraction( Graphics2D g2d , IPlace place , SpaceMemoryMove smMove , Color leftInteractionColor, Color rightInteractionColor ) {
-		Shape leftShape = smMove.getLeftHalfShape();
-		Shape rightShape = smMove.getRightHalfShape();
-
-		Point2D cartesianOffset = this.getCartesianOffset( smMove , -place.getOrientationAngle());
-		
-		AffineTransform interactionLocation = new AffineTransform() ;
-		interactionLocation.translate(
-				(int) ( place.getPosition().x * SCALE + cartesianOffset.getX() ) ,
-				-(int) ( place.getPosition().y * SCALE + cartesianOffset.getY() ) ) ;
-		interactionLocation.rotate( -place.getOrientationAngle() ) ;
-		g2d.transform( interactionLocation ) ;
-		
-		g2d.setColor( leftInteractionColor ) ;
-		g2d.fill( leftShape ) ;
-		g2d.setColor( rightInteractionColor ) ;
-		g2d.fill( rightShape ) ;
-		g2d.setColor( Color.BLACK ) ;
-		g2d.setStroke( new BasicStroke( SCALE / 20f ) ) ;
-		g2d.draw( smMove.getShape() ) ;
-	}
-
-	private Point2D getCartesianOffset( SpaceMemoryMove smMove , float placeOrientationAngle ) {
-		Point2D overlapOffset = this.getOverlapOffset( smMove ) ;
-		
-		double cartesianOffsetX = overlapOffset.getX() *
-				Math.cos( placeOrientationAngle ) +
-				overlapOffset.getY() *
-				Math.sin( placeOrientationAngle ) ;
-		double cartesianOffsetY = -overlapOffset.getX() *
-				Math.sin( placeOrientationAngle ) +
-				overlapOffset.getY() *
-				Math.cos( placeOrientationAngle ) ;
-		
-		return new Point2D.Double( cartesianOffsetX , cartesianOffsetY );
-	}
-
-	private Point2D getOverlapOffset( SpaceMemoryMove smMove ) {
-		Point overlapOffset = new Point( 0, 0 );
-
-		switch ( smMove ) {
-			case TURN_LEFT:
-			case TURN_RIGHT:
-				overlapOffset.x = SCALE / 4 ;
-				break ;
-			case TOUCH:
-				overlapOffset.x = -SCALE / 3 ;
-				break ;
-			case TOUCH_LEFT:
-				overlapOffset.x = -SCALE / 4 ;
-				overlapOffset.y = -SCALE / 3 ;
-				break ;
-			case TOUCH_RIGHT:
-				overlapOffset.x = -SCALE / 4 ;
-				overlapOffset.y = SCALE / 3 ;
-				break ;
-			default:
-				break ;
-		}
-		
-		return overlapOffset;
 	}
 }
