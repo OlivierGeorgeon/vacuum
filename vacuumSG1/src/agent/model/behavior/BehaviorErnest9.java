@@ -31,8 +31,15 @@ public class BehaviorErnest9 extends AbstractBehavior {
 		this.eyes.updateRightEye( retina[0].getRight() , retina[0].getLeft() ) ;
 		this.eyes.updateLeftEye( retina[1].getRight() , retina[1].getLeft() ) ;
 	}
+	
+	private String getEyesStimuli( Eyes previousSnapshot , Eyes currentSnapshot ) {
+		String eyesStimuli = this.determineVisualEffect( previousSnapshot.getLeftEyeDistanceToTheblock() , currentSnapshot.getLeftEyeDistanceToTheblock() ).getLabel();
+		eyesStimuli += this.determineVisualEffect( previousSnapshot.getRightEyeDistanceToTheblock() , currentSnapshot.getRightEyeDistanceToTheblock() ).getLabel();
+		
+		return eyesStimuli;
+	}
 
-	private VisualEffect oneEyeStimuli( int previousDistance , int currentDistance ){
+	private VisualEffect determineVisualEffect( int previousDistance , int currentDistance ){
 		VisualEffect stimuli = VisualEffect.UNCHANGED ;
 		
 		if ( previousDistance == currentDistance ) {
@@ -56,13 +63,6 @@ public class BehaviorErnest9 extends AbstractBehavior {
 		return stimuli ;
 	}
 	
-	private String allEyesStimuli( Eyes previousSnapshot , Eyes currentSnapshot ) {
-		String eyesStimuli = this.oneEyeStimuli( previousSnapshot.getLeftEyeDistanceToTheblock() , currentSnapshot.getLeftEyeDistanceToTheblock() ).getLabel();
-		eyesStimuli += this.oneEyeStimuli( previousSnapshot.getRightEyeDistanceToTheblock() , currentSnapshot.getRightEyeDistanceToTheblock() ).getLabel();
-		
-		return eyesStimuli;
-	}
-
 	private void setLocationFromEyes() {
 		switch ( this.eyes.getActifEye() ) {
 			case LEFT:
@@ -75,6 +75,7 @@ public class BehaviorErnest9 extends AbstractBehavior {
 				this.effect.setLocation( new Point3f( 4 , 0 , 0 ) );
 				break;
 			case NONE:
+				this.effect.setLocation( new Point3f( 0 , 0 , 0 ) );
 				break;
 			default:
 				break ;
@@ -86,7 +87,7 @@ public class BehaviorErnest9 extends AbstractBehavior {
 		this.turnRightAnim() ;
 		this.lookTheWorld() ;
 		
-		String tactileStimuli = this.allEyesStimuli( snapshot , this.eyes ) + TactileEffect.TRUE.getLabel();
+		String tactileStimuli = this.getEyesStimuli( snapshot , this.eyes ) + TactileEffect.TRUE.getLabel();
 		this.effect.setLabel( tactileStimuli ) ;
 		this.effect.setTransformation( (float) Math.PI / 2 , 0 ) ;
 		this.setLocationFromEyes() ;
@@ -97,7 +98,7 @@ public class BehaviorErnest9 extends AbstractBehavior {
 		this.turnLeftAnim() ;
 		this.lookTheWorld() ;
 		
-		String tactileStimuli = this.allEyesStimuli( snapshot , this.eyes ) + TactileEffect.TRUE.getLabel();
+		String tactileStimuli = this.getEyesStimuli( snapshot , this.eyes ) + TactileEffect.TRUE.getLabel();
 		this.effect.setLabel( tactileStimuli ) ;
 		this.effect.setTransformation( (float) -Math.PI / 2 , 0 ) ;
 		this.setLocationFromEyes() ;
@@ -107,22 +108,25 @@ public class BehaviorErnest9 extends AbstractBehavior {
 		Eyes snapshot = this.eyes.takeSnapshot() ;
 		Vector3f localPoint = new Vector3f( this.model.DIRECTION_AHEAD ) ;
 		Vector3f aheadPoint = this.model.localToParentRef( localPoint ) ;
-		this.setLocationFromEyes() ;
+		
 		if ( this.model.getEnvironment().affordWalk( aheadPoint ) && !this.model.affordCuddle( aheadPoint ) ) {
 			this.moveForwardAnim() ;
 			this.lookTheWorld() ;
+			this.setLocationFromEyes() ;
 			if ( this.model.getEnvironment().isFood( aheadPoint.x , aheadPoint.y ) ) {
 				this.model.getEnvironment().eatFood( aheadPoint );
 				this.effect.setLabel( TactileEffect.FOOD.getLabel() ) ;
 			} else {
-				String tactileStimuli = this.allEyesStimuli( snapshot , this.eyes ) + TactileEffect.TRUE.getLabel();
+				String tactileStimuli = this.getEyesStimuli( snapshot , this.eyes ) + TactileEffect.TRUE.getLabel();
 				this.effect.setLabel( tactileStimuli ) ;
 			}
 			this.effect.setTransformation( 0 , -1 ) ;
+			
 		} else {
 			this.bumpAheadAnim() ;
 			this.lookTheWorld() ;
-			String tactileStimuli = this.allEyesStimuli( snapshot , this.eyes ) + TactileEffect.FALSE.getLabel();
+			this.effect.setLocation( new Point3f( 1 , 0 , 0 ) );
+			String tactileStimuli = this.getEyesStimuli( snapshot , this.eyes ) + TactileEffect.FALSE.getLabel();
 			this.effect.setLabel( tactileStimuli ) ;
 		}
 	}

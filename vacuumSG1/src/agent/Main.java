@@ -222,6 +222,8 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 
 		update(null, null);
 		pack();
+		Rectangle screen = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
+    	this.setBounds( screen.x , screen.y , 800 , 500 );
 		setVisible(true);
 		addKeyListener(this);
 		setFocusable(true);
