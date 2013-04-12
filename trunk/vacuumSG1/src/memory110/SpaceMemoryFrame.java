@@ -4,17 +4,13 @@ package memory110;
 import java.awt.GraphicsEnvironment ;
 import java.awt.Rectangle ;
 
-import javax.swing.JPanel;
+import agent.FramePlugin ;
+import agent.PrintableFrame ;
 
-import agent.Main ;
-import agent.PrintableFrame;
-import agent.PrintablePanel;
-
-public class SpaceMemoryFrame extends PrintableFrame
+public class SpaceMemoryFrame extends PrintableFrame implements FramePlugin
 {
 	
-	public SpaceMemoryFrame(SpaceMemory spaceMemory)
-	{
+	public SpaceMemoryFrame() {
 		this.setTitle("Spatial Memory");
 		
     	this.setSize(300 * 2, 250 * 2);
@@ -22,14 +18,24 @@ public class SpaceMemoryFrame extends PrintableFrame
     	Rectangle screen = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
     	this.setLocation( screen.width - 600 , screen.height - 500 );
     	this.setVisible(true);
-
-    	panel=new SpaceMemoryPanel(spaceMemory);
     	
+    	panel=new SpaceMemoryPanel();
+
     	this.setContentPane(panel);
 	}
 	
 	public void setMemory(SpaceMemory mem)
 	{
-		((SpaceMemoryPanel) panel).setMemory(mem);
+		((SpaceMemoryPanel) this.panel).setMemory(mem);
+	}
+
+	@Override
+	public void setDelayMove( int millis ) {
+		((SpaceMemoryPanel) this.panel).setDelayMove( millis );
+	}
+	
+	@Override
+	public void anim( float angleRotation , float xTranslation ) {
+		((SpaceMemoryPanel) this.panel).anim( angleRotation , xTranslation );
 	}	
 }

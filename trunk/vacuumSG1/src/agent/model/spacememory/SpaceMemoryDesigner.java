@@ -12,7 +12,6 @@ import java.util.ArrayList ;
 import spas.IPlace ;
 import spas.Place ;
 import agent.Ernest130Model ;
-import agent.model.GraphicProperties ;
 import agent.model.behavior.BehaviorState ;
 
 /**
@@ -37,9 +36,7 @@ public class SpaceMemoryDesigner {
 	}
 
 	public void paintSpaceMemory( Graphics2D g2d , ArrayList<IPlace> placeList ,
-			BehaviorState behaviorState ) {
-		GraphicProperties ernestGraphicProperties = this.model.getCopyOfGraphicProperties() ;
-
+			BehaviorState behaviorState, float angleRotation , float xTranslation ) {
 		g2d.setRenderingHint( RenderingHints.KEY_ANTIALIASING , RenderingHints.VALUE_ANTIALIAS_ON ) ;
 
 		AffineTransform originLocation = g2d.getTransform() ;
@@ -55,7 +52,7 @@ public class SpaceMemoryDesigner {
 		new AgentArrowDesigner().addAgent( g2d , this.agentColor ) ;
 		g2d.setTransform( centerLocation ) ;
 
-		this.moveOrginForInteractions( g2d , ernestGraphicProperties ) ;
+		this.moveOrginForInteractions( g2d , angleRotation , xTranslation ) ;
 		this.displayInteractions( g2d , placeList , behaviorState ) ;
 		g2d.setTransform( originLocation ) ;
 
@@ -128,11 +125,10 @@ public class SpaceMemoryDesigner {
 		g2d.transform( centerLocation ) ;
 	}
 
-	private void moveOrginForInteractions( Graphics2D g2d ,
-			GraphicProperties ernestGraphicProperties ) {
+	private void moveOrginForInteractions( Graphics2D g2d , float angleRotation , float xTranslation ) {
 		AffineTransform interactionsLocation = new AffineTransform() ;
-		interactionsLocation.rotate( ernestGraphicProperties.getAnimOrientation() ) ;
-		interactionsLocation.translate( -ernestGraphicProperties.getAnimPosition() * SCALE , 0 ) ;
+		interactionsLocation.rotate( angleRotation ) ;
+		interactionsLocation.translate( -xTranslation * SCALE , 0 ) ;
 		g2d.transform( interactionsLocation ) ;
 	}
 
@@ -149,11 +145,12 @@ public class SpaceMemoryDesigner {
 
 	private void displayEnactedInteraction( Graphics2D g2d , IPlace place , BehaviorState behaviorState ) {
 		String interactionLabel = place.getInteraction().getLabel() ;
-
+		AbstractSMInteractionDesigner interactionDesigner;
 		if ( SpaceMemoryVisualEffect.containVisualEffect( interactionLabel ) ) {
-			new VisualInteractionDesigner().addInteraction( g2d , place );
+			interactionDesigner = new VisualInteractionDesigner();
 		}else{
-			new SimpleInteractionDesigner().addInteraction( g2d , place );
+			interactionDesigner = new SimpleInteractionDesigner();
 		}
+		interactionDesigner.addInteraction( g2d , place , behaviorState );
 	}
 }

@@ -1,28 +1,9 @@
 package memory110;
 
-import java.awt.AlphaComposite;
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Polygon;
-import java.awt.RenderingHints;
-import java.awt.Shape;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Arc2D;
-import java.awt.geom.Area;
-import java.awt.geom.CubicCurve2D;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.GeneralPath;
-import java.util.ArrayList;
-import java.util.List;
+import java.awt.Graphics ;
 
+import agent.PrintablePanel ;
 //import agent.Ernest110Model;
-import agent.PrintablePanel;
-
-import ernest.IErnest;
 
 
 
@@ -35,21 +16,42 @@ public class SpaceMemoryPanel extends PrintablePanel
 	//private IErnest m_ernest;
 	
 	public SpaceMemory spaceMemory;
+
+	private int delayMove ;
+	private float angleRotation ;
+	private float xTranslation ;
 	
-	public SpaceMemoryPanel(SpaceMemory mem){
-		//index=0;
-		
-		spaceMemory = mem;
+	public SpaceMemoryPanel(){
 	}
 	
 	public void setMemory(SpaceMemory mem){
 		spaceMemory = mem;
 	}
 	
+	public void setDelayMove( int millis ) {
+		this.delayMove = millis;
+	}
+	
+	public void anim( float angleRotation , float xTranslation ) {
+		this.angleRotation = 0;
+		this.xTranslation = 0;
+		for ( int i = 0; i < 20; i++ ) {
+			this.angleRotation += angleRotation / 20;
+			this.xTranslation += xTranslation / 20;
+			this.repaint();
+			try {
+				Thread.currentThread().sleep( this.delayMove );
+			} catch ( InterruptedException e ) {
+			}
+		}
+	}	
+
 	public void paintComponent(Graphics g)
 	{
 //		spaceMemory.m_model.paintSpaceMemory(g);   
 		if( this.spaceMemory != null && this.spaceMemory.m_model != null )
-			spaceMemory.m_model.paintSpaceMemory(g, spaceMemory.m_model.getErnest().getPlaceList());
+			spaceMemory.m_model.paintSpaceMemory(g, spaceMemory.m_model.getErnest().getPlaceList() , this.angleRotation , this.xTranslation );
 	}
+
+	
 }

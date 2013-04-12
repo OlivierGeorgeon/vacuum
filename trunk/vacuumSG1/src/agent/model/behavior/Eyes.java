@@ -2,10 +2,8 @@ package agent.model.behavior;
 
 import java.awt.Color ;
 
-import ernest.Ernest ;
-
 import agent.Environment ;
-import agent.model.VisualEffect ;
+import ernest.Ernest ;
 
 /**
  * 

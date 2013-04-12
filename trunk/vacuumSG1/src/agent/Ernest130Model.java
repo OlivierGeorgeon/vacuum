@@ -63,9 +63,7 @@ public class Ernest130Model extends ErnestModel implements GraphicPropertiesList
 				(Vector3f) this.mTranslation.clone() ,
 				(Vector3f) this.mRotation.clone() ,
 				(Vector3f) this.mPreviousPosition.clone() ,
-				(Vector3f) this.mPreviousOrientation.clone() ,
-				this.animPosition ,
-				this.animOrientation ) ;
+				(Vector3f) this.mPreviousOrientation.clone() ) ;
 	}
 
 	public Main getMainFrame() {
@@ -160,65 +158,12 @@ public class Ernest130Model extends ErnestModel implements GraphicPropertiesList
 	}
 
 	public void setDisplay() {
-		this.setDisplaySpaceMemory() ;
-//		this.setDisplayEyeView() ;
-//		this.setDisplayInnerEar() ;
-	}
-
-	private void setDisplaySpaceMemory() {
-		if ( !isExistFrame( Ernest130Model.SPACE_MEMORY_FRAME_CLASS_NAME ) )
-			this.m_env.frameList.add( new SpaceMemoryFrame( this.spaceMemory ) ) ;
-		else
-			( (SpaceMemoryFrame) this.m_env.frameList.get( this
-					.indexOfFrame( Ernest130Model.SPACE_MEMORY_FRAME_CLASS_NAME ) ) )
-					.setMemory( this.spaceMemory ) ;
-	}
-
-	private void setDisplayEyeView() {
-		if ( !isExistFrame( Ernest130Model.EYE_VIEW_FRAME_CLASS_NAME ) )
-			this.m_env.frameList.add( new EyeView( this.m_eye ) ) ;
-		else
-			( (EyeView) this.m_env.frameList.get( this
-					.indexOfFrame( Ernest130Model.EYE_VIEW_FRAME_CLASS_NAME ) ) )
-					.setEye( this.m_eye ) ;
-	}
-
-	private void setDisplayInnerEar() {
-		if ( !isExistFrame( Ernest130Model.INNER_EAR_FRAME_CLASS_NAME ) )
-			this.m_env.frameList.add( new InnerEarFrame( this.m_ear ) ) ;
-		else
-			( (InnerEarFrame) this.m_env.frameList.get( this
-					.indexOfFrame( Ernest130Model.INNER_EAR_FRAME_CLASS_NAME ) ) )
-					.setInnerEar( this.m_ear ) ;
-	}
-
-	private boolean isExistFrame( String frameClassName ) {
-		int frameIndex = 0 ;
-		boolean isExist = false ;
-
-		while ( frameIndex < this.m_env.frameList.size() && !isExist ) {
-			System.out.println( this.m_env.frameList.get( frameIndex ).getClass().getName() ) ;
-			if ( this.m_env.frameList.get( frameIndex ).getClass().getName()
-					.equals( frameClassName ) )
-				isExist = true ;
-			frameIndex++ ;
+		try {
+			this.m_env.plugFrame( SpaceMemoryFrame.class );
+			this.m_env.getPlugin( SpaceMemoryFrame.class ).setMemory( this.spaceMemory );
+		} catch ( Exception e ) {
+			e.printStackTrace();
 		}
-
-		return isExist ;
-	}
-
-	private int indexOfFrame( String frameClassName ) {
-		int frameIndex = 0 ;
-		boolean isExist = false ;
-
-		while ( frameIndex < this.m_env.frameList.size() && !isExist ) {
-			if ( this.m_env.frameList.get( frameIndex ).getClass().getName()
-					.equals( frameClassName ) )
-				isExist = true ;
-			frameIndex++ ;
-		}
-
-		return isExist ? frameIndex - 1 : -1 ;
 	}
 
 	public void update() {
@@ -250,8 +195,8 @@ public class Ernest130Model extends ErnestModel implements GraphicPropertiesList
 		this.agentDesigner.paintAgent( g2d , x , y , sx , sy , this.behaviorState ) ;
 	}
 
-	public void paintSpaceMemory( Graphics g , ArrayList<IPlace> placeList ) {
-		this.spaceMemoryDesigner.paintSpaceMemory( (Graphics2D) g , placeList , this.behaviorState ) ;
+	public void paintSpaceMemory( Graphics g , ArrayList<IPlace> placeList , float angleRotation , float xTranslation ) {
+		this.spaceMemoryDesigner.paintSpaceMemory( (Graphics2D) g , placeList , this.behaviorState , angleRotation , xTranslation ) ;
 	}
 
 	@Override
@@ -262,7 +207,5 @@ public class Ernest130Model extends ErnestModel implements GraphicPropertiesList
 		this.mRotation = properties.getmRotation() ;
 		this.mPreviousPosition = properties.getmPreviousPosition() ;
 		this.mPreviousOrientation = properties.getmPreviousOrientation() ;
-		this.animPosition = properties.getAnimPosition() ;
-		this.animOrientation = properties.getAnimOrientation() ;
 	}
 }

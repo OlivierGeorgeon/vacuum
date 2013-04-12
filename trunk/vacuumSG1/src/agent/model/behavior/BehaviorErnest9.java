@@ -115,7 +115,8 @@ public class BehaviorErnest9 extends AbstractBehavior {
 			this.setLocationFromEyes() ;
 			if ( this.model.getEnvironment().isFood( aheadPoint.x , aheadPoint.y ) ) {
 				this.model.getEnvironment().eatFood( aheadPoint );
-				this.effect.setLabel( TactileEffect.FOOD.getLabel() ) ;
+				String tactileStimuli = this.getEyesStimuli( snapshot , this.eyes ) + TactileEffect.TRUE.getLabel();
+				this.effect.setLabel( tactileStimuli ) ;
 			} else {
 				String tactileStimuli = this.getEyesStimuli( snapshot , this.eyes ) + TactileEffect.TRUE.getLabel();
 				this.effect.setLabel( tactileStimuli ) ;

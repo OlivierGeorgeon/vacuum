@@ -52,14 +52,6 @@ public class GraphicPropertiesChangeEvent extends EventObject {
 		return this.graphicProperties.getmPreviousOrientation() ;
 	}
 
-	public float getAnimPosition() {
-		return this.graphicProperties.getAnimPosition() ;
-	}
-
-	public float getAnimOrientation() {
-		return this.graphicProperties.getAnimOrientation() ;
-	}
-
 	public void setmPosition( Vector3f mPosition ) {
 		this.graphicProperties.setmPosition( mPosition ) ;
 	}
@@ -83,13 +75,4 @@ public class GraphicPropertiesChangeEvent extends EventObject {
 	public void setmPreviousOrientation( Vector3f mPreviousOrientation ) {
 		this.graphicProperties.setmPreviousOrientation( mPreviousOrientation ) ;
 	}
-
-	public void setAnimPosition( float animPosition ) {
-		this.graphicProperties.setAnimPosition( animPosition ) ;
-	}
-
-	public void setAnimOrientation( float animOrientation ) {
-		this.graphicProperties.setAnimOrientation( animOrientation ) ;
-	}
-
 }

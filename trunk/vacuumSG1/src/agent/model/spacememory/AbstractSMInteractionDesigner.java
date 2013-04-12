@@ -4,6 +4,8 @@ import java.awt.Graphics2D ;
 import java.awt.Point ;
 import java.awt.geom.Point2D ;
 
+import agent.model.behavior.BehaviorState ;
+
 import spas.IPlace ;
 
 /**
@@ -54,5 +56,5 @@ public abstract class AbstractSMInteractionDesigner {
 		return overlapOffset;
 	}
 	
-	public abstract void addInteraction( Graphics2D g2d , IPlace place );
+	public abstract void addInteraction( Graphics2D g2d , IPlace place , BehaviorState behaviorState );
 }

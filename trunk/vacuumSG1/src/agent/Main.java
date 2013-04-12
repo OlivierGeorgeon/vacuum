@@ -1,23 +1,42 @@
 package agent;
 
 
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.List;
-import java.util.prefs.Preferences;
-import java.awt.*;
-import java.awt.event.*; 
+import java.awt.BorderLayout ;
+import java.awt.Dimension ;
+import java.awt.GraphicsEnvironment ;
+import java.awt.GridLayout ;
+import java.awt.Rectangle ;
+import java.awt.event.ActionEvent ;
+import java.awt.event.ActionListener ;
+import java.awt.event.KeyEvent ;
+import java.awt.event.KeyListener ;
+import java.awt.event.WindowAdapter ;
+import java.awt.event.WindowEvent ;
+import java.io.BufferedReader ;
+import java.io.File ;
+import java.io.FileReader ;
+import java.util.ArrayList ;
+import java.util.Iterator ;
+import java.util.List ;
+import java.util.Observable ;
+import java.util.Observer ;
+import java.util.prefs.Preferences ;
 
-import javax.swing.*;
-import javax.vecmath.Vector3f;
+import javax.swing.BorderFactory ;
+import javax.swing.JButton ;
+import javax.swing.JCheckBoxMenuItem ;
+import javax.swing.JFileChooser ;
+import javax.swing.JFrame ;
+import javax.swing.JLabel ;
+import javax.swing.JMenu ;
+import javax.swing.JMenuBar ;
+import javax.swing.JMenuItem ;
+import javax.swing.JOptionPane ;
+import javax.swing.JPanel ;
+import javax.swing.WindowConstants ;
+import javax.vecmath.Vector3f ;
 
-
-import ernest.Ernest;
-
-import java.io.*;
-
-public class Main extends JFrame implements Observer, ActionListener, KeyListener
-{
+public class Main extends JFrame implements Observer, ActionListener, KeyListener{
 	public final long serialVersionUID = 1;
 
 	public static JFrame MAIN_WIN;
@@ -71,10 +90,7 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 	private EnvironnementPanel m_envPanel;
 	
 	private boolean m_halt = true;
-	//protected int l_w;
-	//protected int l_h;
 	protected int index;
-	
 	
 	private final JLabel m_statusBar = new JLabel();
 	private JButton m_run = new JButton("Play");
@@ -313,11 +329,8 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 					{
 						//int index=m_modelList.size();
 						
-						//if (version==110)      m_modelList.add(new Ernest110Model(index));
-						if (version==120)      m_modelList.add(new Ernest120Model(index));
-						else if (version==0)   m_modelList.add(new FishModel(index));
+						if (version==0)   m_modelList.add(new FishModel(index));
 						else if (version==130)   m_modelList.add(new Ernest130Model(index));
-						else                   m_modelList.add(new Ernest120Model(index));
 						m_modelList.get(index).init(l_w, l_h);
 						m_modelList.get(index).setFrame(this);
 
