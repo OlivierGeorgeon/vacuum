@@ -1,34 +1,16 @@
 package agent;
 
-import javax.vecmath.Matrix3f;
-import javax.vecmath.Vector3f;
+import java.awt.Color ;
+import java.awt.Graphics2D ;
+import java.awt.geom.AffineTransform ;
+import java.awt.geom.Area ;
+import java.awt.geom.CubicCurve2D ;
+import java.awt.geom.Ellipse2D ;
+import java.awt.geom.GeneralPath ;
 
-import memory.ColliculusFrame;
-import memory.TactileMapFrame;
-import memory.VisualMapFrame;
-import memory110.SpaceMemory;
-import memory110.SpaceMemoryFrame;
+import javax.vecmath.Vector3f ;
 
-import java.awt.AlphaComposite;
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Polygon;
-import java.awt.RenderingHints;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Arc2D;
-import java.awt.geom.Area;
-import java.awt.geom.CubicCurve2D;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.GeneralPath;
-import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
-import java.util.List;
-
-import ernest.*;
-import spas.IPlace;
-import tracing.*;
-import utils.Pair;
+import ernest.Ernest ;
 
 
 /**************************************
