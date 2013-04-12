@@ -1,26 +1,22 @@
 package agent;
 
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Observable;
-import java.util.Random;
-import java.util.prefs.Preferences;
+import java.awt.Color ;
+import java.awt.Graphics ;
+import java.awt.Graphics2D ;
+import java.awt.Image ;
+import java.lang.reflect.Constructor ;
+import java.lang.reflect.InvocationTargetException ;
+import java.util.ArrayList ;
+import java.util.LinkedHashMap ;
+import java.util.Map ;
+import java.util.Observable ;
+import java.util.Random ;
+import java.util.prefs.Preferences ;
 
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
-import javax.vecmath.Vector3f;
-
-import spas.IPlace;
+import javax.swing.ImageIcon ;
+import javax.swing.SwingUtilities ;
+import javax.vecmath.Vector3f ;
 
 
 public class Environment extends Observable {
@@ -132,8 +128,7 @@ public class Environment extends Observable {
 	public int indexDisplay=0;
 	public int version;
 	
-	public ArrayList<JFrame> frameList;
-	
+	private final Map<Class<? extends FramePlugin> , FramePlugin> framePlugins;
 	
 	public static int SIMULATION_STOP = 0;
 	public static int SIMULATION_RUN  = 1;
@@ -147,7 +142,7 @@ public class Environment extends Observable {
 		m_mainThread = Thread.currentThread();
 		identDisplay=0;
 		version=v;
-		frameList=new ArrayList<JFrame>();
+		framePlugins=new LinkedHashMap<Class<? extends FramePlugin> , FramePlugin>();
 		
 
 	}
@@ -156,6 +151,27 @@ public class Environment extends Observable {
 	}
 	public void setFrame(Main m){
 		mainFrame=m;
+	}
+	
+	public <T> T getPlugin( Class<T> pluginClass ) {
+        return (T) this.framePlugins.get( pluginClass );
+    }
+	
+	public void plugFrame( Class<? extends FramePlugin> pluginClass ) throws NoSuchMethodException, SecurityException, ClassNotFoundException, InterruptedException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+		final Constructor<?> constructor = pluginClass.getConstructor();
+		
+		FramePlugin javaClass = null;
+		if (constructor != null) {
+			javaClass = (FramePlugin) constructor.newInstance() ;
+			Environment.this.framePlugins.put( javaClass.getClass() , javaClass );
+		}
+	}
+	
+	public void refreshFramesPlugins( final int millisDelayMove , final float angleRotation, final float xTranslation ){
+		for ( FramePlugin plugin : this.framePlugins.values() ) {
+			plugin.setDelayMove( millisDelayMove );
+			plugin.anim( angleRotation , xTranslation );
+		}
 	}
 	
 	/**

@@ -8,6 +8,8 @@ import java.awt.geom.Point2D ;
 
 import javax.vecmath.Point3f ;
 
+import agent.model.behavior.BehaviorState ;
+
 import spas.IPlace ;
 
 /**
@@ -21,7 +23,7 @@ public class SimpleInteractionDesigner extends AbstractSMInteractionDesigner {
 	private SpaceMemoryMove smMove ;
 
 	@Override
-	public void addInteraction( Graphics2D g2d , IPlace place ) {
+	public void addInteraction( Graphics2D g2d , IPlace place, BehaviorState behaviorState  ) {
 		this.g2d = g2d;
 		String interactionLabel = place.getInteraction().getLabel() ;
 		this.smMove = SpaceMemoryMove.getSpaceMemoryMove( SpaceMemoryMove.extractMoveLabel( interactionLabel ) ) ;

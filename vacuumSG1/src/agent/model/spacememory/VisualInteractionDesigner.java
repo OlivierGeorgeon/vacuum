@@ -4,11 +4,11 @@ import java.awt.BasicStroke ;
 import java.awt.Color ;
 import java.awt.Graphics2D ;
 import java.awt.geom.AffineTransform ;
-import java.awt.geom.Point2D ;
 
 import javax.vecmath.Point3f ;
 
 import spas.IPlace ;
+import agent.model.behavior.BehaviorState ;
 
 /**
  * 
@@ -24,7 +24,7 @@ public class VisualInteractionDesigner extends AbstractSMInteractionDesigner {
 	private SpaceMemoryVisualEffect smRightVisualEffect ;
 
 	@Override
-	public void addInteraction( Graphics2D g2d , IPlace place ) {
+	public void addInteraction( Graphics2D g2d , IPlace place , BehaviorState behaviorState ) {
 		this.g2d = g2d;
 		String interactionLabel = place.getInteraction().getLabel() ;
 		this.smMove = SpaceMemoryMove.getSpaceMemoryMove( SpaceMemoryMove.extractMoveLabel( interactionLabel ) ) ;
@@ -32,18 +32,17 @@ public class VisualInteractionDesigner extends AbstractSMInteractionDesigner {
 		this.smLeftVisualEffect = SpaceMemoryVisualEffect.getSpaceMemoryVisualEffect( SpaceMemoryVisualEffect.extractLeftVisualEffectLabel( interactionLabel ) );
 		this.smRightVisualEffect = SpaceMemoryVisualEffect.getSpaceMemoryVisualEffect( SpaceMemoryVisualEffect.extractRightVisualEffectLabel( interactionLabel ) );
 		
-		this.applyGeometricalTransformation( place.getOrientationAngle() , place.getPosition() ) ;
+		this.applyGeometricalTransformation( place.getOrientationAngle() , place.getPosition() , 2 ) ;
 		this.fillAndDrawShape();
 	}
 
-	private void applyGeometricalTransformation( float orientationAngle , Point3f position ) {
-		Point2D cartesianOffset = this.getCartesianOffset( this.smMove , -orientationAngle);
-		
+	private void applyGeometricalTransformation( float orientationAngle , Point3f position , double scale ) {
 		AffineTransform interactionLocation = new AffineTransform() ;
 		interactionLocation.translate(
-				(int) ( position.x * SpaceMemoryDesigner.SCALE + cartesianOffset.getX() ) ,
-				-(int) ( position.y * SpaceMemoryDesigner.SCALE + cartesianOffset.getY() ) ) ;
+				(int) ( position.x * SpaceMemoryDesigner.SCALE  ) ,
+				-(int) ( position.y * SpaceMemoryDesigner.SCALE ) ) ;
 		interactionLocation.rotate( -orientationAngle ) ;
+		interactionLocation.scale( scale , scale );
 		this.g2d.transform( interactionLocation ) ;
 	}
 	

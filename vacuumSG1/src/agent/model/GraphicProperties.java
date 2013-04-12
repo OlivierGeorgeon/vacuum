@@ -14,25 +14,19 @@ public class GraphicProperties implements Cloneable{
 	private Vector3f mRotation ;
 	private Vector3f mPreviousPosition ;
 	private Vector3f mPreviousOrientation ;
-	private float animPosition ;
-	private float animOrientation ;
 
 	public GraphicProperties( Vector3f mPosition ,
 			Vector3f mOrientation ,
 			Vector3f mTranslation ,
 			Vector3f mRotation ,
 			Vector3f mPreviousPosition ,
-			Vector3f mPreviousOrientation ,
-			float animPosition ,
-			float animOrientation ) {
+			Vector3f mPreviousOrientation ) {
 		this.mPosition = mPosition ;
 		this.mOrientation = mOrientation ;
 		this.mTranslation = mTranslation ;
 		this.mRotation = mRotation ;
 		this.mPreviousPosition = mPreviousPosition ;
 		this.mPreviousOrientation = mPreviousOrientation ;
-		this.animPosition = animPosition ;
-		this.animOrientation = animOrientation ;
 	}
 
 	@Override
@@ -44,8 +38,6 @@ public class GraphicProperties implements Cloneable{
 		object.mRotation = (Vector3f) this.mRotation.clone();
 		object.mPreviousPosition = (Vector3f) this.mPreviousPosition.clone();
 		object.mPreviousOrientation = (Vector3f) this.mPreviousOrientation.clone();
-		object.animPosition = this.animPosition;
-		object.animOrientation = this.animOrientation;
 		
 		return object;
 	}
@@ -74,14 +66,6 @@ public class GraphicProperties implements Cloneable{
 		return this.mPreviousOrientation ;
 	}
 
-	public float getAnimPosition() {
-		return this.animPosition ;
-	}
-
-	public float getAnimOrientation() {
-		return this.animOrientation ;
-	}
-
 	public void setmPosition( Vector3f mPosition ) {
 		this.mPosition = mPosition ;
 	}
@@ -104,13 +88,5 @@ public class GraphicProperties implements Cloneable{
 
 	public void setmPreviousOrientation( Vector3f mPreviousOrientation ) {
 		this.mPreviousOrientation = mPreviousOrientation ;
-	}
-
-	public void setAnimPosition( float animPosition ) {
-		this.animPosition = animPosition ;
-	}
-
-	public void setAnimOrientation( float animOrientation ) {
-		this.animOrientation = animOrientation ;
 	}
 }

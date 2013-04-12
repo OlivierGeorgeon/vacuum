@@ -73,8 +73,6 @@ public abstract class AbstractBehavior implements Behavior {
 		GraphicPropertiesChangeEvent event = new GraphicPropertiesChangeEvent(
 				this ,
 				ernestGraphicProperties ) ;
-		event.setAnimOrientation( 0 ) ;
-		event.setAnimPosition( 0 ) ;
 		this.notifyGraphicPropertiesChange( event ) ;
 	
 		System.out.println( "Agent #" +
@@ -132,10 +130,6 @@ public abstract class AbstractBehavior implements Behavior {
 			this.model.mSpeedR.z += 2 * Math.PI ;
 	
 		this.model.getMainFrame().drawGrid() ;
-	
-		for ( int i = 0; i < this.model.getEnvironment().frameList.size(); i++ ) {
-			this.model.getEnvironment().frameList.get( i ).repaint() ;
-		}
 	}
 
 	private void computeAbsoluteSpeedRotation( GraphicProperties ernestGraphicProperties ) {
@@ -153,18 +147,20 @@ public abstract class AbstractBehavior implements Behavior {
 			GraphicProperties ernestGraphicProperties = this.model.getCopyOfGraphicProperties() ;
 			GraphicPropertiesChangeEvent event = new GraphicPropertiesChangeEvent( this , ernestGraphicProperties ) ;
 			event.getmOrientation().z -= Math.PI / 40 ;
-			event.setAnimOrientation( (float) ( ernestGraphicProperties.getAnimOrientation() - ( Math.PI / 40 ) ) );
 			this.notifyGraphicPropertiesChange( event );
 			
 			this.anim() ;
 			this.model.sleep( this.delayMove ) ;
 		}
+		
 		GraphicProperties ernestGraphicProperties = this.model.getCopyOfGraphicProperties() ;
 		if ( ernestGraphicProperties.getmOrientation().z < -Math.PI ){
 			GraphicPropertiesChangeEvent event = new GraphicPropertiesChangeEvent( this , ernestGraphicProperties ) ;
 			event.getmOrientation().z += 2 * Math.PI ;
 			this.notifyGraphicPropertiesChange( event );
 		}
+		
+		this.model.getEnvironment().refreshFramesPlugins( this.delayMove , (float)-(Math.PI / 2) , 0 );
 	}
 
 	protected final void turnLeftAnim() {
@@ -172,7 +168,6 @@ public abstract class AbstractBehavior implements Behavior {
 			GraphicProperties ernestGraphicProperties = this.model.getCopyOfGraphicProperties() ;
 			GraphicPropertiesChangeEvent event = new GraphicPropertiesChangeEvent( this , ernestGraphicProperties ) ;
 			event.getmOrientation().z += Math.PI / 40 ;
-			event.setAnimOrientation( (float) ( ernestGraphicProperties.getAnimOrientation() + ( Math.PI / 40 ) ) );
 			this.notifyGraphicPropertiesChange( event );
 			
 			this.anim() ;
@@ -185,6 +180,8 @@ public abstract class AbstractBehavior implements Behavior {
 			event.getmOrientation().z-= 2 * Math.PI ;
 			this.notifyGraphicPropertiesChange( event );
 		}
+		
+		this.model.getEnvironment().refreshFramesPlugins( this.delayMove , (float)(Math.PI / 2) , 0 );
 	}
 
 	protected final void bumpAheadAnim() {
@@ -206,6 +203,7 @@ public abstract class AbstractBehavior implements Behavior {
 			this.anim() ;
 			this.model.sleep( 20 ) ;
 		}
+		this.model.getEnvironment().refreshFramesPlugins( this.delayMove , 0 , 0 );
 	}
 
 	protected final void moveForwardAnim() {
@@ -213,12 +211,13 @@ public abstract class AbstractBehavior implements Behavior {
 			GraphicProperties ernestGraphicProperties = this.model.getCopyOfGraphicProperties() ;
 			GraphicPropertiesChangeEvent event = new GraphicPropertiesChangeEvent( this , ernestGraphicProperties ) ;
 			event.getmPosition().set( this.model.localToParentRef( new Vector3f( .05f , 0 , 0 ) ) );
-			event.setAnimPosition( (float) ( ernestGraphicProperties.getAnimPosition() + .05 ) );
 			this.notifyGraphicPropertiesChange( event );
 			
 			this.anim() ;
 			this.model.sleep( this.delayMove ) ;
 		}
+		
+		this.model.getEnvironment().refreshFramesPlugins( this.delayMove , 0, 1 );
 	}
 
 	protected final void bumpBehindAnim() {
@@ -240,6 +239,8 @@ public abstract class AbstractBehavior implements Behavior {
 			this.anim() ;
 			this.model.sleep( 20 ) ;
 		}
+		
+		this.model.getEnvironment().refreshFramesPlugins( this.delayMove , 0 , 0 );
 	}
 
 	protected final void moveBackwardAnim() {
@@ -247,17 +248,20 @@ public abstract class AbstractBehavior implements Behavior {
 			GraphicProperties ernestGraphicProperties = this.model.getCopyOfGraphicProperties() ;
 			GraphicPropertiesChangeEvent event = new GraphicPropertiesChangeEvent( this , ernestGraphicProperties ) ;
 			event.getmPosition().set( this.model.localToParentRef( new Vector3f( -.05f , 0 , 0 ) ) );
-			event.setAnimPosition( (float) ( ernestGraphicProperties.getAnimPosition() - .05 ) );
 			this.notifyGraphicPropertiesChange( event );
 			
 			this.anim() ;
 			this.model.sleep( this.delayMove ) ;
 		}
+		
+		this.model.getEnvironment().refreshFramesPlugins( this.delayMove , 0 , -1 );
 	}
 
 	protected final void touchAnim() {
 		this.anim() ;
 		this.model.sleep( this.delayTouch ) ;
+		
+		this.model.getEnvironment().refreshFramesPlugins( this.delayMove , 0 , 0 );
 	}
 
 	protected abstract void turnRight();
