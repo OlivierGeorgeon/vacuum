@@ -1,28 +1,19 @@
 package agent;
 
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Polygon;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Arc2D;
-import java.awt.geom.Ellipse2D;
-import java.util.ArrayList;
-import java.util.List;
+import java.awt.Color ;
+import java.util.ArrayList ;
 
-import javax.vecmath.Matrix3f;
-import javax.vecmath.Vector3f;
+import javax.vecmath.Matrix3f ;
+import javax.vecmath.Vector3f ;
 
-import memory.Colliculus;
-import memory110.Point;
-import memory110.Segment;
-
-import ernest.*;
-import utils.Pair;
-import spas.IPlace;
-import spas.ISegment;
-import tracing.*;
+import memory110.Point ;
+import memory110.Segment ;
+import spas.ISegment ;
+import utils.Pair ;
+import ernest.Ernest ;
+import ernest.IErnest ;
+import ernest.ITracer ;
 
 /**************************************
  * A Model for Ernest 
