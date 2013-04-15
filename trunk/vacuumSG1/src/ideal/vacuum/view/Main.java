@@ -1,15 +1,11 @@
 package ideal.vacuum.view;
 
 
-import ideal.vacuum.ConfigureRunDlg ;
 import ideal.vacuum.Environment ;
-import ideal.vacuum.EnvironnementPanel ;
 import ideal.vacuum.Ernest130Model ;
 import ideal.vacuum.ErnestModel ;
-import ideal.vacuum.ErnestView ;
 import ideal.vacuum.FishModel ;
 import ideal.vacuum.Model ;
-import ideal.vacuum.MyFileFilter ;
 
 import java.awt.BorderLayout ;
 import java.awt.Dimension ;
