@@ -1,6 +1,5 @@
 package ideal.vacuum.controller;
 
-import agent.controller.Controller ;
 
 public final class MainController implements Controller {
 
