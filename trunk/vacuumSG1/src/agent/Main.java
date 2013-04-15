@@ -63,7 +63,6 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
     
     public static int version;
 	
-	private HelpFrames m_Helpframe;
 	private ErnestView m_simulationEngine; // To run in a separate thread.
 
 	private JPanel m_board;
@@ -564,14 +563,6 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		{
 			m_modelList.get(0).setSpeakAloud(m_speakAloud.isSelected());
 		}
-	    else if (e.getSource() == m_KeyboardLayout) 
-	    {
-		    m_Helpframe = new HelpFrames(this, "Keyboard");
-	    }
-	    else if (e.getSource() == m_aboutVacuum) 
-	    {
-    		m_Helpframe = new HelpFrames(this, "About");
-	    }
 		// Save the preferences
 		//putPreferences();
 

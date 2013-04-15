@@ -138,7 +138,6 @@ public class Ernest130Model extends ErnestModel implements GraphicPropertiesList
 
 		// Initialize the visualization.
 		this.spaceMemory.setModel( this ) ;
-		this.m_eye.setModel( this ) ;
 
 		 //Only trace the first agent.
 //		 this.m_tracer = new
