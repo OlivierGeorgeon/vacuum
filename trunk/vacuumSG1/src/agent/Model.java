@@ -1,6 +1,8 @@
 package agent;
 
 
+import ideal.vacuum.view.Main ;
+
 import java.util.*;
 import java.util.prefs.Preferences;
 import java.awt.Color;
@@ -18,7 +20,6 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.vecmath.Vector3f;
 
-import agent.view.Main ;
 
 import spas.IPlace;
 

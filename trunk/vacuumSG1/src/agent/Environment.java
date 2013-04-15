@@ -1,6 +1,8 @@
 package agent;
 
 
+import ideal.vacuum.view.Main ;
+
 import java.awt.Color ;
 import java.awt.Graphics ;
 import java.awt.Graphics2D ;
@@ -18,7 +20,6 @@ import javax.swing.ImageIcon ;
 import javax.swing.SwingUtilities ;
 import javax.vecmath.Vector3f ;
 
-import agent.view.Main ;
 
 
 public class Environment extends Observable {

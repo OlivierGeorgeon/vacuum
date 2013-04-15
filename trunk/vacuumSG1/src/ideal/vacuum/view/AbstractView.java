@@ -1,4 +1,6 @@
-package agent.view;
+package ideal.vacuum.view;
+
+import ideal.vacuum.controller.MainController ;
 
 import java.awt.event.ActionEvent ;
 import java.awt.event.MouseEvent ;
@@ -7,7 +9,6 @@ import java.awt.event.MouseListener ;
 import javax.swing.AbstractAction ;
 
 import agent.controller.Controller ;
-import agent.controller.impl.MainController ;
 
 public abstract class AbstractView extends AbstractAction implements
 		View, MouseListener {

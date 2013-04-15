@@ -1,4 +1,4 @@
-package agent.view;
+package ideal.vacuum.view;
 
 
 import java.awt.BorderLayout ;
