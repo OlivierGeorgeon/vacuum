@@ -4,12 +4,15 @@ package memory110;
 import java.awt.GraphicsEnvironment ;
 import java.awt.Rectangle ;
 
-import agent.FramePlugin ;
-import agent.PrintableFrame ;
+import javax.swing.JFrame ;
 
-public class SpaceMemoryFrame extends PrintableFrame implements FramePlugin
+import agent.FramePlugin ;
+
+public class SpaceMemoryFrame extends JFrame implements FramePlugin
 {
 	
+	private SpaceMemoryPanel panel ;
+
 	public SpaceMemoryFrame() {
 		this.setTitle("Spatial Memory");
 		
