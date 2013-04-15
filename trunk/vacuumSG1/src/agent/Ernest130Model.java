@@ -25,6 +25,7 @@ import agent.model.motivation.Motivation ;
 import agent.model.motivation.MotivationErnest7 ;
 import agent.model.motivation.MotivationErnest8 ;
 import agent.model.spacememory.SpaceMemoryDesigner ;
+import agent.view.Main ;
 import ernest.Ernest ;
 
 /**

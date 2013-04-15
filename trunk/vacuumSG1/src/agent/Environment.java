@@ -18,6 +18,8 @@ import javax.swing.ImageIcon ;
 import javax.swing.SwingUtilities ;
 import javax.vecmath.Vector3f ;
 
+import agent.view.Main ;
+
 
 public class Environment extends Observable {
 	

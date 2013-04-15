@@ -1,6 +1,8 @@
 package agent;
 import java.util.ArrayList;
 
+import agent.view.Main ;
+
 /**
  * The class that runs the simulation in a separate thread.
  */
