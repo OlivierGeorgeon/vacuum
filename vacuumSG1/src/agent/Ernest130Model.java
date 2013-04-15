@@ -1,5 +1,7 @@
 package agent ;
 
+import ideal.vacuum.view.Main ;
+
 import java.awt.Color ;
 import java.awt.Graphics ;
 import java.awt.Graphics2D ;
@@ -25,7 +27,6 @@ import agent.model.motivation.Motivation ;
 import agent.model.motivation.MotivationErnest7 ;
 import agent.model.motivation.MotivationErnest8 ;
 import agent.model.spacememory.SpaceMemoryDesigner ;
-import agent.view.Main ;
 import ernest.Ernest ;
 
 /**

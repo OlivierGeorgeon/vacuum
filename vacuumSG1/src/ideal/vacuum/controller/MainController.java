@@ -1,4 +1,4 @@
-package agent.controller.impl;
+package ideal.vacuum.controller;
 
 import agent.controller.Controller ;
 
