@@ -1,6 +1,6 @@
 package ideal.vacuum.view;
 
-import agent.controller.Controller ;
+import ideal.vacuum.controller.Controller ;
 
 
 public interface View{
