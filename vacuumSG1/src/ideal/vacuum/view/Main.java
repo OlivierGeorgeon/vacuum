@@ -1,6 +1,16 @@
 package ideal.vacuum.view;
 
 
+import ideal.vacuum.ConfigureRunDlg ;
+import ideal.vacuum.Environment ;
+import ideal.vacuum.EnvironnementPanel ;
+import ideal.vacuum.Ernest130Model ;
+import ideal.vacuum.ErnestModel ;
+import ideal.vacuum.ErnestView ;
+import ideal.vacuum.FishModel ;
+import ideal.vacuum.Model ;
+import ideal.vacuum.MyFileFilter ;
+
 import java.awt.BorderLayout ;
 import java.awt.Dimension ;
 import java.awt.GraphicsEnvironment ;
@@ -36,15 +46,6 @@ import javax.swing.JPanel ;
 import javax.swing.WindowConstants ;
 import javax.vecmath.Vector3f ;
 
-import agent.ConfigureRunDlg ;
-import agent.Environment ;
-import agent.EnvironnementPanel ;
-import agent.Ernest130Model ;
-import agent.ErnestModel ;
-import agent.ErnestView ;
-import agent.FishModel ;
-import agent.Model ;
-import agent.MyFileFilter ;
 
 public class Main extends JFrame implements Observer, ActionListener, KeyListener{
 	public final long serialVersionUID = 1;
