@@ -18,6 +18,8 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.vecmath.Vector3f;
 
+import agent.view.Main ;
+
 import spas.IPlace;
 
 import java.lang.reflect.InvocationTargetException;
@@ -112,13 +114,13 @@ public class Model extends Observable
 	public String m_schema = "";
 	
 	/** The Cartesian position of Ernest. ((0,0) is bottom-left corner)*/
-	protected Vector3f mPosition = new Vector3f();
+	public Vector3f mPosition = new Vector3f();
 	/** The angular orientation of Ernest. (in radius - trigonometric - counterclockwise)*/
-	protected Vector3f mOrientation = new Vector3f();
+	public Vector3f mOrientation = new Vector3f();
 	/** The translation speed of Ernest in cartesian coordinates.*/
-	protected Vector3f mTranslation = new Vector3f();
+	public Vector3f mTranslation = new Vector3f();
 	/** The angular rotation speed of Ernest. (in radius - trigonometric - counterclockwise)*/
-	protected Vector3f mRotation = new Vector3f();
+	public Vector3f mRotation = new Vector3f();
 
 	/** The Cartesian previous position */
     protected Vector3f mPreviousPosition = new Vector3f();

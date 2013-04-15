@@ -1,4 +1,4 @@
-package agent;
+package agent.view;
 
 
 import java.awt.BorderLayout ;
@@ -35,6 +35,16 @@ import javax.swing.JOptionPane ;
 import javax.swing.JPanel ;
 import javax.swing.WindowConstants ;
 import javax.vecmath.Vector3f ;
+
+import agent.ConfigureRunDlg ;
+import agent.Environment ;
+import agent.EnvironnementPanel ;
+import agent.Ernest130Model ;
+import agent.ErnestModel ;
+import agent.ErnestView ;
+import agent.FishModel ;
+import agent.Model ;
+import agent.MyFileFilter ;
 
 public class Main extends JFrame implements Observer, ActionListener, KeyListener{
 	public final long serialVersionUID = 1;
