@@ -1,6 +1,7 @@
 package ideal.vacuum;
 
 
+import ideal.vacuum.view.EnvironnementPanel ;
 import ideal.vacuum.view.Main ;
 
 import java.awt.Color ;
