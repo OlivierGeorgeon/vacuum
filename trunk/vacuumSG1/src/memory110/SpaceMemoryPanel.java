@@ -2,13 +2,12 @@ package memory110;
 
 import java.awt.Graphics ;
 
-import agent.PrintablePanel ;
-//import agent.Ernest110Model;
+import javax.swing.JPanel ;
 
 
 
 
-public class SpaceMemoryPanel extends PrintablePanel
+public class SpaceMemoryPanel extends JPanel
 {
 	private static final long serialVersionUID = 1L;
 	
