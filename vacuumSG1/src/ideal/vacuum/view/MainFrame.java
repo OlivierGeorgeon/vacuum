@@ -43,7 +43,7 @@ import javax.swing.WindowConstants ;
 import javax.vecmath.Vector3f ;
 
 
-public class Main extends JFrame implements Observer, ActionListener, KeyListener{
+public class MainFrame extends JFrame implements Observer, ActionListener, KeyListener{
 	public final long serialVersionUID = 1;
 
 	public static JFrame MAIN_WIN;
@@ -149,13 +149,13 @@ public class Main extends JFrame implements Observer, ActionListener, KeyListene
 		m_modelList=new ArrayList<ErnestModel>();
 		m_environment= new Environment(m_modelList,version);
 		
-		new Main();
+		new MainFrame();
 	}
 
 	/**
 	 * Main
 	 */
-	public Main()
+	public MainFrame()
 	{
 		super(WindowTitle);
 		MAIN_WIN = this;

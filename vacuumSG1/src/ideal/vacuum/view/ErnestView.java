@@ -9,10 +9,10 @@ import java.util.ArrayList;
  */
 public class ErnestView implements Runnable 
 {
-	private Main mainFrame;	
+	private MainFrame mainFrame;	
 	private Environment m_environment;
 	
-	public ErnestView(Environment environment, Main frame)
+	public ErnestView(Environment environment, MainFrame frame)
 	{
 		mainFrame=frame;
 		m_environment = environment;
