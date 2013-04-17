@@ -52,7 +52,7 @@ public class MotivationErnest8 implements Motivation{
 						String stimuli = leftEyeEffect.getLeft().getLabel() + rightEyeEffect.getLeft().getLabel() + tactileEffect.getLeft().getLabel() ;
 						
 						if( move.getLeft().equals( Move.MOVE_FORWARD ) && tactileEffect.getLeft().equals( TactileEffect.TRUE ) ){
-							satisfaction = 0 + leftEyeEffect.getRight() + rightEyeEffect.getRight();
+							satisfaction = -1 + leftEyeEffect.getRight() + rightEyeEffect.getRight();
 						}
 						if( move.getLeft().equals( Move.MOVE_FORWARD ) && tactileEffect.getLeft().equals( TactileEffect.FALSE ) ){
 							satisfaction = -8 + leftEyeEffect.getRight() + rightEyeEffect.getRight();
