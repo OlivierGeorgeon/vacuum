@@ -11,7 +11,5 @@ public interface View{
 
 	public void close();
 
-	public boolean isDisplay();
-
 	public void resetDisplay();
 }

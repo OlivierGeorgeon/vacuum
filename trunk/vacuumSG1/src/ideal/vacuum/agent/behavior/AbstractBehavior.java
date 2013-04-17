@@ -161,7 +161,7 @@ public abstract class AbstractBehavior implements Behavior {
 			this.notifyGraphicPropertiesChange( event );
 		}
 		
-		this.model.getEnvironment().refreshFramesPlugins( this.delayMove , (float)-(Math.PI / 2) , 0 );
+		this.model.getEnvironment().refreshFramesPlugins( (float)-(Math.PI / 2) , 0 );
 	}
 
 	protected final void turnLeftAnim() {
@@ -182,7 +182,7 @@ public abstract class AbstractBehavior implements Behavior {
 			this.notifyGraphicPropertiesChange( event );
 		}
 		
-		this.model.getEnvironment().refreshFramesPlugins( this.delayMove , (float)(Math.PI / 2) , 0 );
+		this.model.getEnvironment().refreshFramesPlugins( (float)(Math.PI / 2) , 0 );
 	}
 
 	protected final void bumpAheadAnim() {
@@ -204,7 +204,7 @@ public abstract class AbstractBehavior implements Behavior {
 			this.anim() ;
 			this.model.sleep( 20 ) ;
 		}
-		this.model.getEnvironment().refreshFramesPlugins( this.delayMove , 0 , 0 );
+		this.model.getEnvironment().refreshFramesPlugins( 0 , 0 );
 	}
 
 	protected final void moveForwardAnim() {
@@ -218,7 +218,7 @@ public abstract class AbstractBehavior implements Behavior {
 			this.model.sleep( this.delayMove ) ;
 		}
 		
-		this.model.getEnvironment().refreshFramesPlugins( this.delayMove , 0, 1 );
+		this.model.getEnvironment().refreshFramesPlugins( 0, 1 );
 	}
 
 	protected final void bumpBehindAnim() {
@@ -241,7 +241,7 @@ public abstract class AbstractBehavior implements Behavior {
 			this.model.sleep( 20 ) ;
 		}
 		
-		this.model.getEnvironment().refreshFramesPlugins( this.delayMove , 0 , 0 );
+		this.model.getEnvironment().refreshFramesPlugins( 0 , 0 );
 	}
 
 	protected final void moveBackwardAnim() {
@@ -255,14 +255,14 @@ public abstract class AbstractBehavior implements Behavior {
 			this.model.sleep( this.delayMove ) ;
 		}
 		
-		this.model.getEnvironment().refreshFramesPlugins( this.delayMove , 0 , -1 );
+		this.model.getEnvironment().refreshFramesPlugins( 0 , -1 );
 	}
 
 	protected final void touchAnim() {
 		this.anim() ;
 		this.model.sleep( this.delayTouch ) ;
 		
-		this.model.getEnvironment().refreshFramesPlugins( this.delayMove , 0 , 0 );
+		this.model.getEnvironment().refreshFramesPlugins( 0 , 0 );
 	}
 
 	protected abstract void turnRight();

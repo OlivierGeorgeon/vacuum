@@ -2,7 +2,7 @@ package ideal.vacuum;
 
 
 import ideal.vacuum.view.EnvironnementPanel ;
-import ideal.vacuum.view.Main ;
+import ideal.vacuum.view.MainFrame ;
 
 import java.awt.Color ;
 import java.awt.Graphics ;
@@ -126,7 +126,7 @@ public class Environment extends Observable {
 	private boolean m_status          = false; 
 
 	protected EnvironnementPanel m_env;
-	protected Main mainFrame;
+	protected MainFrame mainFrame;
 	
 	public int identDisplay=0;
 	public int indexDisplay=0;
@@ -153,7 +153,7 @@ public class Environment extends Observable {
 	public void setEnvironnement(EnvironnementPanel env){
 		m_env=env;
 	}
-	public void setFrame(Main m){
+	public void setFrame(MainFrame m){
 		mainFrame=m;
 	}
 	
@@ -171,9 +171,8 @@ public class Environment extends Observable {
 		}
 	}
 	
-	public void refreshFramesPlugins( final int millisDelayMove , final float angleRotation, final float xTranslation ){
+	public void refreshFramesPlugins( final float angleRotation, final float xTranslation ){
 		for ( FramePlugin plugin : this.framePlugins.values() ) {
-			plugin.setDelayMove( millisDelayMove );
 			plugin.anim( angleRotation , xTranslation );
 		}
 	}

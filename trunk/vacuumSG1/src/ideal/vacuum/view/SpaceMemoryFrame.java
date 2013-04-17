@@ -2,67 +2,89 @@ package ideal.vacuum.view;
 
 
 import ideal.vacuum.FramePlugin ;
+import ideal.vacuum.controller.Controller ;
+import ideal.vacuum.controller.MainController ;
 
-import java.awt.Graphics ;
+import java.awt.BorderLayout ;
+import java.awt.Dimension ;
 import java.awt.GraphicsEnvironment ;
 import java.awt.Rectangle ;
+import java.awt.Toolkit ;
 
 import javax.swing.JFrame ;
 import javax.swing.JPanel ;
+import javax.swing.border.EmptyBorder ;
 
 
-public class SpaceMemoryFrame extends JFrame implements FramePlugin{
+public class SpaceMemoryFrame extends JFrame implements View , FramePlugin{
 	
+//	private final MainController controller;
 	private JPanel contentPane ;
-	public SpaceMemory spaceMemory;
-
-	private int delayMove ;
-	private float angleRotation ;
-	private float xTranslation ;
+	private SpaceMemoryPanel spaceMemoryPanel = SpaceMemoryPanel.createSpaceMemoryPanel();
 	
 	public SpaceMemoryFrame() {
-		this.setTitle("Spatial Memory");
+//		this.controller = controller;
+		this.setTitle("Space Memory");
+		this.setPreferredSize( this.getProperSize( 600 , 500 ) );
+		this.setMinimumSize( this.getProperSize( 600 , 500 ) );
+		Rectangle screen = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
+		this.setLocation( screen.width - 600 , screen.height - 500 );
 		
-		this.setSize(300 * 2, 250 * 2);
-		this.setLocationRelativeTo(null);
-    	Rectangle screen = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
-    	this.setLocation( screen.width - 600 , screen.height - 500 );
-    	this.setVisible(true);
-    	
-//    	this.contentPane=new SpaceMemoryPanel();
-
-    	this.setContentPane(this.contentPane);
-	}
-
-	public void setMemory(SpaceMemory mem)
-	{
-		this.spaceMemory = mem;
-	}
-
-	@Override
-	public void setDelayMove( int millis ) {
-		this.delayMove = millis;
+		this.contentPane = new JPanel();
+		this.contentPane.setBorder(new EmptyBorder(0, 0, 0, 0));
+		this.contentPane.setLayout(new BorderLayout(0, 0));
+		this.setContentPane(this.contentPane);
+		
+		this.contentPane.add(this.spaceMemoryPanel);
 	}
 	
+	private Dimension getProperSize( int maxX , int maxY ) {
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		int x = ( screenSize.width < maxX ? screenSize.width : maxX );
+		int y = ( screenSize.height < maxY ? screenSize.height : maxY );
+		
+		return new Dimension( x , y );
+	}
+	
+	public void setMemory(SpaceMemory mem)
+	{
+		this.spaceMemoryPanel.setSpaceMemory( mem );
+	}
+
 	@Override
-	public void anim( float angleRotation , float xTranslation ) {
-		this.angleRotation = 0;
-		this.xTranslation = 0;
+	public void anim( float angle , float x ) {
+		float angleRotation = 0 ;
+		float xTranslation = 0 ;
 		for ( int i = 0; i < 20; i++ ) {
-			this.angleRotation += angleRotation / 20;
-			this.xTranslation += xTranslation / 20;
-			this.repaint();
+			angleRotation += angle / 20;
+			xTranslation += x / 20;
+			this.spaceMemoryPanel.updateProperties( angleRotation , xTranslation );
+			this.spaceMemoryPanel.repaint();
 			try {
-				Thread.currentThread().sleep( this.delayMove );
+				Thread.currentThread().sleep( 20 );
 			} catch ( InterruptedException e ) {
 			}
 		}
 	}
-	
+
 	@Override
-	public void paintComponents( Graphics g ) {
-		super.paintComponents( g ) ;
-		if( this.spaceMemory != null && this.spaceMemory.m_model != null )
-			spaceMemory.m_model.paintSpaceMemory(g, spaceMemory.m_model.getErnest().getPlaceList() , this.angleRotation , this.xTranslation );
+	public Controller getController() {
+		return null ;
+	}
+
+	@Override
+	public void display() {
+		this.setVisible( true );
+	}
+
+	@Override
+	public void close() {
+		this.setVisible( false );
+	}
+
+	@Override
+	public void resetDisplay() {
+		// TODO Auto-generated method stub
+		
 	}
 }
