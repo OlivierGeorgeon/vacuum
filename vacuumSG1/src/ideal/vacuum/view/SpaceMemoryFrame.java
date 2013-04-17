@@ -21,6 +21,7 @@ public class SpaceMemoryFrame extends JFrame implements View , FramePlugin{
 //	private final MainController controller;
 	private JPanel contentPane ;
 	private SpaceMemoryPanel spaceMemoryPanel = SpaceMemoryPanel.createSpaceMemoryPanel();
+	private int delayAnim = 7;
 	
 	public SpaceMemoryFrame() {
 //		this.controller = controller;
@@ -61,7 +62,7 @@ public class SpaceMemoryFrame extends JFrame implements View , FramePlugin{
 			this.spaceMemoryPanel.updateProperties( angleRotation , xTranslation );
 			this.spaceMemoryPanel.repaint();
 			try {
-				Thread.currentThread().sleep( 20 );
+				Thread.currentThread().sleep( this.delayAnim );
 			} catch ( InterruptedException e ) {
 			}
 		}
