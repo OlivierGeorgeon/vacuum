@@ -1,7 +1,7 @@
 package ideal.vacuum;
 
 
-import ideal.vacuum.view.Main ;
+import ideal.vacuum.view.MainFrame ;
 
 import java.util.*;
 import java.util.prefs.Preferences;
@@ -146,7 +146,7 @@ public class Model extends Observable
 
 	private boolean m_night = false;
 
-	protected Main mainFrame;
+	protected MainFrame mainFrame;
 	
 	protected boolean m_bump = false;
 	protected boolean m_eat = false;
@@ -193,7 +193,7 @@ public class Model extends Observable
 	public void setEnvironnement(Environment env){
 		m_env=env;
 	}
-	public void setFrame(Main m){
+	public void setFrame(MainFrame m){
 		mainFrame=m;
 	}
 	

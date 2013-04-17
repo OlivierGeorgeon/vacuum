@@ -14,7 +14,7 @@ import ideal.vacuum.agent.motivation.Motivation ;
 import ideal.vacuum.agent.motivation.MotivationErnest7 ;
 import ideal.vacuum.agent.motivation.MotivationErnest8 ;
 import ideal.vacuum.agent.spacememory.SpaceMemoryDesigner ;
-import ideal.vacuum.view.Main ;
+import ideal.vacuum.view.MainFrame ;
 import ideal.vacuum.view.SpaceMemory ;
 import ideal.vacuum.view.SpaceMemoryFrame ;
 
@@ -68,7 +68,7 @@ public class Ernest130Model extends ErnestModel implements GraphicPropertiesList
 				(Vector3f) this.mPreviousOrientation.clone() ) ;
 	}
 
-	public Main getMainFrame() {
+	public MainFrame getMainFrame() {
 		return this.mainFrame ;
 	}
 
@@ -162,6 +162,7 @@ public class Ernest130Model extends ErnestModel implements GraphicPropertiesList
 		try {
 			this.m_env.plugFrame( SpaceMemoryFrame.class );
 			this.m_env.getPlugin( SpaceMemoryFrame.class ).setMemory( this.spaceMemory );
+			this.m_env.getPlugin( SpaceMemoryFrame.class ).display();
 		} catch ( Exception e ) {
 			e.printStackTrace();
 		}
