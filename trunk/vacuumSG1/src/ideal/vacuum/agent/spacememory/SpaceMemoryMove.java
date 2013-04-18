@@ -18,10 +18,18 @@ import java.util.Map ;
  * @version $Revision$
  */
 public enum SpaceMemoryMove {
+//	DEFAULT( "" , circleShape() , leftHalfCircleShape() , rightHalfCircleShape() ) ,
+//	MOVE_FORWARD( Move.MOVE_FORWARD.getLabel() , triangleShape() , leftHalfTriangleShape() , rightHalfTriangleShape()) ,	
+//	TURN_LEFT( Move.TURN_LEFT.getLabel() , arcShape() , leftHalfArcShape() , rightHalfArcShape()) ,
+//	TURN_RIGHT( Move.TURN_RIGHT.getLabel() , arcShape() , leftHalfArcShape() , rightHalfArcShape()) ,
+//	TOUCH( Move.TOUCH.getLabel() , squareShape() , leftHalfSquareShape() , rightHalfSquareShape() ) ,
+//	TOUCH_RIGHT( Move.TOUCH_RIGHT.getLabel() , squareShape() , leftHalfSquareShape() , rightHalfSquareShape() ) ,
+//	TOUCH_LEFT( Move.TOUCH_LEFT.getLabel() , squareShape() , leftHalfSquareShape() , rightHalfSquareShape() ) ;
+
 	DEFAULT( "" , circleShape() , leftHalfCircleShape() , rightHalfCircleShape() ) ,
-	MOVE_FORWARD( Move.MOVE_FORWARD.getLabel() , triangleShape() , leftHalfTriangleShape() , rightHalfTriangleShape()) ,
-	TURN_LEFT( Move.TURN_LEFT.getLabel() , arcShape() , leftHalfArcShape() , rightHalfArcShape()) ,
-	TURN_RIGHT( Move.TURN_RIGHT.getLabel() , arcShape() , leftHalfArcShape() , rightHalfArcShape()) ,
+	MOVE_FORWARD( Move.MOVE_FORWARD.getLabel() , squareShape() , leftHalfSquareShape() , rightHalfSquareShape()) ,	
+	TURN_LEFT( Move.TURN_LEFT.getLabel() , TrapezoidShape() , leftHalfTrapezoidShape() , rightHalfTrapezoidShape()) ,
+	TURN_RIGHT( Move.TURN_RIGHT.getLabel() , arcShape() , leftHalfTrapezoidShape() , rightHalfTrapezoidShape()) ,
 	TOUCH( Move.TOUCH.getLabel() , squareShape() , leftHalfSquareShape() , rightHalfSquareShape() ) ,
 	TOUCH_RIGHT( Move.TOUCH_RIGHT.getLabel() , squareShape() , leftHalfSquareShape() , rightHalfSquareShape() ) ,
 	TOUCH_LEFT( Move.TOUCH_LEFT.getLabel() , squareShape() , leftHalfSquareShape() , rightHalfSquareShape() ) ;
@@ -100,6 +108,33 @@ public enum SpaceMemoryMove {
 	private static Area rightHalfTriangleShape() {
 		GeneralPath shape = new GeneralPath() ;
 		shape.append( new Line2D.Double( -10 , 0 , 10 , 0 ) , false ) ;
+		shape.append( new Line2D.Double( 10 , 0 , -10 , 10 ) , true ) ;
+		return new Area( shape ) ;
+
+	}
+	
+	private static Area TrapezoidShape() {
+		GeneralPath shape = new GeneralPath() ;
+		shape.append( new Line2D.Double( -10 , 20 , 10 , 10 ) , false ) ;
+		shape.append( new Line2D.Double( 10 , 10 , 10 , -10 ) , true ) ;
+		shape.append( new Line2D.Double( 10 , -10 , -10 , 0 ) , true ) ;
+		return new Area( shape ) ;
+
+	}
+
+	private static Area leftHalfTrapezoidShape() {
+		GeneralPath shape = new GeneralPath() ;
+		shape.append( new Line2D.Double( -10 , 10 , 10 , 0 ) , false ) ;
+		shape.append( new Line2D.Double( 10 , 0 , 10 , -10 ) , true ) ;
+		shape.append( new Line2D.Double( 10 , -10 , -10 , 0 ) , true ) ;
+		return new Area( shape ) ;
+
+	}
+	
+	private static Area rightHalfTrapezoidShape() {
+		GeneralPath shape = new GeneralPath() ;
+		shape.append( new Line2D.Double( -10 , 20 , 10 , 10 ) , false ) ;
+		shape.append( new Line2D.Double( 10 , 10 , 10 , 0 ) , true ) ;
 		shape.append( new Line2D.Double( 10 , 0 , -10 , 10 ) , true ) ;
 		return new Area( shape ) ;
 

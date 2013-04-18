@@ -10,6 +10,7 @@ import java.awt.geom.AffineTransform ;
 import javax.vecmath.Point3f ;
 
 import spas.IPlace ;
+import spas.LocalSpaceMemory;
 
 /**
  * 
@@ -33,7 +34,7 @@ public class VisualInteractionDesigner extends AbstractSMInteractionDesigner {
 		this.smLeftVisualEffect = SpaceMemoryVisualEffect.getSpaceMemoryVisualEffect( SpaceMemoryVisualEffect.extractLeftVisualEffectLabel( interactionLabel ) );
 		this.smRightVisualEffect = SpaceMemoryVisualEffect.getSpaceMemoryVisualEffect( SpaceMemoryVisualEffect.extractRightVisualEffectLabel( interactionLabel ) );
 		
-		this.applyGeometricalTransformation( place.getOrientationAngle() , place.getPosition() , 2 ) ;
+		this.applyGeometricalTransformation( place.getOrientationAngle() , place.getPosition() , (LocalSpaceMemory.PERSISTENCE_DURATION - place.getClock()) / 1.5f) ;
 		this.fillAndDrawShape();
 	}
 
@@ -60,6 +61,6 @@ public class VisualInteractionDesigner extends AbstractSMInteractionDesigner {
 		
 		this.g2d.setColor( Color.BLACK ) ;
 		this.g2d.setStroke( new BasicStroke( SpaceMemoryDesigner.SCALE / 20f ) ) ;
-		this.g2d.draw( this.smMove.getShape() ) ;
+		//this.g2d.draw( this.smMove.getShape() ) ;
 	}
 }

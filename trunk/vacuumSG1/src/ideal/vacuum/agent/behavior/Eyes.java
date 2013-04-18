@@ -78,7 +78,7 @@ public class Eyes implements Cloneable{
 		}else if ( previousEyeState.distanceToTheblock == Ernest.INFINITE && currentEyeState.distanceToTheblock < Ernest.INFINITE ) {
 			isActif = true ;
 		}else if ( previousEyeState.distanceToTheblock < Ernest.INFINITE && currentEyeState.distanceToTheblock == Ernest.INFINITE ) {
-			isActif = false ;
+			isActif = true ;
 		}
 
 		return isActif ;

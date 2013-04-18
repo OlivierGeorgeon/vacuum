@@ -47,8 +47,8 @@ public class SimpleInteractionDesigner extends AbstractSMInteractionDesigner {
 	private void fillAndDrawShape( Color color ) {
 		this.g2d.setColor( color ) ;
 		this.g2d.fill( this.smMove.getShape() ) ;
-		this.g2d.setColor( Color.BLACK ) ;
-		this.g2d.setStroke( new BasicStroke( SpaceMemoryDesigner.SCALE / 20f ) ) ;
+		this.g2d.setColor( Color.black ) ;
+		//this.g2d.setStroke( new BasicStroke( SpaceMemoryDesigner.SCALE / 20f ) ) ;
 		this.g2d.draw( this.smMove.getShape() ) ;
 	}
 }
