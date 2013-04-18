@@ -50,11 +50,16 @@ public class SpaceMemoryDesigner {
 		
 		AffineTransform centerLocation = g2d.getTransform() ;
 //		this.displayAxisTransformed( g2d );
-		new AgentArrowDesigner().addAgent( g2d , this.agentColor ) ;
-		g2d.setTransform( centerLocation ) ;
+//		new AgentArrowDesigner().addAgent( g2d , this.agentColor ) ;
+
+//		g2d.setTransform( centerLocation ) ;
 
 		this.moveOrginForInteractions( g2d , angleRotation , xTranslation ) ;
 		this.displayInteractions( g2d , placeList , behaviorState ) ;
+		g2d.setTransform( originLocation ) ;
+
+		g2d.setTransform( centerLocation ) ;
+		new AgentArrowDesigner().addAgent( g2d , this.agentColor ) ;
 		g2d.setTransform( originLocation ) ;
 
 		System.out.println( "----------------------------------" ) ;

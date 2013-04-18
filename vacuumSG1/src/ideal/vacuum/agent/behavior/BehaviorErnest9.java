@@ -1,5 +1,6 @@
 package ideal.vacuum.agent.behavior ;
 
+import ideal.vacuum.Environment;
 import ideal.vacuum.Ernest130Model ;
 import ideal.vacuum.agent.GraphicProperties ;
 import ideal.vacuum.agent.GraphicPropertiesListener ;
@@ -115,9 +116,13 @@ public class BehaviorErnest9 extends AbstractBehavior {
 			this.lookTheWorld() ;
 			this.setLocationFromEyes() ;
 			if ( this.model.getEnvironment().isFood( aheadPoint.x , aheadPoint.y ) ) {
+				this.effect.setColor( this.model.getEnvironment().seeBlock( aheadPoint.x , aheadPoint.y ).getRGB() ) ;				
+				this.effect.setLocation( new Point3f()) ;				
 				this.model.getEnvironment().eatFood( aheadPoint );
 				String tactileStimuli = this.getEyesStimuli( snapshot , this.eyes ) + TactileEffect.TRUE.getLabel();
-				this.effect.setLabel( tactileStimuli ) ;
+				//this.effect.setLabel( tactileStimuli ) ;
+				this.effect.setLabel( TactileEffect.FOOD.getLabel() ) ;
+				//this.effect.setColor( Environment.FISH1.getRGB() ) ;				
 			} else {
 				String tactileStimuli = this.getEyesStimuli( snapshot , this.eyes ) + TactileEffect.TRUE.getLabel();
 				this.effect.setLabel( tactileStimuli ) ;
