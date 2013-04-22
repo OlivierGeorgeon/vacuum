@@ -115,27 +115,27 @@ public enum SpaceMemoryMove {
 	
 	private static Area TrapezoidShape() {
 		GeneralPath shape = new GeneralPath() ;
-		shape.append( new Line2D.Double( -10 , 20 , 10 , 10 ) , false ) ;
-		shape.append( new Line2D.Double( 10 , 10 , 10 , -10 ) , true ) ;
-		shape.append( new Line2D.Double( 10 , -10 , -10 , 0 ) , true ) ;
+		shape.append( new Line2D.Double( -7 , 14 , 7 , 7 ) , false ) ;
+		shape.append( new Line2D.Double( 7 , 7 , 7 , -7 ) , true ) ;
+		shape.append( new Line2D.Double( 7 , -7 , -7 , 0 ) , true ) ;
 		return new Area( shape ) ;
 
 	}
 
 	private static Area leftHalfTrapezoidShape() {
 		GeneralPath shape = new GeneralPath() ;
-		shape.append( new Line2D.Double( -10 , 10 , 10 , 0 ) , false ) ;
-		shape.append( new Line2D.Double( 10 , 0 , 10 , -10 ) , true ) ;
-		shape.append( new Line2D.Double( 10 , -10 , -10 , 0 ) , true ) ;
+		shape.append( new Line2D.Double( -7 , 7 , 7 , 0 ) , false ) ;
+		shape.append( new Line2D.Double( 7 , 0 , 7 , -7 ) , true ) ;
+		shape.append( new Line2D.Double( 7 , -7 , -7 , 0 ) , true ) ;
 		return new Area( shape ) ;
 
 	}
 	
 	private static Area rightHalfTrapezoidShape() {
 		GeneralPath shape = new GeneralPath() ;
-		shape.append( new Line2D.Double( -10 , 20 , 10 , 10 ) , false ) ;
-		shape.append( new Line2D.Double( 10 , 10 , 10 , 0 ) , true ) ;
-		shape.append( new Line2D.Double( 10 , 0 , -10 , 10 ) , true ) ;
+		shape.append( new Line2D.Double( -7 , 14 , 7 , 7 ) , false ) ;
+		shape.append( new Line2D.Double( 7 , 7 , 7 , 0 ) , true ) ;
+		shape.append( new Line2D.Double( 7 , 0 , -7 , 7 ) , true ) ;
 		return new Area( shape ) ;
 
 	}

@@ -60,6 +60,8 @@ public class SpaceMemoryDesigner {
 
 		g2d.setTransform( centerLocation ) ;
 		new AgentArrowDesigner().addAgent( g2d , this.agentColor ) ;
+		g2d.setColor( Color.GRAY ) ;
+		g2d.drawOval(-10 * SCALE, -10 * SCALE, 20 * SCALE, 20 * SCALE);
 		g2d.setTransform( originLocation ) ;
 
 		System.out.println( "----------------------------------" ) ;

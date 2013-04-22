@@ -66,17 +66,29 @@ public class BehaviorErnest9 extends AbstractBehavior {
 	}
 	
 	private void setLocationFromEyes() {
+		float d = Ernest.INT_FACTOR;
+		float p = 4f;
 		switch ( this.eyes.getActifEye() ) {
 			case LEFT:
-				//this.effect.setLocation( new Point3f( 4 , 4 , 0 ) );
-				this.effect.setLocation( new Point3f( this.eyes.getLeftxToTheblock() , this.eyes.getLeftyToTheblock() , 0 ) );
+				d =  (float)Math.sqrt(this.eyes.getLeftxToTheblock() * this.eyes.getLeftxToTheblock() + this.eyes.getLeftyToTheblock() * this.eyes.getLeftyToTheblock()); // OG
+				if (d > 0) //d=1;
+					this.effect.setLocation( new Point3f( this.eyes.getLeftxToTheblock()/ d * 5f, this.eyes.getLeftyToTheblock() / d * p, 0 ) );
+				else
+					this.effect.setLocation( new Point3f( 0 , p , 0 ) );
 				break ;
 			case RIGHT:
-				//this.effect.setLocation( new Point3f( 4 , -4 , 0 ) );
-				this.effect.setLocation( new Point3f( this.eyes.getRightxToTheblock() , this.eyes.getRightyToTheblock() , 0 ) );
+				d =  (float)Math.sqrt(this.eyes.getRightxToTheblock() * this.eyes.getRightxToTheblock() + this.eyes.getRightyToTheblock() * this.eyes.getRightyToTheblock()); // OG
+				if (d > 0)  // d=1;
+					this.effect.setLocation( new Point3f( this.eyes.getRightxToTheblock()/d * p, this.eyes.getRightyToTheblock()/d * p, 0 ) );
+				else
+					this.effect.setLocation( new Point3f( 0 , -p , 0 ) );
 				break;
 			case BOTH:
-				this.effect.setLocation( new Point3f( this.eyes.getLeftxToTheblock() , 0 , 0 ) );
+				d =  (float)Math.sqrt(this.eyes.getLeftxToTheblock() * this.eyes.getLeftxToTheblock() + this.eyes.getLeftyToTheblock() * this.eyes.getLeftyToTheblock()); // OG
+				if (d > 0)
+					this.effect.setLocation( new Point3f( this.eyes.getLeftxToTheblock()/d * p, 0 , 0 ) );
+				else
+					this.effect.setLocation( new Point3f(p, 0 , 0 ) );
 				break;
 			case NONE:
 				this.effect.setLocation( new Point3f( 0 , 0 , 0 ) );
