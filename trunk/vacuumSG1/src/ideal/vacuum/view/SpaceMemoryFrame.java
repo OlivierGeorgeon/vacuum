@@ -2,8 +2,6 @@ package ideal.vacuum.view;
 
 
 import ideal.vacuum.FramePlugin ;
-import ideal.vacuum.controller.Controller ;
-import ideal.vacuum.controller.MainController ;
 
 import java.awt.BorderLayout ;
 import java.awt.Dimension ;
@@ -16,15 +14,12 @@ import javax.swing.JPanel ;
 import javax.swing.border.EmptyBorder ;
 
 
-public class SpaceMemoryFrame extends JFrame implements View , FramePlugin{
+public class SpaceMemoryFrame extends JFrame implements FramePlugin{
 	
-//	private final MainController controller;
 	private JPanel contentPane ;
 	private SpaceMemoryPanel spaceMemoryPanel = SpaceMemoryPanel.createSpaceMemoryPanel();
-	private int delayAnim = 7;
 	
 	public SpaceMemoryFrame() {
-//		this.controller = controller;
 		this.setTitle("Space Memory");
 		this.setPreferredSize( this.getProperSize( 600 , 500 ) );
 		this.setMinimumSize( this.getProperSize( 600 , 500 ) );
@@ -53,6 +48,11 @@ public class SpaceMemoryFrame extends JFrame implements View , FramePlugin{
 	}
 
 	@Override
+	public void refresh() {
+		this.spaceMemoryPanel.repaint();
+	}
+	
+	@Override
 	public void anim( float angle , float x ) {
 		float angleRotation = 0 ;
 		float xTranslation = 0 ;
@@ -62,15 +62,10 @@ public class SpaceMemoryFrame extends JFrame implements View , FramePlugin{
 			this.spaceMemoryPanel.updateProperties( angleRotation , xTranslation );
 			this.spaceMemoryPanel.repaint();
 			try {
-				Thread.currentThread().sleep( this.delayAnim );
+				Thread.currentThread().sleep( 20 );
 			} catch ( InterruptedException e ) {
 			}
 		}
-	}
-
-	@Override
-	public Controller getController() {
-		return null ;
 	}
 
 	@Override
@@ -81,11 +76,5 @@ public class SpaceMemoryFrame extends JFrame implements View , FramePlugin{
 	@Override
 	public void close() {
 		this.setVisible( false );
-	}
-
-	@Override
-	public void resetDisplay() {
-		// TODO Auto-generated method stub
-		
 	}
 }
