@@ -28,10 +28,10 @@ public class BehaviorErnest9 extends AbstractBehavior {
 
 	private void lookTheWorld() {
 		GraphicProperties ernestGraphicProperties = this.model.getCopyOfGraphicProperties() ;
-		Pair<Integer , Color>[] retina = this.model.getRetina( ernestGraphicProperties
+		int[][] retina = this.model.getRetina( ernestGraphicProperties
 				.getmOrientation().z ) ;
-		this.eyes.updateRightEye( retina[0].getRight() , retina[0].getLeft() ) ;
-		this.eyes.updateLeftEye( retina[1].getRight() , retina[1].getLeft() ) ;
+		this.eyes.updateRightEye( retina[0][0] , retina[0][1], new Color(retina[0][2])) ;
+		this.eyes.updateLeftEye( retina[1][0] , retina[1][1], new Color(retina[1][2]) ) ;
 	}
 	
 	private String getEyesStimuli( Eyes previousSnapshot , Eyes currentSnapshot ) {
@@ -68,13 +68,15 @@ public class BehaviorErnest9 extends AbstractBehavior {
 	private void setLocationFromEyes() {
 		switch ( this.eyes.getActifEye() ) {
 			case LEFT:
-				this.effect.setLocation( new Point3f( 4 , 4 , 0 ) );
+				//this.effect.setLocation( new Point3f( 4 , 4 , 0 ) );
+				this.effect.setLocation( new Point3f( this.eyes.getLeftxToTheblock() , this.eyes.getLeftyToTheblock() , 0 ) );
 				break ;
 			case RIGHT:
-				this.effect.setLocation( new Point3f( 4 , -4 , 0 ) );
+				//this.effect.setLocation( new Point3f( 4 , -4 , 0 ) );
+				this.effect.setLocation( new Point3f( this.eyes.getRightxToTheblock() , this.eyes.getRightyToTheblock() , 0 ) );
 				break;
 			case BOTH:
-				this.effect.setLocation( new Point3f( 4 , 0 , 0 ) );
+				this.effect.setLocation( new Point3f( this.eyes.getLeftxToTheblock() , 0 , 0 ) );
 				break;
 			case NONE:
 				this.effect.setLocation( new Point3f( 0 , 0 , 0 ) );
