@@ -40,12 +40,13 @@ public class VisualInteractionDesigner extends AbstractSMInteractionDesigner {
 
 	private void applyGeometricalTransformation( float orientationAngle , Point3f position , double scale ) {
 		AffineTransform interactionLocation = new AffineTransform() ;
-		float distance = (float)Math.sqrt(position.x * position.x + position.y * position.y); // OG
-		if (distance !=0)
+		float d = (float)Math.sqrt(position.x * position.x + position.y * position.y) / 4; // OG
+		if (d !=0)
+		d=1;
 		{
 		interactionLocation.translate(
-				(int) ( position.x * SpaceMemoryDesigner.SCALE  /distance * 4) ,
-				-(int) ( position.y * SpaceMemoryDesigner.SCALE /distance * 4)) ;
+				(int) ( position.x * SpaceMemoryDesigner.SCALE /d),
+				-(int) ( position.y * SpaceMemoryDesigner.SCALE /d));
 		}
 		interactionLocation.rotate( -orientationAngle ) ;
 		interactionLocation.scale( scale , scale );

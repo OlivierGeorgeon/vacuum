@@ -289,18 +289,18 @@ public class ErnestModel extends Model
 	    	
 	    	if (m_env.isWall(i,j) || m_env.isFood(i,j) || m_env.isAlga(i,j))
 	    	{
-				int dist = (int) Math.sqrt(((i-x0)*(i-x0) + (j-y0)*(j-y0)) * Ernest.INT_FACTOR * Ernest.INT_FACTOR);
+				//int dist = (int) Math.sqrt(((i-x0)*(i-x0) + (j-y0)*(j-y0)) * Ernest.INT_FACTOR * Ernest.INT_FACTOR);
 				//return Pair.create(dist, bgc);
-	    		return new int[] {(i-(int)Math.round(x0)) * Ernest.INT_FACTOR, (j-(int)Math.round(y0)) * Ernest.INT_FACTOR, bgc.getRGB()};
+	    		return new int[] {(i-(int)Math.round(x0))* Ernest.INT_FACTOR , (j-(int)Math.round(y0))* Ernest.INT_FACTOR , bgc.getRGB()};
 
     		}
 	    	//if (m_env.isAgent(i, j, mName))
 	    	ErnestModel entity = m_env.getEntity(new Vector3f(i,j,0), mName);
 	    	if (entity != null)
 	    	{
-				int dist = (int) Math.sqrt(((i-x0)*(i-x0) + (j-y0)*(j-y0)) * Ernest.INT_FACTOR * Ernest.INT_FACTOR);
+				//int dist = (int) Math.sqrt(((i-x0)*(i-x0) + (j-y0)*(j-y0)) * Ernest.INT_FACTOR * Ernest.INT_FACTOR);
 				//return Pair.create(dist, entity.getColor());//AGENT_COLOR);
-	    		return new int[] {(i-(int)Math.round(x0)) * Ernest.INT_FACTOR, (j-(int)Math.round(y0)) * Ernest.INT_FACTOR, -entity.getColor().getRGB()};
+	    		return new int[] {(i-(int)Math.round(x0))* Ernest.INT_FACTOR , (j-(int)Math.round(y0))* Ernest.INT_FACTOR , -entity.getColor().getRGB()};
 	    	}
 
 	    }
