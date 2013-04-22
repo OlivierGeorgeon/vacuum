@@ -161,6 +161,14 @@ public class Environment extends Observable {
         return (T) this.framePlugins.get( pluginClass );
     }
 	
+	public boolean isPlugued( Class<? extends FramePlugin> pluginClass ) {
+		return this.framePlugins.containsKey( pluginClass );
+	}
+	
+	public void unplugFrame( Class<? extends FramePlugin> pluginClass ) {
+		this.framePlugins.remove( pluginClass );
+	}
+	
 	public void plugFrame( Class<? extends FramePlugin> pluginClass ) throws NoSuchMethodException, SecurityException, ClassNotFoundException, InterruptedException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
 		final Constructor<?> constructor = pluginClass.getConstructor();
 		
@@ -171,12 +179,17 @@ public class Environment extends Observable {
 		}
 	}
 	
-	public void refreshFramesPlugins( final float angleRotation, final float xTranslation ){
+	public void animFramesPlugins( final float angleRotation, final float xTranslation ){
 		for ( FramePlugin plugin : this.framePlugins.values() ) {
 			plugin.anim( angleRotation , xTranslation );
 		}
 	}
 	
+	public void refreshFramesPlugins() {
+		for ( FramePlugin plugin : this.framePlugins.values() ) {
+			plugin.refresh();
+		}
+	}
 	/**
 	 * Initialize the grid from a board file
 	 * @author mcohen
