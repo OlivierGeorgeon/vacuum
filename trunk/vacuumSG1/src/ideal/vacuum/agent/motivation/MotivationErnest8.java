@@ -58,7 +58,7 @@ public class MotivationErnest8 implements Motivation{
 							satisfaction = -8 + leftEyeEffect.getRight() + rightEyeEffect.getRight();
 						}
 						
-						ernest.addInteraction( move.getLeft().getLabel() , stimuli , satisfaction );
+						ernest.addInteraction( move.getLeft().getLabel() + stimuli , satisfaction );
 					}
 				}
 			}
