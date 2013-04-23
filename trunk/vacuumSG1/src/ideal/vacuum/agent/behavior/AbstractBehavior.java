@@ -6,6 +6,7 @@ import ideal.vacuum.agent.GraphicProperties ;
 import ideal.vacuum.agent.GraphicPropertiesChangeEvent ;
 import ideal.vacuum.agent.GraphicPropertiesListener ;
 import ideal.vacuum.agent.Move ;
+import ideal.vacuum.agent.vision.Eyes ;
 
 import java.awt.Color ;
 

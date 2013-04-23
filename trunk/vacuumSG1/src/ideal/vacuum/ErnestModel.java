@@ -1,17 +1,14 @@
 package ideal.vacuum;
 
 
-import ideal.vacuum.view.Point ;
-import ideal.vacuum.view.Segment ;
+import ideal.vacuum.agent.vision.Eyes ;
+import ideal.vacuum.agent.vision.PhotoreceptorCell ;
 
 import java.awt.Color ;
-import java.util.ArrayList ;
 
 import javax.vecmath.Matrix3f ;
 import javax.vecmath.Vector3f ;
 
-import spas.ISegment ;
-import utils.Pair ;
 import ernest.Ernest ;
 import ernest.IErnest ;
 import ernest.ITracer ;
@@ -154,42 +151,27 @@ public class ErnestModel extends Model
 	 * (Uses Ernest's orientationRad value, trigonometric, counterclockwise, radius).
 	 * @return The array of colors projected onto the retina.
 	 */ 
-	public int[][] getRetina(double orientationRad) {
+	public PhotoreceptorCell[] getRetina(double orientationRad) {
 		System.out.println("vision");
 		@SuppressWarnings("unchecked")
-		int[][] retina = new int[Ernest.RESOLUTION_RETINA][3] ;
+		PhotoreceptorCell[] retina = new PhotoreceptorCell[Eyes.RESOLUTION_RETINA] ;
 		double angle = orientationRad - Math.PI/2;
-		double angleSpan = Math.PI / Ernest.RESOLUTION_RETINA;
-		for (int i = 0; i < Ernest.RESOLUTION_RETINA; i++) {
+		double angleSpan = Math.PI / Eyes.RESOLUTION_RETINA;
+		for (int i = 0; i < Eyes.RESOLUTION_RETINA; i++) {
 			retina[i] = scanArc((float)angle, (float)angleSpan);
 			angle += angleSpan;
 		}
-		// Agent up
-		if (Math.abs(orientationRad - Math.PI/2) < .1f)
-		{
-			int x0 = retina[0][0]; int y0 = retina[0][1];
-			retina[0][0] = y0; retina[0][1] = -x0;
-			int x1 = retina[1][0]; int y1 = retina[1][1];
-			retina[1][0] = y1; retina[1][1] = -x1;
+		System.out.println("retina right(" + retina[0].getxBlockPosition() + "," + retina[0].getyBlockPosition() + ")");
+		System.out.println("retina left (" + retina[1].getxBlockPosition() + "," + retina[1].getyBlockPosition() + ")");
+		
+		// Agent up, left, down
+		if ((Math.abs(orientationRad - Math.PI/2) < .1f) || (Math.abs(orientationRad + Math.PI/2) < .1f) || (Math.abs(Math.PI - orientationRad) < .1f || Math.abs(orientationRad + Math.PI) < .1f)){
+			for ( PhotoreceptorCell photoreceptorCell : retina ) {
+				photoreceptorCell.orienteAxis( orientationRad );
+			}
 		}
-		// Agent down
-		if (Math.abs(orientationRad + Math.PI/2) < .1f)
-		{
-			int x0 = retina[0][0]; int y0 = retina[0][1];
-			retina[0][0] = -y0; retina[0][1] = x0;
-			int x1 = retina[1][0]; int y1 = retina[1][1];
-			retina[1][0] = -y1; retina[1][1] = x1;
-		}
-		// Agent left
-		if (Math.abs(Math.PI - orientationRad) < .1f || Math.abs(orientationRad + Math.PI) < .1f)
-		{
-			retina[0][0] = -retina[0][0];
-			retina[0][1] = -retina[0][1];
-			retina[1][0] = -retina[1][0];
-			retina[1][1] = -retina[1][1];
-		}
-		System.out.println("retina right(" + retina[0][0] + "," + retina[0][1] + ")");
-		System.out.println("retina left (" + retina[1][0] + "," + retina[1][1] + ")");
+		System.out.println("retina right(" + retina[0].getxBlockPosition() + "," + retina[0].getyBlockPosition() + ")");
+		System.out.println("retina left (" + retina[1].getxBlockPosition() + "," + retina[1].getyBlockPosition() + ")");
 		return retina;
 	}
 	
@@ -201,7 +183,7 @@ public class ErnestModel extends Model
 	 * @param 20 The arc's diameter (the agent's visual range)
 	 * @return the color detected. 
 	 */
-	protected int[] scanArc(float angleOrigin, float angleSpan) {
+	protected PhotoreceptorCell scanArc(float angleOrigin, float angleSpan) {
 		int[] eyeFixation = null; //new int[] {Ernest.INFINITE,Ernest.INFINITE,WALL_COLOR.getRGB()};
 		float step = angleSpan/20;
 		for (float angle = angleOrigin; angle <= angleOrigin + angleSpan + .001; angle += step) {
@@ -216,7 +198,7 @@ public class ErnestModel extends Model
 		if (eyeFixation == null)
 			eyeFixation = new int[] {Ernest.INFINITE,Ernest.INFINITE,WALL_COLOR.getRGB()};
 
-		return eyeFixation;
+		return new PhotoreceptorCell( eyeFixation[0] , eyeFixation[1] , new Color( eyeFixation[2] ) );
 	}
 	
 	/**

@@ -42,10 +42,6 @@ import javax.swing.JPanel ;
 import javax.swing.WindowConstants ;
 import javax.vecmath.Vector3f ;
 
-import joptsimple.OptionParser ;
-import joptsimple.OptionSet ;
-import joptsimple.OptionSpec ;
-
 
 public class MainFrame extends JFrame implements Observer, ActionListener, KeyListener{
 	public final long serialVersionUID = 1;
