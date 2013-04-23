@@ -43,7 +43,7 @@ public class AgentDesigner {
 		AffineTransform initialPosition = g2d.getTransform() ;
 		
 		this.fixAgentPosition( g2d , x , y , sx , sy , ernestGraphicProperties ) ;
-//		AgentDesigner.displayAxis( g2d );
+
 		if ( this.useSharkBody ) {
 			this.drawAgentSharkBody( g2d );
 		} else {
@@ -52,8 +52,7 @@ public class AgentDesigner {
 		
 		if( this.useRetina ){
 			this.drawAgentRetina( g2d , behaviorState ) ;
-		}
-		else{
+		}else{
 			this.drawAgentFocus( g2d , behaviorState ) ;
 		}
 		
@@ -153,21 +152,18 @@ public class AgentDesigner {
 	
 	private void drawAgentRetina( Graphics2D g2d , BehaviorState behaviorState ) {
 		GeneralPath rightEye = new GeneralPath() ;
-		//rightEye.append( new Arc2D.Double( -15 , 10 , 40 , 40 , 270 , 90 , Arc2D.PIE ), false ) ;
-		rightEye.append( new Arc2D.Double( -27 , -40 , 70 , 90 , 270 , 90 , Arc2D.PIE ), false ) ;
+		rightEye.append( new Arc2D.Double( -30 , -50 , 70 , 90 , 270 , 90 , Arc2D.PIE ), false ) ;
 		GeneralPath leftEye = new GeneralPath() ;
-		//leftEye.append( new Arc2D.Double( -25 , 10 , 40 , 40 , 180 , 90 , Arc2D.PIE ), false ) ;
-		leftEye.append( new Arc2D.Double( -40 , -40 , 70 , 90 , 180 , 90 , Arc2D.PIE ), false ) ;
+		leftEye.append( new Arc2D.Double( -40 , -50 , 70 , 90 , 180 , 90 , Arc2D.PIE ), false ) ;
 
-		
 		g2d.setStroke( new BasicStroke( 2f ) ) ;
 		g2d.setColor( behaviorState.getEyes().getRightEyeLookedBlock() ) ;
 		g2d.fill( rightEye ) ;
-		g2d.setColor( Color.black ) ;
+		g2d.setColor( Color.BLACK ) ;
 		g2d.draw( rightEye ) ;
 		g2d.setColor( behaviorState.getEyes().getLeftEyeLookedBlock() ) ;
 		g2d.fill( leftEye ) ;
-		g2d.setColor( Color.black ) ;
+		g2d.setColor( Color.BLACK ) ;
 		g2d.draw( leftEye ) ;
 	}
 
