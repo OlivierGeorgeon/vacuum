@@ -28,23 +28,16 @@ public class BehaviorErnest9 extends AbstractBehavior {
 		GraphicProperties ernestGraphicProperties = this.model.getCopyOfGraphicProperties() ;
 		PhotoreceptorCell[] retina = this.model.getRetina( ernestGraphicProperties
 				.getmOrientation().z ) ;
-		this.eyes.updateRightEye(
+		this.eyes.updateEye(
 				retina[0].getxBlockPosition() ,
 				retina[0].getyBlockPosition() ,
 				retina[0].getBlockColor() ) ;
-		this.eyes.updateLeftEye(
-				retina[1].getxBlockPosition() ,
-				retina[1].getyBlockPosition() ,
-				retina[1].getBlockColor() ) ;
 	}
 
 	private String getEyesStimuli( Eyes previousSnapshot , Eyes currentSnapshot ) {
 		String eyesStimuli = this.determineVisualEffect(
-				(int) previousSnapshot.getLeftEyeDistanceAccurateToTheblock() ,
-				(int) currentSnapshot.getLeftEyeDistanceAccurateToTheblock() ).getLabel() ;
-		eyesStimuli += this.determineVisualEffect(
-				(int) previousSnapshot.getRightEyeDistanceAccurateToTheblock() ,
-				(int) currentSnapshot.getRightEyeDistanceAccurateToTheblock() ).getLabel() ;
+				(int) previousSnapshot.distanceAccurateToTheBlock() ,
+				(int) currentSnapshot.distanceAccurateToTheBlock() ).getLabel() ;
 
 		return eyesStimuli ;
 	}
@@ -75,44 +68,49 @@ public class BehaviorErnest9 extends AbstractBehavior {
 
 	private void setLocationFromEyes() {
 		float d = Ernest.INT_FACTOR ;
-		switch ( this.eyes.getActifEye() ) {
-			case LEFT:
-				d = (float) this.eyes.getLeftEyeDistanceToTheblock() ;
-				if ( d > 0 && Math.abs( d ) < Ernest.INFINITE ) // d=1;
-					this.effect.setLocation( new Point3f( this.eyes.getLeftxToTheBlock() /
-							d *
-							Eyes.DISTANCE_VISION , this.eyes.getLeftxToTheBlock() /
-							d *
-							Eyes.DISTANCE_VISION , 0 ) ) ;
-				else
-					this.effect.setLocation( new Point3f( 0 , Eyes.DISTANCE_VISION , 0 ) ) ;
-				break ;
-			case RIGHT:
-				d = (float) this.eyes.getRightEyeDistanceToTheblock() ;
-				if ( d > 0 ) // d=1;
-					this.effect.setLocation( new Point3f( this.eyes.getRightxToTheBlock() /
-							d *
-							Eyes.DISTANCE_VISION , this.eyes.getRightyToTheBlock() /
-							d *
-							Eyes.DISTANCE_VISION , 0 ) ) ;
-				else
-					this.effect.setLocation( new Point3f( 0 , -Eyes.DISTANCE_VISION , 0 ) ) ;
-				break ;
-			case BOTH:
-				d = (float) this.eyes.getLeftEyeDistanceToTheblock() ;
-				if ( d > 0 )
-					this.effect.setLocation( new Point3f( this.eyes.getLeftxToTheBlock() /
-							d *
-							Eyes.DISTANCE_VISION , 0 , 0 ) ) ;
-				else
-					this.effect.setLocation( new Point3f( Eyes.DISTANCE_VISION , 0 , 0 ) ) ;
-				break ;
-			case NONE:
-				this.effect.setLocation( new Point3f( 0 , 0 , 0 ) ) ;
-				break ;
-			default:
-				break ;
-		}
+		this.effect.setLocation( new Point3f( this.eyes.getxBlockPosition() /
+				d *
+				Eyes.DISTANCE_VISION , this.eyes.getxBlockPosition() /
+				d *
+				Eyes.DISTANCE_VISION , 0 ) ) ;
+//		switch ( this.eyes.getActifEye() ) {
+//			case LEFT:
+//				d = (float) this.eyes.getLeftEyeDistanceToTheblock() ;
+//				if ( d > 0 && Math.abs( d ) < Ernest.INFINITE ) // d=1;
+//					this.effect.setLocation( new Point3f( this.eyes.getLeftxToTheBlock() /
+//							d *
+//							Eyes.DISTANCE_VISION , this.eyes.getLeftxToTheBlock() /
+//							d *
+//							Eyes.DISTANCE_VISION , 0 ) ) ;
+//				else
+//					this.effect.setLocation( new Point3f( 0 , Eyes.DISTANCE_VISION , 0 ) ) ;
+//				break ;
+//			case RIGHT:
+//				d = (float) this.eyes.getRightEyeDistanceToTheblock() ;
+//				if ( d > 0 ) // d=1;
+//					this.effect.setLocation( new Point3f( this.eyes.getRightxToTheBlock() /
+//							d *
+//							Eyes.DISTANCE_VISION , this.eyes.getRightyToTheBlock() /
+//							d *
+//							Eyes.DISTANCE_VISION , 0 ) ) ;
+//				else
+//					this.effect.setLocation( new Point3f( 0 , -Eyes.DISTANCE_VISION , 0 ) ) ;
+//				break ;
+//			case BOTH:
+//				d = (float) this.eyes.getLeftEyeDistanceToTheblock() ;
+//				if ( d > 0 )
+//					this.effect.setLocation( new Point3f( this.eyes.getLeftxToTheBlock() /
+//							d *
+//							Eyes.DISTANCE_VISION , 0 , 0 ) ) ;
+//				else
+//					this.effect.setLocation( new Point3f( Eyes.DISTANCE_VISION , 0 , 0 ) ) ;
+//				break ;
+//			case NONE:
+//				this.effect.setLocation( new Point3f( 0 , 0 , 0 ) ) ;
+//				break ;
+//			default:
+//				break ;
+//		}
 	}
 
 	protected void turnRight() {

@@ -59,19 +59,6 @@ public enum SpaceMemoryVisualEffect {
 		throw new RuntimeException( "Can't extract the visual effect" ) ;
 	}
 	
-	public static String extractRightVisualEffectLabel( String interaction ) {
-		int eye = 0;
-		for ( char inter : interaction.toCharArray() ) {
-			if ( VisualEffect.isExist( String.valueOf( inter ) ) ) {
-				eye++;
-			}
-			if ( eye == 2 ) {
-				return String.valueOf( inter ) ;
-			}
-		}
-		throw new RuntimeException( "Can't extract the visual effect" ) ;
-	}
-	
 	public Color getEffectColor() {
 		return this.effectColor ;
 	}

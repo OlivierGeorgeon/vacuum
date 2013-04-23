@@ -13,76 +13,41 @@ import ernest.Ernest ;
  */
 public class Eyes implements Cloneable {
 
-	public static int RESOLUTION_RETINA = 2;
+	public static int RESOLUTION_RETINA = 1;
 	public static final float DISTANCE_VISION = 4;
+
+	private PhotoreceptorCell photoreceptor;
+	private PhotoreceptorCell previousPhotoreceptorState;
 	
-	public enum ActifEye {
-		NONE ,
-		LEFT ,
-		RIGHT ,
-		BOTH ;
-	}
-
-	private Eye rightEye ;
-	private Eye leftEye ;
-	private Eye previousRightEyeState ;
-	private Eye previousLeftEyeState ;
-
 	public Eyes() {
-		this.rightEye = new Eye( Ernest.INFINITE , Ernest.INFINITE , Environment.empty.color ) ;
-		this.leftEye = new Eye( Ernest.INFINITE , Ernest.INFINITE , Environment.empty.color ) ;
-		this.previousRightEyeState = this.rightEye ;
-		this.previousLeftEyeState = this.leftEye ;
+		this.photoreceptor = new PhotoreceptorCell( Ernest.INFINITE , Ernest.INFINITE , Environment.empty.color );
+		this.previousPhotoreceptorState = this.photoreceptor;
 	}
 
-	public void updateRightEye( int xToTheblock , int yToTheblock , Color lookedBlock ) {
-		this.previousRightEyeState = this.rightEye ;
-		this.rightEye = new Eye( xToTheblock , yToTheblock , lookedBlock ) ;
+	public void updateEye( int xBlockPosition , int yBlockPosition , Color blockColor ) {
+		this.previousPhotoreceptorState = this.photoreceptor ;
+		this.photoreceptor = new PhotoreceptorCell( xBlockPosition , yBlockPosition , blockColor );
 	}
 
-	public void updateLeftEye( int xToTheblock , int yToTheblock , Color lookedBlock ) {
-		this.previousLeftEyeState = this.leftEye ;
-		this.leftEye = new Eye( xToTheblock , yToTheblock , lookedBlock ) ;
-	}
-
-	public Color getLeftEyeLookedBlock() {
-		return this.leftEye.getLookedBlock() ;
-	}
-
-	public double getLeftEyeDistanceToTheblock() {
-		return this.leftEye.distanceToTheBlock() ;
-	}
-
-	public double getLeftEyeDistanceAccurateToTheblock() {
-		return this.leftEye.distanceAccurateToTheBlock() ;
-	}
 	
-	public Color getRightEyeLookedBlock() {
-		return this.rightEye.getLookedBlock() ;
+	public int getxBlockPosition() {
+		return this.previousPhotoreceptorState.getxBlockPosition() ;
 	}
 
-	public double getRightEyeDistanceToTheblock() {
-		return this.rightEye.distanceToTheBlock() ;
+	public int getyBlockPosition() {
+		return this.previousPhotoreceptorState.getyBlockPosition() ;
 	}
 
-	public double getRightEyeDistanceAccurateToTheblock() {
-		return this.rightEye.distanceAccurateToTheBlock() ;
-	}
-	
-	public int getLeftxToTheBlock() {
-		return this.leftEye.getxToTheBlock() ;
+	public Color getBlockColor() {
+		return this.previousPhotoreceptorState.getBlockColor() ;
 	}
 
-	public int getLeftyToTheBlock() {
-		return this.leftEye.getyToTheBlock() ;
+	public double distanceAccurateToTheBlock() {
+		return this.previousPhotoreceptorState.distanceAccurateToTheBlock() ;
 	}
 
-	public int getRightxToTheBlock() {
-		return this.rightEye.getxToTheBlock() ;
-	}
-
-	public int getRightyToTheBlock() {
-		return this.rightEye.getyToTheBlock() ;
+	public double distanceToTheBlock() {
+		return this.previousPhotoreceptorState.distanceToTheBlock() ;
 	}
 
 	public Eyes takeSnapshot() {
@@ -94,96 +59,30 @@ public class Eyes implements Cloneable {
 		return null ;
 	}
 
-	private boolean isActif( Eye previousEyeState , Eye currentEyeState ) {
+	public boolean isActif( PhotoreceptorCell previousPhotoreceptorState , PhotoreceptorCell currentPhotoreceptorState ) {
 		boolean isActif = false ;
 
-		if ( previousEyeState.distanceAccurateToTheBlock() == currentEyeState.distanceAccurateToTheBlock() ) {
+		if ( previousPhotoreceptorState.distanceAccurateToTheBlock() == currentPhotoreceptorState.distanceAccurateToTheBlock() ) {
 			isActif = false ;
-		} else if ( previousEyeState.distanceAccurateToTheBlock() < Ernest.INFINITE &&
-				currentEyeState.distanceAccurateToTheBlock() < previousEyeState.distanceAccurateToTheBlock() ) {
+		} else if ( previousPhotoreceptorState.distanceAccurateToTheBlock() < Ernest.INFINITE &&
+				currentPhotoreceptorState.distanceAccurateToTheBlock() < previousPhotoreceptorState.distanceAccurateToTheBlock() ) {
 			isActif = true ;
-		} else if ( previousEyeState.distanceAccurateToTheBlock() == Ernest.INFINITE &&
-				currentEyeState.distanceAccurateToTheBlock() < Ernest.INFINITE ) {
+		} else if ( previousPhotoreceptorState.distanceAccurateToTheBlock() == Ernest.INFINITE &&
+				currentPhotoreceptorState.distanceAccurateToTheBlock() < Ernest.INFINITE ) {
 			isActif = true ;
-		} else if ( previousEyeState.distanceAccurateToTheBlock() < Ernest.INFINITE &&
-				currentEyeState.distanceAccurateToTheBlock() == Ernest.INFINITE ) {
+		} else if ( previousPhotoreceptorState.distanceAccurateToTheBlock() < Ernest.INFINITE &&
+				currentPhotoreceptorState.distanceAccurateToTheBlock() == Ernest.INFINITE ) {
 			isActif = true ;
 		}
 
 		return isActif ;
 	}
 
-	public Eyes.ActifEye getActifEye() {
-		if ( this.isActif( this.previousLeftEyeState , this.leftEye ) &&
-				this.isActif( this.previousRightEyeState , this.rightEye ) ) {
-			return Eyes.ActifEye.BOTH ;
-		}
-		if ( this.isActif( this.previousLeftEyeState , this.leftEye ) &&
-				!this.isActif( this.previousRightEyeState , this.rightEye ) ) {
-			return Eyes.ActifEye.LEFT ;
-		}
-		if ( !this.isActif( this.previousLeftEyeState , this.leftEye ) &&
-				this.isActif( this.previousRightEyeState , this.rightEye ) ) {
-			return Eyes.ActifEye.RIGHT ;
-		}
-		return Eyes.ActifEye.NONE ;
-	}
-
 	@Override
 	protected Eyes clone() throws CloneNotSupportedException {
 		Eyes object = (Eyes) super.clone() ;
-		object.leftEye = this.leftEye.clone() ;
-		object.rightEye = this.rightEye.clone() ;
+		object.photoreceptor = this.photoreceptor.clone() ;
+		object.previousPhotoreceptorState = this.previousPhotoreceptorState.clone() ;
 		return object ;
-	}
-
-	private class Eye implements Cloneable {
-
-		private Color lookedBlock ;
-		private int xToTheBlock ;
-		private int yToTheBlock ;
-
-		public Eye( int xToTheblock , int yToTheblock , Color lookedBlock ) {
-			this.xToTheBlock = xToTheblock ;
-			this.yToTheBlock = yToTheblock ;
-			this.lookedBlock = lookedBlock ;
-		}
-
-		public Color getLookedBlock() {
-			return this.lookedBlock ;
-		}
-
-		public int getxToTheBlock() {
-			return this.xToTheBlock ;
-		}
-
-		public int getyToTheBlock() {
-			return this.yToTheBlock ;
-		}
-
-		public double distanceAccurateToTheBlock() {
-			if ( Math.abs( this.xToTheBlock ) == Ernest.INFINITE ||
-					Math.abs( this.yToTheBlock ) == Ernest.INFINITE )
-				return Ernest.INFINITE ;
-			return this.distanceToTheBlock() * Ernest.INT_FACTOR ;
-		}
-
-		public double distanceToTheBlock() {
-			return this.calculateHypotenuse();
-		}
-		
-		private double calculateHypotenuse() {
-			return ( Math.sqrt( this.xToTheBlock * this.xToTheBlock + this.yToTheBlock *
-					this.yToTheBlock ) ) ;
-		}
-
-		@Override
-		public Eye clone() throws CloneNotSupportedException {
-			Eye object = (Eye) super.clone() ;
-			object.xToTheBlock = this.xToTheBlock ;
-			object.yToTheBlock = this.yToTheBlock ;
-			object.lookedBlock = this.lookedBlock ;
-			return object ;
-		}
 	}
 }

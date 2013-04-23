@@ -43,23 +43,21 @@ public class MotivationErnest8 implements Motivation{
 		
 		
 		for ( Pair<TactileEffect , Integer> tactileEffect : tactileEffects ) {
-			for ( Pair<VisualEffect , Integer> leftEyeEffect : eyesEffects ) {
-				for ( Pair<VisualEffect , Integer> rightEyeEffect : eyesEffects ) {
-					for ( Pair<Move , Integer> move : moves ) {
-						// r(u,y) = r(u) + r(f) + r(e_left) + r(e_right)
-						int satisfaction = move.getRight() + tactileEffect.getRight() + leftEyeEffect.getRight() + rightEyeEffect.getRight();
-						// y = (e_left,e_right,f)
-						String stimuli = leftEyeEffect.getLeft().getLabel() + rightEyeEffect.getLeft().getLabel() + tactileEffect.getLeft().getLabel() ;
-						
-						if( move.getLeft().equals( Move.MOVE_FORWARD ) && tactileEffect.getLeft().equals( TactileEffect.TRUE ) ){
-							satisfaction = -1 + leftEyeEffect.getRight() + rightEyeEffect.getRight();
-						}
-						if( move.getLeft().equals( Move.MOVE_FORWARD ) && tactileEffect.getLeft().equals( TactileEffect.FALSE ) ){
-							satisfaction = -8 + leftEyeEffect.getRight() + rightEyeEffect.getRight();
-						}
-						
-						ernest.addInteraction( move.getLeft().getLabel() + stimuli , satisfaction );
+			for ( Pair<VisualEffect , Integer> eyeEffect : eyesEffects ) {
+				for ( Pair<Move , Integer> move : moves ) {
+					// r(u,y) = r(u) + r(f) + r(e_left) + r(e_right)
+					int satisfaction = move.getRight() + tactileEffect.getRight() + eyeEffect.getRight();
+					
+					String stimuli = move.getLeft().getLabel() + eyeEffect.getLeft().getLabel() + tactileEffect.getLeft().getLabel() ;
+					
+					if( move.getLeft().equals( Move.MOVE_FORWARD ) && tactileEffect.getLeft().equals( TactileEffect.TRUE ) ){
+						satisfaction = -1 + eyeEffect.getRight();
 					}
+					if( move.getLeft().equals( Move.MOVE_FORWARD ) && tactileEffect.getLeft().equals( TactileEffect.FALSE ) ){
+						satisfaction = -8 + eyeEffect.getRight();
+					}
+					
+					ernest.addInteraction( stimuli , satisfaction );
 				}
 			}
 		}
