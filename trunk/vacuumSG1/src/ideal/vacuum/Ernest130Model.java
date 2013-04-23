@@ -173,8 +173,7 @@ public class Ernest130Model extends ErnestModel implements GraphicPropertiesList
 	}
 
 	public void update() {
-		Move schema = Move.getByLabel( this.m_ernest.step( this.behavior.getEffect() ) ) ;
-//		this.getEnvironment().refreshFramesPlugins();
+		Move schema = Move.getByLabel( this.m_ernest.step( this.behavior.getEffect() ).substring( 0 , 1 ) );
 		if ( this.cognitiveMode == ErnestModel.AGENT_STEP )
 			this.cognitiveMode = ErnestModel.AGENT_STOP ;
 
