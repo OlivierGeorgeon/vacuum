@@ -2,14 +2,12 @@ package ideal.vacuum.agent.spacememory;
 
 import ideal.vacuum.agent.behavior.BehaviorState ;
 
-import java.awt.BasicStroke ;
 import java.awt.Color ;
 import java.awt.Graphics2D ;
 import java.awt.geom.AffineTransform ;
 import java.awt.geom.Point2D ;
 
 import javax.vecmath.Point3f ;
-
 
 import spas.IPlace ;
 
