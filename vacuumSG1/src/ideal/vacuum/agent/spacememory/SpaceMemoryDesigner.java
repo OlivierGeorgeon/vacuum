@@ -26,7 +26,7 @@ public class SpaceMemoryDesigner {
 	protected final static int HEIGHT = 250 ;
 	protected final static int WIDTH_REAL = WIDTH * 2 ;
 	protected final static int HEIGHT_REAL = HEIGHT * 2 ;
-	protected final static int SCALE = 40 ;// 50;
+	protected final static int SCALE = 40 ;
 
 	private Ernest130Model model ;
 	private Color agentColor ;
@@ -44,24 +44,17 @@ public class SpaceMemoryDesigner {
 
 		this.displayBackground( g2d ) ;
 		this.displayCounter( g2d ) ;
-//		this.displayAxis( g2d ); 
-
 		this.moveOriginToCenter( g2d ) ;
 		
 		AffineTransform centerLocation = g2d.getTransform() ;
-//		this.displayAxisTransformed( g2d );
-//		new AgentArrowDesigner().addAgent( g2d , this.agentColor ) ;
-
-//		g2d.setTransform( centerLocation ) ;
-
+		
 		this.moveOrginForInteractions( g2d , angleRotation , xTranslation ) ;
 		this.displayInteractions( g2d , placeList , behaviorState ) ;
-		g2d.setTransform( originLocation ) ;
-
+		
 		g2d.setTransform( centerLocation ) ;
+		
 		new AgentArrowDesigner().addAgent( g2d , this.agentColor ) ;
-		g2d.setColor( Color.GRAY ) ;
-		g2d.drawOval(-10 * SCALE, -10 * SCALE, 20 * SCALE, 20 * SCALE);
+		
 		g2d.setTransform( originLocation ) ;
 
 		System.out.println( "----------------------------------" ) ;
