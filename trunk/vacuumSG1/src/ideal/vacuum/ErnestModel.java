@@ -161,8 +161,7 @@ public class ErnestModel extends Model
 			retina[i] = scanArc((float)angle, (float)angleSpan);
 			angle += angleSpan;
 		}
-		System.out.println("retina right(" + retina[0].getxBlockPosition() + "," + retina[0].getyBlockPosition() + ")");
-		System.out.println("retina left (" + retina[1].getxBlockPosition() + "," + retina[1].getyBlockPosition() + ")");
+		System.out.println("retina (" + retina[0].getxBlockPosition() + "," + retina[0].getyBlockPosition() + ")");
 		
 		// Agent up, left, down
 		if ((Math.abs(orientationRad - Math.PI/2) < .1f) || (Math.abs(orientationRad + Math.PI/2) < .1f) || (Math.abs(Math.PI - orientationRad) < .1f || Math.abs(orientationRad + Math.PI) < .1f)){
@@ -170,8 +169,7 @@ public class ErnestModel extends Model
 				photoreceptorCell.orienteAxis( orientationRad );
 			}
 		}
-		System.out.println("retina right(" + retina[0].getxBlockPosition() + "," + retina[0].getyBlockPosition() + ")");
-		System.out.println("retina left (" + retina[1].getxBlockPosition() + "," + retina[1].getyBlockPosition() + ")");
+		System.out.println("retina (" + retina[0].getxBlockPosition() + "," + retina[0].getyBlockPosition() + ")");
 		return retina;
 	}
 	

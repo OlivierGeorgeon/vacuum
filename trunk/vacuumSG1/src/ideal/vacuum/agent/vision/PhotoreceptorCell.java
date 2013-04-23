@@ -5,7 +5,9 @@ import java.awt.Point ;
 import java.awt.geom.AffineTransform ;
 import java.awt.geom.Point2D ;
 
-public class PhotoreceptorCell {
+import ernest.Ernest ;
+
+public class PhotoreceptorCell implements Cloneable  {
 
 	private int xBlockPosition;
 	private int yBlockPosition;
@@ -36,5 +38,30 @@ public class PhotoreceptorCell {
 		Point2D blockPosition = aff.transform( new Point( this.xBlockPosition , this.yBlockPosition ), new Point() ) ;
 		this.xBlockPosition = (int) blockPosition.getX(); 
 		this.yBlockPosition = (int) blockPosition.getY();
+	}
+	
+	public double distanceAccurateToTheBlock() {
+		if ( Math.abs( this.xBlockPosition ) == Ernest.INFINITE ||
+				Math.abs( this.yBlockPosition ) == Ernest.INFINITE )
+			return Ernest.INFINITE ;
+		return this.distanceToTheBlock() * Ernest.INT_FACTOR ;
+	}
+
+	public double distanceToTheBlock() {
+		return this.calculateHypotenuse();
+	}
+	
+	private double calculateHypotenuse() {
+		return ( Math.sqrt( this.xBlockPosition * this.xBlockPosition + this.yBlockPosition *
+				this.yBlockPosition ) ) ;
+	}
+	
+	@Override
+	public PhotoreceptorCell clone() throws CloneNotSupportedException {
+		PhotoreceptorCell object = (PhotoreceptorCell) super.clone() ;
+		object.xBlockPosition = this.xBlockPosition ;
+		object.yBlockPosition = this.yBlockPosition ;
+		object.blockColor = this.blockColor ;
+		return object ;
 	}
 }
