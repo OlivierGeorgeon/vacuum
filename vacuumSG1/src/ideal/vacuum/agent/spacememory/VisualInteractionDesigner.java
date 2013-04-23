@@ -1,6 +1,7 @@
 package ideal.vacuum.agent.spacememory ;
 
 import ideal.vacuum.agent.behavior.BehaviorState ;
+import ideal.vacuum.agent.vision.Eyes ;
 
 import java.awt.BasicStroke ;
 import java.awt.Color ;
@@ -51,7 +52,7 @@ public class VisualInteractionDesigner extends AbstractSMInteractionDesigner {
 	private void applyGeometricalTransformation( float orientationAngle , Point3f position ,
 			double scale ) {
 		AffineTransform interactionLocation = new AffineTransform() ;
-		float d = (float) Math.sqrt( position.x * position.x + position.y * position.y ) / 4 ; // OG
+		float d = (float) Math.sqrt( position.x * position.x + position.y * position.y ) / Eyes.DISTANCE_VISION ; // OG
 		if ( d != 0 )
 			d = 1 ;
 		interactionLocation.translate(

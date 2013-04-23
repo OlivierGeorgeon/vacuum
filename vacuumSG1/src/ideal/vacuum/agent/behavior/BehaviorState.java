@@ -1,6 +1,7 @@
 package ideal.vacuum.agent.behavior;
 
 import ideal.vacuum.agent.AgentDesigner ;
+import ideal.vacuum.agent.vision.Eyes ;
 
 import java.awt.Color ;
 

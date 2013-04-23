@@ -1,4 +1,4 @@
-package ideal.vacuum.agent.behavior ;
+package ideal.vacuum.agent.vision ;
 
 import ideal.vacuum.Environment ;
 
@@ -13,7 +13,8 @@ import ernest.Ernest ;
  */
 public class Eyes implements Cloneable {
 
-	public static final int DISTANCE_VISION = 4;
+	public static int RESOLUTION_RETINA = 2;
+	public static final float DISTANCE_VISION = 4;
 	
 	public enum ActifEye {
 		NONE ,
