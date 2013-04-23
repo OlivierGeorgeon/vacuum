@@ -1,6 +1,5 @@
 package ideal.vacuum.agent.behavior ;
 
-import ideal.vacuum.Environment;
 import ideal.vacuum.Ernest130Model ;
 import ideal.vacuum.agent.GraphicProperties ;
 import ideal.vacuum.agent.GraphicPropertiesListener ;
@@ -12,7 +11,6 @@ import java.awt.Color ;
 import javax.vecmath.Point3f ;
 import javax.vecmath.Vector3f ;
 
-import utils.Pair ;
 import ernest.Ernest ;
 
 /**
@@ -28,15 +26,14 @@ public class BehaviorErnest9 extends AbstractBehavior {
 
 	private void lookTheWorld() {
 		GraphicProperties ernestGraphicProperties = this.model.getCopyOfGraphicProperties() ;
-		int[][] retina = this.model.getRetina( ernestGraphicProperties
-				.getmOrientation().z ) ;
+		int[][] retina = this.model.getRetina( ernestGraphicProperties.getmOrientation().z ) ;
 		this.eyes.updateRightEye( retina[0][0] , retina[0][1], new Color(retina[0][2])) ;
 		this.eyes.updateLeftEye( retina[1][0] , retina[1][1], new Color(retina[1][2]) ) ;
 	}
 	
 	private String getEyesStimuli( Eyes previousSnapshot , Eyes currentSnapshot ) {
-		String eyesStimuli = this.determineVisualEffect( previousSnapshot.getLeftEyeDistanceToTheblock() , currentSnapshot.getLeftEyeDistanceToTheblock() ).getLabel();
-		eyesStimuli += this.determineVisualEffect( previousSnapshot.getRightEyeDistanceToTheblock() , currentSnapshot.getRightEyeDistanceToTheblock() ).getLabel();
+		String eyesStimuli = this.determineVisualEffect( (int)previousSnapshot.getLeftEyeDistanceAccurateToTheblock() , (int)currentSnapshot.getLeftEyeDistanceAccurateToTheblock() ).getLabel();
+		eyesStimuli += this.determineVisualEffect( (int)previousSnapshot.getRightEyeDistanceAccurateToTheblock() , (int)currentSnapshot.getRightEyeDistanceAccurateToTheblock() ).getLabel();
 		
 		return eyesStimuli;
 	}
@@ -70,23 +67,23 @@ public class BehaviorErnest9 extends AbstractBehavior {
 		float p = 4f;
 		switch ( this.eyes.getActifEye() ) {
 			case LEFT:
-				d =  (float)Math.sqrt(this.eyes.getLeftxToTheblock() * this.eyes.getLeftxToTheblock() + this.eyes.getLeftyToTheblock() * this.eyes.getLeftyToTheblock()); // OG
+				d = (float) this.eyes.getLeftEyeDistanceToTheblock();
 				if (d > 0 && Math.abs(d) < Ernest.INFINITE) //d=1;
-					this.effect.setLocation( new Point3f( this.eyes.getLeftxToTheblock()/ d * p, this.eyes.getLeftyToTheblock() / d * p, 0 ) );
+					this.effect.setLocation( new Point3f( this.eyes.getLeftxToTheBlock()/ d * p, this.eyes.getLeftxToTheBlock() / d * p, 0 ) );
 				else
 					this.effect.setLocation( new Point3f( 0 , p , 0 ) );
 				break ;
 			case RIGHT:
-				d =  (float)Math.sqrt(this.eyes.getRightxToTheblock() * this.eyes.getRightxToTheblock() + this.eyes.getRightyToTheblock() * this.eyes.getRightyToTheblock()); // OG
-				if (d > 0 && Math.abs(d) < Ernest.INFINITE)  // d=1;
-					this.effect.setLocation( new Point3f( this.eyes.getRightxToTheblock()/d * p, this.eyes.getRightyToTheblock()/d * p, 0 ) );
+				d = (float) this.eyes.getRightEyeDistanceToTheblock();
+				if (d > 0)  // d=1;
+					this.effect.setLocation( new Point3f( this.eyes.getRightxToTheBlock()/d * p, this.eyes.getRightyToTheBlock()/d * p, 0 ) );
 				else
 					this.effect.setLocation( new Point3f( 0 , -p , 0 ) );
 				break;
 			case BOTH:
-				d =  (float)Math.sqrt(this.eyes.getLeftxToTheblock() * this.eyes.getLeftxToTheblock() + this.eyes.getLeftyToTheblock() * this.eyes.getLeftyToTheblock()); // OG
+				d = (float) this.eyes.getLeftEyeDistanceToTheblock();
 				if (d > 0)
-					this.effect.setLocation( new Point3f( this.eyes.getLeftxToTheblock()/d * p, 0 , 0 ) );
+					this.effect.setLocation( new Point3f( this.eyes.getLeftxToTheBlock()/d * p, 0 , 0 ) );
 				else
 					this.effect.setLocation( new Point3f(p, 0 , 0 ) );
 				break;
@@ -133,10 +130,7 @@ public class BehaviorErnest9 extends AbstractBehavior {
 				this.effect.setColor( this.model.getEnvironment().seeBlock( aheadPoint.x , aheadPoint.y ).getRGB() ) ;				
 				this.effect.setLocation( new Point3f()) ;				
 				this.model.getEnvironment().eatFood( aheadPoint );
-				String tactileStimuli = this.getEyesStimuli( snapshot , this.eyes ) + TactileEffect.TRUE.getLabel();
-				//this.effect.setLabel( tactileStimuli ) ;
-				this.effect.setLabel( TactileEffect.FOOD.getLabel() ) ;
-				//this.effect.setColor( Environment.FISH1.getRGB() ) ;				
+				this.effect.setLabel( TactileEffect.FOOD.getLabel() ) ;			
 			} else {
 				String tactileStimuli = this.getEyesStimuli( snapshot , this.eyes ) + TactileEffect.TRUE.getLabel();
 				this.effect.setLabel( tactileStimuli ) ;
