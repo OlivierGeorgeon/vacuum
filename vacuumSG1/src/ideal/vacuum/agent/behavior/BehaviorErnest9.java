@@ -71,14 +71,14 @@ public class BehaviorErnest9 extends AbstractBehavior {
 		switch ( this.eyes.getActifEye() ) {
 			case LEFT:
 				d =  (float)Math.sqrt(this.eyes.getLeftxToTheblock() * this.eyes.getLeftxToTheblock() + this.eyes.getLeftyToTheblock() * this.eyes.getLeftyToTheblock()); // OG
-				if (d > 0) //d=1;
-					this.effect.setLocation( new Point3f( this.eyes.getLeftxToTheblock()/ d * 5f, this.eyes.getLeftyToTheblock() / d * p, 0 ) );
+				if (d > 0 && Math.abs(d) < Ernest.INFINITE) //d=1;
+					this.effect.setLocation( new Point3f( this.eyes.getLeftxToTheblock()/ d * p, this.eyes.getLeftyToTheblock() / d * p, 0 ) );
 				else
 					this.effect.setLocation( new Point3f( 0 , p , 0 ) );
 				break ;
 			case RIGHT:
 				d =  (float)Math.sqrt(this.eyes.getRightxToTheblock() * this.eyes.getRightxToTheblock() + this.eyes.getRightyToTheblock() * this.eyes.getRightyToTheblock()); // OG
-				if (d > 0)  // d=1;
+				if (d > 0 && Math.abs(d) < Ernest.INFINITE)  // d=1;
 					this.effect.setLocation( new Point3f( this.eyes.getRightxToTheblock()/d * p, this.eyes.getRightyToTheblock()/d * p, 0 ) );
 				else
 					this.effect.setLocation( new Point3f( 0 , -p , 0 ) );

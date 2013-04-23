@@ -291,7 +291,7 @@ public class ErnestModel extends Model
 	    	{
 				//int dist = (int) Math.sqrt(((i-x0)*(i-x0) + (j-y0)*(j-y0)) * Ernest.INT_FACTOR * Ernest.INT_FACTOR);
 				//return Pair.create(dist, bgc);
-	    		return new int[] {(i-(int)Math.round(x0))* Ernest.INT_FACTOR , (j-(int)Math.round(y0))* Ernest.INT_FACTOR , bgc.getRGB()};
+	    		return new int[] {(i-(int)Math.round(x0)) , (j-(int)Math.round(y0)) , bgc.getRGB()};
 
     		}
 	    	//if (m_env.isAgent(i, j, mName))
@@ -300,7 +300,7 @@ public class ErnestModel extends Model
 	    	{
 				//int dist = (int) Math.sqrt(((i-x0)*(i-x0) + (j-y0)*(j-y0)) * Ernest.INT_FACTOR * Ernest.INT_FACTOR);
 				//return Pair.create(dist, entity.getColor());//AGENT_COLOR);
-	    		return new int[] {(i-(int)Math.round(x0))* Ernest.INT_FACTOR , (j-(int)Math.round(y0))* Ernest.INT_FACTOR , -entity.getColor().getRGB()};
+	    		return new int[] {(i-(int)Math.round(x0)) , (j-(int)Math.round(y0)) , -entity.getColor().getRGB()};
 	    	}
 
 	    }
