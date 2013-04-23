@@ -26,7 +26,6 @@ import java.util.ArrayList ;
 import javax.vecmath.Vector3f ;
 
 import spas.IPlace ;
-import tracing.XMLStreamTracer;
 import utils.ErnestUtils ;
 import ernest.Ernest ;
 
@@ -143,8 +142,8 @@ public class Ernest130Model extends ErnestModel implements GraphicPropertiesList
 		this.spaceMemory.setModel( this ) ;
 
 		 //Only trace the first agent.
-		 this.m_tracer = new
-		 XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","dlsQKeaXlclGbzRTN--ZLWajTDyGpr");
+//		 this.m_tracer = new
+//		 XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","dlsQKeaXlclGbzRTN--ZLWajTDyGpr");
 //		this.m_tracer = new XMLStreamTracer(
 //				"http://134.214.128.53/abstract/lite/php/stream/" ,
 //				"juIQzDzdCtBSpmNnJNkzdtTTajfsXe" ) ;
@@ -161,6 +160,10 @@ public class Ernest130Model extends ErnestModel implements GraphicPropertiesList
 
 	public void setDisplay() {
 		try {
+			if( this.m_env.isPlugued( SpaceMemoryFrame.class ) ){
+				this.m_env.getPlugin( SpaceMemoryFrame.class ).close();
+				this.m_env.unplugFrame( SpaceMemoryFrame.class );
+			}
 			this.m_env.plugFrame( SpaceMemoryFrame.class );
 			this.m_env.getPlugin( SpaceMemoryFrame.class ).setMemory( this.spaceMemory );
 			this.m_env.getPlugin( SpaceMemoryFrame.class ).display();
@@ -170,8 +173,8 @@ public class Ernest130Model extends ErnestModel implements GraphicPropertiesList
 	}
 
 	public void update() {
-		Move schema = Move.getByLabel( this.m_ernest.step( this.behavior.getEffect() ).substring(0, 1) ) ;
-
+		Move schema = Move.getByLabel( this.m_ernest.step( this.behavior.getEffect() ) ) ;
+//		this.getEnvironment().refreshFramesPlugins();
 		if ( this.cognitiveMode == ErnestModel.AGENT_STEP )
 			this.cognitiveMode = ErnestModel.AGENT_STOP ;
 
@@ -179,7 +182,6 @@ public class Ernest130Model extends ErnestModel implements GraphicPropertiesList
 		this.traceEnvironmentalData() ;
 		if (this.m_tracer != null)
 			this.m_tracer.finishEvent();
-		this.behavior.anim() ;
 	}
 
 	private void traceEnvironmentalData() {
