@@ -150,7 +150,7 @@ public class Eyes implements Cloneable{
 		{
 			if (Math.abs(xToTheblock) == Ernest.INFINITE || Math.abs(yToTheblock) == Ernest.INFINITE )
 				return Ernest.INFINITE;
-			return (int)(Math.sqrt((this.xToTheblock * this.xToTheblock  + this.yToTheblock * this.yToTheblock) ));
+			return (int)(Math.sqrt((this.xToTheblock * this.xToTheblock  + this.yToTheblock * this.yToTheblock) * Ernest.INT_FACTOR * Ernest.INT_FACTOR));
 		}
 		
 		@Override

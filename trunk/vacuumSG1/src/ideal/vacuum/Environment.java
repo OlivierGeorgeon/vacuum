@@ -34,7 +34,7 @@ public class Environment extends Observable {
 	
 	// visual properties
 	public static final Color FIELD_COLOR = Color.white;
-	public static final Color WALL1       = new Color(  0,128,  0);
+	public static final Color WALL1       = new Color(100,100,100); // new Color(  0,128,  0);
 	public static final Color WALL2       = new Color(  0,230, 92);
 	public static final Color WALL3       = new Color(  0,230,160);
 	public static final Color ALGA1       = new Color(115,230,  0);

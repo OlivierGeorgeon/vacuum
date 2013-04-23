@@ -46,7 +46,7 @@ public class Model extends Observable
 	
 	// visual properties
 	public static final Color FIELD_COLOR = Color.white;
-	public static final Color WALL1       = new Color(  0,128,  0);
+	//public static final Color WALL1       = Environment.WALL1; //new Color(  100,100, 100);
 	public static final Color WALL2       = new Color(  0,230, 92);
 	public static final Color WALL3       = new Color(  0,230,161);
 	public static final Color ALGA1       = new Color(115,230,  0);
@@ -57,7 +57,7 @@ public class Model extends Observable
 	public static final Color FISH1       = new Color(150,128,255);
 	
 	public static Block empty=new Block(EMPTY, FIELD_COLOR,"empty");
-	public static Block wall =new Block(HARD , WALL1,"wall1");
+	public static Block wall =new Block(HARD , Environment.WALL1,"wall1");
 	public static Block wall2=new Block(HARD , WALL2,"wall2");
 	public Block wall3=new Block(HARD , WALL3,"wall3");
 	public static Block alga1=new Block(SMOOTH,ALGA1,"alga1");
@@ -68,7 +68,7 @@ public class Model extends Observable
 	public static Block fish =new Block(FOOD  ,FISH1,"fish");
 	
 	// trap objects
-	public Block green_fish=new Block(FOOD  ,WALL1,"green_fish");
+	public Block green_fish=new Block(FOOD  ,Environment.WALL1,"green_fish");
 	public Block mauve_wall=new Block(HARD  ,FISH1,"mauve_wall");
 	public Block invisible_wall=new Block(HARD,FIELD_COLOR,"invisible");
 
@@ -79,7 +79,7 @@ public class Model extends Observable
 	public static final int ANIM_TOUCH    = 3;
 	
 	//public static final Color FIELD_COLOR = Color.white; //new Color(150, 255, 150);
-	public static final Color WALL_COLOR  = new Color(0, 128, 0); // Color.getHSBColor(1/3f, 1f, 0.5f)
+	public static final Color WALL_COLOR  = Environment.WALL1; // new Color(0, 128, 0); // Color.getHSBColor(1/3f, 1f, 0.5f)
 	public static final Color WATER_COLOR = new Color(150, 128, 255); // Color.getHSBColor(1/3f, 1f, 0.5f)
 	//public static final Color WATER_COLOR = new Color(0,0,255); // Color.getHSBColor(1/3f, 1f, 0.5f)
 	public static final Color FOOD_COLOR  = new Color(227, 124, 255); // Color.getHSBColor(1/3f, 1f, 0.5f)
