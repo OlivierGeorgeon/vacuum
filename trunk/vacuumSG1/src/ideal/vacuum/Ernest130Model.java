@@ -26,6 +26,7 @@ import java.util.ArrayList ;
 import javax.vecmath.Vector3f ;
 
 import spas.IPlace ;
+import tracing.XMLStreamTracer;
 import utils.ErnestUtils ;
 import ernest.Ernest ;
 
@@ -142,8 +143,7 @@ public class Ernest130Model extends ErnestModel implements GraphicPropertiesList
 		this.spaceMemory.setModel( this ) ;
 
 		 //Only trace the first agent.
-//		 this.m_tracer = new
-//		 XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","dlsQKeaXlclGbzRTN--ZLWajTDyGpr");
+		 this.m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","dlsQKeaXlclGbzRTN--ZLWajTDyGpr");
 //		this.m_tracer = new XMLStreamTracer(
 //				"http://134.214.128.53/abstract/lite/php/stream/" ,
 //				"juIQzDzdCtBSpmNnJNkzdtTTajfsXe" ) ;
@@ -178,6 +178,7 @@ public class Ernest130Model extends ErnestModel implements GraphicPropertiesList
 			this.cognitiveMode = ErnestModel.AGENT_STOP ;
 
 		this.behaviorState = this.behavior.doMovement( schema ) ;
+
 		this.traceEnvironmentalData() ;
 		if (this.m_tracer != null)
 			this.m_tracer.finishEvent();

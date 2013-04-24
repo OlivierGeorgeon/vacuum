@@ -2,6 +2,7 @@ package ideal.vacuum.agent.behavior ;
 
 import ideal.vacuum.Ernest130Model ;
 import ideal.vacuum.agent.GraphicProperties ;
+import ideal.vacuum.agent.GraphicPropertiesChangeEvent;
 import ideal.vacuum.agent.GraphicPropertiesListener ;
 import ideal.vacuum.agent.TactileEffect ;
 import ideal.vacuum.agent.VisualEffect ;
@@ -36,13 +37,13 @@ public class BehaviorErnest9 extends AbstractBehavior {
 
 	private String getEyesStimuli( Eyes previousSnapshot , Eyes currentSnapshot ) {
 		String eyesStimuli = this.determineVisualEffect(
-				(int) previousSnapshot.distanceAccurateToTheBlock() ,
-				(int) currentSnapshot.distanceAccurateToTheBlock() ).getLabel() ;
+				(float)previousSnapshot.distanceAccurateToTheBlock() ,
+				(float)currentSnapshot.distanceAccurateToTheBlock() ).getLabel() ;
 
 		return eyesStimuli ;
 	}
 
-	private VisualEffect determineVisualEffect( int previousDistance , int currentDistance ) {
+	private VisualEffect determineVisualEffect( float previousDistance , float currentDistance ) {
 		VisualEffect stimuli = VisualEffect.UNCHANGED ;
 
 		if ( previousDistance == currentDistance ) {
@@ -67,12 +68,15 @@ public class BehaviorErnest9 extends AbstractBehavior {
 	}
 
 	private void setLocationFromEyes() {
-		float d = Ernest.INT_FACTOR ;
+		float d = (float)this.eyes.distanceAccurateToTheBlock();// Ernest.INT_FACTOR ;
+		if (d > 0 && d < Ernest.INFINITE)
+		{
 		this.effect.setLocation( new Point3f( this.eyes.getxBlockPosition()
-				// / d * Eyes.DISTANCE_VISION 
+				 / d * Eyes.DISTANCE_VISION 
 				, this.eyes.getyBlockPosition() 
-				// / d * Eyes.DISTANCE_VISION 
+				 / d * Eyes.DISTANCE_VISION 
 				, 0 ) ) ;
+		}
 //		switch ( this.eyes.getActifEye() ) {
 //			case LEFT:
 //				d = (float) this.eyes.getLeftEyeDistanceToTheblock() ;
