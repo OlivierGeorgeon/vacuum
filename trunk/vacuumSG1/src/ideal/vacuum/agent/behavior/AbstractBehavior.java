@@ -2,16 +2,15 @@ package ideal.vacuum.agent.behavior;
 
 import ideal.vacuum.Ernest130Model ;
 import ideal.vacuum.agent.AgentDesigner ;
+import ideal.vacuum.agent.DesignerListener ;
 import ideal.vacuum.agent.GraphicProperties ;
 import ideal.vacuum.agent.GraphicPropertiesChangeEvent ;
-import ideal.vacuum.agent.GraphicPropertiesListener ;
 import ideal.vacuum.agent.Move ;
 import ideal.vacuum.agent.vision.Eyes ;
 
 import java.awt.Color ;
 
 import javax.swing.event.EventListenerList ;
-import javax.vecmath.Matrix3f ;
 import javax.vecmath.Vector3f ;
 
 import ernest.Effect ;
@@ -37,11 +36,11 @@ public abstract class AbstractBehavior implements Behavior {
 	
 	protected EventListenerList listeners;
 	
-	public AbstractBehavior( Ernest130Model model , GraphicPropertiesListener listener ) {
+	public AbstractBehavior( Ernest130Model model , DesignerListener listener ) {
 		this.model = model ;
 		this.effect = new Effect() ;
 		this.listeners = new EventListenerList();
-		this.listeners.add( GraphicPropertiesListener .class, listener);
+		this.listeners.add( DesignerListener .class, listener);
 		
 		this.focusColor = AgentDesigner.UNANIMATED_COLOR ;
 		this.leftColor = AgentDesigner.UNANIMATED_COLOR ;
@@ -59,12 +58,6 @@ public abstract class AbstractBehavior implements Behavior {
 		return this.effect ;
 	}
 	
-	protected final void notifyGraphicPropertiesChange( GraphicPropertiesChangeEvent event ){
-		for ( GraphicPropertiesListener listener : this.listeners.getListeners( GraphicPropertiesListener.class ) ) {
-			listener.notifyGraphicPropertiesChanged( event );
-		}
-	}
-	
 	public BehaviorState doMovement( Move schema ) {
 		this.effect = new Effect() ;
 		this.focusColor = AgentDesigner.UNANIMATED_COLOR ;
@@ -75,7 +68,7 @@ public abstract class AbstractBehavior implements Behavior {
 		GraphicPropertiesChangeEvent event = new GraphicPropertiesChangeEvent(
 				this ,
 				ernestGraphicProperties ) ;
-		this.notifyGraphicPropertiesChange( event ) ;
+		this.notifyGraphicPropertiesChanged( event ) ;
 	
 		System.out.println( "Agent #" +
 				this.model.getID() +
@@ -108,7 +101,7 @@ public abstract class AbstractBehavior implements Behavior {
 			default:
 				break ;
 		}
-		
+	
 		this.effect.setEnactedInteractionLabel(schema.getLabel().substring(0, 1) + this.effect.getLabel());
 
 		return new BehaviorState(
@@ -118,42 +111,35 @@ public abstract class AbstractBehavior implements Behavior {
 				this.eyes ) ;
 	}
 	
-	@Override
-	public final void anim() {
-		GraphicProperties ernestGraphicProperties = this.model.getCopyOfGraphicProperties() ;
-		this.computeAbsoluteSpeedTranslation( ernestGraphicProperties ) ;
-		this.computeAbsoluteSpeedRotation( ernestGraphicProperties ) ;
+
+	protected final void notifyGraphicPropertiesChanged( GraphicPropertiesChangeEvent event ){
+		for ( DesignerListener listener : this.listeners.getListeners( DesignerListener.class ) ) {
+			listener.notifyGraphicPropertiesChanged( event );
+		}
+	}
 	
-		Matrix3f rot2 = new Matrix3f() ;
-		rot2.rotZ( -ernestGraphicProperties.getmOrientation().z ) ;
-		rot2.transform( this.model.mSpeedT , this.model.mEgoSpeedT ) ;
+	protected final void notifyBehaviorStateChanged( BehaviorStateChangeEvent event ){
+		for ( DesignerListener listener : this.listeners.getListeners( DesignerListener.class ) ) {
+			listener.notifyBehaviorStateChanged( event );
+		}
+	}
 	
-		if ( this.model.mSpeedR.z > Math.PI )
-			this.model.mSpeedR.z -= 2 * Math.PI ;
-		if ( this.model.mSpeedR.z <= -Math.PI )
-			this.model.mSpeedR.z += 2 * Math.PI ;
-	
+	private final void refreshWorld() {
 		this.model.getMainFrame().drawGrid() ;
 	}
 
-	private void computeAbsoluteSpeedRotation( GraphicProperties ernestGraphicProperties ) {
-		this.model.mSpeedR = new Vector3f( ernestGraphicProperties.getmOrientation() ) ;
-		this.model.mSpeedR.sub( ernestGraphicProperties.getmPreviousOrientation() ) ;
+	private final void refreshFramesPlugins( final float angleRotation, final float xTranslation ){
+		this.model.getEnvironment().animFramesPlugins( angleRotation , xTranslation );
 	}
-
-	private void computeAbsoluteSpeedTranslation( GraphicProperties ernestGraphicProperties ) {
-		this.model.mSpeedT = new Vector3f( ernestGraphicProperties.getmPosition() ) ;
-		this.model.mSpeedT.sub( ernestGraphicProperties.getmPreviousPosition() ) ;
-	}
-
-	protected final void turnRightAnim() {
+	
+	protected final void turnRightAnimWorld() {
 		for ( int i = 0; i < 20; i++ ) {
 			GraphicProperties ernestGraphicProperties = this.model.getCopyOfGraphicProperties() ;
 			GraphicPropertiesChangeEvent event = new GraphicPropertiesChangeEvent( this , ernestGraphicProperties ) ;
 			event.getmOrientation().z -= Math.PI / 40 ;
-			this.notifyGraphicPropertiesChange( event );
+			this.notifyGraphicPropertiesChanged( event );
 			
-			this.anim() ;
+			this.refreshWorld() ;
 			this.model.sleep( this.delayMove ) ;
 		}
 		
@@ -161,20 +147,22 @@ public abstract class AbstractBehavior implements Behavior {
 		if ( ernestGraphicProperties.getmOrientation().z < -Math.PI ){
 			GraphicPropertiesChangeEvent event = new GraphicPropertiesChangeEvent( this , ernestGraphicProperties ) ;
 			event.getmOrientation().z += 2 * Math.PI ;
-			this.notifyGraphicPropertiesChange( event );
+			this.notifyGraphicPropertiesChanged( event );
 		}
-		
-		this.model.getEnvironment().animFramesPlugins( (float)-(Math.PI / 2) , 0 );
 	}
 
-	protected final void turnLeftAnim() {
+	protected final void turnRightAnimFramesPlugins() {
+		this.refreshFramesPlugins( (float)-(Math.PI / 2) , 0 );
+	}
+	
+	protected final void turnLeftAnimWorld() {
 		for ( int i = 0; i < 20; i++ ) {
 			GraphicProperties ernestGraphicProperties = this.model.getCopyOfGraphicProperties() ;
 			GraphicPropertiesChangeEvent event = new GraphicPropertiesChangeEvent( this , ernestGraphicProperties ) ;
 			event.getmOrientation().z += Math.PI / 40 ;
-			this.notifyGraphicPropertiesChange( event );
+			this.notifyGraphicPropertiesChanged( event );
 			
-			this.anim() ;
+			this.refreshWorld() ;
 			this.model.sleep( this.delayMove ) ;
 		}
 		
@@ -182,92 +170,105 @@ public abstract class AbstractBehavior implements Behavior {
 		if ( ernestGraphicProperties.getmOrientation().z > Math.PI ){
 			GraphicPropertiesChangeEvent event = new GraphicPropertiesChangeEvent( this , ernestGraphicProperties ) ;
 			event.getmOrientation().z-= 2 * Math.PI ;
-			this.notifyGraphicPropertiesChange( event );
+			this.notifyGraphicPropertiesChanged( event );
 		}
-		
-		this.model.getEnvironment().animFramesPlugins( (float)(Math.PI / 2) , 0 );
 	}
 
-	protected final void bumpAheadAnim() {
+	protected final void turnLeftAnimFramesPlugins() {
+		this.refreshFramesPlugins( (float)(Math.PI / 2) , 0 );
+	}
+	
+	protected final void bumpAheadAnimWorld() {
 		for ( int i = 0; i < 5; i++ ) {
 			GraphicProperties ernestGraphicProperties = this.model.getCopyOfGraphicProperties() ;
 			GraphicPropertiesChangeEvent event = new GraphicPropertiesChangeEvent( this , ernestGraphicProperties ) ;
 			event.getmPosition().set( this.model.localToParentRef( new Vector3f( .05f , 0 , 0 ) ) );
-			this.notifyGraphicPropertiesChange( event );
+			this.notifyGraphicPropertiesChanged( event );
 			
-			this.anim() ;
+			this.refreshWorld() ;
 			this.model.sleep( 20 ) ;
 		}
 		for ( int i = 0; i < 5; i++ ) {
 			GraphicProperties ernestGraphicProperties = this.model.getCopyOfGraphicProperties() ;
 			GraphicPropertiesChangeEvent event = new GraphicPropertiesChangeEvent( this , ernestGraphicProperties ) ;
 			event.getmPosition().set( this.model.localToParentRef( new Vector3f( -.05f , 0 , 0 ) ) );
-			this.notifyGraphicPropertiesChange( event );
+			this.notifyGraphicPropertiesChanged( event );
 			
-			this.anim() ;
+			this.refreshWorld() ;
 			this.model.sleep( 20 ) ;
 		}
-		this.model.getEnvironment().animFramesPlugins( 0 , 0 );
 	}
 
-	protected final void moveForwardAnim() {
+	protected final void bumpAheadAnimFramesPlugins() {
+		this.refreshFramesPlugins( 0 , 0 );
+	}
+	
+	protected final void moveForwardAnimWorld() {
 		for ( int i = 0; i < 20; i++ ) {
 			GraphicProperties ernestGraphicProperties = this.model.getCopyOfGraphicProperties() ;
 			GraphicPropertiesChangeEvent event = new GraphicPropertiesChangeEvent( this , ernestGraphicProperties ) ;
 			event.getmPosition().set( this.model.localToParentRef( new Vector3f( .05f , 0 , 0 ) ) );
-			this.notifyGraphicPropertiesChange( event );
+			this.notifyGraphicPropertiesChanged( event );
 			
-			this.anim() ;
+			this.refreshWorld() ;
 			this.model.sleep( this.delayMove ) ;
 		}
-		
-		this.model.getEnvironment().animFramesPlugins( 0, 1 );
 	}
 
-	protected final void bumpBehindAnim() {
+	protected final void moveForwardAnimFramesPlugins() {
+		this.refreshFramesPlugins( 0 , 1 );
+	}
+	
+	protected final void bumpBehindAnimWorld() {
 		for ( int i = 0; i < 5; i++ ) {
 			GraphicProperties ernestGraphicProperties = this.model.getCopyOfGraphicProperties() ;
 			GraphicPropertiesChangeEvent event = new GraphicPropertiesChangeEvent( this , ernestGraphicProperties ) ;
 			event.getmPosition().set( this.model.localToParentRef( new Vector3f( -.05f , 0 , 0 ) ) );
-			this.notifyGraphicPropertiesChange( event );
+			this.notifyGraphicPropertiesChanged( event );
 			
-			this.anim() ;
+			this.refreshWorld() ;
 			this.model.sleep( 20 ) ;
 		}
 		for ( int i = 0; i < 5; i++ ) {
 			GraphicProperties ernestGraphicProperties = this.model.getCopyOfGraphicProperties() ;
 			GraphicPropertiesChangeEvent event = new GraphicPropertiesChangeEvent( this , ernestGraphicProperties ) ;
 			event.getmPosition().set( this.model.localToParentRef( new Vector3f( .05f , 0 , 0 ) ) );
-			this.notifyGraphicPropertiesChange( event );
+			this.notifyGraphicPropertiesChanged( event );
 			
-			this.anim() ;
+			this.refreshWorld() ;
 			this.model.sleep( 20 ) ;
 		}
-		
-		this.model.getEnvironment().animFramesPlugins( 0 , 0 );
 	}
 
-	protected final void moveBackwardAnim() {
+	protected final void bumpBehindAnimFramesPlugins() {
+		this.refreshFramesPlugins( 0 , 0 );
+	}
+	
+	protected final void moveBackwardAnimWorld() {
 		for ( int i = 0; i < 20; i++ ) {
 			GraphicProperties ernestGraphicProperties = this.model.getCopyOfGraphicProperties() ;
 			GraphicPropertiesChangeEvent event = new GraphicPropertiesChangeEvent( this , ernestGraphicProperties ) ;
 			event.getmPosition().set( this.model.localToParentRef( new Vector3f( -.05f , 0 , 0 ) ) );
-			this.notifyGraphicPropertiesChange( event );
+			this.notifyGraphicPropertiesChanged( event );
 			
-			this.anim() ;
+			this.refreshWorld() ;
 			this.model.sleep( this.delayMove ) ;
 		}
-		
-		this.model.getEnvironment().animFramesPlugins( 0 , -1 );
 	}
 
-	protected final void touchAnim() {
-		this.anim() ;
+	protected final void moveBackwardAnimFramesPlugins() {
+		this.refreshFramesPlugins( 0 , -1 );
+	}
+	
+	protected final void touchAnimWorld() {
+		this.refreshWorld() ;
 		this.model.sleep( this.delayTouch ) ;
-		
-		this.model.getEnvironment().animFramesPlugins( 0 , 0 );
 	}
 
+	protected final void touchAnimFramesPlugins() {
+		this.refreshFramesPlugins( 0 , 0 );
+	}
+	
 	protected abstract void turnRight();
 	protected abstract void turnLeft();
 	protected abstract void moveForward();
