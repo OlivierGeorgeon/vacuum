@@ -15,7 +15,9 @@ import spas.IPlace ;
  * 
  * @author Joseph GARNIER
  * @version $Revision$
+ * @deprecated use {@link VisualInteractionDesigner}
  */
+@Deprecated
 public class SimpleInteractionDesigner extends AbstractSMInteractionDesigner {
 
 	private Graphics2D g2d;

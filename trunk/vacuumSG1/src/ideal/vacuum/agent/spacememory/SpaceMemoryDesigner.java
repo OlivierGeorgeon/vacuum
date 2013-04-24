@@ -145,13 +145,7 @@ public class SpaceMemoryDesigner {
 	}
 
 	private void displayEnactedInteraction( Graphics2D g2d , IPlace place , BehaviorState behaviorState ) {
-		String interactionLabel = place.getInteraction().getLabel() ;
-		AbstractSMInteractionDesigner interactionDesigner;
-		//if ( SpaceMemoryVisualEffect.containVisualEffect( interactionLabel ) ) {
-			interactionDesigner = new VisualInteractionDesigner();
-		//}else{
-		//	interactionDesigner = new SimpleInteractionDesigner();
-		//}
+		AbstractSMInteractionDesigner interactionDesigner = new VisualInteractionDesigner();
 		interactionDesigner.addInteraction( g2d , place , behaviorState );
 	}
 }

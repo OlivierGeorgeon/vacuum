@@ -1,17 +1,13 @@
 package ideal.vacuum.agent.behavior ;
 
 import ideal.vacuum.Ernest130Model ;
-import ideal.vacuum.agent.GraphicProperties ;
 import ideal.vacuum.agent.DesignerListener ;
+import ideal.vacuum.agent.GraphicProperties ;
 import ideal.vacuum.agent.TactileEffect ;
-import ideal.vacuum.agent.VisualEffect ;
-import ideal.vacuum.agent.vision.Eyes ;
 import ideal.vacuum.agent.vision.PhotoreceptorCell ;
 
 import javax.vecmath.Point3f ;
 import javax.vecmath.Vector3f ;
-
-import ernest.Ernest ;
 
 /**
  * 
@@ -32,43 +28,41 @@ public class BehaviorErnest9 extends AbstractBehavior {
 				retina[0].getxBlockPosition() ,
 				retina[0].getyBlockPosition() ,
 				retina[0].getBlockColor() ) ;
-		this.notifyBehaviorStateChanged( new BehaviorStateChangeEvent( this , this.getCurrentBehaviorState() ) );
+		this.notifyBehaviorStateChanged( new BehaviorStateChangeEvent( this , this
+				.getCurrentBehaviorState() ) ) ;
 	}
 
-	private String getEyesStimuli( ) {
-		return this.eyes.visualEffect().getLabel();
+	private String getEyesStimuli() {
+		return this.eyes.visualEffect().getLabel() ;
 	}
 
 	private void setLocationFromEyes() {
-		this.effect.setLocation(this.eyes.getEventPosition());
+		this.effect.setLocation( this.eyes.getEventPosition() ) ;
 	}
 
 	protected void turnRight() {
-		//Eyes snapshot = this.eyes.takeSnapshot() ;
 		this.turnRightAnimWorld() ;
 		this.lookTheWorld() ;
-		this.turnRightAnimFramesPlugins();
-		
-		String tactileStimuli = this.getEyesStimuli() ;//+ TactileEffect.TRUE.getLabel() ;
+		this.turnRightAnimFramesPlugins() ;
+
+		String tactileStimuli = this.getEyesStimuli() ;
 		this.effect.setLabel( tactileStimuli ) ;
 		this.effect.setTransformation( (float) Math.PI / 2 , 0 ) ;
 		this.setLocationFromEyes() ;
 	}
 
 	protected void turnLeft() {
-		//Eyes snapshot = this.eyes.takeSnapshot() ;
 		this.turnLeftAnimWorld() ;
 		this.lookTheWorld() ;
-		this.turnLeftAnimFramesPlugins();
-		
-		String tactileStimuli = this.getEyesStimuli() ;//+ TactileEffect.TRUE.getLabel() ;
+		this.turnLeftAnimFramesPlugins() ;
+
+		String tactileStimuli = this.getEyesStimuli() ;
 		this.effect.setLabel( tactileStimuli ) ;
 		this.effect.setTransformation( (float) -Math.PI / 2 , 0 ) ;
 		this.setLocationFromEyes() ;
 	}
 
 	protected void moveForward() {
-		//Eyes snapshot = this.eyes.takeSnapshot() ;
 		Vector3f localPoint = new Vector3f( this.model.DIRECTION_AHEAD ) ;
 		Vector3f aheadPoint = this.model.localToParentRef( localPoint ) ;
 
@@ -76,7 +70,7 @@ public class BehaviorErnest9 extends AbstractBehavior {
 				!this.model.affordCuddle( aheadPoint ) ) {
 			this.moveForwardAnimWorld() ;
 			this.lookTheWorld() ;
-			this.moveForwardAnimFramesPlugins();
+			this.moveForwardAnimFramesPlugins() ;
 			this.setLocationFromEyes() ;
 			if ( this.model.getEnvironment().isFood( aheadPoint.x , aheadPoint.y ) ) {
 				this.effect.setColor( this.model.getEnvironment()
@@ -85,7 +79,7 @@ public class BehaviorErnest9 extends AbstractBehavior {
 				this.model.getEnvironment().eatFood( aheadPoint ) ;
 				this.effect.setLabel( TactileEffect.FOOD.getLabel() ) ;
 			} else {
-				String tactileStimuli = this.getEyesStimuli() ;//+ TactileEffect.TRUE.getLabel() ;
+				String tactileStimuli = this.getEyesStimuli() ;
 				this.effect.setLabel( tactileStimuli ) ;
 			}
 			this.effect.setTransformation( 0 , -1 ) ;
@@ -93,11 +87,9 @@ public class BehaviorErnest9 extends AbstractBehavior {
 		} else {
 			this.bumpAheadAnimWorld() ;
 			this.lookTheWorld() ;
-			this.bumpAheadAnimFramesPlugins();
+			this.bumpAheadAnimFramesPlugins() ;
 			this.effect.setLocation( new Point3f( 1 , 0 , 0 ) ) ;
-			//String tactileStimuli = this.getEyesStimuli() + TactileEffect.FALSE.getLabel() ;
-			String tactileStimuli = TactileEffect.FALSE.getLabel() ;
-			this.effect.setLabel( tactileStimuli ) ;
+			this.effect.setLabel( TactileEffect.FALSE.getLabel() ) ;
 		}
 	}
 
