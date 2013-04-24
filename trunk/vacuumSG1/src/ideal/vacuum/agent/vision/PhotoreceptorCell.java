@@ -57,10 +57,6 @@ public class PhotoreceptorCell implements Cloneable  {
 		if ( Math.abs( this.xBlockPosition ) == Ernest.INFINITE ||
 				Math.abs( this.yBlockPosition ) == Ernest.INFINITE )
 			return Ernest.INFINITE ;
-		return this.distanceToTheBlock();
-	}
-
-	public float distanceToTheBlock() {
 		return this.calculateHypotenuse();
 	}
 	
