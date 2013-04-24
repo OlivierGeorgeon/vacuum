@@ -68,11 +68,11 @@ public class BehaviorErnest9 extends AbstractBehavior {
 
 	private void setLocationFromEyes() {
 		float d = Ernest.INT_FACTOR ;
-		this.effect.setLocation( new Point3f( this.eyes.getxBlockPosition() /
-				d *
-				Eyes.DISTANCE_VISION , this.eyes.getxBlockPosition() /
-				d *
-				Eyes.DISTANCE_VISION , 0 ) ) ;
+		this.effect.setLocation( new Point3f( this.eyes.getxBlockPosition()
+				// / d * Eyes.DISTANCE_VISION 
+				, this.eyes.getyBlockPosition() 
+				// / d * Eyes.DISTANCE_VISION 
+				, 0 ) ) ;
 //		switch ( this.eyes.getActifEye() ) {
 //			case LEFT:
 //				d = (float) this.eyes.getLeftEyeDistanceToTheblock() ;
