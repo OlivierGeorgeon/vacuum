@@ -133,7 +133,7 @@ public class Eyes implements Cloneable {
 	}
 
 	@Override
-	protected Eyes clone() throws CloneNotSupportedException {
+	public Eyes clone() throws CloneNotSupportedException {
 		Eyes object = (Eyes) super.clone() ;
 		object.photoreceptor = this.photoreceptor.clone() ;
 		object.previousPhotoreceptorState = this.previousPhotoreceptorState.clone() ;
