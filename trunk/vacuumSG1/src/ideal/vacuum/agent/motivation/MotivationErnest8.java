@@ -42,24 +42,15 @@ public class MotivationErnest8 implements Motivation{
 		tactileEffects[1] = Pair.create( TactileEffect.FALSE , -10 );
 		
 		
-		for ( Pair<TactileEffect , Integer> tactileEffect : tactileEffects ) {
-			for ( Pair<VisualEffect , Integer> eyeEffect : eyesEffects ) {
-				for ( Pair<Move , Integer> move : moves ) {
-					// r(u,y) = r(u) + r(f) + r(e_left) + r(e_right)
-					int satisfaction = move.getRight() + tactileEffect.getRight() + eyeEffect.getRight();
-					
-					String stimuli = move.getLeft().getLabel() + eyeEffect.getLeft().getLabel() + tactileEffect.getLeft().getLabel() ;
-					
-					if( move.getLeft().equals( Move.MOVE_FORWARD ) && tactileEffect.getLeft().equals( TactileEffect.TRUE ) ){
-						satisfaction = -1 + eyeEffect.getRight();
-					}
-					if( move.getLeft().equals( Move.MOVE_FORWARD ) && tactileEffect.getLeft().equals( TactileEffect.FALSE ) ){
-						satisfaction = -8 + eyeEffect.getRight();
-					}
-					
-					ernest.addInteraction( stimuli , satisfaction );
-				}
+		for ( Pair<VisualEffect , Integer> eyeEffect : eyesEffects ) {
+			for ( Pair<Move , Integer> move : moves ) {
+				// r(u,y) = r(u) + r(e) 
+				int satisfaction = move.getRight() + eyeEffect.getRight();
+				String interactionLabel = move.getLeft().getLabel() + eyeEffect.getLeft().getLabel() ;				
+				ernest.addInteraction( interactionLabel , satisfaction );
 			}
 		}
+		// Bump
+		ernest.addInteraction( Move.MOVE_FORWARD.getLabel() + TactileEffect.FALSE.getLabel() , -8 );		
 	}
 }
