@@ -5,6 +5,8 @@ import java.awt.Point ;
 import java.awt.geom.AffineTransform ;
 import java.awt.geom.Point2D ;
 
+import javax.vecmath.Point3f;
+
 import ernest.Ernest ;
 
 public class PhotoreceptorCell implements Cloneable  {
@@ -28,6 +30,17 @@ public class PhotoreceptorCell implements Cloneable  {
 		return this.yBlockPosition ;
 	}
 	
+	public Point3f getBlockPosition()
+	{
+		//Point3f position = new Point3f();
+		//float d = (float)this.distanceAccurateToTheBlock();
+		//if (d > 0 && d < Ernest.INFINITE)
+		//	position = new Point3f( xBlockPosition / d * Eyes.DISTANCE_VISION , yBlockPosition / d * Eyes.DISTANCE_VISION , 0 );
+
+		return new Point3f( xBlockPosition, yBlockPosition , 0 );
+		
+	}
+
 	public Color getBlockColor() {
 		return this.blockColor ;
 	}
@@ -40,19 +53,19 @@ public class PhotoreceptorCell implements Cloneable  {
 		this.yBlockPosition = (int) blockPosition.getY();
 	}
 	
-	public double distanceAccurateToTheBlock() {
+	public float distanceAccurateToTheBlock() {
 		if ( Math.abs( this.xBlockPosition ) == Ernest.INFINITE ||
 				Math.abs( this.yBlockPosition ) == Ernest.INFINITE )
 			return Ernest.INFINITE ;
-		return this.distanceToTheBlock();// * Ernest.INT_FACTOR ;
+		return this.distanceToTheBlock();
 	}
 
-	public double distanceToTheBlock() {
+	public float distanceToTheBlock() {
 		return this.calculateHypotenuse();
 	}
 	
-	private double calculateHypotenuse() {
-		return ( Math.sqrt( this.xBlockPosition * this.xBlockPosition + this.yBlockPosition *
+	private float calculateHypotenuse() {
+		return ( (float)Math.sqrt( this.xBlockPosition * this.xBlockPosition + this.yBlockPosition *
 				this.yBlockPosition ) ) ;
 	}
 	
