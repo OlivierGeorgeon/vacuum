@@ -2,7 +2,7 @@ package ideal.vacuum.agent.behavior ;
 
 import ideal.vacuum.Environment ;
 import ideal.vacuum.Ernest130Model ;
-import ideal.vacuum.agent.GraphicPropertiesListener ;
+import ideal.vacuum.agent.DesignerListener ;
 import ideal.vacuum.agent.TactileEffect ;
 
 import java.awt.Color ;
@@ -18,18 +18,18 @@ import javax.vecmath.Vector3f ;
  */
 public class BehaviorErnest7 extends AbstractBehavior {
 
-	public BehaviorErnest7( Ernest130Model model , GraphicPropertiesListener listener ) {
+	public BehaviorErnest7( Ernest130Model model , DesignerListener listener ) {
 		super( model , listener ) ;
 	}
 
 	protected void turnRight() {
-		this.turnRightAnim() ;
+		this.turnRightAnimWorld() ;
 		this.effect.setLabel( TactileEffect.FALSE.getLabel() ) ;
 		this.effect.setTransformation( (float) Math.PI / 2 , 0 ) ;
 	}
 
 	protected void turnLeft() {
-		this.turnLeftAnim() ;
+		this.turnLeftAnimWorld() ;
 		this.effect.setLabel( TactileEffect.FALSE.getLabel() ) ;
 		this.effect.setTransformation( (float) -Math.PI / 2 , 0 ) ;
 	}
@@ -42,14 +42,14 @@ public class BehaviorErnest7 extends AbstractBehavior {
 		this.effect.setColor( blockColor.getRGB() ) ;
 
 		if ( this.model.getEnvironment().affordWalk( aheadPoint ) && !this.model.affordCuddle( aheadPoint ) ) {
-			this.moveForwardAnim() ;
+			this.moveForwardAnimWorld() ;
 			this.effect.setLabel( TactileEffect.TRUE.getLabel() ) ;
 			this.effect.setTransformation( 0 , -1 ) ;
 		} else {
 			this.effect.setColor( Color.RED.getRGB() ) ;
 			this.effect.setLabel( TactileEffect.FALSE.getLabel() ) ;
 			this.focusColor = Color.RED ;
-			this.bumpAheadAnim() ;
+			this.bumpAheadAnimWorld() ;
 		}
 	}
 
@@ -82,7 +82,7 @@ public class BehaviorErnest7 extends AbstractBehavior {
 
 			this.effect.setLabel( TactileEffect.TRUE.getLabel() ) ;
 		}
-		this.touchAnim() ;
+		this.touchAnimWorld() ;
 	}
 
 	protected void touchLeft() {
@@ -112,7 +112,7 @@ public class BehaviorErnest7 extends AbstractBehavior {
 			this.effect.setLabel( TactileEffect.TRUE.getLabel() ) ;
 		}
 
-		this.touchAnim() ;
+		this.touchAnimWorld() ;
 	}
 
 	protected void touchRight() {
@@ -142,6 +142,6 @@ public class BehaviorErnest7 extends AbstractBehavior {
 			this.effect.setLabel( TactileEffect.TRUE.getLabel() ) ;
 		}
 
-		this.touchAnim() ;
+		this.touchAnimWorld() ;
 	}
 }

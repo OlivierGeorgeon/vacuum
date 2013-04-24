@@ -11,7 +11,7 @@ import java.awt.Color ;
  * @author Joseph GARNIER
  * @version $Revision$
  */
-public class BehaviorState {
+public class BehaviorState implements Cloneable{
 
 	private Color focusColor = AgentDesigner.UNANIMATED_COLOR ;
 	private Color leftColor = AgentDesigner.UNANIMATED_COLOR ;
@@ -40,5 +40,16 @@ public class BehaviorState {
 
 	public Eyes getEyes() {
 		return this.eyes ;
+	}
+
+	@Override
+	protected BehaviorState clone() throws CloneNotSupportedException {
+		BehaviorState object =  (BehaviorState) super.clone() ;
+		object.eyes = this.eyes.clone();
+		object.focusColor = this.focusColor;
+		object.leftColor = this.leftColor;
+		object.rightColor = this.rightColor;
+		
+		return object;
 	}
 }
