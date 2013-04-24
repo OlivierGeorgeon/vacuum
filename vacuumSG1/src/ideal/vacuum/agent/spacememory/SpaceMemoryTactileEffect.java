@@ -50,7 +50,7 @@ public enum SpaceMemoryTactileEffect {
 				return String.valueOf( inter ) ;
 			}
 		}
-		throw new RuntimeException( "Can't extract the tactile effect" ) ;
+		throw new RuntimeException( "Can't extract the tactile effect : " + interaction ) ;
 	}
 		
 	public Color getEffectColor() {

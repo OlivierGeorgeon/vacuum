@@ -56,7 +56,7 @@ public enum SpaceMemoryVisualEffect {
 				return String.valueOf( inter ) ;
 			}
 		}
-		throw new RuntimeException( "Can't extract the visual effect" ) ;
+		throw new RuntimeException( "Can't extract the visual effect : " + interaction ) ;
 	}
 	
 	public Color getEffectColor() {
