@@ -3,7 +3,7 @@ package ideal.vacuum.agent.behavior ;
 import ideal.vacuum.Environment ;
 import ideal.vacuum.Ernest130Model ;
 import ideal.vacuum.ErnestModel ;
-import ideal.vacuum.agent.GraphicPropertiesListener ;
+import ideal.vacuum.agent.DesignerListener ;
 import ideal.vacuum.agent.TactileEffect ;
 
 import java.awt.Color ;
@@ -19,18 +19,18 @@ import javax.vecmath.Vector3f ;
  */
 public class BehaviorErnest8 extends AbstractBehavior {
 
-	public BehaviorErnest8( Ernest130Model model , GraphicPropertiesListener listener ) {
+	public BehaviorErnest8( Ernest130Model model , DesignerListener listener ) {
 		super( model , listener ) ;
 	}
 
 	protected void turnRight() {
-		this.turnRightAnim() ;
+		this.turnRightAnimWorld() ;
 		this.effect.setLabel( TactileEffect.FALSE.getLabel() ) ;
 		this.effect.setTransformation( (float) Math.PI / 2 , 0 ) ;
 	}
 
 	protected void turnLeft() {
-		this.turnLeftAnim() ;
+		this.turnLeftAnimWorld() ;
 		this.effect.setLabel( TactileEffect.FALSE.getLabel() ) ;
 		this.effect.setTransformation( (float) -Math.PI / 2 , 0 ) ;
 	}
@@ -43,7 +43,7 @@ public class BehaviorErnest8 extends AbstractBehavior {
 		this.effect.setColor( blockColor.getRGB() ) ;
 
 		if ( this.model.getEnvironment().affordWalk( aheadPoint ) && !this.model.affordCuddle( aheadPoint ) ) {
-			this.moveForwardAnim() ;
+			this.moveForwardAnimWorld() ;
 			if ( blockColor.equals( Environment.ALGA1 ) ||
 					blockColor.equals( Environment.ALGA2 ) ||
 					blockColor.equals( Environment.ALGA1 ) ||
@@ -59,7 +59,7 @@ public class BehaviorErnest8 extends AbstractBehavior {
 			this.effect.setColor( Color.RED.getRGB() ) ;
 			this.effect.setLabel( TactileEffect.FALSE.getLabel() ) ;
 			this.focusColor = Color.RED ;
-			this.bumpAheadAnim() ;
+			this.bumpAheadAnimWorld() ;
 		}
 	}
 
@@ -101,7 +101,7 @@ public class BehaviorErnest8 extends AbstractBehavior {
 				this.effect.setLabel( TactileEffect.BRICK.getLabel() ) ;
 			}
 		}
-		this.touchAnim() ;
+		this.touchAnimWorld() ;
 	}
 
 	protected void touchLeft() {
@@ -140,7 +140,7 @@ public class BehaviorErnest8 extends AbstractBehavior {
 			}
 		}
 
-		this.touchAnim() ;
+		this.touchAnimWorld() ;
 	}
 
 	protected void touchRight() {
@@ -179,6 +179,6 @@ public class BehaviorErnest8 extends AbstractBehavior {
 			}
 		}
 
-		this.touchAnim() ;
+		this.touchAnimWorld() ;
 	}
 }

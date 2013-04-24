@@ -14,7 +14,5 @@ public interface Behavior {
 
 	public BehaviorState getCurrentBehaviorState() ;
 
-	public void anim() ;
-
 	public IEffect getEffect() ;
 }
