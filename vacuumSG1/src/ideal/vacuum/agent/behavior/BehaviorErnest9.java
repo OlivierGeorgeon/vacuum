@@ -48,7 +48,7 @@ public class BehaviorErnest9 extends AbstractBehavior {
 		this.turnRightAnim() ;
 		this.lookTheWorld() ;
 
-		String tactileStimuli = this.getEyesStimuli() + TactileEffect.TRUE.getLabel() ;
+		String tactileStimuli = this.getEyesStimuli() ;//+ TactileEffect.TRUE.getLabel() ;
 		this.effect.setLabel( tactileStimuli ) ;
 		this.effect.setTransformation( (float) Math.PI / 2 , 0 ) ;
 		this.setLocationFromEyes() ;
@@ -59,7 +59,7 @@ public class BehaviorErnest9 extends AbstractBehavior {
 		this.turnLeftAnim() ;
 		this.lookTheWorld() ;
 
-		String tactileStimuli = this.getEyesStimuli() + TactileEffect.TRUE.getLabel() ;
+		String tactileStimuli = this.getEyesStimuli() ;//+ TactileEffect.TRUE.getLabel() ;
 		this.effect.setLabel( tactileStimuli ) ;
 		this.effect.setTransformation( (float) -Math.PI / 2 , 0 ) ;
 		this.setLocationFromEyes() ;
@@ -82,7 +82,7 @@ public class BehaviorErnest9 extends AbstractBehavior {
 				this.model.getEnvironment().eatFood( aheadPoint ) ;
 				this.effect.setLabel( TactileEffect.FOOD.getLabel() ) ;
 			} else {
-				String tactileStimuli = this.getEyesStimuli() + TactileEffect.TRUE.getLabel() ;
+				String tactileStimuli = this.getEyesStimuli() ;//+ TactileEffect.TRUE.getLabel() ;
 				this.effect.setLabel( tactileStimuli ) ;
 			}
 			this.effect.setTransformation( 0 , -1 ) ;
@@ -91,7 +91,8 @@ public class BehaviorErnest9 extends AbstractBehavior {
 			this.bumpAheadAnim() ;
 			this.lookTheWorld() ;
 			this.effect.setLocation( new Point3f( 1 , 0 , 0 ) ) ;
-			String tactileStimuli = this.getEyesStimuli() + TactileEffect.FALSE.getLabel() ;
+			//String tactileStimuli = this.getEyesStimuli() + TactileEffect.FALSE.getLabel() ;
+			String tactileStimuli = TactileEffect.FALSE.getLabel() ;
 			this.effect.setLabel( tactileStimuli ) ;
 		}
 	}
