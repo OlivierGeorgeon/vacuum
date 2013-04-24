@@ -3,13 +3,14 @@ package ideal.vacuum ;
 import ideal.vacuum.agent.AgentDesigner ;
 import ideal.vacuum.agent.GraphicProperties ;
 import ideal.vacuum.agent.GraphicPropertiesChangeEvent ;
-import ideal.vacuum.agent.GraphicPropertiesListener ;
+import ideal.vacuum.agent.DesignerListener ;
 import ideal.vacuum.agent.Move ;
 import ideal.vacuum.agent.behavior.Behavior ;
 import ideal.vacuum.agent.behavior.BehaviorErnest7 ;
 import ideal.vacuum.agent.behavior.BehaviorErnest8 ;
 import ideal.vacuum.agent.behavior.BehaviorErnest9 ;
 import ideal.vacuum.agent.behavior.BehaviorState ;
+import ideal.vacuum.agent.behavior.BehaviorStateChangeEvent ;
 import ideal.vacuum.agent.motivation.Motivation ;
 import ideal.vacuum.agent.motivation.MotivationErnest7 ;
 import ideal.vacuum.agent.motivation.MotivationErnest8 ;
@@ -26,7 +27,6 @@ import java.util.ArrayList ;
 import javax.vecmath.Vector3f ;
 
 import spas.IPlace ;
-import tracing.XMLStreamTracer;
 import utils.ErnestUtils ;
 import ernest.Ernest ;
 
@@ -35,7 +35,7 @@ import ernest.Ernest ;
  * @author Joseph GARNIER
  * @version $Revision$
  */
-public class Ernest130Model extends ErnestModel implements GraphicPropertiesListener {
+public class Ernest130Model extends ErnestModel implements DesignerListener {
 
 	private enum Version {
 		ERNEST7() ,
@@ -143,11 +143,12 @@ public class Ernest130Model extends ErnestModel implements GraphicPropertiesList
 		this.spaceMemory.setModel( this ) ;
 
 		 //Only trace the first agent.
-		 this.m_tracer = new XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","dlsQKeaXlclGbzRTN--ZLWajTDyGpr");
+//		 this.m_tracer = new
+//		 XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","dlsQKeaXlclGbzRTN--ZLWajTDyGpr");
 //		this.m_tracer = new XMLStreamTracer(
 //				"http://134.214.128.53/abstract/lite/php/stream/" ,
 //				"juIQzDzdCtBSpmNnJNkzdtTTajfsXe" ) ;
-//		this.m_tracer = null;
+		this.m_tracer = null;
 		// Initialize the Ernest
 		// Ernest's inborn primitive interactions
 		this.m_ernest.setParameters( 6 , 10 ) ;
@@ -178,7 +179,6 @@ public class Ernest130Model extends ErnestModel implements GraphicPropertiesList
 			this.cognitiveMode = ErnestModel.AGENT_STOP ;
 
 		this.behaviorState = this.behavior.doMovement( schema ) ;
-		
 		this.traceEnvironmentalData() ;
 		if (this.m_tracer != null)
 			this.m_tracer.finishEvent();
@@ -212,5 +212,10 @@ public class Ernest130Model extends ErnestModel implements GraphicPropertiesList
 		this.mRotation = properties.getmRotation() ;
 		this.mPreviousPosition = properties.getmPreviousPosition() ;
 		this.mPreviousOrientation = properties.getmPreviousOrientation() ;
+	}
+
+	@Override
+	public void notifyBehaviorStateChanged( BehaviorStateChangeEvent behaviorStateEvent ) {
+		this.behaviorState = behaviorStateEvent.getBehaviorState();
 	}
 }
