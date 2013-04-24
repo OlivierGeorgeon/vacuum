@@ -2,8 +2,7 @@ package ideal.vacuum.agent.behavior ;
 
 import ideal.vacuum.Ernest130Model ;
 import ideal.vacuum.agent.GraphicProperties ;
-import ideal.vacuum.agent.GraphicPropertiesChangeEvent;
-import ideal.vacuum.agent.GraphicPropertiesListener ;
+import ideal.vacuum.agent.DesignerListener ;
 import ideal.vacuum.agent.TactileEffect ;
 import ideal.vacuum.agent.VisualEffect ;
 import ideal.vacuum.agent.vision.Eyes ;
@@ -21,7 +20,7 @@ import ernest.Ernest ;
  */
 public class BehaviorErnest9 extends AbstractBehavior {
 
-	public BehaviorErnest9( Ernest130Model model , GraphicPropertiesListener listener ) {
+	public BehaviorErnest9( Ernest130Model model , DesignerListener listener ) {
 		super( model , listener ) ;
 	}
 
@@ -33,6 +32,7 @@ public class BehaviorErnest9 extends AbstractBehavior {
 				retina[0].getxBlockPosition() ,
 				retina[0].getyBlockPosition() ,
 				retina[0].getBlockColor() ) ;
+		this.notifyBehaviorStateChanged( new BehaviorStateChangeEvent( this , this.getCurrentBehaviorState() ) );
 	}
 
 	private String getEyesStimuli( ) {
@@ -45,9 +45,10 @@ public class BehaviorErnest9 extends AbstractBehavior {
 
 	protected void turnRight() {
 		//Eyes snapshot = this.eyes.takeSnapshot() ;
-		this.turnRightAnim() ;
+		this.turnRightAnimWorld() ;
 		this.lookTheWorld() ;
-
+		this.turnRightAnimFramesPlugins();
+		
 		String tactileStimuli = this.getEyesStimuli() ;//+ TactileEffect.TRUE.getLabel() ;
 		this.effect.setLabel( tactileStimuli ) ;
 		this.effect.setTransformation( (float) Math.PI / 2 , 0 ) ;
@@ -56,9 +57,10 @@ public class BehaviorErnest9 extends AbstractBehavior {
 
 	protected void turnLeft() {
 		//Eyes snapshot = this.eyes.takeSnapshot() ;
-		this.turnLeftAnim() ;
+		this.turnLeftAnimWorld() ;
 		this.lookTheWorld() ;
-
+		this.turnLeftAnimFramesPlugins();
+		
 		String tactileStimuli = this.getEyesStimuli() ;//+ TactileEffect.TRUE.getLabel() ;
 		this.effect.setLabel( tactileStimuli ) ;
 		this.effect.setTransformation( (float) -Math.PI / 2 , 0 ) ;
@@ -72,8 +74,9 @@ public class BehaviorErnest9 extends AbstractBehavior {
 
 		if ( this.model.getEnvironment().affordWalk( aheadPoint ) &&
 				!this.model.affordCuddle( aheadPoint ) ) {
-			this.moveForwardAnim() ;
+			this.moveForwardAnimWorld() ;
 			this.lookTheWorld() ;
+			this.moveForwardAnimFramesPlugins();
 			this.setLocationFromEyes() ;
 			if ( this.model.getEnvironment().isFood( aheadPoint.x , aheadPoint.y ) ) {
 				this.effect.setColor( this.model.getEnvironment()
@@ -88,8 +91,9 @@ public class BehaviorErnest9 extends AbstractBehavior {
 			this.effect.setTransformation( 0 , -1 ) ;
 
 		} else {
-			this.bumpAheadAnim() ;
+			this.bumpAheadAnimWorld() ;
 			this.lookTheWorld() ;
+			this.bumpAheadAnimFramesPlugins();
 			this.effect.setLocation( new Point3f( 1 , 0 , 0 ) ) ;
 			//String tactileStimuli = this.getEyesStimuli() + TactileEffect.FALSE.getLabel() ;
 			String tactileStimuli = TactileEffect.FALSE.getLabel() ;
