@@ -1,6 +1,7 @@
 package ideal.vacuum.agent.spacememory ;
 
 import ideal.vacuum.agent.TactileEffect ;
+import ideal.vacuum.agent.VisualEffect ;
 
 import java.awt.Color ;
 import java.util.HashMap ;
@@ -44,6 +45,15 @@ public enum SpaceMemoryTactileEffect {
 		}
 	}
 
+	public static boolean containTactileEffect( String interaction ) {
+		for ( TactileEffect effect : TactileEffect.values() ) {
+			if ( interaction.contains( effect.getLabel() ) ) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public static String extractTactileEffectLabel( String interaction ) {
 		for ( char inter : interaction.toCharArray() ) {
 			if ( TactileEffect.isExist( String.valueOf( inter ) ) ) {

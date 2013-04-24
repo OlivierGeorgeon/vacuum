@@ -1,7 +1,6 @@
 package ideal.vacuum.agent.spacememory ;
 
 import ideal.vacuum.agent.behavior.BehaviorState ;
-import ideal.vacuum.agent.vision.Eyes ;
 
 import java.awt.BasicStroke ;
 import java.awt.Color ;
@@ -34,20 +33,21 @@ public class VisualInteractionDesigner extends AbstractSMInteractionDesigner {
 				( LocalSpaceMemory.PERSISTENCE_DURATION - place.getClock() ) / 1.5f ) ;
 
 		String interactionLabel = place.getInteraction().getLabel() ;
-		this.smMove = SpaceMemoryMove.getSpaceMemoryMove( SpaceMemoryMove
-				.extractMoveLabel( interactionLabel ) ) ;
-//		this.smTactileEffect = SpaceMemoryTactileEffect
-//				.getSpaceMemoryTactileEffect( SpaceMemoryTactileEffect
-//						.extractTactileEffectLabel( interactionLabel ) ) ;
-		if ( SpaceMemoryVisualEffect.containVisualEffect( interactionLabel ) ) {
-			this.smVisualEffect = SpaceMemoryVisualEffect
-			.getSpaceMemoryVisualEffect( SpaceMemoryVisualEffect
-					.extractLeftVisualEffectLabel( interactionLabel ) ) ;			
-			this.fillAndDrawShapeVisual() ;
+		String moveLabel = SpaceMemoryMove.extractMoveLabel( interactionLabel ) ;
+		this.smMove = SpaceMemoryMove.getSpaceMemoryMove( moveLabel ) ;
+		
+		if ( SpaceMemoryTactileEffect.containTactileEffect( interactionLabel ) ) {
+			String tactileEffectLabel = SpaceMemoryTactileEffect.extractTactileEffectLabel( interactionLabel ) ;
+			this.smTactileEffect = SpaceMemoryTactileEffect.getSpaceMemoryTactileEffect( tactileEffectLabel ) ;
 		}
-		else
-			this.fillAndDrawShapeNoVisual();
 
+		if ( SpaceMemoryVisualEffect.containVisualEffect( interactionLabel ) ) {
+			String visualEffectLabel = SpaceMemoryVisualEffect.extractLeftVisualEffectLabel( interactionLabel ) ;
+			this.smVisualEffect = SpaceMemoryVisualEffect.getSpaceMemoryVisualEffect( visualEffectLabel ) ;			
+			this.fillAndDrawShapeVisual() ;
+		}else{
+			this.fillAndDrawShapeNoVisual();
+		}
 	}
 
 	private void applyGeometricalTransformation( float orientationAngle , Point3f position ,
@@ -66,7 +66,6 @@ public class VisualInteractionDesigner extends AbstractSMInteractionDesigner {
 		this.g2d.fill( this.smMove.getShape() ) ;
 		this.g2d.setColor( Color.BLACK ) ;
 		this.g2d.setStroke( new BasicStroke( SpaceMemoryDesigner.SCALE / 20f ) ) ;
-		// this.g2d.draw( this.smMove.getShape() ) ;
 	}
 	private void fillAndDrawShapeNoVisual() {
 		this.g2d.setColor( Color.RED ) ;
