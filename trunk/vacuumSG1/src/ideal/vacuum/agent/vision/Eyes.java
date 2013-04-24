@@ -104,14 +104,14 @@ public class Eyes implements Cloneable {
 //		return this.photoreceptor.distanceToTheBlock() ;
 //	}
 
-	public Eyes takeSnapshot() {
-		try {
-			return this.clone() ;
-		} catch ( CloneNotSupportedException e ) {
-			e.printStackTrace() ;
-		}
-		return null ;
-	}
+//	public Eyes takeSnapshot() {
+//		try {
+//			return this.clone() ;
+//		} catch ( CloneNotSupportedException e ) {
+//			e.printStackTrace() ;
+//		}
+//		return null ;
+//	}
 
 	public boolean isActif( PhotoreceptorCell previousPhotoreceptorState , PhotoreceptorCell currentPhotoreceptorState ) {
 		boolean isActif = false ;

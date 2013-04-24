@@ -35,109 +35,38 @@ public class BehaviorErnest9 extends AbstractBehavior {
 				retina[0].getBlockColor() ) ;
 	}
 
-	private String getEyesStimuli( Eyes previousSnapshot , Eyes currentSnapshot ) {
-//		String eyesStimuli = this.determineVisualEffect(
-//				(float)previousSnapshot.distanceAccurateToTheBlock() ,
-//				(float)currentSnapshot.distanceAccurateToTheBlock() ).getLabel() ;
-//
-//		return eyesStimuli ;
-		
+	private String getEyesStimuli( ) {
 		return this.eyes.visualEffect().getLabel();
 	}
 
-//	private VisualEffect determineVisualEffect( float previousDistance , float currentDistance ) {
-//		VisualEffect stimuli = VisualEffect.UNCHANGED ;
-//
-//		if ( previousDistance == currentDistance ) {
-//			stimuli = VisualEffect.UNCHANGED ;
-//		} else if ( previousDistance < Ernest.INFINITE && currentDistance < previousDistance ) {
-//			stimuli = VisualEffect.CLOSER ;
-//		} else if ( previousDistance == Ernest.INFINITE && currentDistance < Ernest.INFINITE ) {
-//			stimuli = VisualEffect.APPEAR ;
-//		} else if ( previousDistance < Ernest.INFINITE && currentDistance == Ernest.INFINITE ) {
-//			stimuli = VisualEffect.DISAPPEAR ;
-//		}
-//
-//		System.out.println( "Sensed " +
-//				"prev=" +
-//				previousDistance +
-//				" cur=" +
-//				currentDistance +
-//				" stimuli " +
-//				stimuli.getLabel() ) ;
-//
-//		return stimuli ;
-//	}
-
 	private void setLocationFromEyes() {
 		this.effect.setLocation(this.eyes.getEventPosition());
-		
-		//		switch ( this.eyes.getActifEye() ) {
-//			case LEFT:
-//				d = (float) this.eyes.getLeftEyeDistanceToTheblock() ;
-//				if ( d > 0 && Math.abs( d ) < Ernest.INFINITE ) // d=1;
-//					this.effect.setLocation( new Point3f( this.eyes.getLeftxToTheBlock() /
-//							d *
-//							Eyes.DISTANCE_VISION , this.eyes.getLeftxToTheBlock() /
-//							d *
-//							Eyes.DISTANCE_VISION , 0 ) ) ;
-//				else
-//					this.effect.setLocation( new Point3f( 0 , Eyes.DISTANCE_VISION , 0 ) ) ;
-//				break ;
-//			case RIGHT:
-//				d = (float) this.eyes.getRightEyeDistanceToTheblock() ;
-//				if ( d > 0 ) // d=1;
-//					this.effect.setLocation( new Point3f( this.eyes.getRightxToTheBlock() /
-//							d *
-//							Eyes.DISTANCE_VISION , this.eyes.getRightyToTheBlock() /
-//							d *
-//							Eyes.DISTANCE_VISION , 0 ) ) ;
-//				else
-//					this.effect.setLocation( new Point3f( 0 , -Eyes.DISTANCE_VISION , 0 ) ) ;
-//				break ;
-//			case BOTH:
-//				d = (float) this.eyes.getLeftEyeDistanceToTheblock() ;
-//				if ( d > 0 )
-//					this.effect.setLocation( new Point3f( this.eyes.getLeftxToTheBlock() /
-//							d *
-//							Eyes.DISTANCE_VISION , 0 , 0 ) ) ;
-//				else
-//					this.effect.setLocation( new Point3f( Eyes.DISTANCE_VISION , 0 , 0 ) ) ;
-//				break ;
-//			case NONE:
-//				this.effect.setLocation( new Point3f( 0 , 0 , 0 ) ) ;
-//				break ;
-//			default:
-//				break ;
-//		}
 	}
 
 	protected void turnRight() {
-		Eyes snapshot = this.eyes.takeSnapshot() ;
+		//Eyes snapshot = this.eyes.takeSnapshot() ;
 		this.turnRightAnim() ;
 		this.lookTheWorld() ;
 
-		String tactileStimuli = this.getEyesStimuli( snapshot , this.eyes ) +
-				TactileEffect.TRUE.getLabel() ;
+		String tactileStimuli = this.getEyesStimuli() + TactileEffect.TRUE.getLabel() ;
 		this.effect.setLabel( tactileStimuli ) ;
 		this.effect.setTransformation( (float) Math.PI / 2 , 0 ) ;
 		this.setLocationFromEyes() ;
 	}
 
 	protected void turnLeft() {
-		Eyes snapshot = this.eyes.takeSnapshot() ;
+		//Eyes snapshot = this.eyes.takeSnapshot() ;
 		this.turnLeftAnim() ;
 		this.lookTheWorld() ;
 
-		String tactileStimuli = this.getEyesStimuli( snapshot , this.eyes ) +
-				TactileEffect.TRUE.getLabel() ;
+		String tactileStimuli = this.getEyesStimuli() + TactileEffect.TRUE.getLabel() ;
 		this.effect.setLabel( tactileStimuli ) ;
 		this.effect.setTransformation( (float) -Math.PI / 2 , 0 ) ;
 		this.setLocationFromEyes() ;
 	}
 
 	protected void moveForward() {
-		Eyes snapshot = this.eyes.takeSnapshot() ;
+		//Eyes snapshot = this.eyes.takeSnapshot() ;
 		Vector3f localPoint = new Vector3f( this.model.DIRECTION_AHEAD ) ;
 		Vector3f aheadPoint = this.model.localToParentRef( localPoint ) ;
 
@@ -153,8 +82,7 @@ public class BehaviorErnest9 extends AbstractBehavior {
 				this.model.getEnvironment().eatFood( aheadPoint ) ;
 				this.effect.setLabel( TactileEffect.FOOD.getLabel() ) ;
 			} else {
-				String tactileStimuli = this.getEyesStimuli( snapshot , this.eyes ) +
-						TactileEffect.TRUE.getLabel() ;
+				String tactileStimuli = this.getEyesStimuli() + TactileEffect.TRUE.getLabel() ;
 				this.effect.setLabel( tactileStimuli ) ;
 			}
 			this.effect.setTransformation( 0 , -1 ) ;
@@ -163,8 +91,7 @@ public class BehaviorErnest9 extends AbstractBehavior {
 			this.bumpAheadAnim() ;
 			this.lookTheWorld() ;
 			this.effect.setLocation( new Point3f( 1 , 0 , 0 ) ) ;
-			String tactileStimuli = this.getEyesStimuli( snapshot , this.eyes ) +
-					TactileEffect.FALSE.getLabel() ;
+			String tactileStimuli = this.getEyesStimuli() + TactileEffect.FALSE.getLabel() ;
 			this.effect.setLabel( tactileStimuli ) ;
 		}
 	}
