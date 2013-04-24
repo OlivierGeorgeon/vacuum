@@ -195,7 +195,7 @@ public enum SpaceMemoryMove {
 			}
 		}
 
-		throw new RuntimeException( "Can't extract the move in interaction" ) ;
+		throw new RuntimeException( "Can't extract the move in interaction: " + interaction) ;
 	}
 
 	public String getMoveLabel() {
