@@ -107,7 +107,6 @@ public abstract class AbstractBehavior implements Behavior {
 				break ;
 			default:
 				break ;
-				
 		}
 	
 		this.effect.setEnactedInteractionLabel(schema.getLabel().substring(0, 1) + this.effect.getLabel());
