@@ -1,8 +1,11 @@
 package ideal.vacuum.agent.vision ;
 
 import ideal.vacuum.Environment ;
+import ideal.vacuum.agent.VisualEffect;
 
 import java.awt.Color ;
+
+import javax.vecmath.Point3f;
 
 import ernest.Ernest ;
 
@@ -31,24 +34,75 @@ public class Eyes implements Cloneable {
 
 	
 	public int getxBlockPosition() {
-		return this.previousPhotoreceptorState.getxBlockPosition() ;
+		return this.photoreceptor.getxBlockPosition() ;
 	}
 
 	public int getyBlockPosition() {
-		return this.previousPhotoreceptorState.getyBlockPosition() ;
+		return this.photoreceptor.getyBlockPosition() ;
+	}
+	
+	public VisualEffect visualEffect() {
+		VisualEffect stimuli = VisualEffect.UNCHANGED ;
+		float previousDistance = previousPhotoreceptorState.distanceAccurateToTheBlock();
+		float currentDistance = photoreceptor.distanceAccurateToTheBlock();
+
+		if ( previousDistance == currentDistance ) {
+			stimuli = VisualEffect.UNCHANGED ;
+		} else if ( previousDistance < Ernest.INFINITE && currentDistance < previousDistance ) {
+			stimuli = VisualEffect.CLOSER ;
+		} else if ( previousDistance == Ernest.INFINITE && currentDistance < Ernest.INFINITE ) {
+			stimuli = VisualEffect.APPEAR ;
+		} else if ( previousDistance < Ernest.INFINITE && currentDistance == Ernest.INFINITE ) {
+			stimuli = VisualEffect.DISAPPEAR ;
+		}
+
+//		System.out.println( "Sensed " +
+//				"prev=" +
+//				previousDistance +
+//				" cur=" +
+//				currentDistance +
+//				" stimuli " +
+//				stimuli.getLabel() ) ;
+
+		return stimuli ;
+	}
+
+	public Point3f getEventPosition()
+	{
+		float d = 0;
+		Point3f position = new Point3f();
+		VisualEffect stimuli = visualEffect() ;
+		
+		switch (stimuli) {
+		case CLOSER: 
+		case APPEAR:
+			position = this.photoreceptor.getBlockPosition();
+			d = this.photoreceptor.distanceAccurateToTheBlock();
+			if (d > 0 && d < Ernest.INFINITE)
+				position.scale(DISTANCE_VISION / d);
+			break;
+		case DISAPPEAR:
+			position = this.previousPhotoreceptorState.getBlockPosition();
+			d = this.previousPhotoreceptorState.distanceAccurateToTheBlock();
+			if (d > 0 && d < Ernest.INFINITE)
+				position.scale(DISTANCE_VISION / d);
+			break;
+		}
+
+		return position ;
 	}
 
 	public Color getBlockColor() {
-		return this.previousPhotoreceptorState.getBlockColor() ;
+		return this.photoreceptor.getBlockColor() ;
 	}
 
-	public double distanceAccurateToTheBlock() {
-		return this.previousPhotoreceptorState.distanceAccurateToTheBlock() ;
-	}
+//	public float distanceAccurateToTheBlock() {
+//		return this.photoreceptor.distanceAccurateToTheBlock() ;
+//	}
 
-	public double distanceToTheBlock() {
-		return this.previousPhotoreceptorState.distanceToTheBlock() ;
-	}
+//	public float distanceToTheBlock() {
+//		return this.photoreceptor.distanceToTheBlock() ;
+//	}
 
 	public Eyes takeSnapshot() {
 		try {

@@ -147,7 +147,7 @@ public class Ernest130Model extends ErnestModel implements GraphicPropertiesList
 //		this.m_tracer = new XMLStreamTracer(
 //				"http://134.214.128.53/abstract/lite/php/stream/" ,
 //				"juIQzDzdCtBSpmNnJNkzdtTTajfsXe" ) ;
-		this.m_tracer = null;
+//		this.m_tracer = null;
 		// Initialize the Ernest
 		// Ernest's inborn primitive interactions
 		this.m_ernest.setParameters( 6 , 10 ) ;
@@ -178,7 +178,7 @@ public class Ernest130Model extends ErnestModel implements GraphicPropertiesList
 			this.cognitiveMode = ErnestModel.AGENT_STOP ;
 
 		this.behaviorState = this.behavior.doMovement( schema ) ;
-
+		
 		this.traceEnvironmentalData() ;
 		if (this.m_tracer != null)
 			this.m_tracer.finishEvent();

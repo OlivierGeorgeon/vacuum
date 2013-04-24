@@ -36,48 +36,43 @@ public class BehaviorErnest9 extends AbstractBehavior {
 	}
 
 	private String getEyesStimuli( Eyes previousSnapshot , Eyes currentSnapshot ) {
-		String eyesStimuli = this.determineVisualEffect(
-				(float)previousSnapshot.distanceAccurateToTheBlock() ,
-				(float)currentSnapshot.distanceAccurateToTheBlock() ).getLabel() ;
-
-		return eyesStimuli ;
+//		String eyesStimuli = this.determineVisualEffect(
+//				(float)previousSnapshot.distanceAccurateToTheBlock() ,
+//				(float)currentSnapshot.distanceAccurateToTheBlock() ).getLabel() ;
+//
+//		return eyesStimuli ;
+		
+		return this.eyes.visualEffect().getLabel();
 	}
 
-	private VisualEffect determineVisualEffect( float previousDistance , float currentDistance ) {
-		VisualEffect stimuli = VisualEffect.UNCHANGED ;
-
-		if ( previousDistance == currentDistance ) {
-			stimuli = VisualEffect.UNCHANGED ;
-		} else if ( previousDistance < Ernest.INFINITE && currentDistance < previousDistance ) {
-			stimuli = VisualEffect.CLOSER ;
-		} else if ( previousDistance == Ernest.INFINITE && currentDistance < Ernest.INFINITE ) {
-			stimuli = VisualEffect.APPEAR ;
-		} else if ( previousDistance < Ernest.INFINITE && currentDistance == Ernest.INFINITE ) {
-			stimuli = VisualEffect.DISAPPEAR ;
-		}
-
-		System.out.println( "Sensed " +
-				"prev=" +
-				previousDistance +
-				" cur=" +
-				currentDistance +
-				" stimuli " +
-				stimuli.getLabel() ) ;
-
-		return stimuli ;
-	}
+//	private VisualEffect determineVisualEffect( float previousDistance , float currentDistance ) {
+//		VisualEffect stimuli = VisualEffect.UNCHANGED ;
+//
+//		if ( previousDistance == currentDistance ) {
+//			stimuli = VisualEffect.UNCHANGED ;
+//		} else if ( previousDistance < Ernest.INFINITE && currentDistance < previousDistance ) {
+//			stimuli = VisualEffect.CLOSER ;
+//		} else if ( previousDistance == Ernest.INFINITE && currentDistance < Ernest.INFINITE ) {
+//			stimuli = VisualEffect.APPEAR ;
+//		} else if ( previousDistance < Ernest.INFINITE && currentDistance == Ernest.INFINITE ) {
+//			stimuli = VisualEffect.DISAPPEAR ;
+//		}
+//
+//		System.out.println( "Sensed " +
+//				"prev=" +
+//				previousDistance +
+//				" cur=" +
+//				currentDistance +
+//				" stimuli " +
+//				stimuli.getLabel() ) ;
+//
+//		return stimuli ;
+//	}
 
 	private void setLocationFromEyes() {
-		float d = (float)this.eyes.distanceAccurateToTheBlock();// Ernest.INT_FACTOR ;
-		if (d > 0 && d < Ernest.INFINITE)
-		{
-		this.effect.setLocation( new Point3f( this.eyes.getxBlockPosition()
-				 / d * Eyes.DISTANCE_VISION 
-				, this.eyes.getyBlockPosition() 
-				 / d * Eyes.DISTANCE_VISION 
-				, 0 ) ) ;
-		}
-//		switch ( this.eyes.getActifEye() ) {
+		this.effect.setLocation(this.eyes.getEventPosition());
+		
+		//		switch ( this.eyes.getActifEye() ) {
 //			case LEFT:
 //				d = (float) this.eyes.getLeftEyeDistanceToTheblock() ;
 //				if ( d > 0 && Math.abs( d ) < Ernest.INFINITE ) // d=1;
