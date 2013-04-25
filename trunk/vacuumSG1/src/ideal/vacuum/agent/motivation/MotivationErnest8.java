@@ -45,6 +45,6 @@ public class MotivationErnest8 implements Motivation {
 		// Bump
 		ernest.addInteraction( Move.MOVE_FORWARD.getLabel() + TactileEffect.FALSE.getLabel() , -8 ) ;
 		// eat
-		ernest.addInteraction( Move.MOVE_FORWARD.getLabel() + "a" , 0 );		
+		ernest.addInteraction( Move.MOVE_FORWARD.getLabel() + TactileEffect.FOOD.getLabel() , 0 );		
 	}
 }
