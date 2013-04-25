@@ -183,7 +183,7 @@ public class ErnestModel extends Model
 	 */
 	protected PhotoreceptorCell scanArc(float angleOrigin, float angleSpan) {
 		int[] eyeFixation = null; //new int[] {Ernest.INFINITE,Ernest.INFINITE,WALL_COLOR.getRGB()};
-		float step = angleSpan/20;
+		float step = angleSpan/40; // OG
 		for (float angle = angleOrigin; angle <= angleOrigin + angleSpan + .001; angle += step) {
 			float x0 = (float) (mPosition.x + 20 * Math.cos(angle));
 			float y0 = (float) (mPosition.y + 20 * Math.sin(angle)); // Y axis is downwards.
