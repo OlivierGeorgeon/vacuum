@@ -1,6 +1,5 @@
 package ideal.vacuum.agent.spacememory ;
 
-import ideal.vacuum.agent.TactileEffect ;
 import ideal.vacuum.agent.VisualEffect ;
 
 import java.awt.Color ;
@@ -45,12 +44,6 @@ public enum SpaceMemoryVisualEffect {
 	}
 
 	public static boolean containVisualEffect( String interaction ) {
-//		return interaction.contains( VisualEffect.APPEAR.getLabel() ) ||
-//				interaction.contains( VisualEffect.MOVE.getLabel() ) ||
-//				interaction.contains( VisualEffect.DISAPPEAR.getLabel() ) ||
-//				interaction.contains( VisualEffect.CLOSER.getLabel() ) ||
-//				interaction.contains( VisualEffect.UNCHANGED.getLabel() ) ;
-
 		for ( VisualEffect effect : VisualEffect.values() ) {
 			if ( interaction.contains( effect.getLabel() ) ) {
 				return true;
