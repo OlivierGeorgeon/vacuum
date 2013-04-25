@@ -1,5 +1,7 @@
 package ideal.vacuum.agent.behavior ;
 
+import java.awt.Color;
+
 import ideal.vacuum.Ernest130Model ;
 import ideal.vacuum.agent.DesignerListener ;
 import ideal.vacuum.agent.GraphicProperties ;
@@ -89,6 +91,10 @@ public class BehaviorErnest9 extends AbstractBehavior {
 			this.lookTheWorld() ;
 			this.bumpAheadAnimFramesPlugins() ;
 			this.effect.setLocation( new Point3f( 1 , 0 , 0 ) ) ;
+			//String tactileStimuli = this.getEyesStimuli() + TactileEffect.FALSE.getLabel() ;
+			String tactileStimuli = TactileEffect.FALSE.getLabel() ;
+			this.effect.setColor(0xFF0000);
+			this.effect.setLabel( tactileStimuli ) ;
 			this.effect.setLabel( TactileEffect.FALSE.getLabel() ) ;
 		}
 	}

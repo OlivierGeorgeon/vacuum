@@ -1,5 +1,6 @@
 package ideal.vacuum.agent.spacememory ;
 
+import ideal.vacuum.Environment;
 import ideal.vacuum.agent.TactileEffect ;
 import ideal.vacuum.agent.VisualEffect ;
 
@@ -18,8 +19,8 @@ public enum SpaceMemoryTactileEffect {
 	FALSE( TactileEffect.FALSE.getLabel() , Color.RED ) ,
 	TRUE( TactileEffect.TRUE.getLabel() , Color.WHITE ) ,
 	BRICK( TactileEffect.BRICK.getLabel() , Color.WHITE ) ,
-	ALGA( TactileEffect.ALGA.getLabel() , Color.WHITE ) ,
-	FOOD( TactileEffect.FOOD.getLabel() , Color.WHITE ) ;
+	ALGA( TactileEffect.ALGA.getLabel() , Environment.FISH1 ) ,
+	FOOD( TactileEffect.FOOD.getLabel() , Environment.FISH1 ) ;
 	
 	private final String tactileEffectLabel ;
 	private Color effectColor;

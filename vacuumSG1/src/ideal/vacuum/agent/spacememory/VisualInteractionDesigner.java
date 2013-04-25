@@ -33,19 +33,18 @@ public class VisualInteractionDesigner extends AbstractSMInteractionDesigner {
 				( LocalSpaceMemory.PERSISTENCE_DURATION - place.getClock() ) / 1.5f ) ;
 
 		String interactionLabel = place.getInteraction().getLabel() ;
-		String moveLabel = SpaceMemoryMove.extractMoveLabel( interactionLabel ) ;
-		this.smMove = SpaceMemoryMove.getSpaceMemoryMove( moveLabel ) ;
-		
-		if ( SpaceMemoryTactileEffect.containTactileEffect( interactionLabel ) ) {
-			String tactileEffectLabel = SpaceMemoryTactileEffect.extractTactileEffectLabel( interactionLabel ) ;
-			this.smTactileEffect = SpaceMemoryTactileEffect.getSpaceMemoryTactileEffect( tactileEffectLabel ) ;
-		}
+		this.smMove = SpaceMemoryMove.getSpaceMemoryMove( SpaceMemoryMove
+				.extractMoveLabel( interactionLabel ) ) ;
 
 		if ( SpaceMemoryVisualEffect.containVisualEffect( interactionLabel ) ) {
 			String visualEffectLabel = SpaceMemoryVisualEffect.extractLeftVisualEffectLabel( interactionLabel ) ;
 			this.smVisualEffect = SpaceMemoryVisualEffect.getSpaceMemoryVisualEffect( visualEffectLabel ) ;			
 			this.fillAndDrawShapeVisual() ;
-		}else{
+		}
+		else {
+			this.smTactileEffect = SpaceMemoryTactileEffect
+			.getSpaceMemoryTactileEffect( SpaceMemoryTactileEffect
+					.extractTactileEffectLabel( interactionLabel ) ) ;
 			this.fillAndDrawShapeNoVisual();
 		}
 	}
@@ -68,7 +67,8 @@ public class VisualInteractionDesigner extends AbstractSMInteractionDesigner {
 		this.g2d.setStroke( new BasicStroke( SpaceMemoryDesigner.SCALE / 20f ) ) ;
 	}
 	private void fillAndDrawShapeNoVisual() {
-		this.g2d.setColor( Color.RED ) ;
+		//this.g2d.setColor( Color.RED ) ;
+		this.g2d.setColor( this.smTactileEffect.getEffectColor() ) ;
 		this.g2d.fill( this.smMove.getShape() ) ;
 	}
 }
