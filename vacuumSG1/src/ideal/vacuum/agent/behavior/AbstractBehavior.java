@@ -103,7 +103,8 @@ public abstract class AbstractBehavior implements Behavior {
 		}
 	
 		this.effect.setEnactedInteractionLabel(schema.getLabel().substring(0, 1) + this.effect.getLabel());
-
+		this.refreshWorld();
+		
 		return new BehaviorState(
 				this.focusColor ,
 				this.leftColor ,
