@@ -10,6 +10,7 @@ import java.util.Map ;
  */
 public enum VisualEffect {
 	APPEAR( "*" ) ,
+	MOVE("="), // Moves in the visual field but remains at the same distance . OG
 	CLOSER( "+" ) ,
 	DISAPPEAR( "o" ) ,
 	UNCHANGED( " " ) ;

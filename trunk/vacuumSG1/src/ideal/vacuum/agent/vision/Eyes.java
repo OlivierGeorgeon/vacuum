@@ -65,8 +65,11 @@ public class Eyes implements Cloneable {
 		float previousDistance = this.previousPhotoreceptorState.distanceAccurateToTheBlock() ;
 		float currentDistance = this.photoreceptor.distanceAccurateToTheBlock() ;
 
-		if ( previousDistance == currentDistance ) {
-			stimuli = VisualEffect.UNCHANGED ;
+		if ( Math.abs(previousDistance - currentDistance ) < .1) {
+			if (currentDistance == Ernest.INFINITE)
+				stimuli = VisualEffect.UNCHANGED ;
+			else
+				stimuli = VisualEffect.MOVE ;
 		} else if ( previousDistance < Ernest.INFINITE && currentDistance < previousDistance ) {
 			stimuli = VisualEffect.CLOSER ;
 		} else if ( previousDistance == Ernest.INFINITE && currentDistance < Ernest.INFINITE ) {
