@@ -21,11 +21,12 @@ public class MotivationErnest8 implements Motivation {
 		moves[2] = Pair.create( Move.TURN_LEFT , 0 ) ;
 
 		// r(e)
-		Pair<VisualEffect , Integer>[] eyesEffects = new Pair[4] ;
-		eyesEffects[0] = Pair.create( VisualEffect.APPEAR , 15 ) ;
-		eyesEffects[1] = Pair.create( VisualEffect.CLOSER , 10 ) ;
-		eyesEffects[2] = Pair.create( VisualEffect.UNCHANGED , 0 ) ;
-		eyesEffects[3] = Pair.create( VisualEffect.DISAPPEAR , -15 ) ;
+		Pair<VisualEffect , Integer>[] eyesEffects = new Pair[5];
+		eyesEffects[0] = Pair.create( VisualEffect.APPEAR , 15 );
+		eyesEffects[1] = Pair.create( VisualEffect.MOVE , 0 );
+		eyesEffects[2] = Pair.create( VisualEffect.CLOSER , 10 );
+		eyesEffects[3] = Pair.create( VisualEffect.UNCHANGED , 0 );
+		eyesEffects[4] = Pair.create( VisualEffect.DISAPPEAR , -15 );
 
 		// r(f)
 		Pair<TactileEffect , Integer>[] tactileEffects = new Pair[2] ;
@@ -43,5 +44,7 @@ public class MotivationErnest8 implements Motivation {
 		}
 		// Bump
 		ernest.addInteraction( Move.MOVE_FORWARD.getLabel() + TactileEffect.FALSE.getLabel() , -8 ) ;
+		// eat
+		ernest.addInteraction( Move.MOVE_FORWARD.getLabel() + "a" , 0 );		
 	}
 }
