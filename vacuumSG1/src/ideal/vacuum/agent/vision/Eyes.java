@@ -7,6 +7,8 @@ import java.awt.Color ;
 
 import javax.vecmath.Point3f ;
 
+import utils.ErnestUtils;
+
 import ernest.Ernest ;
 
 /**
@@ -68,6 +70,8 @@ public class Eyes implements Cloneable {
 		if ( Math.abs(previousDistance - currentDistance ) < .1) {
 			if (currentDistance == Ernest.INFINITE)
 				stimuli = VisualEffect.UNCHANGED ;
+			else if (Math.abs(ErnestUtils.polarAngle(this.photoreceptor.getBlockPosition())) < .1f)
+				stimuli = VisualEffect.CLOSER;
 			else
 				stimuli = VisualEffect.MOVE ;
 		} else if ( previousDistance < Ernest.INFINITE && currentDistance < previousDistance ) {
@@ -89,6 +93,7 @@ public class Eyes implements Cloneable {
 		switch ( stimuli ) {
 			case CLOSER:
 			case APPEAR:
+			case MOVE:
 				position = this.photoreceptor.getBlockPosition() ;
 				d = this.photoreceptor.distanceAccurateToTheBlock() ;
 				if ( d > 0 && d < Ernest.INFINITE )

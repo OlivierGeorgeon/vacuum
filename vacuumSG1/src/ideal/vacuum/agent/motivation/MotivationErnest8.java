@@ -16,9 +16,9 @@ public class MotivationErnest8 implements Motivation {
 	public void putMotivation( IErnest ernest ) {
 		// r(u)
 		Pair<Move , Integer>[] moves = new Pair[3] ;
-		moves[0] = Pair.create( Move.MOVE_FORWARD , -1 ) ;
-		moves[1] = Pair.create( Move.TURN_RIGHT , 0 ) ;
-		moves[2] = Pair.create( Move.TURN_LEFT , 0 ) ;
+		moves[0] = Pair.create( Move.MOVE_FORWARD , -2 ) ;
+		moves[1] = Pair.create( Move.TURN_RIGHT , -1 ) ;
+		moves[2] = Pair.create( Move.TURN_LEFT , -1 ) ;
 
 		// r(e)
 		Pair<VisualEffect , Integer>[] eyesEffects = new Pair[5];
