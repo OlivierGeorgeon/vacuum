@@ -34,7 +34,8 @@ public enum SpaceMemoryMove {
 			rightHalfTrapezoidShape() ) ,
 	TURN_RIGHT(
 			Move.TURN_RIGHT.getLabel() ,
-			arcShape() ,
+			trapezoidShape() ,
+			//arcShape() ,
 			leftHalfTrapezoidShape() ,
 			rightHalfTrapezoidShape() ) ,
 	TOUCH(
