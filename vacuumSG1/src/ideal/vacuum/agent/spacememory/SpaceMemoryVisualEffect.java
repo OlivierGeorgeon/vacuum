@@ -15,8 +15,10 @@ import java.util.Map ;
 public enum SpaceMemoryVisualEffect {
 	DEFAULT( "" , Color.WHITE ) ,
 	APPEAR( VisualEffect.APPEAR.getLabel() , new Color(0x80E000) ) ,
+	MOVE( VisualEffect.MOVE.getLabel() , new Color(0x80E000) ) ,
 	CLOSER( VisualEffect.CLOSER.getLabel() , new Color(0x00c000) ) ,
 	DISAPPEAR( VisualEffect.DISAPPEAR.getLabel() , new Color(0x808080) ) ,
+	FARTHER( VisualEffect.FARTHER.getLabel() , new Color(0x808080) ) ,
 	UNCHANGED( VisualEffect.UNCHANGED.getLabel() , new Color(0xc0c0c0) ) ;
 	
 	private final String visualEffectLabel ;

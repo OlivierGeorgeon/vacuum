@@ -21,12 +21,13 @@ public class MotivationErnest8 implements Motivation {
 		moves[2] = Pair.create( Move.TURN_LEFT , -1 ) ;
 
 		// r(e)
-		Pair<VisualEffect , Integer>[] eyesEffects = new Pair[5];
+		Pair<VisualEffect , Integer>[] eyesEffects = new Pair[6];
 		eyesEffects[0] = Pair.create( VisualEffect.APPEAR , 15 );
 		eyesEffects[1] = Pair.create( VisualEffect.MOVE , 0 );
 		eyesEffects[2] = Pair.create( VisualEffect.CLOSER , 10 );
 		eyesEffects[3] = Pair.create( VisualEffect.UNCHANGED , 0 );
-		eyesEffects[4] = Pair.create( VisualEffect.DISAPPEAR , -15 );
+		eyesEffects[4] = Pair.create( VisualEffect.FARTHER , -15 );
+		eyesEffects[5] = Pair.create( VisualEffect.DISAPPEAR , -15 );
 
 		// r(f)
 		Pair<TactileEffect , Integer>[] tactileEffects = new Pair[2] ;

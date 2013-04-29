@@ -13,6 +13,7 @@ public enum VisualEffect {
 	MOVE("="), // Moves in the visual field but remains at the same distance . OG
 	CLOSER( "+" ) ,
 	DISAPPEAR( "o" ) ,
+	FARTHER( "-" ) , // Farther in angular distance
 	UNCHANGED( "_" ) ;
 
 	private final static Map<String , VisualEffect> BY_LABEL = new HashMap<String , VisualEffect>() ;
