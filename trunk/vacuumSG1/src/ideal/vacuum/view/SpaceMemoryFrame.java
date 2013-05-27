@@ -59,13 +59,15 @@ public class SpaceMemoryFrame extends JFrame implements FramePlugin{
 		for ( int i = 0; i < 20; i++ ) {
 			angleRotation += angle / 20;
 			xTranslation += x / 20;
-			this.spaceMemoryPanel.updateProperties( angleRotation , xTranslation );
+			this.spaceMemoryPanel.updateProperties( angleRotation , xTranslation , true);
 			this.spaceMemoryPanel.repaint();
 			try {
 				Thread.currentThread().sleep( 20 );
 			} catch ( InterruptedException e ) {
 			}
 		}
+		this.spaceMemoryPanel.updateProperties( 0 , 0 , false);
+		this.spaceMemoryPanel.repaint();
 	}
 
 	@Override

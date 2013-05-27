@@ -8,6 +8,7 @@ import java.awt.Graphics2D ;
 import java.awt.geom.AffineTransform ;
 
 import javax.vecmath.Point3f ;
+import javax.vecmath.Vector3f;
 
 import spas.IPlace ;
 import spas.LocalSpaceMemory ;
@@ -28,11 +29,11 @@ public class VisualInteractionDesigner extends AbstractSMInteractionDesigner {
 	public void addInteraction( Graphics2D g2d , IPlace place , BehaviorState behaviorState ) {
 		this.g2d = g2d ;
 		this.applyGeometricalTransformation(
-				place.getOrientationAngle() ,
+				place.getOrientationAngle() , 
 				place.getPosition() ,
-				( LocalSpaceMemory.PERSISTENCE_DURATION - place.getClock() ) / 1.5f ) ;
+				( LocalSpaceMemory.PERSISTENCE_DURATION - place.getClock() ) / 2f ) ;
 
-		String interactionLabel = place.getInteraction().getLabel() ;
+		String interactionLabel = place.getAct().getLabel() ;
 		String moveLabel = SpaceMemoryMove.extractMoveLabel( interactionLabel ) ;
 		this.smMove = SpaceMemoryMove.getSpaceMemoryMove( moveLabel ) ;
 		
@@ -44,7 +45,7 @@ public class VisualInteractionDesigner extends AbstractSMInteractionDesigner {
 		if ( SpaceMemoryVisualEffect.containVisualEffect( interactionLabel ) ) {
 			String visualEffectLabel = SpaceMemoryVisualEffect.extractLeftVisualEffectLabel( interactionLabel ) ;
 			this.smVisualEffect = SpaceMemoryVisualEffect.getSpaceMemoryVisualEffect( visualEffectLabel ) ;			
-			this.fillAndDrawShapeVisual() ;
+			this.fillAndDrawShapeVisual(place.getClock()) ;
 		}else{
 			this.fillAndDrawShapeNoVisual();
 		}
@@ -61,14 +62,18 @@ public class VisualInteractionDesigner extends AbstractSMInteractionDesigner {
 		this.g2d.transform( interactionLocation ) ;
 	}
 
-	private void fillAndDrawShapeVisual() {
+	private void fillAndDrawShapeVisual(int clock) {
 		this.g2d.setColor( this.smVisualEffect.getEffectColor() ) ;
 		this.g2d.fill( this.smMove.getShape() ) ;
 		this.g2d.setColor( Color.BLACK ) ;
-		this.g2d.setStroke( new BasicStroke( SpaceMemoryDesigner.SCALE / 20f ) ) ;
+		this.g2d.setColor( new Color(clock * 10, clock * 10, clock * 10) ) ;
+		this.g2d.setStroke( new BasicStroke( SpaceMemoryDesigner.SCALE / 100f ) ) ;
+		this.g2d.draw( this.smMove.getShape() ) ;
 	}
 	private void fillAndDrawShapeNoVisual() {
 		this.g2d.setColor( this.smTactileEffect.getEffectColor() ) ;
 		this.g2d.fill( this.smMove.getShape() ) ;
+//		this.g2d.setColor( Color.BLACK ) ;
+//		this.g2d.setStroke( new BasicStroke( SpaceMemoryDesigner.SCALE / 20f ) ) ;
 	}
 }
