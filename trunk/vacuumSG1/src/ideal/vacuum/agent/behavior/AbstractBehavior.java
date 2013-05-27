@@ -129,9 +129,10 @@ public abstract class AbstractBehavior implements Behavior {
 
 	private final void refreshFramesPlugins( final float angleRotation , final float xTranslation ) {
 		Transform3D transformation = this.model.getErnest().getTransformToAnim() ;
+		//System.out.println("Anim rotation: " + ErnestUtils.angle( transformation ) + " translation " + ErnestUtils.translationX( transformation ));
 		this.model.getEnvironment().animFramesPlugins(
-				ErnestUtils.angle( transformation ) ,
-				ErnestUtils.translationX( transformation ) ) ;
+				- ErnestUtils.angle( transformation ) ,
+				- ErnestUtils.translationX( transformation ) ) ;
 	}
 
 	protected final void turnRightAnimWorld() {

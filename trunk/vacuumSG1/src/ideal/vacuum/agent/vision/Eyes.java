@@ -67,7 +67,7 @@ public class Eyes implements Cloneable {
 		float previousDistance = this.previousPhotoreceptorState.distanceAccurateToTheBlock() ;
 		float currentDistance = this.photoreceptor.distanceAccurateToTheBlock() ;
 
-		if ( Math.abs(previousDistance - currentDistance ) < .1) {
+		if ( Math.abs(previousDistance - currentDistance ) < .01) {
 			if (currentDistance == Ernest.INFINITE)
 				stimuli = VisualEffect.UNCHANGED ;
 			else if (Math.abs(ErnestUtils.polarAngle(this.photoreceptor.getBlockPosition())) < .1f)
