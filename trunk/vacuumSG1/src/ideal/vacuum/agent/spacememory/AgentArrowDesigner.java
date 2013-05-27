@@ -50,7 +50,7 @@ public class AgentArrowDesigner extends AbstractSMAgentDesigner {
 	
 	private static Area fieldOfVision() {
 		GeneralPath fieldOfVision = new GeneralPath() ;
-		fieldOfVision.append( new Ellipse2D.Double( -20 * SpaceMemoryDesigner.SCALE / SimuImpl.SCALE, -20 * SpaceMemoryDesigner.SCALE / SimuImpl.SCALE, 40 * SpaceMemoryDesigner.SCALE / SimuImpl.SCALE, 40 * SpaceMemoryDesigner.SCALE / SimuImpl.SCALE), false );
+		fieldOfVision.append( new Ellipse2D.Double( -2.5 * SpaceMemoryDesigner.SCALE * SimuImpl.SCALE, -2.5 * SpaceMemoryDesigner.SCALE * SimuImpl.SCALE, 5 * SpaceMemoryDesigner.SCALE * SimuImpl.SCALE, 5 * SpaceMemoryDesigner.SCALE * SimuImpl.SCALE), false );
 		return new Area( fieldOfVision );
 	}
 }

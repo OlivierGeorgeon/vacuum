@@ -66,14 +66,15 @@ public class VisualInteractionDesigner extends AbstractSMInteractionDesigner {
 		this.g2d.setColor( this.smVisualEffect.getEffectColor() ) ;
 		this.g2d.fill( this.smMove.getShape() ) ;
 		this.g2d.setColor( Color.BLACK ) ;
-		this.g2d.setColor( new Color(clock * 10, clock * 10, clock * 10) ) ;
+		//this.g2d.setColor( new Color(clock * 10, clock * 10, clock * 10) ) ;
 		this.g2d.setStroke( new BasicStroke( SpaceMemoryDesigner.SCALE / 100f ) ) ;
 		this.g2d.draw( this.smMove.getShape() ) ;
 	}
 	private void fillAndDrawShapeNoVisual() {
 		this.g2d.setColor( this.smTactileEffect.getEffectColor() ) ;
 		this.g2d.fill( this.smMove.getShape() ) ;
-//		this.g2d.setColor( Color.BLACK ) ;
-//		this.g2d.setStroke( new BasicStroke( SpaceMemoryDesigner.SCALE / 20f ) ) ;
+		this.g2d.setColor( Color.BLACK ) ;
+		this.g2d.setStroke( new BasicStroke( SpaceMemoryDesigner.SCALE / 100f ) ) ;
+		this.g2d.draw( this.smMove.getShape() ) ;
 	}
 }
