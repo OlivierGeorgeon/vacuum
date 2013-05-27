@@ -55,6 +55,8 @@ public class Ernest130Model extends ErnestModel implements DesignerListener {
 	private BehaviorState behaviorState ;
 	private Motivation motivation ;
 	private SpaceMemory spaceMemory ;
+	
+	private Move schema = null; //OG
 
 	public Ernest130Model( int agentNumericalID ) {
 		super( agentNumericalID ) ;
@@ -144,8 +146,8 @@ public class Ernest130Model extends ErnestModel implements DesignerListener {
 		this.spaceMemory.setModel( this ) ;
 
 		 //Only trace the first agent.
-		 this.m_tracer = new
-		 XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","UzGveECMaporPwkslFdyDfNIQLwMYk");
+//		 this.m_tracer = new
+//		 XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","UzGveECMaporPwkslFdyDfNIQLwMYk");
 //		 XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","dlsQKeaXlclGbzRTN--ZLWajTDyGpr");
 //		this.m_tracer = new XMLStreamTracer(
 //				"http://134.214.128.53/abstract/lite/php/stream/" ,
@@ -176,14 +178,23 @@ public class Ernest130Model extends ErnestModel implements DesignerListener {
 	}
 
 	public void update() {
-		Move schema = Move.getByLabel( this.m_ernest.step( this.behavior.getEffect() ).substring( 0 , 1 ) );
+//		Move schema = Move.getByLabel( this.m_ernest.step( this.behavior.getEffect() ).substring( 0 , 1 ) );
+//		if ( this.cognitiveMode == ErnestModel.AGENT_STEP )
+//			this.cognitiveMode = ErnestModel.AGENT_STOP ;
+
+		if (schema != null){
+			this.behaviorState = this.behavior.doMovement( schema ) ;
+			this.traceEnvironmentalData() ;
+			if (this.m_tracer != null)
+				this.m_tracer.finishEvent();
+		}
+		
+		this.schema = Move.getByLabel( this.m_ernest.step( this.behavior.getEffect() ).substring( 0 , 1 ) );
 		if ( this.cognitiveMode == ErnestModel.AGENT_STEP )
 			this.cognitiveMode = ErnestModel.AGENT_STOP ;
+		
+		this.behavior.refreshFramesPlugins( 0 , 0 );
 
-		this.behaviorState = this.behavior.doMovement( schema ) ;
-		this.traceEnvironmentalData() ;
-		if (this.m_tracer != null)
-			this.m_tracer.finishEvent();
 	}
 
 	private void traceEnvironmentalData() {

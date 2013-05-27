@@ -136,11 +136,11 @@ public class SpaceMemoryDesigner {
 	private void displayInteractions( Graphics2D g2d , ArrayList<IPlace> placeList ,
 			BehaviorState behaviorState ) {
 		for ( IPlace place : placeList ) {
-			if ( place.getType() == Place.ENACTION_PLACE ) {
+			//if ( place.getType() == Place.ENACTION_PLACE ) {
 				AffineTransform originLocation = g2d.getTransform() ;
 				this.displayEnactedInteraction( g2d , place , behaviorState ) ;
 				g2d.setTransform( originLocation ) ;
-			}
+			//}
 		}
 	}
 

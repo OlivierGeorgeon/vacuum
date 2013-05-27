@@ -45,7 +45,7 @@ public class BehaviorErnest9 extends AbstractBehavior {
 	protected void turnRight() {
 		this.turnRightAnimWorld() ;
 		this.lookTheWorld() ;
-		this.turnRightAnimFramesPlugins() ;
+		//this.turnRightAnimFramesPlugins() ;
 
 		String tactileStimuli = this.getEyesStimuli() ;
 		this.effect.setLabel( tactileStimuli ) ;
@@ -56,7 +56,7 @@ public class BehaviorErnest9 extends AbstractBehavior {
 	protected void turnLeft() {
 		this.turnLeftAnimWorld() ;
 		this.lookTheWorld() ;
-		this.turnLeftAnimFramesPlugins() ;
+		//this.turnLeftAnimFramesPlugins() ;
 
 		String tactileStimuli = this.getEyesStimuli() ;
 		this.effect.setLabel( tactileStimuli ) ;
@@ -72,7 +72,7 @@ public class BehaviorErnest9 extends AbstractBehavior {
 				!this.model.affordCuddle( aheadPoint ) ) {
 			this.moveForwardAnimWorld() ;
 			this.lookTheWorld() ;
-			this.moveForwardAnimFramesPlugins() ;
+			//this.moveForwardAnimFramesPlugins() ;
 			this.setLocationFromEyes() ;
 			if ( this.model.getEnvironment().isFood( aheadPoint.x , aheadPoint.y ) ) {
 				this.effect.setColor( this.model.getEnvironment()
@@ -89,7 +89,7 @@ public class BehaviorErnest9 extends AbstractBehavior {
 		} else {
 			this.bumpAheadAnimWorld() ;
 			this.lookTheWorld() ;
-			this.bumpAheadAnimFramesPlugins() ;
+			//this.bumpAheadAnimFramesPlugins() ;
 			this.effect.setLocation( new Point3f( 1 , 0 , 0 ) ) ;
 			this.effect.setColor( Color.RED.getRGB() );
 			this.effect.setLabel( TactileEffect.FALSE.getLabel() ) ;

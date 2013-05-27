@@ -9,6 +9,8 @@ import java.awt.geom.Ellipse2D ;
 import java.awt.geom.GeneralPath ;
 import java.awt.geom.Line2D ;
 
+import spas.SimuImpl;
+
 /**
  * 
  * @author Joseph GARNIER
@@ -48,7 +50,7 @@ public class AgentArrowDesigner extends AbstractSMAgentDesigner {
 	
 	private static Area fieldOfVision() {
 		GeneralPath fieldOfVision = new GeneralPath() ;
-		fieldOfVision.append( new Ellipse2D.Double( -10 * SpaceMemoryDesigner.SCALE, -10 * SpaceMemoryDesigner.SCALE , 20 * SpaceMemoryDesigner.SCALE , 20 * SpaceMemoryDesigner.SCALE ), false );
+		fieldOfVision.append( new Ellipse2D.Double( -20 * SpaceMemoryDesigner.SCALE / SimuImpl.SCALE, -20 * SpaceMemoryDesigner.SCALE / SimuImpl.SCALE, 40 * SpaceMemoryDesigner.SCALE / SimuImpl.SCALE, 40 * SpaceMemoryDesigner.SCALE / SimuImpl.SCALE), false );
 		return new Area( fieldOfVision );
 	}
 }

@@ -15,4 +15,7 @@ public interface Behavior {
 	public BehaviorState getCurrentBehaviorState() ;
 
 	public IEffect getEffect() ;
+	
+	public void refreshFramesPlugins( final float angleRotation , final float xTranslation );
+
 }
