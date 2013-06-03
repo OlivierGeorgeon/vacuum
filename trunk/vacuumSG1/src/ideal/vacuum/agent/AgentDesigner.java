@@ -152,7 +152,7 @@ public class AgentDesigner {
 	
 	private void drawAgentRetina( Graphics2D g2d , BehaviorState behaviorState ) {
 		GeneralPath rightEye = new GeneralPath() ;
-		rightEye.append( new Arc2D.Double( -30 , -50 , 60 , 90 , 180 , 180 , Arc2D.PIE ), false ) ;
+		rightEye.append( new Arc2D.Double( -30 , -40 , 60 , 70 , 180 , 180 , Arc2D.PIE ), false ) ;
 
 		g2d.setStroke( new BasicStroke( 2f ) ) ;
 		g2d.setColor( behaviorState.getEyes().getBlockColor() ) ;

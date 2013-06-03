@@ -3,7 +3,9 @@ package ideal.vacuum.agent.spacememory;
 import java.awt.BasicStroke ;
 import java.awt.Color ;
 import java.awt.Graphics2D ;
+import java.awt.Shape;
 import java.awt.geom.AffineTransform ;
+import java.awt.geom.Arc2D;
 import java.awt.geom.Area ;
 import java.awt.geom.Ellipse2D ;
 import java.awt.geom.GeneralPath ;
@@ -31,7 +33,10 @@ public class AgentArrowDesigner extends AbstractSMAgentDesigner {
 		g2d.setColor( Color.BLACK ) ;
 		g2d.draw( AgentArrowDesigner.arrowBodyShape() ) ;
 		g2d.setColor( Color.GRAY );
-		g2d.draw( AgentArrowDesigner.fieldOfVision() );
+		Shape arc = new Arc2D.Double(-2.5 * SpaceMemoryDesigner.SCALE * SimuImpl.SCALE, -2.5 * SpaceMemoryDesigner.SCALE * SimuImpl.SCALE, 5 * SpaceMemoryDesigner.SCALE * SimuImpl.SCALE, 5 * SpaceMemoryDesigner.SCALE * SimuImpl.SCALE, -90, 180,
+				Arc2D.OPEN);
+		g2d.draw( arc );
+		//g2d.draw( AgentArrowDesigner.fieldOfVision() );
 	}
 
 	private void applyGeometricalTransformation() {
@@ -50,7 +55,8 @@ public class AgentArrowDesigner extends AbstractSMAgentDesigner {
 	
 	private static Area fieldOfVision() {
 		GeneralPath fieldOfVision = new GeneralPath() ;
-		fieldOfVision.append( new Ellipse2D.Double( -2.5 * SpaceMemoryDesigner.SCALE * SimuImpl.SCALE, -2.5 * SpaceMemoryDesigner.SCALE * SimuImpl.SCALE, 5 * SpaceMemoryDesigner.SCALE * SimuImpl.SCALE, 5 * SpaceMemoryDesigner.SCALE * SimuImpl.SCALE), false );
+		Shape circle = new Ellipse2D.Double( -2.5 * SpaceMemoryDesigner.SCALE * SimuImpl.SCALE, -2.5 * SpaceMemoryDesigner.SCALE * SimuImpl.SCALE, 5 * SpaceMemoryDesigner.SCALE * SimuImpl.SCALE, 5 * SpaceMemoryDesigner.SCALE * SimuImpl.SCALE);
+		fieldOfVision.append( circle, false );		
 		return new Area( fieldOfVision );
 	}
 }

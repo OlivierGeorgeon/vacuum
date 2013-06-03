@@ -73,9 +73,12 @@ public class EnvironnementPanel extends JPanel implements MouseListener{
 		m_leaf.append(petal3, false);
 		m_leaf.append(petal4, false);
 		
-		m_fish.append(new CubicCurve2D.Double(-40, 15,  -30, 0, 40, -40,   40, 0), false);
-		m_fish.append(new CubicCurve2D.Double( 40,  0,  40, 40, -30,  0,   -40, -15), true);
-		m_fish.append(new Area(new Ellipse2D.Double( 20,  -10,  8, 8)), false);
+		// Fish shape
+		//m_fish.append(new CubicCurve2D.Double(-40, 15,  -30, 0, 40, -40,   40, 0), false);
+		//m_fish.append(new CubicCurve2D.Double( 40,  0,  40, 40, -30,  0,   -40, -15), true);
+		//m_fish.append(new Area(new Ellipse2D.Double( 20,  -10,  8, 8)), false);
+		
+		m_fish.append(new Area(new Ellipse2D.Double( -30,  -30,  60, 60)), false);
 
 	}
 	
