@@ -25,7 +25,7 @@ import ernest.IEffect ;
  */
 public abstract class AbstractBehavior implements Behavior {
 
-	protected int delayMove = 20 ; // 2
+	protected int delayMove = 10 ; // 2
 	protected int delayTouch = 50 ; // 50
 
 	protected Color focusColor ;

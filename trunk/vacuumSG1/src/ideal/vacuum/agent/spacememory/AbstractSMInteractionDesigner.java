@@ -7,7 +7,7 @@ import java.awt.Point ;
 import java.awt.geom.Point2D ;
 
 
-import spas.IPlace ;
+import spas.Place ;
 
 /**
  * 
@@ -57,5 +57,5 @@ public abstract class AbstractSMInteractionDesigner {
 		return overlapOffset;
 	}
 	
-	public abstract void addInteraction( Graphics2D g2d , IPlace place , BehaviorState behaviorState );
+	public abstract void addInteraction( Graphics2D g2d , Place place , BehaviorState behaviorState );
 }
