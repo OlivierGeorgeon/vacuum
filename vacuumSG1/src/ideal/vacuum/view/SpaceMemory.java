@@ -9,12 +9,12 @@ import javax.vecmath.Vector3f;
 
 import ernest.IErnest;
 
-import spas.IPlace;
+import spas.Place;
 
 public class SpaceMemory 
 {
 	public ErnestModel m_model;
-	private ArrayList<IPlace> placeList = new ArrayList<IPlace>();
+	private ArrayList<Place> placeList = new ArrayList<Place>();
 	
 	public SpaceMemory()
 	{
@@ -25,7 +25,7 @@ public class SpaceMemory
 		m_model = model;
 	}
 	
-	public ArrayList<IPlace> getPlaceList()
+	public ArrayList<Place> getPlaceList()
 	{
 		//return m_model.getErnest().getPlaceList();
 		return this.placeList;

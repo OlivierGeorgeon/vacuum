@@ -21,7 +21,7 @@ import javax.swing.SwingUtilities;
 import javax.vecmath.Vector3f;
 
 
-import spas.IPlace;
+import spas.Place;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -563,7 +563,7 @@ public class Model extends Observable
 		
 	}
 	
-	public void paintSpaceMemory(Graphics g, ArrayList<IPlace> placeList, float angleRotation , float xTranslation )
+	public void paintSpaceMemory(Graphics g, ArrayList<Place> placeList, float angleRotation , float xTranslation )
 	{
 	}
 }

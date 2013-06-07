@@ -10,7 +10,7 @@ import java.awt.geom.AffineTransform ;
 import javax.vecmath.Point3f ;
 import javax.vecmath.Vector3f;
 
-import spas.IPlace ;
+import spas.Place ;
 import spas.LocalSpaceMemory ;
 
 /**
@@ -26,7 +26,7 @@ public class VisualInteractionDesigner extends AbstractSMInteractionDesigner {
 	private SpaceMemoryVisualEffect smVisualEffect ;
 
 	@Override
-	public void addInteraction( Graphics2D g2d , IPlace place , BehaviorState behaviorState ) {
+	public void addInteraction( Graphics2D g2d , Place place , BehaviorState behaviorState ) {
 		this.g2d = g2d ;
 		this.applyGeometricalTransformation(
 				place.getOrientationAngle() , 
