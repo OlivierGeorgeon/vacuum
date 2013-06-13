@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import javax.vecmath.Vector3f;
 
 
+import eca.spas.Place;
 import ernest.IErnest;
 
-import spas.Place;
 
 public class SpaceMemory 
 {

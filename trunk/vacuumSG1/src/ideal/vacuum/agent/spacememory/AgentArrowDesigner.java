@@ -11,7 +11,8 @@ import java.awt.geom.Ellipse2D ;
 import java.awt.geom.GeneralPath ;
 import java.awt.geom.Line2D ;
 
-import spas.SimuImpl;
+import eca.construct.SimuImpl;
+
 
 /**
  * 

@@ -20,8 +20,9 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.vecmath.Vector3f;
 
+import eca.spas.Place;
 
-import spas.Place;
+
 
 import java.lang.reflect.InvocationTargetException;
 
