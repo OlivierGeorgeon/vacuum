@@ -6,8 +6,9 @@ import java.awt.Graphics2D ;
 import java.awt.Point ;
 import java.awt.geom.Point2D ;
 
+import eca.spas.Place;
 
-import spas.Place ;
+
 
 /**
  * 

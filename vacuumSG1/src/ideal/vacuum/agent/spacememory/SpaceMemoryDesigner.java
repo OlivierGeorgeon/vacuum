@@ -12,8 +12,9 @@ import java.awt.geom.AffineTransform ;
 import java.awt.geom.Rectangle2D ;
 import java.util.ArrayList ;
 
-import spas.Place ;
-import spas.PlaceImpl ;
+import eca.spas.Place;
+import eca.spas.PlaceImpl;
+
 
 /**
  * 

@@ -9,9 +9,10 @@ import java.awt.Color ;
 import javax.vecmath.Matrix3f ;
 import javax.vecmath.Vector3f ;
 
+import tracing.ITracer;
+
 import ernest.Ernest ;
 import ernest.IErnest ;
-import ernest.ITracer ;
 
 /**************************************
  * A Model for Ernest 

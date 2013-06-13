@@ -10,8 +10,9 @@ import java.awt.geom.AffineTransform ;
 import javax.vecmath.Point3f ;
 import javax.vecmath.Vector3f;
 
-import spas.Place ;
-import spas.LocalSpaceMemory ;
+import eca.spas.Place;
+import eca.spas.egomem.LocalSpaceMemory;
+
 
 /**
  * 
