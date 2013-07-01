@@ -11,8 +11,6 @@ import java.awt.geom.Ellipse2D ;
 import java.awt.geom.GeneralPath ;
 import java.awt.geom.Line2D ;
 
-import eca.construct.SimuImpl;
-
 
 /**
  * 
@@ -20,6 +18,8 @@ import eca.construct.SimuImpl;
  * @version $Revision$
  */
 public class AgentArrowDesigner extends AbstractSMAgentDesigner {
+	
+	private static final double SIMU_SCALE = 3;
 
 	private Graphics2D g2d;
 	
@@ -34,7 +34,7 @@ public class AgentArrowDesigner extends AbstractSMAgentDesigner {
 		g2d.setColor( Color.BLACK ) ;
 		g2d.draw( AgentArrowDesigner.arrowBodyShape() ) ;
 		g2d.setColor( Color.GRAY );
-		Shape arc = new Arc2D.Double(-2.5 * SpaceMemoryDesigner.SCALE * SimuImpl.SCALE, -2.5 * SpaceMemoryDesigner.SCALE * SimuImpl.SCALE, 5 * SpaceMemoryDesigner.SCALE * SimuImpl.SCALE, 5 * SpaceMemoryDesigner.SCALE * SimuImpl.SCALE, -90, 180,
+		Shape arc = new Arc2D.Double(-2.5 * SpaceMemoryDesigner.SCALE * SIMU_SCALE, -2.5 * SpaceMemoryDesigner.SCALE * SIMU_SCALE, 5 * SpaceMemoryDesigner.SCALE * SIMU_SCALE, 5 * SpaceMemoryDesigner.SCALE * SIMU_SCALE, -90, 180,
 				Arc2D.OPEN);
 		g2d.draw( arc );
 		//g2d.draw( AgentArrowDesigner.fieldOfVision() );
@@ -56,7 +56,7 @@ public class AgentArrowDesigner extends AbstractSMAgentDesigner {
 	
 	private static Area fieldOfVision() {
 		GeneralPath fieldOfVision = new GeneralPath() ;
-		Shape circle = new Ellipse2D.Double( -2.5 * SpaceMemoryDesigner.SCALE * SimuImpl.SCALE, -2.5 * SpaceMemoryDesigner.SCALE * SimuImpl.SCALE, 5 * SpaceMemoryDesigner.SCALE * SimuImpl.SCALE, 5 * SpaceMemoryDesigner.SCALE * SimuImpl.SCALE);
+		Shape circle = new Ellipse2D.Double( -2.5 * SpaceMemoryDesigner.SCALE * SIMU_SCALE, -2.5 * SpaceMemoryDesigner.SCALE * SIMU_SCALE, 5 * SpaceMemoryDesigner.SCALE * SIMU_SCALE, 5 * SpaceMemoryDesigner.SCALE * SIMU_SCALE);
 		fieldOfVision.append( circle, false );		
 		return new Area( fieldOfVision );
 	}
