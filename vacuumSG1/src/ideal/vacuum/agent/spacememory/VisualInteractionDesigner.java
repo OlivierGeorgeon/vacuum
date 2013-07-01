@@ -11,7 +11,7 @@ import javax.vecmath.Point3f ;
 import javax.vecmath.Vector3f;
 
 import eca.spas.Place;
-import eca.spas.egomem.LocalSpaceMemory;
+import eca.spas.egomem.SpatialMemoryImpl;
 
 
 /**
@@ -32,7 +32,7 @@ public class VisualInteractionDesigner extends AbstractSMInteractionDesigner {
 		this.applyGeometricalTransformation(
 				place.getOrientationAngle() , 
 				place.getPosition() ,
-				( LocalSpaceMemory.PERSISTENCE_DURATION - place.getClock() ) / 2f ) ;
+				( SpatialMemoryImpl.PERSISTENCE_DURATION - place.getClock() ) / 2f ) ;
 
 		String interactionLabel = place.getPrimitive().getLabel() ;
 		String moveLabel = SpaceMemoryMove.extractMoveLabel( interactionLabel ) ;
