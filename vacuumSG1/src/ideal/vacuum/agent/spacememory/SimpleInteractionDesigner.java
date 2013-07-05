@@ -9,7 +9,7 @@ import java.awt.geom.Point2D ;
 
 import javax.vecmath.Point3f ;
 
-import eca.spas.Place;
+import eca.spas.egomem.Place;
 
 
 /**

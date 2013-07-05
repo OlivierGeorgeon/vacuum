@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import javax.vecmath.Vector3f;
 
 
-import eca.spas.Place;
+import eca.spas.egomem.Place;
 import ernest.IErnest;
 
 
