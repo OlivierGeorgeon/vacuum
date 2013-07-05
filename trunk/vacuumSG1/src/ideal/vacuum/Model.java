@@ -20,7 +20,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.vecmath.Vector3f;
 
-import eca.spas.Place;
+import eca.spas.egomem.Place;
 
 
 

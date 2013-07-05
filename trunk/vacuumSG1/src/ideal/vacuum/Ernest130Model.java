@@ -28,7 +28,7 @@ import javax.vecmath.Vector3f ;
 
 import tracing.XMLStreamTracer;
 import utils.ErnestUtils ;
-import eca.spas.Place;
+import eca.spas.egomem.Place;
 import ernest.Ernest ;
 
 /**
