@@ -38,7 +38,7 @@ public class SpaceMemory
 	
 	public int getCounter()
 	{
-		return m_model.getErnest().getCounter();
+		return m_model.getErnest().getClock();
 	}
 	
 	public int getID()

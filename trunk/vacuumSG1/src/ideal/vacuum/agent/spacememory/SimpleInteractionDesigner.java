@@ -27,7 +27,8 @@ public class SimpleInteractionDesigner extends AbstractSMInteractionDesigner {
 	@Override
 	public void addInteraction( Graphics2D g2d , Place place, BehaviorState behaviorState  ) {
 		this.g2d = g2d;
-		String interactionLabel = place.getPrimitive().getLabel() ;
+		//String interactionLabel = place.getPrimitive().getLabel() ;
+		String interactionLabel = place.getDisplayLabel() ;
 		this.smMove = SpaceMemoryMove.getSpaceMemoryMove( SpaceMemoryMove.extractMoveLabel( interactionLabel ) ) ;
 		
 		this.applyGeometricalTransformation( place.getOrientationAngle() , place.getPosition() ) ;

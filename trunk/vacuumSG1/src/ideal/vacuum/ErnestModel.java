@@ -419,7 +419,7 @@ public class ErnestModel extends Model
 	public int getCounter()
 	{
 		if (m_ernest != null)
-			return m_ernest.getCounter();
+			return m_ernest.getClock();
 		else
 			return 0;
 	}
