@@ -34,7 +34,8 @@ public class VisualInteractionDesigner extends AbstractSMInteractionDesigner {
 				place.getPosition() ,
 				( SpatialMemoryImpl.PERSISTENCE_DURATION - place.getClock() ) / 2f ) ;
 
-		String interactionLabel = place.getPrimitive().getLabel() ;
+		//String interactionLabel = place.getPrimitive().getLabel() ;
+		String interactionLabel = place.getDisplayLabel() ;
 		String moveLabel = SpaceMemoryMove.extractMoveLabel( interactionLabel ) ;
 		this.smMove = SpaceMemoryMove.getSpaceMemoryMove( moveLabel ) ;
 		
