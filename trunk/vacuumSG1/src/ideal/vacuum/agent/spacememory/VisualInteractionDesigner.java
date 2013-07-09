@@ -29,10 +29,11 @@ public class VisualInteractionDesigner extends AbstractSMInteractionDesigner {
 	@Override
 	public void addInteraction( Graphics2D g2d , Place place , BehaviorState behaviorState ) {
 		this.g2d = g2d ;
+		double scale = (double)(SpatialMemoryImpl.PERSISTENCE_DURATION - place.getClock() ) / SpatialMemoryImpl.PERSISTENCE_DURATION * 3d;
 		this.applyGeometricalTransformation(
 				place.getOrientationAngle() , 
 				place.getPosition() ,
-				( SpatialMemoryImpl.PERSISTENCE_DURATION - place.getClock() ) / 2f ) ;
+				scale ) ;
 
 		//String interactionLabel = place.getPrimitive().getLabel() ;
 		String interactionLabel = place.getDisplayLabel() ;
