@@ -6,15 +6,18 @@ import ideal.vacuum.agent.DesignerListener ;
 import ideal.vacuum.agent.GraphicProperties ;
 import ideal.vacuum.agent.GraphicPropertiesChangeEvent ;
 import ideal.vacuum.agent.Move ;
-import ideal.vacuum.agent.vision.Eyes ;
+import ideal.vacuum.agent.vision.Eye ;
+import ideal.vacuum.agent.vision.SuperiorColliculus ;
 
 import java.awt.Color ;
+import java.util.ArrayList ;
+import java.util.List ;
 
 import javax.media.j3d.Transform3D ;
 import javax.swing.event.EventListenerList ;
 import javax.vecmath.Vector3f ;
 
-import utils.ErnestUtils ;
+import eca.spas.egomem.Place ;
 import ernest.Effect ;
 import ernest.IEffect ;
 
@@ -31,28 +34,34 @@ public abstract class AbstractBehavior implements Behavior {
 	protected Color focusColor ;
 	protected Color leftColor ;
 	protected Color rightColor ;
-	protected Eyes eyes ;
 
 	protected Ernest130Model model ;
 	protected IEffect effect ;
+	protected List<Place> places ;
+	private Transform3D transform ;
 
+	protected SuperiorColliculus colliculus ;
+	
 	protected EventListenerList listeners ;
 
-	public AbstractBehavior( Ernest130Model model , DesignerListener listener ) {
+	public AbstractBehavior( Ernest130Model model , DesignerListener listener , Eye eye ) {
 		this.model = model ;
 		this.effect = new Effect() ;
+		this.places = new ArrayList<Place>() ;
+		this.transform = new Transform3D() ;
 		this.listeners = new EventListenerList() ;
 		this.listeners.add( DesignerListener.class , listener ) ;
 
 		this.focusColor = AgentDesigner.UNANIMATED_COLOR ;
 		this.leftColor = AgentDesigner.UNANIMATED_COLOR ;
 		this.rightColor = AgentDesigner.UNANIMATED_COLOR ;
-		this.eyes = new Eyes() ;
+		
+		this.colliculus = new SuperiorColliculus( eye );
 	}
 
 	@Override
 	public final BehaviorState getCurrentBehaviorState() {
-		return new BehaviorState( this.focusColor , this.leftColor , this.rightColor , this.eyes ) ;
+		return new BehaviorState( this.focusColor , this.leftColor , this.rightColor , this.colliculus.listOfMemoryAndActiveCells() ) ;
 	}
 
 	@Override
@@ -60,8 +69,26 @@ public abstract class AbstractBehavior implements Behavior {
 		return this.effect ;
 	}
 
+	@Override
+	public List<Place> getPlaces() {
+		return this.places ;
+	}
+
+	@Override
+	public Transform3D getTransform() {
+		return this.transform ;
+	}
+
+	public void setTransform( float angle , float xTranslation ) {
+		this.transform = new Transform3D() ;
+		this.transform.rotZ( angle ) ;
+		this.transform.setTranslation( new Vector3f( xTranslation , 0 , 0 ) ) ;
+	}
+
 	public BehaviorState doMovement( Move schema ) {
 		this.effect = new Effect() ;
+		this.places = new ArrayList<Place>() ;
+		
 		this.focusColor = AgentDesigner.UNANIMATED_COLOR ;
 		this.leftColor = AgentDesigner.UNANIMATED_COLOR ;
 		this.rightColor = AgentDesigner.UNANIMATED_COLOR ;
@@ -108,7 +135,7 @@ public abstract class AbstractBehavior implements Behavior {
 				this.effect.getLabel() ) ;
 		this.refreshWorld() ;
 
-		return new BehaviorState( this.focusColor , this.leftColor , this.rightColor , this.eyes ) ;
+		return new BehaviorState( this.focusColor , this.leftColor , this.rightColor , this.colliculus.listOfMemoryAndActiveCells() ) ;
 	}
 
 	protected final void notifyGraphicPropertiesChanged( GraphicPropertiesChangeEvent event ) {
@@ -125,17 +152,6 @@ public abstract class AbstractBehavior implements Behavior {
 
 	private final void refreshWorld() {
 		this.model.getMainFrame().drawGrid() ;
-	}
-
-	public final void refreshFramesPlugins( final float angleRotation , final float xTranslation ) {
-		Transform3D transformation = this.model.getErnest().getTransformToAnim() ;
-		//System.out.println("Anim rotation: " + ErnestUtils.angle( transformation ) + " translation " + ErnestUtils.translationX( transformation ));
-		this.model.getEnvironment().animFramesPlugins(
-				- ErnestUtils.angle( transformation ) ,
-				- ErnestUtils.translationX( transformation ) ) ;
-//		this.model.getEnvironment().animFramesPlugins(
-//				angleRotation ,
-//				xTranslation ) ;
 	}
 
 	protected final void turnRightAnimWorld() {
@@ -161,10 +177,6 @@ public abstract class AbstractBehavior implements Behavior {
 		}
 	}
 
-	protected final void turnRightAnimFramesPlugins() {
-		this.refreshFramesPlugins( (float) - ( Math.PI / 2 ) , 0 ) ;
-	}
-
 	protected final void turnLeftAnimWorld() {
 		for ( int i = 0; i < 20; i++ ) {
 			GraphicProperties ernestGraphicProperties = this.model.getCopyOfGraphicProperties() ;
@@ -186,10 +198,6 @@ public abstract class AbstractBehavior implements Behavior {
 			event.getmOrientation().z -= 2 * Math.PI ;
 			this.notifyGraphicPropertiesChanged( event ) ;
 		}
-	}
-
-	protected final void turnLeftAnimFramesPlugins() {
-		this.refreshFramesPlugins( (float) ( Math.PI / 2 ) , 0 ) ;
 	}
 
 	protected final void bumpAheadAnimWorld() {
@@ -217,10 +225,6 @@ public abstract class AbstractBehavior implements Behavior {
 		}
 	}
 
-	protected final void bumpAheadAnimFramesPlugins() {
-		this.refreshFramesPlugins( 0 , 0 ) ;
-	}
-
 	protected final void moveForwardAnimWorld() {
 		for ( int i = 0; i < 20; i++ ) {
 			GraphicProperties ernestGraphicProperties = this.model.getCopyOfGraphicProperties() ;
@@ -233,10 +237,6 @@ public abstract class AbstractBehavior implements Behavior {
 			this.refreshWorld() ;
 			this.model.sleep( this.delayMove ) ;
 		}
-	}
-
-	protected final void moveForwardAnimFramesPlugins() {
-		this.refreshFramesPlugins( 0 , 1 ) ;
 	}
 
 	protected final void bumpBehindAnimWorld() {
@@ -264,10 +264,6 @@ public abstract class AbstractBehavior implements Behavior {
 		}
 	}
 
-	protected final void bumpBehindAnimFramesPlugins() {
-		this.refreshFramesPlugins( 0 , 0 ) ;
-	}
-
 	protected final void moveBackwardAnimWorld() {
 		for ( int i = 0; i < 20; i++ ) {
 			GraphicProperties ernestGraphicProperties = this.model.getCopyOfGraphicProperties() ;
@@ -282,17 +278,9 @@ public abstract class AbstractBehavior implements Behavior {
 		}
 	}
 
-	protected final void moveBackwardAnimFramesPlugins() {
-		this.refreshFramesPlugins( 0 , -1 ) ;
-	}
-
 	protected final void touchAnimWorld() {
 		this.refreshWorld() ;
 		this.model.sleep( this.delayTouch ) ;
-	}
-
-	protected final void touchAnimFramesPlugins() {
-		this.refreshFramesPlugins( 0 , 0 ) ;
 	}
 
 	protected abstract void turnRight() ;
