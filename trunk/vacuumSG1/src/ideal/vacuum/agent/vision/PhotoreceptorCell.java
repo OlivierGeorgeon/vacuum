@@ -38,6 +38,13 @@ public class PhotoreceptorCell implements Cloneable {
 		return this.blockColor ;
 	}
 
+	public void applyTransformation( AffineTransform matrix ){
+		Point2D blockPosition = matrix.transform( new Point( this.xBlockPosition , this.yBlockPosition ) ,
+				new Point() ) ;
+		this.xBlockPosition = (int) blockPosition.getX();
+		this.yBlockPosition = (int) blockPosition.getY() ;
+	}
+	
 	public void orienteAxis( double theta ) {
 		AffineTransform aff = new AffineTransform() ;
 		aff.rotate( -theta ) ;
@@ -63,11 +70,54 @@ public class PhotoreceptorCell implements Cloneable {
 	}
 
 	@Override
-	public PhotoreceptorCell clone() throws CloneNotSupportedException {
-		PhotoreceptorCell object = (PhotoreceptorCell) super.clone() ;
-		object.xBlockPosition = this.xBlockPosition ;
-		object.yBlockPosition = this.yBlockPosition ;
-		object.blockColor = this.blockColor ;
-		return object ;
+	public PhotoreceptorCell clone()  {
+		try {
+			PhotoreceptorCell object = (PhotoreceptorCell) super.clone() ;
+			object.xBlockPosition = this.xBlockPosition ;
+			object.yBlockPosition = this.yBlockPosition ;
+			object.blockColor = this.blockColor ;
+			return object ;
+		} catch ( CloneNotSupportedException e ) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31 ;
+		int result = 1 ;
+		result = prime * result + ( ( this.blockColor == null ) ? 0 : this.blockColor.hashCode() ) ;
+		result = prime * result + this.xBlockPosition ;
+		result = prime * result + this.yBlockPosition ;
+		return result ;
+	}
+
+	@Override
+	public boolean equals( Object obj ) {
+		if ( this == obj ) {
+			return true ;
+		}
+		if ( obj == null ) {
+			return false ;
+		}
+		if ( ! ( obj instanceof PhotoreceptorCell ) ) {
+			return false ;
+		}
+		PhotoreceptorCell other = (PhotoreceptorCell) obj ;
+		if ( this.blockColor == null ) {
+			if ( other.blockColor != null ) {
+				return false ;
+			}
+		} else if ( !this.blockColor.equals( other.blockColor ) ) {
+			return false ;
+		}
+		if ( this.xBlockPosition != other.xBlockPosition ) {
+			return false ;
+		}
+		if ( this.yBlockPosition != other.yBlockPosition ) {
+			return false ;
+		}
+		return true ;
 	}
 }
