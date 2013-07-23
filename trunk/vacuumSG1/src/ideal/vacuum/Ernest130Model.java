@@ -1,9 +1,9 @@
 package ideal.vacuum ;
 
 import ideal.vacuum.agent.AgentDesigner ;
+import ideal.vacuum.agent.DesignerListener ;
 import ideal.vacuum.agent.GraphicProperties ;
 import ideal.vacuum.agent.GraphicPropertiesChangeEvent ;
-import ideal.vacuum.agent.DesignerListener ;
 import ideal.vacuum.agent.Move ;
 import ideal.vacuum.agent.behavior.Behavior ;
 import ideal.vacuum.agent.behavior.BehaviorErnest7 ;
@@ -15,6 +15,7 @@ import ideal.vacuum.agent.motivation.Motivation ;
 import ideal.vacuum.agent.motivation.MotivationErnest7 ;
 import ideal.vacuum.agent.motivation.MotivationErnest8 ;
 import ideal.vacuum.agent.spacememory.SpaceMemoryDesigner ;
+import ideal.vacuum.agent.vision.Eye ;
 import ideal.vacuum.view.MainFrame ;
 import ideal.vacuum.view.SpaceMemory ;
 import ideal.vacuum.view.SpaceMemoryFrame ;
@@ -24,9 +25,9 @@ import java.awt.Graphics ;
 import java.awt.Graphics2D ;
 import java.util.ArrayList ;
 
+import javax.media.j3d.Transform3D ;
 import javax.vecmath.Vector3f ;
 
-import tracing.XMLStreamTracer;
 import utils.ErnestUtils ;
 import eca.spas.egomem.Place;
 import ernest.Ernest ;
@@ -55,8 +56,9 @@ public class Ernest130Model extends ErnestModel implements DesignerListener {
 	private BehaviorState behaviorState ;
 	private Motivation motivation ;
 	private SpaceMemory spaceMemory ;
-	
-	private Move schema = null; //OG
+	private Eye eye ;
+
+	private Move schema = null ; // OG
 
 	public Ernest130Model( int agentNumericalID ) {
 		super( agentNumericalID ) ;
@@ -95,7 +97,7 @@ public class Ernest130Model extends ErnestModel implements DesignerListener {
 
 		this.setChanged() ;
 		this.notifyObservers2() ;
-
+		this.eye = new Eye( this.m_env , this , this.mPosition , this.mName ) ;
 		Color agentColor ;
 		switch ( this.ident ) {
 			case 0:
@@ -111,17 +113,17 @@ public class Ernest130Model extends ErnestModel implements DesignerListener {
 
 		switch ( Ernest130Model.CURRENT_VERSION ) {
 			case ERNEST7:
-				this.behavior = new BehaviorErnest7( this , this ) ;
+				this.behavior = new BehaviorErnest7( this , this , this.eye ) ;
 				this.motivation = new MotivationErnest7() ;
 				this.agentDesigner = new AgentDesigner( this , agentColor , false , false ) ;
 				break ;
 			case ERNEST8:
-				this.behavior = new BehaviorErnest8( this , this ) ;
+				this.behavior = new BehaviorErnest8( this , this , this.eye ) ;
 				this.motivation = new MotivationErnest7() ;
 				this.agentDesigner = new AgentDesigner( this , agentColor , false , false ) ;
 				break ;
 			case ERNEST9:
-				this.behavior = new BehaviorErnest9( this , this ) ;
+				this.behavior = new BehaviorErnest9( this , this , this.eye ) ;
 				this.motivation = new MotivationErnest8() ;
 				this.agentDesigner = new AgentDesigner( this , agentColor , true , false ) ;
 				break ;
@@ -145,14 +147,14 @@ public class Ernest130Model extends ErnestModel implements DesignerListener {
 		// Initialize the visualization.
 		this.spaceMemory.setModel( this ) ;
 
-		 //Only trace the first agent.
-		 this.m_tracer = new
-		 XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","UzGveECMaporPwkslFdyDfNIQLwMYk");
-//		 XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","dlsQKeaXlclGbzRTN--ZLWajTDyGpr");
-//		this.m_tracer = new XMLStreamTracer(
-//				"http://134.214.128.53/abstract/lite/php/stream/" ,
-//				"juIQzDzdCtBSpmNnJNkzdtTTajfsXe" ) ;
-//		this.m_tracer = null;
+		// Only trace the first agent.
+		// this.m_tracer = new
+		// XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","UzGveECMaporPwkslFdyDfNIQLwMYk");
+		// XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","dlsQKeaXlclGbzRTN--ZLWajTDyGpr");
+		// this.m_tracer = new XMLStreamTracer(
+		// "http://134.214.128.53/abstract/lite/php/stream/" ,
+		// "juIQzDzdCtBSpmNnJNkzdtTTajfsXe" ) ;
+		this.m_tracer = null ;
 		// Initialize the Ernest
 		// Ernest's inborn primitive interactions
 		this.m_ernest.setParameters( 6 , 10 ) ;
@@ -165,35 +167,33 @@ public class Ernest130Model extends ErnestModel implements DesignerListener {
 
 	public void setDisplay() {
 		try {
-			if( this.m_env.isPlugued( SpaceMemoryFrame.class ) ){
-				this.m_env.getPlugin( SpaceMemoryFrame.class ).close();
-				this.m_env.unplugFrame( SpaceMemoryFrame.class );
+			if ( this.m_env.isPlugued( SpaceMemoryFrame.class ) ) {
+				this.m_env.getPlugin( SpaceMemoryFrame.class ).close() ;
+				this.m_env.unplugFrame( SpaceMemoryFrame.class ) ;
 			}
-			this.m_env.plugFrame( SpaceMemoryFrame.class );
-			this.m_env.getPlugin( SpaceMemoryFrame.class ).setMemory( this.spaceMemory );
-			this.m_env.getPlugin( SpaceMemoryFrame.class ).display();
+			this.m_env.plugFrame( SpaceMemoryFrame.class ) ;
+			this.m_env.getPlugin( SpaceMemoryFrame.class ).setMemory( this.spaceMemory ) ;
+			this.m_env.getPlugin( SpaceMemoryFrame.class ).display() ;
 		} catch ( Exception e ) {
-			e.printStackTrace();
+			e.printStackTrace() ;
 		}
 	}
 
 	public void update() {
-//		Move schema = Move.getByLabel( this.m_ernest.step( this.behavior.getEffect() ).substring( 0 , 1 ) );
-//		if ( this.cognitiveMode == ErnestModel.AGENT_STEP )
-//			this.cognitiveMode = ErnestModel.AGENT_STOP ;
-
-		if (schema != null){
-			this.behaviorState = this.behavior.doMovement( schema ) ;
+		if ( this.schema != null ) {
+			this.behaviorState = this.behavior.doMovement( this.schema ) ;
 			this.traceEnvironmentalData() ;
-			if (this.m_tracer != null)
-				this.m_tracer.finishEvent();
+			if ( this.m_tracer != null )
+				this.m_tracer.finishEvent() ;
 		}
-		
-		this.schema = Move.getByLabel( this.m_ernest.step( this.behavior.getEffect() ).substring( 0 , 1 ) );
+
+		this.schema = Move.getByLabel( this.m_ernest.step(
+				this.behavior.getPlaces() ,
+				this.behavior.getTransform() ) ) ;
 		if ( this.cognitiveMode == ErnestModel.AGENT_STEP )
 			this.cognitiveMode = ErnestModel.AGENT_STOP ;
-		
-		this.behavior.refreshFramesPlugins( 0 , 0 );
+
+		this.refreshFramesPlugins( 0 , 0 ) ;
 
 	}
 
@@ -209,12 +209,25 @@ public class Ernest130Model extends ErnestModel implements DesignerListener {
 		}
 	}
 
+	private void refreshFramesPlugins( final float angleRotation , final float xTranslation ) {
+		Transform3D transformation = this.m_ernest.getTransformToAnim() ;
+		this.m_env.animFramesPlugins(
+				-ErnestUtils.angle( transformation ) ,
+				-ErnestUtils.translationX( transformation ) ) ;
+	}
+
 	public void paintAgent( Graphics2D g2d , int x , int y , double sx , double sy ) {
 		this.agentDesigner.paintAgent( g2d , x , y , sx , sy , this.behaviorState ) ;
 	}
 
-	public void paintSpaceMemory( Graphics g , ArrayList<Place> placeList , float angleRotation , float xTranslation ) {
-		this.spaceMemoryDesigner.paintSpaceMemory( (Graphics2D) g , placeList , this.behaviorState , angleRotation , xTranslation ) ;
+	public void paintSpaceMemory( Graphics g , ArrayList<Place> placeList , float angleRotation ,
+			float xTranslation ) {
+		this.spaceMemoryDesigner.paintSpaceMemory(
+				(Graphics2D) g ,
+				placeList ,
+				this.behaviorState ,
+				angleRotation ,
+				xTranslation ) ;
 	}
 
 	@Override
@@ -229,6 +242,6 @@ public class Ernest130Model extends ErnestModel implements DesignerListener {
 
 	@Override
 	public void notifyBehaviorStateChanged( BehaviorStateChangeEvent behaviorStateEvent ) {
-		this.behaviorState = behaviorStateEvent.getBehaviorState();
+		this.behaviorState = behaviorStateEvent.getBehaviorState() ;
 	}
 }
