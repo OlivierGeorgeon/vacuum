@@ -1,10 +1,13 @@
 package ideal.vacuum;
 
 
-import ideal.vacuum.agent.vision.Eyes ;
+import ideal.vacuum.agent.vision.Eye ;
 import ideal.vacuum.agent.vision.PhotoreceptorCell ;
+import ideal.vacuum.agent.vision.RayTracing ;
 
 import java.awt.Color ;
+import java.util.LinkedList ;
+import java.util.Queue ;
 
 import javax.vecmath.Matrix3f ;
 import javax.vecmath.Vector3f ;
@@ -147,188 +150,32 @@ public class ErnestModel extends Model
 		//m_tracer.addSubelement(element, "y", y + "");
 	}
 	
-	/**
-	 * Generates a retina image from Ernest's view point.
-	 * (Uses Ernest's orientationRad value, trigonometric, counterclockwise, radius).
-	 * @return The array of colors projected onto the retina.
-	 */ 
-	public PhotoreceptorCell[] getRetina(double orientationRad) {
-		System.out.println("vision");
-		@SuppressWarnings("unchecked")
-		PhotoreceptorCell[] retina = new PhotoreceptorCell[Eyes.RESOLUTION_RETINA] ;
-		double angle = orientationRad - Math.PI/2;
-		double angleSpan = Math.PI / Eyes.RESOLUTION_RETINA;
-		for (int i = 0; i < Eyes.RESOLUTION_RETINA; i++) {
-			retina[i] = scanArc((float)angle, (float)angleSpan);
-			angle += angleSpan;
-		}
-		System.out.println("retina (" + retina[0].getxBlockPosition() + "," + retina[0].getyBlockPosition() + ")");
-		
-		// Agent up, left, down
-		if ((Math.abs(orientationRad - Math.PI/2) < .1f) || (Math.abs(orientationRad + Math.PI/2) < .1f) || (Math.abs(Math.PI - orientationRad) < .1f || Math.abs(orientationRad + Math.PI) < .1f)){
-			for ( PhotoreceptorCell photoreceptorCell : retina ) {
-				photoreceptorCell.orienteAxis( orientationRad );
-			}
-		}
-		System.out.println("retina (" + retina[0].getxBlockPosition() + "," + retina[0].getyBlockPosition() + ")");
-		return retina;
-	}
-	
-	/**
-	 * Scan an arc from Ernest's viewpoint, starting from the initial angle position and going through the angular span.
-	 * Stop scanning at the first singularity found.
-	 * @param angleOrigin The initial angular position (trigonometric/counterclockwise - radian)
-	 * @param angleSpan The arc's angular span (trigonometric/counterclockwise)
-	 * @param 20 The arc's diameter (the agent's visual range)
-	 * @return the color detected. 
-	 */
-	protected PhotoreceptorCell scanArc(float angleOrigin, float angleSpan) {
-		int[] eyeFixation = null; //new int[] {Ernest.INFINITE,Ernest.INFINITE,WALL_COLOR.getRGB()};
-		float step = angleSpan/40; // OG
-		for (float angle = angleOrigin; angle <= angleOrigin + angleSpan + .001; angle += step) {
-			float x0 = (float) (mPosition.x + 20 * Math.cos(angle));
-			float y0 = (float) (mPosition.y + 20 * Math.sin(angle)); // Y axis is downwards.
-			//float y0 = (float) (m_y + 20 * Math.sin(angle)); // Y axis is upwards.
-			eyeFixation = rayTrace(mPosition.x,mPosition.y, x0, y0);
-			// We stop when we find a singularity.
-			if (eyeFixation[2] != WALL_COLOR.getRGB())
-				break;
-		}
-		if (eyeFixation == null)
-			eyeFixation = new int[] {Ernest.INFINITE,Ernest.INFINITE,WALL_COLOR.getRGB()};
-
-		return new PhotoreceptorCell( eyeFixation[0] , eyeFixation[1] , new Color( eyeFixation[2] ) );
-	}
-	
-	/**
-	 * Scan the squares that are on a ray from a viewpoint to a target square
-	 *  http://playtechs.blogspot.com/2007/03/raytracing-on-grid.html 
-	 * @return Distance to the dirty square if any, Ernest.INFINITE if no dirt. 
-	 */
-	//protected Pair<Integer, Color> rayTrace(float x0, float y0, float x1, float y1) {
-	protected int[] rayTrace(float x0, float y0, float x1, float y1) {
-		float dx = Math.abs(x1 - x0);
-		float dy = Math.abs(y1 - y0);
-	    int i = (int) Math.round(x0);
-	    int j = (int) Math.round(y0);
-	    int n = 1;
-	    int i_inc, j_inc;
-	    float error;
-	    //int k = Math.round(mPosition.getZ());
-	    float cornerTresh = .05f * dx * dy;
-
-	    if (dx == 0) {
-	        i_inc = 0;
-	        error = Float.POSITIVE_INFINITY;
-	    } else if (x1 > x0) {
-	        i_inc = 1;
-	        n += (int) Math.round(x1) - i;
-	        error = (float) (((Math.round(x0) + .5f) - x0) * dy);
-	    } else {
-	        i_inc = -1;
-	        n += i - (int) Math.round(x1);
-	        error = (float) ((x0 - (Math.round(x0) - .5f)) * dy);
-	    }
-	    if (dy == 0) {
-	        j_inc = 0;
-	        error -= Float.POSITIVE_INFINITY;
-	    } else if (y1 > y0) {
-	        j_inc = 1;
-	        n += (int) Math.round(y1) - j;
-	        error -= ((Math.round(y0) + .5f) - y0) * dx;
-	    } else {
-	        j_inc = -1;
-	        n += j - (int) Math.round(y1);
-	        error -= (y0 - (Math.round(y0) - .5f)) * dx;
-	    }
-	    for (; n > 0; --n) 
-	    {
-	        // move on along the ray
-	        if (error > cornerTresh) {
-	            j += j_inc;
-	            error -= dx;
-	        } else if (error < -cornerTresh) {
-	            i += i_inc;
-	            error += dy;
-	        } else {
-	        	i += i_inc;
-	    		j += j_inc;
-	    		error += dy - dx;
-	    		--n;
-	        }
-
-	        // Don't go outside the grid
-	    	if ((i < 0) || (j < 0) || (i >= m_w) || (j >= m_h)) 
-	    		//return Pair.create(Ernest.INFINITE, WALL_COLOR);
-	    		return new int[] {Ernest.INFINITE,Ernest.INFINITE,WALL_COLOR.getRGB()};
-	    	
-	    	// Examine the block on the ray. Return wall or uninhibited dirty squares.
-	    	Color bgc = m_env.m_blocks[i][j].seeBlock();
-	    	if (bgc.equals(WALL_COLOR)) // don't see walls (for Ernest 11.4)
-	    		//return Pair.create(Ernest.INFINITE, WALL_COLOR);
-	    		return new int[] {Ernest.INFINITE,Ernest.INFINITE,WALL_COLOR.getRGB()};
-	    	
-	    	if (m_env.isWall(i,j) || m_env.isFood(i,j) || m_env.isAlga(i,j))
-	    	{
-				//int dist = (int) Math.sqrt(((i-x0)*(i-x0) + (j-y0)*(j-y0)) * Ernest.INT_FACTOR * Ernest.INT_FACTOR);
-				//return Pair.create(dist, bgc);
-	    		return new int[] {(i-(int)Math.round(x0)) , (j-(int)Math.round(y0)) , bgc.getRGB()};
-
-    		}
-	    	//if (m_env.isAgent(i, j, mName))
-	    	ErnestModel entity = m_env.getEntity(new Vector3f(i,j,0), mName);
-	    	if (entity != null)
-	    	{
-				//int dist = (int) Math.sqrt(((i-x0)*(i-x0) + (j-y0)*(j-y0)) * Ernest.INT_FACTOR * Ernest.INT_FACTOR);
-				//return Pair.create(dist, entity.getColor());//AGENT_COLOR);
-	    		return new int[] {(i-(int)Math.round(x0)) , (j-(int)Math.round(y0)) , -entity.getColor().getRGB()};
-	    	}
-
-	    }
-		//return Pair.create(Ernest.INFINITE, WALL_COLOR);
-		return new int[] {Ernest.INFINITE,Ernest.INFINITE,WALL_COLOR.getRGB()};
-	}
-
-	/**
-	 * Compute the tactile stimuli 
-	 * @return The matrix of tactile stimuli. 
-	 */
-//	public int[] somatoMap() {
-//		int[] somatoMap = new int[9];
-//		somatoMap[0] = soma(DIRECTION_BEHIND_RIGHT);
-//		somatoMap[1] = soma(DIRECTION_RIGHT);
-//		somatoMap[2] = soma(DIRECTION_AHEAD_RIGHT);
-//		somatoMap[3] = soma(DIRECTION_AHEAD);
-//		somatoMap[4] = soma(DIRECTION_AHEAD_LEFT);
-//		somatoMap[5] = soma(DIRECTION_LEFT);
-//		somatoMap[6] = soma(DIRECTION_BEHIND_LEFT);
-//		somatoMap[7] = soma(DIRECTION_BEHIND);
-//		somatoMap[8] = soma(new Vector3f());
+//	/**
+//	 * Generates a retina image from Ernest's view point.
+//	 * (Uses Ernest's orientationRad value, trigonometric, counterclockwise, radius).
+//	 * @return The array of colors projected onto the retina.
+//	 */ 
+//	public Queue<PhotoreceptorCell> getRetina(double orientationRad) {
+//		System.out.println("vision");
+//		double angleOrigin = orientationRad - Math.PI/2;
+//		double angleSpan = Math.PI;
+//		RayTracing cellsTracing = new RayTracing( this.m_env , this , this.mPosition , this.mName , angleOrigin , angleSpan ) ;
+//		Queue<PhotoreceptorCell> cells = cellsTracing.rayTrace() ;
+//		
+//		for ( PhotoreceptorCell photoreceptorCell : cells ) {
+//			System.out.println("retina (" + photoreceptorCell.getxBlockPosition() + "," + photoreceptorCell.getyBlockPosition() + ")");
+//		}
+//		
+//		// Agent up, left, down
+//		if ((Math.abs(orientationRad - Math.PI/2) < .1f) || (Math.abs(orientationRad + Math.PI/2) < .1f) || (Math.abs(Math.PI - orientationRad) < .1f || Math.abs(orientationRad + Math.PI) < .1f)){
+//			for ( PhotoreceptorCell photoreceptorCell : cells ) {
+//				photoreceptorCell.orienteAxis( orientationRad );
+//			}
+//		}
 //
-//		return somatoMap;
+//		return cells;
 //	}
-	/**
-	 * Tactile stimuli. 
-	 * @param direction The direction of the touch in Ernest's referential.
-	 * @return The tactile stimulus in this direction. 
-	 */
-//	public int soma(Vector3f direction) {
-//		int soma = Ernest.STIMULATION_TOUCH_EMPTY;
-//		Vector3f localPoint = new Vector3f(direction);
-//		localPoint.scale(SOMATO_RADIUS);
-//		Vector3f point = localToParentRef(localPoint);
-//		if (m_env.affordTouchSoft(point))
-//			soma = Ernest.STIMULATION_TOUCH_SOFT;
-//		if (m_env.affordEat(point))
-//			soma = Ernest.STIMULATION_TOUCH_FISH;
-//		if (affordHunt(point))
-//			soma = Ernest.STIMULATION_TOUCH_FISH;
-//		if (affordCuddle(point))
-//			soma = Ernest.STIMULATION_TOUCH_AGENT;
-//		if (!m_env.affordWalk(point)) 
-//			soma = Ernest.STIMULATION_TOUCH_WALL;
-//		return soma;
-//	}
+	
 	/**
 	 * @param localVec A position relative to Ernest.
 	 * @return The absolute position relative to the board ((rotZ(mOrientation.z) * localVec) + mPosition). 

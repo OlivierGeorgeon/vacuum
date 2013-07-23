@@ -1,6 +1,6 @@
 package ideal.vacuum;
 
-import ideal.vacuum.agent.vision.Eyes ;
+import ideal.vacuum.agent.vision.Eye ;
 
 import java.awt.Color ;
 import java.awt.Graphics2D ;
@@ -28,7 +28,7 @@ public class FishModel extends ErnestModel
     
     final static float ROTATION_FRICTION = .9f; // .95f
 
-    Color[] pixelColor = new Color[Eyes.RESOLUTION_RETINA];
+    Color[] pixelColor = new Color[Eye.RESOLUTION_RETINA];
     Color[][] somatoMapColor = new Color[3][3];
 
     public float[] fish_x={(float) 0.8,(float) 0.6,(float) 0.4,(float) 0.2,0,(float)-0.2,(float)-0.4,(float)-0.6,(float)-0.8,
