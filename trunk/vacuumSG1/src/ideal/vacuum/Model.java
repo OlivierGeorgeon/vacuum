@@ -343,6 +343,10 @@ public class Model extends Observable
 	public int getHeight()
 	{ return m_h; }
 
+	public boolean isOutOfBoard( int x , int y ) {
+		return (x < 0) || (x < 0) || (x >= this.m_w) || (y >= this.m_h);
+	}
+	
 	public boolean getSpeakAloud()
 	{
 		return m_bSpeakAloud;
