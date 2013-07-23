@@ -1,6 +1,12 @@
 package ideal.vacuum.agent.behavior;
 
 import ideal.vacuum.agent.Move ;
+
+import java.util.List ;
+
+import javax.media.j3d.Transform3D ;
+
+import eca.spas.egomem.Place ;
 import ernest.IEffect ;
 
 /**
@@ -15,7 +21,8 @@ public interface Behavior {
 	public BehaviorState getCurrentBehaviorState() ;
 
 	public IEffect getEffect() ;
-	
-	public void refreshFramesPlugins( final float angleRotation , final float xTranslation );
 
+	public Transform3D getTransform() ;
+
+	public List<Place> getPlaces() ;
 }

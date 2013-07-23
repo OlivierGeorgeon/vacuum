@@ -1,29 +1,31 @@
-package ideal.vacuum.agent.behavior;
+package ideal.vacuum.agent.behavior ;
 
 import ideal.vacuum.agent.AgentDesigner ;
-import ideal.vacuum.agent.vision.Eyes ;
+import ideal.vacuum.agent.vision.PhotoreceptorCell ;
 
 import java.awt.Color ;
-
+import java.util.ArrayList ;
+import java.util.List ;
+import java.util.Set ;
 
 /**
  * 
  * @author Joseph GARNIER
  * @version $Revision$
  */
-public class BehaviorState implements Cloneable{
+public class BehaviorState implements Cloneable {
 
 	private Color focusColor = AgentDesigner.UNANIMATED_COLOR ;
 	private Color leftColor = AgentDesigner.UNANIMATED_COLOR ;
 	private Color rightColor = AgentDesigner.UNANIMATED_COLOR ;
-	private Eyes eyes;
-	
-	public BehaviorState( Color focusColor , Color leftColor , Color rightColor , Eyes eyes ) {
+	private Set<PhotoreceptorCell> photoreceptorCells ;
+
+	public BehaviorState( Color focusColor , Color leftColor , Color rightColor , Set<PhotoreceptorCell> cells ) {
 		super() ;
 		this.focusColor = focusColor ;
 		this.leftColor = leftColor ;
 		this.rightColor = rightColor ;
-		this.eyes = eyes ;
+		this.photoreceptorCells = cells ;
 	}
 
 	public Color getFocusColor() {
@@ -38,18 +40,22 @@ public class BehaviorState implements Cloneable{
 		return this.rightColor ;
 	}
 
-	public Eyes getEyes() {
-		return this.eyes ;
+	public Set<PhotoreceptorCell> getCells() {
+		return this.photoreceptorCells ;
 	}
 
+	public List<PhotoreceptorCell> getCellsArray() {
+		return new ArrayList<PhotoreceptorCell>( this.photoreceptorCells );
+	}
+	
 	@Override
 	protected BehaviorState clone() throws CloneNotSupportedException {
-		BehaviorState object =  (BehaviorState) super.clone() ;
-		object.eyes = this.eyes.clone();
-		object.focusColor = this.focusColor;
-		object.leftColor = this.leftColor;
-		object.rightColor = this.rightColor;
-		
-		return object;
+		BehaviorState object = (BehaviorState) super.clone() ;
+		object.photoreceptorCells = this.photoreceptorCells ;
+		object.focusColor = this.focusColor ;
+		object.leftColor = this.leftColor ;
+		object.rightColor = this.rightColor ;
+
+		return object ;
 	}
 }

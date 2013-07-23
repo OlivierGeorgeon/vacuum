@@ -4,6 +4,7 @@ import ideal.vacuum.Environment ;
 import ideal.vacuum.Ernest130Model ;
 import ideal.vacuum.agent.DesignerListener ;
 import ideal.vacuum.agent.TactileEffect ;
+import ideal.vacuum.agent.vision.Eye ;
 
 import java.awt.Color ;
 
@@ -18,8 +19,8 @@ import javax.vecmath.Vector3f ;
  */
 public class BehaviorErnest7 extends AbstractBehavior {
 
-	public BehaviorErnest7( Ernest130Model model , DesignerListener listener ) {
-		super( model , listener ) ;
+	public BehaviorErnest7( Ernest130Model model , DesignerListener listener , Eye eye ) {
+		super( model , listener , eye ) ;
 	}
 
 	protected void turnRight() {
