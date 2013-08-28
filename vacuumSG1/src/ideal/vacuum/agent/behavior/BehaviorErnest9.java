@@ -8,6 +8,7 @@ import java.util.Queue ;
 import ideal.vacuum.Ernest130Model ;
 import ideal.vacuum.agent.DesignerListener ;
 import ideal.vacuum.agent.GraphicProperties ;
+import ideal.vacuum.agent.Move;
 import ideal.vacuum.agent.TactileEffect ;
 import ideal.vacuum.agent.VisualEffect ;
 import ideal.vacuum.agent.vision.Eye ;
@@ -49,10 +50,14 @@ public class BehaviorErnest9 extends AbstractBehavior {
 		}
 	}
 	
-	private void addTactileOrVisualPlace( String effect , Point3f location ) {
-		Primitive primitive = PrimitiveImpl.get( effect ) ;
-		PlaceImpl place = new PlaceImpl( primitive , location ) ;
-		this.places.add( place );
+	private void addTactileOrVisualPlace( String label , Point3f location ) {
+		Primitive primitive = PrimitiveImpl.get( label ) ;
+		if (primitive != null){ // OG
+			PlaceImpl place = new PlaceImpl( primitive , location ) ;
+			this.places.add( place );
+		}
+		else 
+			System.out.println("Illegal interaction label: " + label);
 	}
 	
 	protected void turnRight() {
@@ -87,7 +92,7 @@ public class BehaviorErnest9 extends AbstractBehavior {
 //				this.effect.setLocation( new Point3f() ) ;
 				this.model.getEnvironment().eatFood( aheadPoint ) ;
 //				this.effect.setLabel( TactileEffect.FOOD.getLabel() ) ;
-				this.addTactileOrVisualPlace( TactileEffect.FOOD.getLabel() , new Point3f() );
+				this.addTactileOrVisualPlace( Move.MOVE_FORWARD.getLabel() + TactileEffect.FOOD.getLabel() , new Point3f() ); // OG
 				
 			}
 //			this.effect.setTransformation( 0 , -1 ) ;
@@ -97,7 +102,7 @@ public class BehaviorErnest9 extends AbstractBehavior {
 			this.bumpAheadAnimWorld() ;
 			this.lookTheWorld() ;
 			this.buildPlaces( 0 , 0 );
-			this.addTactileOrVisualPlace( TactileEffect.FALSE.getLabel() , new Point3f( 1 , 0 , 0 ) );
+			this.addTactileOrVisualPlace( Move.MOVE_FORWARD.getLabel() + TactileEffect.FALSE.getLabel() , new Point3f( 1 , 0 , 0 ) );
 //			this.effect.setLocation( new Point3f( 1 , 0 , 0 ) ) ;
 //			this.effect.setColor( Color.RED.getRGB() );
 //			this.effect.setLabel( TactileEffect.FALSE.getLabel() ) ;

@@ -201,6 +201,10 @@ public class Environment extends Observable {
 		m_h=h;
 		m_anim=new int[w][h];
 		m_blocks=new Block[w][h];
+		for (int x=0; x < w; x++)
+			for (int y=0; y < h; y++)
+				m_blocks[x][y] = empty;
+
 		putPreferences();
 	}
 	
