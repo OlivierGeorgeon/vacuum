@@ -280,11 +280,13 @@ public class MainFrame extends JFrame implements Observer, ActionListener, KeyLi
 			l_h = lines.size();
 			l_w = (lines.get(0).toString().length() + 1) / 2;
 			
-			m_environment.init(l_w, l_h);
-
 			if (l_h <= 0 || l_w <= 0)
 				throw new IllegalStateException("Invalid width or height!");
 			
+			System.out.println("length: " + l_h + " width: " + l_w);
+			
+			m_environment.init(l_w, l_h);
+
 			int y = 0;
 
 			for (Iterator i = lines.iterator(); i.hasNext(); )
@@ -312,6 +314,7 @@ public class MainFrame extends JFrame implements Observer, ActionListener, KeyLi
 						//int index=m_modelList.size();
 						
 						m_modelList.add(new FishModel(index));
+						m_modelList.get(index).setEnvironnement(m_environment); // OG
 						m_modelList.get(index).init(l_w, l_h);
 						m_modelList.get(index).setFrame(this);
 
@@ -324,7 +327,7 @@ public class MainFrame extends JFrame implements Observer, ActionListener, KeyLi
 						m_modelList.get(index).mTranslation.set(new Vector3f());
 						m_modelList.get(index).mRotation.set(new Vector3f());
 						
-						m_modelList.get(index).setEnvironnement(m_environment);
+//						m_modelList.get(index).setEnvironnement(m_environment);
 						
 						index++;
 					}
@@ -336,7 +339,9 @@ public class MainFrame extends JFrame implements Observer, ActionListener, KeyLi
 						//int index=m_modelList.size();
 						
 						if (version==0)   m_modelList.add(new FishModel(index));
-						else if (version==130)   m_modelList.add(new Ernest130Model(index));
+						else if (version==130)   
+							m_modelList.add(new Ernest130Model(index));
+						m_modelList.get(index).setEnvironnement(m_environment); // OG
 						m_modelList.get(index).init(l_w, l_h);
 						m_modelList.get(index).setFrame(this);
 
@@ -357,7 +362,7 @@ public class MainFrame extends JFrame implements Observer, ActionListener, KeyLi
 						else if (square[x].equalsIgnoreCase("<"))
 							m_modelList.get(index).mOrientation.z = (float) Math.PI;
 						
-						m_modelList.get(index).setEnvironnement(m_environment);
+						//m_modelList.get(index).setEnvironnement(m_environment);
 						
 						index++;
 					}

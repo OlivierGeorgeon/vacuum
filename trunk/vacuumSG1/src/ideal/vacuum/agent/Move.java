@@ -38,11 +38,15 @@ public enum Move {
 		return BY_LABEL.containsKey( label ) ;
 	}
 
-	public static Move getByLabel( String label ) throws IllegalArgumentException {
-		if ( BY_LABEL.containsKey( label ) ) {
-			return BY_LABEL.get( label ) ;
+	public static Move getByLabel( String interactionLabel ) throws IllegalArgumentException {
+		
+		// We assume that the move is given by the first character of a primitive interaction label.
+		String moveLabel = interactionLabel.substring(0,1); // OG
+		if ( BY_LABEL.containsKey( moveLabel ) ) {
+			return BY_LABEL.get( moveLabel ) ;
 		}
-
+		
+		System.out.println("Illegal move label: " + moveLabel); // OG
 		throw new IllegalArgumentException() ;
 	}
 }
