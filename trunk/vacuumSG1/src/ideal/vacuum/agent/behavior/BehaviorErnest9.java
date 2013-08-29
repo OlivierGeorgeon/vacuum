@@ -39,11 +39,11 @@ public class BehaviorErnest9 extends AbstractBehavior {
 				.getCurrentBehaviorState() ) ) ;
 	}
 
-	private void buildPlaces( float angle , float xTranslation ) {
+	private void buildPlaces( String moveLabel, float angle , float xTranslation ) {
 		this.places.clear();
 		Map<PhotoreceptorCell , VisualEffect> stimuli = this.colliculus.visualEffect( angle , xTranslation ) ;
 		for ( Entry<PhotoreceptorCell , VisualEffect> entry : stimuli.entrySet() ) {
-			Primitive primitive = PrimitiveImpl.get( entry.getValue().getLabel() ) ;
+			Primitive primitive = PrimitiveImpl.get( moveLabel + entry.getValue().getLabel() ) ;
 			Point3f position = this.colliculus.getEventPosition( entry.getKey() , entry.getValue() ) ;
 			PlaceImpl place = new PlaceImpl( primitive , position ) ;
 			this.places.add( place );
@@ -64,7 +64,7 @@ public class BehaviorErnest9 extends AbstractBehavior {
 		this.turnRightAnimWorld() ;
 		this.lookTheWorld() ;
 
-		this.buildPlaces( (float) Math.PI / 2 , 0 ) ;
+		this.buildPlaces( Move.TURN_RIGHT.getLabel(), (float) Math.PI / 2 , 0 ) ;
 		this.setTransform( (float) Math.PI / 2 , 0 );
 	}
 
@@ -72,7 +72,7 @@ public class BehaviorErnest9 extends AbstractBehavior {
 		this.turnLeftAnimWorld() ;
 		this.lookTheWorld() ;
 
-		this.buildPlaces( (float) -Math.PI / 2 , 0 ) ;
+		this.buildPlaces( Move.TURN_LEFT.getLabel(), (float) -Math.PI / 2 , 0 ) ;
 		this.setTransform( (float) -Math.PI / 2 , 0 );
 	}
 
@@ -84,7 +84,7 @@ public class BehaviorErnest9 extends AbstractBehavior {
 				!this.model.affordCuddle( aheadPoint ) ) {
 			this.moveForwardAnimWorld() ;
 			this.lookTheWorld() ;
-			this.buildPlaces( 0 , -1 );
+			this.buildPlaces( Move.MOVE_FORWARD.getLabel(), 0 , -1 );
 			
 			if ( this.model.getEnvironment().isFood( aheadPoint.x , aheadPoint.y ) ) {
 				this.effect.setColor( this.model.getEnvironment()
@@ -101,7 +101,7 @@ public class BehaviorErnest9 extends AbstractBehavior {
 		} else {
 			this.bumpAheadAnimWorld() ;
 			this.lookTheWorld() ;
-			this.buildPlaces( 0 , 0 );
+			this.buildPlaces( Move.MOVE_FORWARD.getLabel(), 0 , 0 );
 			this.addTactileOrVisualPlace( Move.MOVE_FORWARD.getLabel() + TactileEffect.FALSE.getLabel() , new Point3f( 1 , 0 , 0 ) );
 //			this.effect.setLocation( new Point3f( 1 , 0 , 0 ) ) ;
 //			this.effect.setColor( Color.RED.getRGB() );
