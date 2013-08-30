@@ -43,11 +43,12 @@ public class Eye {
 		this.activePhotoreceptorCells.add(cell);
 	}
 
-	public void activeRetina(double yawRad) {
+	public void activeRetina() {
 		System.out.println("vision");
+		double yawRad = this.model.getOrientation();
 		double angleOrigin = yawRad - Math.PI/2;
 		double angleSpan = Math.PI;
-		RayTracing cellsTracing = new RayTracing( this.env , this.model , this.position , this.agentName , angleOrigin , angleSpan ) ;
+		RayTracing cellsTracing = new RayTracing( this.env , this.model , this.agentName , angleOrigin , angleSpan ) ;
 		Queue<PhotoreceptorCell> cells = cellsTracing.rayTrace() ;
 		
 		for ( PhotoreceptorCell photoreceptorCell : cells ) {
