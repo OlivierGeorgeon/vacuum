@@ -51,10 +51,11 @@ public class BehaviorErnest9 extends AbstractBehavior {
 		}
 	}
 	
-	private void addTactileOrVisualPlace( String label , Point3f location ) {
+	private void addTactileOrVisualPlace( String label , Point3f location , int displayCode) {
 		Primitive primitive = PrimitiveImpl.get( label ) ;
 		if (primitive != null){ // OG
 			PlaceImpl place = new PlaceImpl( primitive , location ) ;
+			place.setValue(displayCode);
 			this.places.add( place );
 		}
 		else 
@@ -88,12 +89,12 @@ public class BehaviorErnest9 extends AbstractBehavior {
 			this.buildPlaces( Move.MOVE_FORWARD.getLabel(), 0 , -1 );
 			
 			if ( this.model.getEnvironment().isFood( aheadPoint.x , aheadPoint.y ) ) {
-				this.effect.setColor( this.model.getEnvironment()
-						.seeBlock( aheadPoint.x , aheadPoint.y ).getRGB() ) ;
+				int displayCode = this.model.getEnvironment().seeBlock( aheadPoint.x , aheadPoint.y ).getRGB();
+				this.effect.setColor( displayCode );
 //				this.effect.setLocation( new Point3f() ) ;
 				this.model.getEnvironment().eatFood( aheadPoint ) ;
 //				this.effect.setLabel( TactileEffect.FOOD.getLabel() ) ;
-				this.addTactileOrVisualPlace( Move.MOVE_FORWARD.getLabel() + TactileEffect.FOOD.getLabel() , new Point3f() ); // OG
+				this.addTactileOrVisualPlace( Move.MOVE_FORWARD.getLabel() + TactileEffect.FOOD.getLabel() , new Point3f(), displayCode ); // OG
 				
 			}
 //			this.effect.setTransformation( 0 , -1 ) ;
@@ -102,8 +103,8 @@ public class BehaviorErnest9 extends AbstractBehavior {
 		} else {
 			this.bumpAheadAnimWorld() ;
 			this.lookTheWorld() ;
-			this.buildPlaces( Move.MOVE_FORWARD.getLabel(), 0 , 0 );
-			this.addTactileOrVisualPlace( Move.MOVE_FORWARD.getLabel() + TactileEffect.FALSE.getLabel() , new Point3f( 1 , 0 , 0 ) );
+			//this.buildPlaces( Move.MOVE_FORWARD.getLabel(), 0 , 0 );
+			this.addTactileOrVisualPlace( Move.MOVE_FORWARD.getLabel() + TactileEffect.FALSE.getLabel() , new Point3f( 1 , 0 , 0 ), 0xFF0000 );
 //			this.effect.setLocation( new Point3f( 1 , 0 , 0 ) ) ;
 //			this.effect.setColor( Color.RED.getRGB() );
 //			this.effect.setLabel( TactileEffect.FALSE.getLabel() ) ;
