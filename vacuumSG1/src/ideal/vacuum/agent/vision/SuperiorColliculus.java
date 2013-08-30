@@ -40,9 +40,9 @@ public class SuperiorColliculus {
 		return merged ;
 	}
 
-	public void saccade( double yawRad ) {
+	public void saccade() {
 		this.memoryCells = this.eye.getActivePhotoreceptorCells() ;
-		this.eye.activeRetina( yawRad ) ;
+		this.eye.activeRetina() ;
 	}
 
 	public Map<PhotoreceptorCell , VisualEffect> visualEffect( float angle , float xTranslation ) {
@@ -124,7 +124,7 @@ public class SuperiorColliculus {
 	}
 
 	public Point3f getEventPosition( PhotoreceptorCell cell , VisualEffect stimuli ) {
-		float d = 0 ;
+		//float d = 0 ;
 		Point3f position = new Point3f() ;
 
 		switch ( stimuli ) {
@@ -134,9 +134,9 @@ public class SuperiorColliculus {
 			case MOVE:
 			case DISAPPEAR:
 				position = cell.getBlockPosition() ;
-				d = cell.distanceAccurateToTheBlock() ;
-				if ( d > 0 && d < Ernest.INFINITE )
-					position.scale( Eye.DISTANCE_VISION / d ) ;
+				//d = cell.distanceAccurateToTheBlock() ;
+				//if ( d > 0 && d < Ernest.INFINITE )
+				//	position.scale( Eye.DISTANCE_VISION / d ) ;
 				break ;
 			default:
 				break ;

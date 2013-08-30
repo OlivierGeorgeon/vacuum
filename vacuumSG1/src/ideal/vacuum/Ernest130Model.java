@@ -28,6 +28,7 @@ import java.util.ArrayList ;
 import javax.media.j3d.Transform3D ;
 import javax.vecmath.Vector3f ;
 
+import tracing.XMLStreamTracer;
 import utils.ErnestUtils ;
 import eca.spas.egomem.Place;
 import ernest.Ernest ;
@@ -148,13 +149,13 @@ public class Ernest130Model extends ErnestModel implements DesignerListener {
 		this.spaceMemory.setModel( this ) ;
 
 		// Only trace the first agent.
-		// this.m_tracer = new
-		// XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","UzGveECMaporPwkslFdyDfNIQLwMYk");
+	    this.m_tracer = new
+		XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","UzGveECMaporPwkslFdyDfNIQLwMYk");
 		// XMLStreamTracer("http://macbook-pro-de-olivier-2.local/alite/php/stream/","dlsQKeaXlclGbzRTN--ZLWajTDyGpr");
 		// this.m_tracer = new XMLStreamTracer(
 		// "http://134.214.128.53/abstract/lite/php/stream/" ,
 		// "juIQzDzdCtBSpmNnJNkzdtTTajfsXe" ) ;
-		this.m_tracer = null ;
+		//this.m_tracer = null ;
 		// Initialize the Ernest
 		// Ernest's inborn primitive interactions
 		this.m_ernest.setParameters( 6 , 10 ) ;

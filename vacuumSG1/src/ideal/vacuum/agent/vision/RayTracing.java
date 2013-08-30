@@ -16,17 +16,17 @@ public class RayTracing {
 
 	private Environment env;
 	private ErnestModel model;
-	private Vector3f position;
+	//private Vector3f position;
 	private String agentName;
 	
 	private double angleOrigin;
 	private double angleSpan;
 	private double currentAngle;
 	
-	public RayTracing( Environment env , ErnestModel ernestModel , Vector3f startPosition , String agentName , double angleOrigin, double angleSpan) {
+	public RayTracing( Environment env , ErnestModel ernestModel , String agentName , double angleOrigin, double angleSpan) {
 		this.env = env;
 		this.model = ernestModel;
-		this.position = startPosition;
+//		this.position = startPosition;
 		this.agentName = agentName;
 
 		this.angleOrigin = angleOrigin;
@@ -49,10 +49,11 @@ public class RayTracing {
 		int[] eyeFixation = null; //new int[] {Ernest.INFINITE,Ernest.INFINITE,WALL_COLOR.getRGB()};
 		double step = this.angleSpan / 40; // OG
 		double angle;
+		Vector3f position = new Vector3f(this.model.getPosition());// OG
 		for (angle = this.currentAngle; angle <= this.angleOrigin + this.angleSpan + .001; angle += step) {
-			float x0 = (float) (this.position.x + 20 * Math.cos(angle));
-			float y0 = (float) (this.position.y + 20 * Math.sin(angle)); // Y axis is downwards.
-			eyeFixation = rayTrace(this.position.x,this.position.y, x0, y0);
+			float x0 = (float) (position.x + 20 * Math.cos(angle));
+			float y0 = (float) (position.y + 20 * Math.sin(angle)); // Y axis is downwards.
+			eyeFixation = rayTrace(position.x,position.y, x0, y0);
 			// We stop when we find a singularity.
 			if (eyeFixation[2] != Model.WALL_COLOR.getRGB()){
 				break;

@@ -34,7 +34,7 @@ public class BehaviorErnest9 extends AbstractBehavior {
 
 	private void lookTheWorld() {
 		GraphicProperties ernestGraphicProperties = this.model.getCopyOfGraphicProperties() ;
-		this.colliculus.saccade( ernestGraphicProperties.getmOrientation().z );
+		this.colliculus.saccade();
 		this.notifyBehaviorStateChanged( new BehaviorStateChangeEvent( this , this
 				.getCurrentBehaviorState() ) ) ;
 	}
@@ -46,6 +46,7 @@ public class BehaviorErnest9 extends AbstractBehavior {
 			Primitive primitive = PrimitiveImpl.get( moveLabel + entry.getValue().getLabel() ) ;
 			Point3f position = this.colliculus.getEventPosition( entry.getKey() , entry.getValue() ) ;
 			PlaceImpl place = new PlaceImpl( primitive , position ) ;
+			place.setValue(entry.getKey().getBlockColor().getRGB()); // OG
 			this.places.add( place );
 		}
 	}
