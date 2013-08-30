@@ -60,7 +60,10 @@ public class SuperiorColliculus {
 		}
 
 		for ( PhotoreceptorCell currentCell : this.eye.getActivePhotoreceptorCells() ) {
-			if ( !this.memoryCells.contains( currentCell ) ) {
+//			if ( !this.memoryCells.contains( currentCell ) ) {
+//				this.visualsEffects.put( currentCell , VisualEffect.APPEAR ) ;
+//			}
+			if ( !this.visualsEffects.containsKey( currentCell ) ) { // OG
 				this.visualsEffects.put( currentCell , VisualEffect.APPEAR ) ;
 			}
 		}
