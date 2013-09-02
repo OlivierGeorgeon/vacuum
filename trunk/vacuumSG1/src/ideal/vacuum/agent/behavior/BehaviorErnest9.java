@@ -116,6 +116,7 @@ public class BehaviorErnest9 extends AbstractBehavior {
 //			this.effect.setLocation( new Point3f( 1 , 0 , 0 ) ) ;
 //			this.effect.setColor( Color.RED.getRGB() );
 //			this.effect.setLabel( TactileEffect.FALSE.getLabel() ) ;
+			this.setTransform( 0 , 0 );
 		}
 		if (this.places.isEmpty()) addDefaultPlace(Move.MOVE_FORWARD.getLabel());
 
