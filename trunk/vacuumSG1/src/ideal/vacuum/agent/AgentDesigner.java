@@ -1,5 +1,6 @@
 package ideal.vacuum.agent ;
 
+import ideal.vacuum.Environment;
 import ideal.vacuum.Ernest130Model ;
 import ideal.vacuum.agent.behavior.BehaviorState ;
 
@@ -178,7 +179,10 @@ public class AgentDesigner {
 		rightEye.append( new Arc2D.Double( -30 , -40 , 60 , 70 , 180 , 180 , Arc2D.PIE ) , false ) ;
 
 		g2d.setStroke( new BasicStroke( 2f ) ) ;
-		g2d.setColor( behaviorState.getCellsArray().get( 0 ).getBlockColor() ) ;
+		if (behaviorState.getCellsArray().isEmpty())
+			g2d.setColor(Environment.WALL1);
+		else
+			g2d.setColor( behaviorState.getCellsArray().get( 0 ).getBlockColor() ) ;
 		g2d.fill( rightEye ) ;
 		g2d.setColor( Color.BLACK ) ;
 		g2d.draw( rightEye ) ;

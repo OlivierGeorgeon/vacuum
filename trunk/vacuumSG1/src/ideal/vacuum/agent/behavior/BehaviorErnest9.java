@@ -33,7 +33,7 @@ public class BehaviorErnest9 extends AbstractBehavior {
 	}
 
 	private void lookTheWorld() {
-		GraphicProperties ernestGraphicProperties = this.model.getCopyOfGraphicProperties() ;
+		//GraphicProperties ernestGraphicProperties = this.model.getCopyOfGraphicProperties() ;
 		this.colliculus.saccade();
 		this.notifyBehaviorStateChanged( new BehaviorStateChangeEvent( this , this
 				.getCurrentBehaviorState() ) ) ;
@@ -48,7 +48,13 @@ public class BehaviorErnest9 extends AbstractBehavior {
 			PlaceImpl place = new PlaceImpl( primitive , position ) ;
 			place.setValue(entry.getKey().getBlockColor().getRGB()); // OG
 			this.places.add( place );
-		}
+		}		
+	}
+	
+	private void addDefaultPlace(String moveLabel){
+		Primitive primitive = PrimitiveImpl.get( moveLabel + VisualEffect.UNCHANGED.getLabel() ) ;
+		PlaceImpl place = new PlaceImpl( primitive , new Point3f() ) ;
+		this.places.add(place);
 	}
 	
 	private void addTactileOrVisualPlace( String label , Point3f location , int displayCode) {
@@ -67,6 +73,7 @@ public class BehaviorErnest9 extends AbstractBehavior {
 		this.lookTheWorld() ;
 
 		this.buildPlaces( Move.TURN_RIGHT.getLabel(), (float) Math.PI / 2 , 0 ) ;
+		if (this.places.isEmpty()) addDefaultPlace(Move.TURN_RIGHT.getLabel());
 		this.setTransform( (float) Math.PI / 2 , 0 );
 	}
 
@@ -75,6 +82,7 @@ public class BehaviorErnest9 extends AbstractBehavior {
 		this.lookTheWorld() ;
 
 		this.buildPlaces( Move.TURN_LEFT.getLabel(), (float) -Math.PI / 2 , 0 ) ;
+		if (this.places.isEmpty()) addDefaultPlace(Move.TURN_LEFT.getLabel());
 		this.setTransform( (float) -Math.PI / 2 , 0 );
 	}
 
@@ -109,6 +117,8 @@ public class BehaviorErnest9 extends AbstractBehavior {
 //			this.effect.setColor( Color.RED.getRGB() );
 //			this.effect.setLabel( TactileEffect.FALSE.getLabel() ) ;
 		}
+		if (this.places.isEmpty()) addDefaultPlace(Move.MOVE_FORWARD.getLabel());
+
 	}
 
 	protected void moveBackward() {
