@@ -8,6 +8,7 @@ import java.awt.Color ;
 import java.util.LinkedList ;
 import java.util.Queue ;
 
+import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f ;
 
 import ernest.Ernest ;
@@ -38,9 +39,10 @@ public class RayTracing {
 		Queue<PhotoreceptorCell> cellQueue = new LinkedList<PhotoreceptorCell>() ;
 		while( this.currentAngle < this.angleOrigin + this.angleSpan + .001 ){
 			PhotoreceptorCell cell = this.scanArc() ;
-			if( ! cellQueue.contains( cell ) ){
-				cellQueue.add( cell );
-			}
+			if (cell.getBlockPosition().distance(new Point3f())< 1000) // OG do not see the external walls;
+				if( ! cellQueue.contains( cell ) )
+					cellQueue.add( cell );
+			
 		}
 		return cellQueue;
 	}

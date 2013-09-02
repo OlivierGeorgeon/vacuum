@@ -26,14 +26,14 @@ public class Eye {
 	public static final float DISTANCE_VISION = 4 ;
 	private Environment env;
 	private ErnestModel model;
-	private Vector3f position;
+	//private Vector3f position;
 	private String agentName;
 	private Queue<PhotoreceptorCell> activePhotoreceptorCells;
 	
 	public Eye( Environment env , ErnestModel ernestModel , Vector3f startPosition , String agentName ) {
 		this.env = env;
 		this.model = ernestModel;
-		this.position = startPosition;
+		//this.position = startPosition;
 		this.agentName = agentName;
 		PhotoreceptorCell cell = new PhotoreceptorCell(
 				Ernest.INFINITE ,
