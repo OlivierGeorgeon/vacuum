@@ -22,6 +22,12 @@ import javax.swing.JPanel ;
 
 public class EnvironnementPanel extends JPanel implements MouseListener{
 
+	public final static int CLICK_AGENT = 1; 
+	public final static int CLICK_TARGET = 2; 
+	public final static int CLICK_WALL = 3; 
+	public final static int CLICK_MOVING_TARGET = 5; 
+	public final static int CLICK_ALGA = 6; 
+	public final static int CLICK_BRICK = 7; 
 	/**
 	 * 
 	 */
@@ -199,20 +205,20 @@ public class EnvironnementPanel extends JPanel implements MouseListener{
 		
 		if (e.getButton() == MouseEvent.BUTTON1)
 			if (e.isShiftDown()) m_clicked = 4;
-			else m_clicked = 1;
+			else m_clicked = CLICK_AGENT;
 		if (e.getButton() == MouseEvent.BUTTON2)
-				if (e.isShiftDown()) m_clicked = 5;
-				else m_clicked = 2;
+				if (e.isShiftDown()) m_clicked = CLICK_MOVING_TARGET;
+				else m_clicked = CLICK_TARGET;
 		if (e.getButton() == MouseEvent.BUTTON3)
 		{
 			if (e.isShiftDown()) 
 			{
 				if(e.isControlDown())
-					m_clicked = 7;
+					m_clicked = CLICK_BRICK;
 				else	
-					m_clicked = 6;
+					m_clicked = CLICK_ALGA;
 			}
-			else m_clicked = 3;
+			else m_clicked = CLICK_WALL;
 		}
 	}
 	

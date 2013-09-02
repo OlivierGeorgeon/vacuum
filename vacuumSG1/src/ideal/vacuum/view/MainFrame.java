@@ -621,7 +621,7 @@ public class MainFrame extends JFrame implements Observer, ActionListener, KeyLi
 		int c= m_envPanel.getClicked();
 		
 		// click left : change agent
-		if (c == 1){
+		if (c == EnvironnementPanel.CLICK_AGENT){
 			int id=m_environment.agentId(m_envPanel.m_FclickX, m_envPanel.m_FclickY);
 			if (id!=-1){
 				m_environment.setDisplay(id);
@@ -633,7 +633,7 @@ public class MainFrame extends JFrame implements Observer, ActionListener, KeyLi
 		}
 		
 		// click wheel : add or remove static fish
-		if (c == 2){
+		if (c == EnvironnementPanel.CLICK_TARGET){
 			if (m_environment.isFood(m_envPanel.m_clickX,l_h-1-m_envPanel.m_clickY)){
 				m_environment.setBlock(m_envPanel.m_clickX, l_h-1-m_envPanel.m_clickY, Model.empty);
 				m_environment.traceUserEvent("remove_food", m_envPanel.m_clickX, l_h-1-m_envPanel.m_clickY);
@@ -647,7 +647,7 @@ public class MainFrame extends JFrame implements Observer, ActionListener, KeyLi
 		}
 		
 		// click right : add or remove wall
-		if (c == 3){
+		if (c == EnvironnementPanel.CLICK_WALL){
 			if (m_environment.isWall(m_envPanel.m_clickX,l_h-1-m_envPanel.m_clickY)){
 				m_environment.setBlock(m_envPanel.m_clickX, l_h-1-m_envPanel.m_clickY, Model.empty);
 				m_environment.traceUserEvent("remove_wall", m_envPanel.m_clickX, l_h-1-m_envPanel.m_clickY);
@@ -661,7 +661,7 @@ public class MainFrame extends JFrame implements Observer, ActionListener, KeyLi
 		}
 		
 		// click wheel + shift : add moving fish
-		if (c == 5){
+		if (c == EnvironnementPanel.CLICK_MOVING_TARGET){
 			if (!m_environment.isWall(m_envPanel.m_clickX,l_h-1-m_envPanel.m_clickY)){
 				int index2=m_modelList.size();
 			
@@ -691,7 +691,7 @@ public class MainFrame extends JFrame implements Observer, ActionListener, KeyLi
 		}
 		
 		// click right + shift : add or remove alga
-		if (c == 6){
+		if (c == EnvironnementPanel.CLICK_ALGA){
 			if (m_environment.isAlga(m_envPanel.m_clickX,l_h-1-m_envPanel.m_clickY)){
 				m_environment.setBlock(m_envPanel.m_clickX, l_h-1-m_envPanel.m_clickY, Model.empty);
 				m_environment.traceUserEvent("remove_water", m_envPanel.m_clickX, l_h-1-m_envPanel.m_clickY);
@@ -703,8 +703,8 @@ public class MainFrame extends JFrame implements Observer, ActionListener, KeyLi
 				}
 			}
 		}
-		// click right + shift : add or remove alga
-		if (c == 7){
+		// click right + ctrl + shift : add or remove brick
+		if (c == EnvironnementPanel.CLICK_BRICK){
 			if (m_environment.isWall(m_envPanel.m_clickX,l_h-1-m_envPanel.m_clickY)){
 				m_environment.setBlock(m_envPanel.m_clickX, l_h-1-m_envPanel.m_clickY, Model.empty);
 				m_environment.traceUserEvent("remove_water", m_envPanel.m_clickX, l_h-1-m_envPanel.m_clickY);
