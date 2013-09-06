@@ -10,7 +10,7 @@ import java.awt.geom.AffineTransform ;
 import javax.vecmath.Point3f ;
 import javax.vecmath.Vector3f;
 
-import eca.spas.egomem.Place;
+import eca.spas.egomem.ActInstance;
 import eca.spas.egomem.SpatialMemoryImpl;
 
 
@@ -27,16 +27,16 @@ public class VisualInteractionDesigner extends AbstractSMInteractionDesigner {
 	private SpaceMemoryVisualEffect smVisualEffect ;
 
 	@Override
-	public void addInteraction( Graphics2D g2d , Place place , BehaviorState behaviorState ) {
+	public void addInteraction( Graphics2D g2d , ActInstance actInstance , BehaviorState behaviorState ) {
 		this.g2d = g2d ;
-		double scale = (double)(SpatialMemoryImpl.PERSISTENCE_DURATION - place.getClock() ) / SpatialMemoryImpl.PERSISTENCE_DURATION * 3d;
+		double scale = (double)(SpatialMemoryImpl.PERSISTENCE_DURATION - actInstance.getClock() ) / SpatialMemoryImpl.PERSISTENCE_DURATION * 3d;
 		this.applyGeometricalTransformation(
-				place.getOrientationAngle() , 
-				place.getPosition() ,
+				actInstance.getOrientationAngle() , 
+				actInstance.getPosition() ,
 				scale ) ;
 
 		//String interactionLabel = place.getPrimitive().getLabel() ;
-		String interactionLabel = place.getDisplayLabel() ;
+		String interactionLabel = actInstance.getDisplayLabel() ;
 		String moveLabel = SpaceMemoryMove.extractMoveLabel( interactionLabel ) ;
 		this.smMove = SpaceMemoryMove.getSpaceMemoryMove( moveLabel ) ;
 		
@@ -48,7 +48,7 @@ public class VisualInteractionDesigner extends AbstractSMInteractionDesigner {
 		if ( SpaceMemoryVisualEffect.containVisualEffect( interactionLabel ) ) {
 			String visualEffectLabel = SpaceMemoryVisualEffect.extractLeftVisualEffectLabel( interactionLabel ) ;
 			this.smVisualEffect = SpaceMemoryVisualEffect.getSpaceMemoryVisualEffect( visualEffectLabel ) ;			
-			this.fillAndDrawShapeVisual(place.getClock()) ;
+			this.fillAndDrawShapeVisual(actInstance.getClock()) ;
 		}else{
 			this.fillAndDrawShapeNoVisual();
 		}

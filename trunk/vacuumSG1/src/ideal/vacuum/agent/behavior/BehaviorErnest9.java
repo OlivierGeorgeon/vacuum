@@ -21,8 +21,8 @@ import eca.Primitive ;
 import eca.PrimitiveImpl ;
 import eca.construct.Aspect;
 import eca.construct.AspectImpl;
-import eca.spas.egomem.Place;
-import eca.spas.egomem.PlaceImpl ;
+import eca.spas.egomem.ActInstance;
+import eca.spas.egomem.ActInstanceImpl ;
 
 /**
  * 
@@ -43,33 +43,34 @@ public class BehaviorErnest9 extends AbstractBehavior {
 	}
 
 	private void buildPlaces( String moveLabel, float angle , float xTranslation ) {
-		this.places.clear();
+		this.actInstances.clear();
 		Map<PhotoreceptorCell , VisualEffect> stimuli = this.colliculus.visualEffect( angle , xTranslation ) ;
 		for ( Entry<PhotoreceptorCell , VisualEffect> entry : stimuli.entrySet() ) {
 			Primitive primitive = PrimitiveImpl.get( moveLabel + entry.getValue().getLabel() ) ;
 			Point3f position = this.colliculus.getEventPosition( entry.getKey() , entry.getValue() ) ;
-			PlaceImpl place = new PlaceImpl( primitive , position ) ;
-			place.setValue(entry.getKey().getBlockColor().getRGB()); // OG
+			ActInstanceImpl place = new ActInstanceImpl( primitive , position ) ;
+			//place.setValue(entry.getKey().getBlockColor().getRGB()); // OG
 			place.setAspect(AspectImpl.createOrGet(entry.getKey().getBlockColor().getRGB())); //OG
-			place.setModality(Place.MODALITY_VISION);
-			this.places.add( place );
+			place.setModality(ActInstance.MODALITY_VISION);
+			this.actInstances.add( place );
 		}		
 	}
 	
 	private void addDefaultPlace(String moveLabel){
 		Primitive primitive = PrimitiveImpl.get( moveLabel + VisualEffect.UNCHANGED.getLabel() ) ;
-		PlaceImpl place = new PlaceImpl( primitive , new Point3f() ) ;
-		place.setModality(Place.MODALITY_MOVE);
-		this.places.add(place);
+		ActInstanceImpl place = new ActInstanceImpl( primitive , new Point3f() ) ;
+		place.setModality(ActInstance.MODALITY_MOVE);
+		place.setAspect(Aspect.MOVE);
+		this.actInstances.add(place);
 	}
 	
 	private void addTactileOrVisualPlace( String label , Point3f location , int displayCode) {
 		Primitive primitive = PrimitiveImpl.get( label ) ;
 		if (primitive != null){ // OG
-			PlaceImpl place = new PlaceImpl( primitive , location ) ;
-			place.setValue(displayCode);
-			place.setAspect(Aspect.DEFAULT_ASPECT);
-			this.places.add( place );
+			ActInstanceImpl place = new ActInstanceImpl( primitive , location ) ;
+			//place.setValue(displayCode);
+			place.setAspect(Aspect.MOVE);
+			this.actInstances.add( place );
 		}
 		else 
 			System.out.println("Illegal interaction label: " + label);
@@ -77,18 +78,20 @@ public class BehaviorErnest9 extends AbstractBehavior {
 	
 	private void addBumpPlace() {
 		Primitive primitive = PrimitiveImpl.get( Move.MOVE_FORWARD.getLabel() + TactileEffect.FALSE.getLabel() ) ;
-			PlaceImpl place = new PlaceImpl( primitive , new Point3f( 1 , 0 , 0 ) ) ;
-			place.setValue(0xFF0000);
-			place.setModality(Place.MODALITY_BUMP);
-			this.places.add( place );
+			ActInstanceImpl place = new ActInstanceImpl( primitive , new Point3f( 1 , 0 , 0 ) ) ;
+			//place.setValue(0xFF0000);
+			place.setAspect(Aspect.BUMP);
+			place.setModality(ActInstance.MODALITY_BUMP);
+			this.actInstances.add( place );
 	}
 	
 	private void addConsumePlace(int displayCode) {
 		Primitive primitive = PrimitiveImpl.get( Move.MOVE_FORWARD.getLabel() + TactileEffect.FOOD.getLabel() ) ;
-			PlaceImpl place = new PlaceImpl( primitive , new Point3f() ) ;
-			place.setValue(displayCode);
-			place.setModality(Place.MODALITY_CONSUME);
-			this.places.add( place );
+			ActInstanceImpl place = new ActInstanceImpl( primitive , new Point3f() ) ;
+			//place.setValue(displayCode);
+			place.setAspect(Aspect.CONSUME);
+			place.setModality(ActInstance.MODALITY_CONSUME);
+			this.actInstances.add( place );
 	}
 	
 	protected void turnRight() {
@@ -96,7 +99,7 @@ public class BehaviorErnest9 extends AbstractBehavior {
 		this.lookTheWorld() ;
 
 		this.buildPlaces( Move.TURN_RIGHT.getLabel(), (float) Math.PI / 2 , 0 ) ;
-		if (this.places.isEmpty()) addDefaultPlace(Move.TURN_RIGHT.getLabel());
+		if (this.actInstances.isEmpty()) addDefaultPlace(Move.TURN_RIGHT.getLabel());
 		this.setTransform( (float) Math.PI / 2 , 0 );
 	}
 
@@ -105,7 +108,7 @@ public class BehaviorErnest9 extends AbstractBehavior {
 		this.lookTheWorld() ;
 
 		this.buildPlaces( Move.TURN_LEFT.getLabel(), (float) -Math.PI / 2 , 0 ) ;
-		if (this.places.isEmpty()) addDefaultPlace(Move.TURN_LEFT.getLabel());
+		if (this.actInstances.isEmpty()) addDefaultPlace(Move.TURN_LEFT.getLabel());
 		this.setTransform( (float) -Math.PI / 2 , 0 );
 	}
 
@@ -142,7 +145,7 @@ public class BehaviorErnest9 extends AbstractBehavior {
 //			this.effect.setLabel( TactileEffect.FALSE.getLabel() ) ;
 			this.setTransform( 0 , 0 );
 		}
-		if (this.places.isEmpty()) addDefaultPlace(Move.MOVE_FORWARD.getLabel());
+		if (this.actInstances.isEmpty()) addDefaultPlace(Move.MOVE_FORWARD.getLabel());
 
 	}
 

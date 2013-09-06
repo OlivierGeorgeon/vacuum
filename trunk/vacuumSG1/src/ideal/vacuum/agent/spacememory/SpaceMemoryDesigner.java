@@ -12,8 +12,8 @@ import java.awt.geom.AffineTransform ;
 import java.awt.geom.Rectangle2D ;
 import java.util.ArrayList ;
 
-import eca.spas.egomem.Place;
-import eca.spas.egomem.PlaceImpl;
+import eca.spas.egomem.ActInstance;
+import eca.spas.egomem.ActInstanceImpl;
 
 
 /**
@@ -37,7 +37,7 @@ public class SpaceMemoryDesigner {
 		this.agentColor = agentColor;
 	}
 
-	public void paintSpaceMemory( Graphics2D g2d , ArrayList<Place> placeList ,
+	public void paintSpaceMemory( Graphics2D g2d , ArrayList<ActInstance> placeList ,
 			BehaviorState behaviorState, float angleRotation , float xTranslation ) {
 		g2d.setRenderingHint( RenderingHints.KEY_ANTIALIASING , RenderingHints.VALUE_ANTIALIAS_ON ) ;
 
@@ -134,19 +134,19 @@ public class SpaceMemoryDesigner {
 		g2d.transform( interactionsLocation ) ;
 	}
 
-	private void displayInteractions( Graphics2D g2d , ArrayList<Place> placeList ,
+	private void displayInteractions( Graphics2D g2d , ArrayList<ActInstance> placeList ,
 			BehaviorState behaviorState ) {
-		for ( Place place : placeList ) {
+		for ( ActInstance actInstance : placeList ) {
 			//if ( place.getType() == Place.ENACTION_PLACE ) {
 				AffineTransform originLocation = g2d.getTransform() ;
-				this.displayEnactedInteraction( g2d , place , behaviorState ) ;
+				this.displayEnactedInteraction( g2d , actInstance , behaviorState ) ;
 				g2d.setTransform( originLocation ) ;
 			//}
 		}
 	}
 
-	private void displayEnactedInteraction( Graphics2D g2d , Place place , BehaviorState behaviorState ) {
+	private void displayEnactedInteraction( Graphics2D g2d , ActInstance actInstance , BehaviorState behaviorState ) {
 		AbstractSMInteractionDesigner interactionDesigner = new VisualInteractionDesigner();
-		interactionDesigner.addInteraction( g2d , place , behaviorState );
+		interactionDesigner.addInteraction( g2d , actInstance , behaviorState );
 	}
 }
