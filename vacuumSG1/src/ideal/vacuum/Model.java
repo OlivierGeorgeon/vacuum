@@ -20,7 +20,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.vecmath.Vector3f;
 
-import eca.spas.egomem.Place;
+import eca.spas.egomem.ActInstance;
 
 
 
@@ -568,7 +568,7 @@ public class Model extends Observable
 		
 	}
 	
-	public void paintSpaceMemory(Graphics g, ArrayList<Place> placeList, float angleRotation , float xTranslation )
+	public void paintSpaceMemory(Graphics g, ArrayList<ActInstance> placeList, float angleRotation , float xTranslation )
 	{
 	}
 }

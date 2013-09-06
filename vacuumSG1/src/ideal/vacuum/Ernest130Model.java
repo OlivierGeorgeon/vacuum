@@ -30,7 +30,7 @@ import javax.vecmath.Vector3f ;
 
 import tracing.XMLStreamTracer;
 import utils.ErnestUtils ;
-import eca.spas.egomem.Place;
+import eca.spas.egomem.ActInstance;
 import ernest.Ernest ;
 
 /**
@@ -221,7 +221,7 @@ public class Ernest130Model extends ErnestModel implements DesignerListener {
 		this.agentDesigner.paintAgent( g2d , x , y , sx , sy , this.behaviorState ) ;
 	}
 
-	public void paintSpaceMemory( Graphics g , ArrayList<Place> placeList , float angleRotation ,
+	public void paintSpaceMemory( Graphics g , ArrayList<ActInstance> placeList , float angleRotation ,
 			float xTranslation ) {
 		this.spaceMemoryDesigner.paintSpaceMemory(
 				(Graphics2D) g ,

@@ -6,7 +6,7 @@ import java.util.List ;
 
 import javax.media.j3d.Transform3D ;
 
-import eca.spas.egomem.Place ;
+import eca.spas.egomem.ActInstance ;
 import ernest.IEffect ;
 
 /**
@@ -24,5 +24,5 @@ public interface Behavior {
 
 	public Transform3D getTransform() ;
 
-	public List<Place> getPlaces() ;
+	public List<ActInstance> getPlaces() ;
 }

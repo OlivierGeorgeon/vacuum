@@ -17,7 +17,7 @@ import javax.media.j3d.Transform3D ;
 import javax.swing.event.EventListenerList ;
 import javax.vecmath.Vector3f ;
 
-import eca.spas.egomem.Place ;
+import eca.spas.egomem.ActInstance ;
 import ernest.Effect ;
 import ernest.IEffect ;
 
@@ -37,7 +37,7 @@ public abstract class AbstractBehavior implements Behavior {
 
 	protected Ernest130Model model ;
 	protected IEffect effect ;
-	protected List<Place> places ;
+	protected List<ActInstance> actInstances ;
 	private Transform3D transform ;
 
 	protected SuperiorColliculus colliculus ;
@@ -47,7 +47,7 @@ public abstract class AbstractBehavior implements Behavior {
 	public AbstractBehavior( Ernest130Model model , DesignerListener listener , Eye eye ) {
 		this.model = model ;
 		this.effect = new Effect() ;
-		this.places = new ArrayList<Place>() ;
+		this.actInstances = new ArrayList<ActInstance>() ;
 		this.transform = new Transform3D() ;
 		this.listeners = new EventListenerList() ;
 		this.listeners.add( DesignerListener.class , listener ) ;
@@ -70,8 +70,8 @@ public abstract class AbstractBehavior implements Behavior {
 	}
 
 	@Override
-	public List<Place> getPlaces() {
-		return this.places ;
+	public List<ActInstance> getPlaces() {
+		return this.actInstances ;
 	}
 
 	@Override
@@ -87,7 +87,7 @@ public abstract class AbstractBehavior implements Behavior {
 
 	public BehaviorState doMovement( Move schema ) {
 		this.effect = new Effect() ;
-		this.places = new ArrayList<Place>() ;
+		this.actInstances = new ArrayList<ActInstance>() ;
 		
 		this.focusColor = AgentDesigner.UNANIMATED_COLOR ;
 		this.leftColor = AgentDesigner.UNANIMATED_COLOR ;

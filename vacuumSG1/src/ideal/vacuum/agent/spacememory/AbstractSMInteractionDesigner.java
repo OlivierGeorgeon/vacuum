@@ -6,7 +6,7 @@ import java.awt.Graphics2D ;
 import java.awt.Point ;
 import java.awt.geom.Point2D ;
 
-import eca.spas.egomem.Place;
+import eca.spas.egomem.ActInstance;
 
 
 
@@ -58,5 +58,5 @@ public abstract class AbstractSMInteractionDesigner {
 		return overlapOffset;
 	}
 	
-	public abstract void addInteraction( Graphics2D g2d , Place place , BehaviorState behaviorState );
+	public abstract void addInteraction( Graphics2D g2d , ActInstance actInstance , BehaviorState behaviorState );
 }
