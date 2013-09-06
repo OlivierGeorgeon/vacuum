@@ -10,7 +10,7 @@ import java.awt.geom.AffineTransform ;
 import javax.vecmath.Point3f ;
 import javax.vecmath.Vector3f;
 
-import eca.spas.egomem.ActInstance;
+import eca.ActInstance;
 import eca.spas.egomem.SpatialMemoryImpl;
 
 

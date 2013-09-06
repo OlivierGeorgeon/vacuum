@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import javax.vecmath.Vector3f;
 
 
-import eca.spas.egomem.ActInstance;
+import eca.ActInstance;
 import ernest.IErnest;
 
 

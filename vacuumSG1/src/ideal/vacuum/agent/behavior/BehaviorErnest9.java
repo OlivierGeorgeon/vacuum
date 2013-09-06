@@ -17,12 +17,12 @@ import ideal.vacuum.agent.vision.PhotoreceptorCell ;
 import javax.vecmath.Point3f ;
 import javax.vecmath.Vector3f ;
 
+import eca.ActInstance;
+import eca.ActInstanceImpl;
 import eca.Primitive ;
 import eca.PrimitiveImpl ;
 import eca.construct.Aspect;
 import eca.construct.AspectImpl;
-import eca.spas.egomem.ActInstance;
-import eca.spas.egomem.ActInstanceImpl ;
 
 /**
  * 

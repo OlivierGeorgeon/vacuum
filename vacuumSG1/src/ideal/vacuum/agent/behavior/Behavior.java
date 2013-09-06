@@ -6,7 +6,7 @@ import java.util.List ;
 
 import javax.media.j3d.Transform3D ;
 
-import eca.spas.egomem.ActInstance ;
+import eca.ActInstance;
 import ernest.IEffect ;
 
 /**
