@@ -12,8 +12,8 @@ import java.awt.geom.AffineTransform ;
 import java.awt.geom.Rectangle2D ;
 import java.util.ArrayList ;
 
-import eca.spas.egomem.ActInstance;
-import eca.spas.egomem.ActInstanceImpl;
+import eca.ActInstance;
+import eca.ActInstanceImpl;
 
 
 /**

@@ -17,7 +17,7 @@ import javax.media.j3d.Transform3D ;
 import javax.swing.event.EventListenerList ;
 import javax.vecmath.Vector3f ;
 
-import eca.spas.egomem.ActInstance ;
+import eca.ActInstance;
 import ernest.Effect ;
 import ernest.IEffect ;
 

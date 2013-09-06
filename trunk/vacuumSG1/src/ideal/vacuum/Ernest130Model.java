@@ -30,7 +30,7 @@ import javax.vecmath.Vector3f ;
 
 import tracing.XMLStreamTracer;
 import utils.ErnestUtils ;
-import eca.spas.egomem.ActInstance;
+import eca.ActInstance;
 import ernest.Ernest ;
 
 /**
