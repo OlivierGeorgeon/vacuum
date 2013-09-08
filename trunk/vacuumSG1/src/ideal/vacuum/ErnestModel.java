@@ -4,16 +4,12 @@ package ideal.vacuum;
 import ideal.vacuum.agent.vision.Eye ;
 import ideal.vacuum.agent.vision.PhotoreceptorCell ;
 import ideal.vacuum.agent.vision.RayTracing ;
-
 import java.awt.Color ;
 import java.util.LinkedList ;
 import java.util.Queue ;
-
 import javax.vecmath.Matrix3f ;
 import javax.vecmath.Vector3f ;
-
 import tracing.ITracer;
-
 import ernest.Ernest ;
 import ernest.IErnest ;
 

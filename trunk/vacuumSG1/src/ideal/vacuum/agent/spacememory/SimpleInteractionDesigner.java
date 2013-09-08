@@ -10,6 +10,7 @@ import java.awt.geom.Point2D ;
 import javax.vecmath.Point3f ;
 
 import eca.ActInstance;
+import eca.spas.Placeable;
 
 
 /**
@@ -25,14 +26,15 @@ public class SimpleInteractionDesigner extends AbstractSMInteractionDesigner {
 	private SpaceMemoryMove smMove ;
 
 	@Override
-	public void addInteraction( Graphics2D g2d , ActInstance actInstance, BehaviorState behaviorState  ) {
+	public void addInteraction( Graphics2D g2d , Placeable actInstance, BehaviorState behaviorState  ) {
 		this.g2d = g2d;
 		//String interactionLabel = place.getPrimitive().getLabel() ;
 		String interactionLabel = actInstance.getDisplayLabel() ;
 		this.smMove = SpaceMemoryMove.getSpaceMemoryMove( SpaceMemoryMove.extractMoveLabel( interactionLabel ) ) ;
 		
 		this.applyGeometricalTransformation( actInstance.getOrientationAngle() , actInstance.getPosition() ) ;
-		this.fillAndDrawShape( new Color( actInstance.getValue()) );
+		//this.fillAndDrawShape( new Color( actInstance.getValue()) );
+		this.fillAndDrawShape( new Color( actInstance.getDisplayCode()) );
 	}
 
 	private void applyGeometricalTransformation( float orientationAngle , Point3f position ) {

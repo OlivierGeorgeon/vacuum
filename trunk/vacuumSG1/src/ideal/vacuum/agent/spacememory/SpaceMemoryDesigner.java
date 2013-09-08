@@ -14,6 +14,7 @@ import java.util.ArrayList ;
 
 import eca.ActInstance;
 import eca.ActInstanceImpl;
+import eca.spas.Placeable;
 
 
 /**
@@ -37,7 +38,7 @@ public class SpaceMemoryDesigner {
 		this.agentColor = agentColor;
 	}
 
-	public void paintSpaceMemory( Graphics2D g2d , ArrayList<ActInstance> placeList ,
+	public void paintSpaceMemory( Graphics2D g2d , ArrayList<Placeable> placeList ,
 			BehaviorState behaviorState, float angleRotation , float xTranslation ) {
 		g2d.setRenderingHint( RenderingHints.KEY_ANTIALIASING , RenderingHints.VALUE_ANTIALIAS_ON ) ;
 
@@ -134,9 +135,9 @@ public class SpaceMemoryDesigner {
 		g2d.transform( interactionsLocation ) ;
 	}
 
-	private void displayInteractions( Graphics2D g2d , ArrayList<ActInstance> placeList ,
+	private void displayInteractions( Graphics2D g2d , ArrayList<Placeable> placeList ,
 			BehaviorState behaviorState ) {
-		for ( ActInstance actInstance : placeList ) {
+		for ( Placeable actInstance : placeList ) {
 			//if ( place.getType() == Place.ENACTION_PLACE ) {
 				AffineTransform originLocation = g2d.getTransform() ;
 				this.displayEnactedInteraction( g2d , actInstance , behaviorState ) ;
@@ -145,7 +146,7 @@ public class SpaceMemoryDesigner {
 		}
 	}
 
-	private void displayEnactedInteraction( Graphics2D g2d , ActInstance actInstance , BehaviorState behaviorState ) {
+	private void displayEnactedInteraction( Graphics2D g2d , Placeable actInstance , BehaviorState behaviorState ) {
 		AbstractSMInteractionDesigner interactionDesigner = new VisualInteractionDesigner();
 		interactionDesigner.addInteraction( g2d , actInstance , behaviorState );
 	}
