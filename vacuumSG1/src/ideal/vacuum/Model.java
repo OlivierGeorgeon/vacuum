@@ -21,6 +21,7 @@ import javax.swing.SwingUtilities;
 import javax.vecmath.Vector3f;
 
 import eca.ActInstance;
+import eca.spas.Placeable;
 
 
 
@@ -568,7 +569,7 @@ public class Model extends Observable
 		
 	}
 	
-	public void paintSpaceMemory(Graphics g, ArrayList<ActInstance> placeList, float angleRotation , float xTranslation )
+	public void paintSpaceMemory(Graphics g, ArrayList<Placeable> placeList, float angleRotation , float xTranslation )
 	{
 	}
 }

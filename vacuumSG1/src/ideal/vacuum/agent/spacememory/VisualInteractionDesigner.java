@@ -11,6 +11,7 @@ import javax.vecmath.Point3f ;
 import javax.vecmath.Vector3f;
 
 import eca.ActInstance;
+import eca.spas.Placeable;
 import eca.spas.egomem.SpatialMemoryImpl;
 
 
@@ -27,7 +28,7 @@ public class VisualInteractionDesigner extends AbstractSMInteractionDesigner {
 	private SpaceMemoryVisualEffect smVisualEffect ;
 
 	@Override
-	public void addInteraction( Graphics2D g2d , ActInstance actInstance , BehaviorState behaviorState ) {
+	public void addInteraction( Graphics2D g2d , Placeable actInstance , BehaviorState behaviorState ) {
 		this.g2d = g2d ;
 		double scale = (double)(SpatialMemoryImpl.PERSISTENCE_DURATION - actInstance.getClock() ) / SpatialMemoryImpl.PERSISTENCE_DURATION * 3d;
 		this.applyGeometricalTransformation(

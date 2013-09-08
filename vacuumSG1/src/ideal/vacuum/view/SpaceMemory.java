@@ -8,13 +8,14 @@ import javax.vecmath.Vector3f;
 
 
 import eca.ActInstance;
+import eca.spas.Placeable;
 import ernest.IErnest;
 
 
 public class SpaceMemory 
 {
 	public ErnestModel m_model;
-	private ArrayList<ActInstance> placeList = new ArrayList<ActInstance>();
+	private ArrayList<Placeable> placeList = new ArrayList<Placeable>();
 	
 	public SpaceMemory()
 	{
@@ -25,7 +26,7 @@ public class SpaceMemory
 		m_model = model;
 	}
 	
-	public ArrayList<ActInstance> getPlaceList()
+	public ArrayList<Placeable> getPlaceList()
 	{
 		//return m_model.getErnest().getPlaceList();
 		return this.placeList;

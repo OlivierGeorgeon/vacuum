@@ -7,6 +7,7 @@ import java.awt.Point ;
 import java.awt.geom.Point2D ;
 
 import eca.ActInstance;
+import eca.spas.Placeable;
 
 
 
@@ -58,5 +59,5 @@ public abstract class AbstractSMInteractionDesigner {
 		return overlapOffset;
 	}
 	
-	public abstract void addInteraction( Graphics2D g2d , ActInstance actInstance , BehaviorState behaviorState );
+	public abstract void addInteraction( Graphics2D g2d , Placeable actInstance , BehaviorState behaviorState );
 }
