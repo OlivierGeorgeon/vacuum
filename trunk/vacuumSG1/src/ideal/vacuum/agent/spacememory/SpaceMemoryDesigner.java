@@ -14,6 +14,7 @@ import java.util.ArrayList ;
 
 import eca.ActInstance;
 import eca.ActInstanceImpl;
+import eca.construct.PhenomenonInstance;
 import eca.spas.Placeable;
 
 
@@ -137,17 +138,21 @@ public class SpaceMemoryDesigner {
 
 	private void displayInteractions( Graphics2D g2d , ArrayList<Placeable> placeList ,
 			BehaviorState behaviorState ) {
-		for ( Placeable actInstance : placeList ) {
-			//if ( place.getType() == Place.ENACTION_PLACE ) {
-				AffineTransform originLocation = g2d.getTransform() ;
-				this.displayEnactedInteraction( g2d , actInstance , behaviorState ) ;
-				g2d.setTransform( originLocation ) ;
-			//}
+		for ( Placeable placeable : placeList ) {
+			AffineTransform originLocation = g2d.getTransform() ;
+			this.displayPlaceable( g2d , placeable , behaviorState ) ;
+			g2d.setTransform( originLocation ) ;
 		}
 	}
 
-	private void displayEnactedInteraction( Graphics2D g2d , Placeable actInstance , BehaviorState behaviorState ) {
-		AbstractSMInteractionDesigner interactionDesigner = new VisualInteractionDesigner();
-		interactionDesigner.addInteraction( g2d , actInstance , behaviorState );
+	private void displayPlaceable( Graphics2D g2d , Placeable placeable , BehaviorState behaviorState ) {
+		if (placeable instanceof ActInstance){
+			AbstractSMInteractionDesigner interactionDesigner = new VisualInteractionDesigner();
+			interactionDesigner.addInteraction( g2d , placeable , behaviorState );
+		}
+		if (placeable instanceof PhenomenonInstance){
+			AbstractSMInteractionDesigner interactionDesigner = new PhenomenonInstanceDesigner();
+			interactionDesigner.addInteraction( g2d , placeable , behaviorState );
+		}
 	}
 }
