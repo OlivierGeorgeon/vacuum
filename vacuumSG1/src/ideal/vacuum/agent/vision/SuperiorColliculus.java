@@ -91,7 +91,8 @@ public class SuperiorColliculus {
 
 		if ( !activeCells.contains( currentPredictedCell ) ) {
 			return new Entry<PhotoreceptorCell , VisualEffect>(
-					previousCell ,
+					//previousCell ,
+					currentPredictedCell,
 					VisualEffect.DISAPPEAR ) ;
 		} else {
 			int indexOfCurrentCell = activeCells.indexOf( currentPredictedCell ) ;
