@@ -42,7 +42,8 @@ public class AgentDesigner {
 	public void paintAgent( Graphics2D g2d , int x , int y , double sx , double sy ,
 			BehaviorState behaviorState ) {
 		GraphicProperties ernestGraphicProperties = this.model.getCopyOfGraphicProperties() ;
-
+		behaviorState.setFocusColor(model.getDisplayCode());
+		
 		AffineTransform initialPosition = g2d.getTransform() ;
 
 		this.fixAgentPosition( g2d , x , y , sx , sy , ernestGraphicProperties ) ;
@@ -183,6 +184,7 @@ public class AgentDesigner {
 			g2d.setColor(Environment.WALL1);
 		else
 			g2d.setColor( behaviorState.getCellsArray().get( 0 ).getBlockColor() ) ;
+		g2d.setColor(behaviorState.getFocusColor());
 		g2d.fill( rightEye ) ;
 		g2d.setColor( Color.BLACK ) ;
 		g2d.draw( rightEye ) ;

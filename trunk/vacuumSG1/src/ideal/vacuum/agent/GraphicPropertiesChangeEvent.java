@@ -51,6 +51,10 @@ public class GraphicPropertiesChangeEvent extends EventObject {
 	public Vector3f getmPreviousOrientation() {
 		return this.graphicProperties.getmPreviousOrientation() ;
 	}
+	
+	public int getDisplayCode(){
+		return this.graphicProperties.getDisplayCode();
+	}
 
 	public void setmPosition( Vector3f mPosition ) {
 		this.graphicProperties.setmPosition( mPosition ) ;
@@ -74,5 +78,9 @@ public class GraphicPropertiesChangeEvent extends EventObject {
 
 	public void setmPreviousOrientation( Vector3f mPreviousOrientation ) {
 		this.graphicProperties.setmPreviousOrientation( mPreviousOrientation ) ;
+	}
+	
+	public void setDisplayCode(int displayCode){
+		this.graphicProperties.setDisplayCode(displayCode);
 	}
 }

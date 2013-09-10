@@ -14,19 +14,22 @@ public class GraphicProperties implements Cloneable{
 	private Vector3f mRotation ;
 	private Vector3f mPreviousPosition ;
 	private Vector3f mPreviousOrientation ;
+	private int displayCode;
 
 	public GraphicProperties( Vector3f mPosition ,
 			Vector3f mOrientation ,
 			Vector3f mTranslation ,
 			Vector3f mRotation ,
 			Vector3f mPreviousPosition ,
-			Vector3f mPreviousOrientation ) {
+			Vector3f mPreviousOrientation,
+			int displayCode) {
 		this.mPosition = mPosition ;
 		this.mOrientation = mOrientation ;
 		this.mTranslation = mTranslation ;
 		this.mRotation = mRotation ;
 		this.mPreviousPosition = mPreviousPosition ;
 		this.mPreviousOrientation = mPreviousOrientation ;
+		this.displayCode = displayCode;
 	}
 
 	@Override
@@ -88,5 +91,13 @@ public class GraphicProperties implements Cloneable{
 
 	public void setmPreviousOrientation( Vector3f mPreviousOrientation ) {
 		this.mPreviousOrientation = mPreviousOrientation ;
+	}
+
+	public int getDisplayCode() {
+		return displayCode;
+	}
+
+	public void setDisplayCode(int displayCode) {
+		this.displayCode = displayCode;
 	}
 }

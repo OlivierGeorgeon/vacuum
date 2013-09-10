@@ -10,6 +10,7 @@ import java.util.Queue ;
 import javax.vecmath.Matrix3f ;
 import javax.vecmath.Vector3f ;
 import tracing.ITracer;
+import eca.construct.PhenomenonInstance;
 import ernest.Ernest ;
 import ernest.IErnest ;
 
@@ -282,14 +283,16 @@ public class ErnestModel extends Model
 		return m_ernest;
 	}
 	
-//	protected void count()
-//	{
-//		m_updateCount++;
-//	}
-
 	public int getUpdateCount()
 	{
 		return m_ernest.getUpdateCount();
+	}
+	
+	public int getDisplayCode(){
+		int displayCode = Ernest.UNANIMATED_COLOR;
+		if (this.m_ernest != null)
+			displayCode = m_ernest.getDisplayCode();
+		return displayCode;
 	}
 	
 }
