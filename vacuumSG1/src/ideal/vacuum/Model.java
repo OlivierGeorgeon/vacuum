@@ -22,6 +22,7 @@ import javax.vecmath.Vector3f;
 
 import eca.ActInstance;
 import eca.spas.Placeable;
+import ernest.Ernest;
 
 
 

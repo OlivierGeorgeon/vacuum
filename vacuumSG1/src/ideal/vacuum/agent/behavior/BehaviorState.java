@@ -31,6 +31,10 @@ public class BehaviorState implements Cloneable {
 	public Color getFocusColor() {
 		return this.focusColor ;
 	}
+	
+	public void setFocusColor(int colorCode){
+		this.focusColor = new Color(colorCode);
+	}
 
 	public Color getLeftColor() {
 		return this.leftColor ;

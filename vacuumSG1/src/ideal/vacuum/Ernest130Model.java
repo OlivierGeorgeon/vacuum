@@ -73,7 +73,8 @@ public class Ernest130Model extends ErnestModel implements DesignerListener {
 				(Vector3f) this.mTranslation.clone() ,
 				(Vector3f) this.mRotation.clone() ,
 				(Vector3f) this.mPreviousPosition.clone() ,
-				(Vector3f) this.mPreviousOrientation.clone() ) ;
+				(Vector3f) this.mPreviousOrientation.clone(), 
+				this.getDisplayCode()) ;
 	}
 
 	public MainFrame getMainFrame() {
