@@ -9,6 +9,7 @@ import java.awt.geom.AffineTransform ;
 import javax.vecmath.Point3f ;
 import javax.vecmath.Vector3f;
 import eca.spas.Placeable;
+import eca.construct.PhenomenonInstance;
 import eca.spas.egomem.SpatialMemoryImpl;
 
 
@@ -33,7 +34,7 @@ public class PhenomenonInstanceDesigner extends AbstractSMInteractionDesigner {
 
 		this.smMove = SpaceMemoryMove.getSpaceMemoryMove( "" ) ;
 		
-		this.fillAndDrawPhenomenon(placeable.getDisplayCode());
+		this.fillAndDrawPhenomenon((PhenomenonInstance)placeable);
 		
 //		if ( SpaceMemoryTactileEffect.containTactileEffect( interactionLabel ) ) {
 //			String tactileEffectLabel = SpaceMemoryTactileEffect.extractTactileEffectLabel( interactionLabel ) ;
@@ -60,11 +61,13 @@ public class PhenomenonInstanceDesigner extends AbstractSMInteractionDesigner {
 		this.g2d.transform( interactionLocation ) ;
 	}
 
-	private void fillAndDrawPhenomenon(int displayCode) {
-		this.g2d.setColor( new Color(displayCode) ) ;
+	private void fillAndDrawPhenomenon(PhenomenonInstance phenomenonInstance) {
+		this.g2d.setColor( new Color(phenomenonInstance.getDisplayCode()) ) ;
 		this.g2d.fill( this.smMove.getShape() ) ;
-		this.g2d.setColor( Color.BLACK ) ;
-		this.g2d.setStroke( new BasicStroke( SpaceMemoryDesigner.SCALE / 100f ) ) ;
+		if (phenomenonInstance.isFocus()){
+			this.g2d.setColor( Color.BLACK ) ;
+			this.g2d.setStroke( new BasicStroke( SpaceMemoryDesigner.SCALE / 100f ) ) ;
+		}
 		this.g2d.draw( this.smMove.getShape() ) ;
 	}
 }
