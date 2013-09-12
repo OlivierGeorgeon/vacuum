@@ -29,7 +29,7 @@ public class SpaceMemoryDesigner {
 	protected final static int HEIGHT = 250 ;
 	protected final static int WIDTH_REAL = WIDTH * 2 ;
 	protected final static int HEIGHT_REAL = HEIGHT * 2 ;
-	protected final static int SCALE = 40 ;
+	protected final static int SCALE = 30 ;
 
 	private Ernest130Model model ;
 	private Color agentColor ;

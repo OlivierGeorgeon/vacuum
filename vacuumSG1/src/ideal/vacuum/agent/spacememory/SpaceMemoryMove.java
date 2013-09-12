@@ -2,6 +2,7 @@ package ideal.vacuum.agent.spacememory ;
 
 import ideal.vacuum.agent.Move ;
 
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Arc2D ;
 import java.awt.geom.Area ;
 import java.awt.geom.Ellipse2D ;
@@ -58,6 +59,7 @@ public enum SpaceMemoryMove {
 	private final Area shape ;
 	private final Area leftHalfShape ;
 	private final Area rightHalfShape ;
+	private final static float SCALE = (float)SpaceMemoryDesigner.SCALE / 40;
 
 	private final static Map<String , SpaceMemoryMove> BY_MOVE_LABEL = new HashMap<String , SpaceMemoryMove>() ;
 
@@ -79,105 +81,105 @@ public enum SpaceMemoryMove {
 
 	private static Area circleShape() {
 		GeneralPath shape = new GeneralPath() ;
-		shape.append( new Ellipse2D.Double( -10 , -10 , 20 , 20 ) , true ) ;
+		shape.append( new Ellipse2D.Double( -10 * SCALE, -10 * SCALE , 20 * SCALE , 20 * SCALE ) , true ) ;
 		return new Area( shape ) ;
 	}
 
 	private static Area leftHalfCircleShape() {
 		GeneralPath shape = new GeneralPath() ;
-		shape.append( new Arc2D.Double( -10 , -10 , 20 , 20 , 0 , 180 , Arc2D.PIE ) , true ) ;
+		shape.append( new Arc2D.Double( -10 * SCALE , -10 * SCALE , 20 * SCALE , 20 * SCALE , 0 , 180 , Arc2D.PIE ) , true ) ;
 		return new Area( shape ) ;
 	}
 
 	private static Area rightHalfCircleShape() {
 		GeneralPath shape = new GeneralPath() ;
-		shape.append( new Arc2D.Double( -10 , -10 , 20 , 20 , 180 , 180 , Arc2D.PIE ) , true ) ;
+		shape.append( new Arc2D.Double( -10 * SCALE , -10 * SCALE , 20 * SCALE , 20 * SCALE , 180 , 180 , Arc2D.PIE ) , true ) ;
 		return new Area( shape ) ;
 	}
 
 	private static Area arcShape() {
 		GeneralPath shape = new GeneralPath() ;
-		shape.append( new Arc2D.Double( -10 , -10 , 20 , 20 , -180 , 180 , Arc2D.PIE ) , true ) ;
+		shape.append( new Arc2D.Double( -10 * SCALE , -10 * SCALE , 20 * SCALE , 20 * SCALE , -180 , 180 , Arc2D.PIE ) , true ) ;
 		return new Area( shape ) ;
 	}
 
 	private static Area leftHalfArcShape() {
 		GeneralPath shape = new GeneralPath() ;
-		shape.append( new Arc2D.Double( -10 , -10 , 20 , 20 , -90 , 90 , Arc2D.PIE ) , true ) ;
+		shape.append( new Arc2D.Double( -10 * SCALE , -10 * SCALE , 20 * SCALE , 20 * SCALE , -90 , 90 , Arc2D.PIE ) , true ) ;
 		return new Area( shape ) ;
 	}
 
 	private static Area rightHalfArcShape() {
 		GeneralPath shape = new GeneralPath() ;
-		shape.append( new Arc2D.Double( -10 , -10 , 20 , 20 , -180 , 90 , Arc2D.PIE ) , true ) ;
+		shape.append( new Arc2D.Double( -10 * SCALE , -10 * SCALE , 20 * SCALE , 20 * SCALE , -180 , 90 , Arc2D.PIE ) , true ) ;
 		return new Area( shape ) ;
 	}
 
 	private static Area triangleShape() {
 		GeneralPath shape = new GeneralPath() ;
-		shape.append( new Line2D.Double( -10 , -10 , 10 , 0 ) , false ) ;
-		shape.append( new Line2D.Double( 10 , 0 , -10 , 10 ) , true ) ;
+		shape.append( new Line2D.Double( -10 * SCALE , -10 * SCALE , 10 * SCALE , 0 ) , false ) ;
+		shape.append( new Line2D.Double( 10 * SCALE , 0 , -10 * SCALE , 10 * SCALE ) , true ) ;
 		return new Area( shape ) ;
 	}
 
 	private static Area leftHalfTriangleShape() {
 		GeneralPath shape = new GeneralPath() ;
-		shape.append( new Line2D.Double( -10 , -10 , 10 , 0 ) , false ) ;
-		shape.append( new Line2D.Double( 10 , 0 , -10 , 0 ) , true ) ;
+		shape.append( new Line2D.Double( -10 * SCALE , -10 * SCALE , 10 * SCALE , 0 ) , false ) ;
+		shape.append( new Line2D.Double( 10 * SCALE , 0 , -10 * SCALE , 0 ) , true ) ;
 		return new Area( shape ) ;
 
 	}
 
 	private static Area rightHalfTriangleShape() {
 		GeneralPath shape = new GeneralPath() ;
-		shape.append( new Line2D.Double( -10 , 0 , 10 , 0 ) , false ) ;
-		shape.append( new Line2D.Double( 10 , 0 , -10 , 10 ) , true ) ;
+		shape.append( new Line2D.Double( -10 * SCALE , 0 , 10 * SCALE , 0 ) , false ) ;
+		shape.append( new Line2D.Double( 10 * SCALE , 0 , -10 * SCALE , 10 * SCALE ) , true ) ;
 		return new Area( shape ) ;
 
 	}
 
 	private static Area trapezoidShape() {
 		GeneralPath shape = new GeneralPath() ;
-		shape.append( new Line2D.Double( -7 , 14 , 7 , 7 ) , false ) ;
-		shape.append( new Line2D.Double( 7 , 7 , 7 , -7 ) , true ) ;
-		shape.append( new Line2D.Double( 7 , -7 , -7 , 0 ) , true ) ;
+		shape.append( new Line2D.Double( -7 * SCALE , 14 * SCALE , 7 * SCALE , 7 * SCALE ) , false ) ;
+		shape.append( new Line2D.Double( 7 * SCALE , 7 * SCALE , 7 * SCALE , -7 * SCALE ) , true ) ;
+		shape.append( new Line2D.Double( 7 * SCALE , -7 * SCALE , -7 * SCALE , 0 ) , true ) ;
 		return new Area( shape ) ;
 
 	}
 
 	private static Area leftHalfTrapezoidShape() {
 		GeneralPath shape = new GeneralPath() ;
-		shape.append( new Line2D.Double( -7 , 7 , 7 , 0 ) , false ) ;
-		shape.append( new Line2D.Double( 7 , 0 , 7 , -7 ) , true ) ;
-		shape.append( new Line2D.Double( 7 , -7 , -7 , 0 ) , true ) ;
+		shape.append( new Line2D.Double( -7 * SCALE , 7 * SCALE , 7 * SCALE , 0 ) , false ) ;
+		shape.append( new Line2D.Double( 7 * SCALE , 0 , 7 * SCALE , -7 * SCALE ) , true ) ;
+		shape.append( new Line2D.Double( 7 * SCALE , -7 * SCALE , -7 * SCALE , 0 ) , true ) ;
 		return new Area( shape ) ;
 
 	}
 
 	private static Area rightHalfTrapezoidShape() {
 		GeneralPath shape = new GeneralPath() ;
-		shape.append( new Line2D.Double( -7 , 14 , 7 , 7 ) , false ) ;
-		shape.append( new Line2D.Double( 7 , 7 , 7 , 0 ) , true ) ;
-		shape.append( new Line2D.Double( 7 , 0 , -7 , 7 ) , true ) ;
+		shape.append( new Line2D.Double( -7 * SCALE , 14 * SCALE , 7 * SCALE , 7 * SCALE ) , false ) ;
+		shape.append( new Line2D.Double( 7 * SCALE , 7 * SCALE , 7 * SCALE , 0 ) , true ) ;
+		shape.append( new Line2D.Double( 7 * SCALE , 0 , -7 * SCALE , 7 * SCALE ) , true ) ;
 		return new Area( shape ) ;
 
 	}
 
 	private static Area squareShape() {
 		GeneralPath shape = new GeneralPath() ;
-		shape.append( new Rectangle2D.Double( -7 , -7 , 14 , 14 ) , true ) ;
+		shape.append( new Rectangle2D.Double( -7 * SCALE , -7 * SCALE , 14 * SCALE , 14 * SCALE ) , true ) ;
 		return new Area( shape ) ;
 	}
 
 	private static Area leftHalfSquareShape() {
 		GeneralPath shape = new GeneralPath() ;
-		shape.append( new Rectangle2D.Double( -7 , -7 , 14 , 7 ) , true ) ;
+		shape.append( new Rectangle2D.Double( -7 * SCALE , -7 * SCALE , 14 * SCALE , 7 * SCALE ) , true ) ;
 		return new Area( shape ) ;
 	}
 
 	private static Area rightHalfSquareShape() {
 		GeneralPath shape = new GeneralPath() ;
-		shape.append( new Rectangle2D.Double( -7 , 0 , 14 , 7 ) , true ) ;
+		shape.append( new Rectangle2D.Double( -7 * SCALE , 0 , 14 * SCALE , 7 * SCALE ) , true ) ;
 		return new Area( shape ) ;
 	}
 
@@ -214,4 +216,5 @@ public enum SpaceMemoryMove {
 	public Area getRightHalfShape() {
 		return this.rightHalfShape ;
 	}
+	
 }
