@@ -2,6 +2,7 @@ package ideal.vacuum.view;
 
 
 import ideal.vacuum.FramePlugin ;
+import ideal.vacuum.agent.behavior.AbstractBehavior;
 
 import java.awt.BorderLayout ;
 import java.awt.Dimension ;
@@ -62,7 +63,7 @@ public class SpaceMemoryFrame extends JFrame implements FramePlugin{
 			this.spaceMemoryPanel.updateProperties( angleRotation , xTranslation , true);
 			this.spaceMemoryPanel.repaint();
 			try {
-				Thread.currentThread().sleep( 20 );
+				Thread.currentThread().sleep( 2 * AbstractBehavior.DELAYMOVE );
 			} catch ( InterruptedException e ) {
 			}
 		}

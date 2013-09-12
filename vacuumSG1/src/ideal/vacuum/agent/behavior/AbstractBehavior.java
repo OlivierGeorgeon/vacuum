@@ -28,8 +28,8 @@ import ernest.IEffect ;
  */
 public abstract class AbstractBehavior implements Behavior {
 
-	protected int delayMove = 10 ; // 2
-	protected int delayTouch = 50 ; // 50
+	public static final int DELAYMOVE = 7 ; // 10
+	public static final int DELAYTOUCH = 50 ; // 50
 
 	protected Color focusColor ;
 	protected Color leftColor ;
@@ -164,7 +164,7 @@ public abstract class AbstractBehavior implements Behavior {
 			this.notifyGraphicPropertiesChanged( event ) ;
 
 			this.refreshWorld() ;
-			this.model.sleep( this.delayMove ) ;
+			this.model.sleep( this.DELAYMOVE ) ;
 		}
 
 		GraphicProperties ernestGraphicProperties = this.model.getCopyOfGraphicProperties() ;
@@ -187,7 +187,7 @@ public abstract class AbstractBehavior implements Behavior {
 			this.notifyGraphicPropertiesChanged( event ) ;
 
 			this.refreshWorld() ;
-			this.model.sleep( this.delayMove ) ;
+			this.model.sleep( this.DELAYMOVE ) ;
 		}
 
 		GraphicProperties ernestGraphicProperties = this.model.getCopyOfGraphicProperties() ;
@@ -210,7 +210,7 @@ public abstract class AbstractBehavior implements Behavior {
 			this.notifyGraphicPropertiesChanged( event ) ;
 
 			this.refreshWorld() ;
-			this.model.sleep( 20 ) ;
+			this.model.sleep( 2 * DELAYMOVE ) ;
 		}
 		for ( int i = 0; i < 5; i++ ) {
 			GraphicProperties ernestGraphicProperties = this.model.getCopyOfGraphicProperties() ;
@@ -221,7 +221,7 @@ public abstract class AbstractBehavior implements Behavior {
 			this.notifyGraphicPropertiesChanged( event ) ;
 
 			this.refreshWorld() ;
-			this.model.sleep( 20 ) ;
+			this.model.sleep( 2 * DELAYMOVE ) ;
 		}
 	}
 
@@ -235,7 +235,7 @@ public abstract class AbstractBehavior implements Behavior {
 			this.notifyGraphicPropertiesChanged( event ) ;
 
 			this.refreshWorld() ;
-			this.model.sleep( this.delayMove ) ;
+			this.model.sleep( this.DELAYMOVE ) ;
 		}
 	}
 
@@ -249,7 +249,7 @@ public abstract class AbstractBehavior implements Behavior {
 			this.notifyGraphicPropertiesChanged( event ) ;
 
 			this.refreshWorld() ;
-			this.model.sleep( 20 ) ;
+			this.model.sleep( 2 * DELAYMOVE ) ;
 		}
 		for ( int i = 0; i < 5; i++ ) {
 			GraphicProperties ernestGraphicProperties = this.model.getCopyOfGraphicProperties() ;
@@ -260,7 +260,7 @@ public abstract class AbstractBehavior implements Behavior {
 			this.notifyGraphicPropertiesChanged( event ) ;
 
 			this.refreshWorld() ;
-			this.model.sleep( 20 ) ;
+			this.model.sleep( 2 * DELAYMOVE ) ;
 		}
 	}
 
@@ -274,13 +274,13 @@ public abstract class AbstractBehavior implements Behavior {
 			this.notifyGraphicPropertiesChanged( event ) ;
 
 			this.refreshWorld() ;
-			this.model.sleep( this.delayMove ) ;
+			this.model.sleep( this.DELAYMOVE ) ;
 		}
 	}
 
 	protected final void touchAnimWorld() {
 		this.refreshWorld() ;
-		this.model.sleep( this.delayTouch ) ;
+		this.model.sleep( this.DELAYTOUCH ) ;
 	}
 
 	protected abstract void turnRight() ;
