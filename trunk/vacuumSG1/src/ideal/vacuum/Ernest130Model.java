@@ -192,7 +192,7 @@ public class Ernest130Model extends ErnestModel implements DesignerListener {
 
 		this.schema = Move.getByLabel( this.m_ernest.step(
 				this.behavior.getPlaces() ,
-				this.behavior.getTransform() ) ) ;
+				this.behavior.getTransform() ).getLabel() ) ;
 		if ( this.cognitiveMode == ErnestModel.AGENT_STEP )
 			this.cognitiveMode = ErnestModel.AGENT_STOP ;
 
