@@ -7,7 +7,7 @@ import java.util.List ;
 import javax.media.j3d.Transform3D ;
 
 import eca.ActInstance;
-import ernest.IEffect ;
+import ernest.Effect ;
 
 /**
  * 
@@ -20,7 +20,7 @@ public interface Behavior {
 
 	public BehaviorState getCurrentBehaviorState() ;
 
-	public IEffect getEffect() ;
+	public Effect getEffect() ;
 
 	public Transform3D getTransform() ;
 

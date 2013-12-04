@@ -19,7 +19,7 @@ import javax.vecmath.Vector3f ;
 
 import eca.ActInstance;
 import ernest.EffectImpl ;
-import ernest.IEffect ;
+import ernest.Effect ;
 
 /**
  * 
@@ -36,7 +36,7 @@ public abstract class AbstractBehavior implements Behavior {
 	protected Color rightColor ;
 
 	protected Ernest130Model model ;
-	protected IEffect effect ;
+	protected Effect effect ;
 	protected List<ActInstance> actInstances ;
 	private Transform3D transform ;
 
@@ -65,7 +65,7 @@ public abstract class AbstractBehavior implements Behavior {
 	}
 
 	@Override
-	public final IEffect getEffect() {
+	public final Effect getEffect() {
 		return this.effect ;
 	}
 
