@@ -18,7 +18,7 @@ import javax.swing.event.EventListenerList ;
 import javax.vecmath.Vector3f ;
 
 import eca.ActInstance;
-import ernest.Effect ;
+import ernest.EffectImpl ;
 import ernest.IEffect ;
 
 /**
@@ -46,7 +46,7 @@ public abstract class AbstractBehavior implements Behavior {
 
 	public AbstractBehavior( Ernest130Model model , DesignerListener listener , Eye eye ) {
 		this.model = model ;
-		this.effect = new Effect() ;
+		this.effect = new EffectImpl() ;
 		this.actInstances = new ArrayList<ActInstance>() ;
 		this.transform = new Transform3D() ;
 		this.listeners = new EventListenerList() ;
@@ -86,7 +86,7 @@ public abstract class AbstractBehavior implements Behavior {
 	}
 
 	public BehaviorState doMovement( Move schema ) {
-		this.effect = new Effect() ;
+		this.effect = new EffectImpl() ;
 		this.actInstances = new ArrayList<ActInstance>() ;
 		
 		this.focusColor = AgentDesigner.UNANIMATED_COLOR ;
